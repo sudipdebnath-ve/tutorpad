@@ -23,31 +23,6 @@ const Signin = () => {
   };
 
   const handleSubmit = async () => {
-    // try {
-    //   const res = await fetch(
-    //     "http://13.233.254.223/tutorbird-laravel/api/login",
-    //     requestOptions
-    //   );
-    //   const data = await res.json();
-    //   console.log(data);
-    //   if (data.success === true) {
-    //     console.log("aa");
-    //     toast.success(data.message, {
-    //       position: toast.POSITION.TOP_CENTER,
-    //     });
-
-    //     setTimeout(() => {
-    //       navigate("/dashboard");
-    //     }, 2000);
-    //   } else {
-    //     setError(data);
-    //   }
-    // } catch (error) {
-    //   toast.error(error, {
-    //     position: toast.POSITION.TOP_CENTER,
-    //   });
-    //   console.log("Error :" + error);
-    // }
     const config = {
       method: "POST",
       url: `${API_URL}login`,
@@ -64,6 +39,7 @@ const Signin = () => {
       .then((response) => {
         console.log(response);
         if (response.status === 200) {
+          localStorage.setItem("userPad", JSON.stringify(response.data.data));
           toast.success(response.data.message, {
             position: toast.POSITION.TOP_CENTER,
           });

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import bgimage from "../../assets/images/bg.jpg";
 import { ToastContainer, toast } from "react-toastify";
@@ -9,7 +9,6 @@ import axios from "axios";
 import { Icon } from "react-icons-kit";
 import { eyeOff } from "react-icons-kit/feather/eyeOff";
 import { eye } from "react-icons-kit/feather/eye";
-import { useCookies } from "react-cookie";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -24,8 +23,6 @@ const Register = () => {
   const [type, setType] = useState("password");
   const [icon, setIcon] = useState(eyeOff);
   const [error, setError] = useState({});
-  const [token, setToken] = useState("");
-  const [cookies, setCookie] = useCookies(["user"]);
 
   const handleChange = (e) => {
     e.preventDefault();
@@ -44,33 +41,6 @@ const Register = () => {
     }
   };
   const handleSubmit = async () => {
-    // try {
-    //   const res = await fetch(
-    //     "http://13.233.254.223/tutorbird-laravel/api/register",
-    //     requestOptions
-    //   );
-    //   const data = await res.json();
-    //   console.log(data);
-    //   if (data.success === true) {
-    //     console.log("aa");
-    //     toast.success(data.message, {
-    //       position: toast.POSITION.TOP_CENTER,
-    //     });
-
-    //     setTimeout(() => {
-    //       navigate("/signin");
-    //     }, 2000);
-    //   } else {
-    //     console.log(data.data);
-    //     setError(data.data);
-    //   }
-    // } catch (error) {
-    //   toast.error(error, {
-    //     position: toast.POSITION.TOP_CENTER,
-    //   });
-    //   console.log("Error :" + error);
-    // }
-
     const config = {
       method: "POST",
       url: `${API_URL}register`,
@@ -90,14 +60,13 @@ const Register = () => {
       .then((response) => {
         console.log(response);
         if (response.status === 200) {
-          setToken(response.data.data.token);
-          setCookie("user", token);
+          localStorage.setItem("userPad", JSON.stringify(response.data.data));
           toast.success(response.data.message, {
             position: toast.POSITION.TOP_CENTER,
           });
-          // setTimeout(() => {
-          //   navigate("/signin");
-          // }, 2000);
+          setTimeout(() => {
+            navigate("/signin");
+          }, 2000);
         }
       })
       .catch((error) => {
@@ -106,6 +75,12 @@ const Register = () => {
         }
       });
   };
+
+  useEffect(() => {
+    if (localStorage.getItem("userPad")) {
+      navigate("/signin");
+    }
+  });
 
   return (
     <div className="d-md-flex half">
