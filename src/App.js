@@ -8,10 +8,10 @@ import { CookiesProvider, useCookies } from "react-cookie";
 function App() {
   return (
     <Routes>
-      <CookiesProvider>
-        <Route index element={<Register />} />
-        <Route path="signin" element={<Signin />} />
-      </CookiesProvider>
+      {/* <CookiesProvider> */}
+      <Route index element={<Register />} />
+      <Route path="signin" element={<Signin />} />
+      {/* </CookiesProvider> */}
       <Route path="dashboard" element={<Dashboard />} />
     </Routes>
   );
