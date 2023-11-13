@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./assets/css/style.css";
 import { Link, useLocation } from "react-router-dom";
 import avatar from "./assets/avatars/avatar.jpg";
+import study from "./assets/images/study.png";
 
 const Dashboard = () => {
   const [sidebarToggle, setSidebarToggle] = useState(false);
@@ -290,11 +291,12 @@ const Dashboard = () => {
         </>
       )}
 
-      <div className="main">
+      <div className="main bg-color">
         <nav className="navbar navbar-expand navbar-light navbar-bg">
           <Link className="sidebar-toggle" onClick={handleSidebarToggle}>
             <i className="hamburger align-self-center"></i>
           </Link>
+          <h2 style={{ margin: "0" }}>Home</h2>
 
           <div className="navbar-collapse collapse">
             <ul className="navbar-nav navbar-align">
@@ -495,7 +497,7 @@ const Dashboard = () => {
                 {profileToggle && (
                   <>
                     <div className="dropdown-menu dropdown-menu-end show">
-                      <Link className="dropdown-item" to="/">
+                      <Link className="dropdown-item" to="/my-preferences">
                         <i className="fa fa-user" aria-hidden="true"></i> &nbsp;
                         My Preferences
                       </Link>
@@ -518,11 +520,20 @@ const Dashboard = () => {
 
         <main className="content">
           <div className="container-fluid p-0">
+            {/* <div
+              className="image"
+              style={{
+                backgroundImage: `url(${study})`,
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+              }}
+            ></div> */}
+
             <h1 className="h3 mb-3">
               <strong>Let's get started, Sudip!</strong>
             </h1>
 
-            <div className="row">
+            <div className="row d-flex">
               <div className="col-xl-8 col-xxl-8 d-flex">
                 <div className="w-100">
                   <div className="row">
@@ -644,10 +655,13 @@ const Dashboard = () => {
                   </div>
                 </div>
               </div>
+              <div className="col-xl-4 col-xxl-4 d-flex">
+                <img src={study} width="100%" alt="study" />
+              </div>
             </div>
 
             <div className="row">
-              <div className="col-12 col-md-12 col-xxl-3 d-flex order-2 order-xxl-3">
+              <div className="col-12 col-md-12 col-xxl-12 d-flex order-2 order-xxl-3">
                 <div className="card flex-fill w-100">
                   <div className="card-header">
                     <h5 className="card-title mb-0">Agenda</h5>

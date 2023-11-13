@@ -47,13 +47,14 @@ const Register = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      data: {
+      data: JSON.stringify({
         first_name: userdetails.firstname,
         email: userdetails.email,
         password: userdetails.password,
         c_password: userdetails.rpassword,
         last_name: userdetails.lastname,
-      },
+      }),
+      withCredentials: true,
       validateStatus: (status) => status !== 404,
     };
     await axios(config)

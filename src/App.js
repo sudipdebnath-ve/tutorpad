@@ -4,6 +4,7 @@ import Register from "./components/users/Register";
 import Signin from "./components/users/Signin";
 import { Routes, Route } from "react-router-dom";
 import Protected from "./components/Protected";
+import MyPreferences from "./components/users/MyPreferences";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Route index element={<Register />} />
       <Route path="/signin" element={<Signin />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/my-preferences" element={<MyPreferences />} />
     </Routes>
   );
 }
