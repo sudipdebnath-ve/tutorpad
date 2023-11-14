@@ -12,3 +12,7 @@ const axiosApi = axios.create({
 export async function post(url, data) {
   return axiosApi.post(url, data);
 }
+
+export async function get(url) {
+  return axiosApi.get(url);
+}
