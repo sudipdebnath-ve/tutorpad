@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import avatar from "./assets/avatars/avatar.jpg";
-import study from "./assets/images/study.png";
 
 const MyPreferences = () => {
   const [sidebarToggle, setSidebarToggle] = useState(false);
   const [profileToggle, setProfileToggle] = useState(false);
   const [notificationToggle, setNotificationToggle] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { pathname } = location;
   const splitLocation = pathname.split("/");
 
@@ -26,6 +26,13 @@ const MyPreferences = () => {
       setProfileToggle(true);
     }
   };
+
+  useEffect(() => {
+    const token = JSON.parse(localStorage.getItem("tutorPad"));
+    if (!token) {
+      navigate("/signin");
+    }
+  });
 
   return (
     <div className="wrapper">
@@ -528,17 +535,17 @@ const MyPreferences = () => {
                       </div>
                     </div>
                     <div className="edit-user">
-                      <i class="fa fa-pencil" aria-hidden="true"></i>
+                      <i className="fa fa-pencil" aria-hidden="true"></i>
                     </div>
 
                     <div className="title-user">Sudip Debnath</div>
                     <div className="email-user">
-                      <i class="fa fa-envelope" aria-hidden="true"></i>{" "}
+                      <i className="fa fa-envelope" aria-hidden="true"></i>{" "}
                       sudip@virtualemployee.com
                     </div>
                     <div className="location-user">
-                      <i class="fa fa-map-marker" aria-hidden="true"></i> First
-                      Available Location
+                      <i className="fa fa-map-marker" aria-hidden="true"></i>{" "}
+                      First Available Location
                     </div>
                     <div className="logout-user">
                       <Link to="#" className="logout">
@@ -554,7 +561,7 @@ const MyPreferences = () => {
                   <div className="card-body attendance">
                     <h3>Attendance Preferences</h3>
                     <div className="attendance-user">
-                      <i class="fa fa-pencil" aria-hidden="true"></i>
+                      <i className="fa fa-pencil" aria-hidden="true"></i>
                     </div>
                     <br></br>
                     <h5>
@@ -632,7 +639,7 @@ const MyPreferences = () => {
                   <div className="card-body email-notification">
                     <h3>Email Notification Preferences</h3>
                     <div className="attendance-user">
-                      <i class="fa fa-pencil" aria-hidden="true"></i>
+                      <i className="fa fa-pencil" aria-hidden="true"></i>
                     </div>
                     <small className="small">
                       Select what you'd like to be notified about via email and

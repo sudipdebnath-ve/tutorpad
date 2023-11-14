@@ -54,19 +54,18 @@ const Register = () => {
         c_password: userdetails.rpassword,
         last_name: userdetails.lastname,
       }),
-      withCredentials: true,
-      validateStatus: (status) => status !== 404,
+      // validateStatus: (status) => status !== 404,
     };
     await axios(config)
       .then((response) => {
         console.log(response);
         if (response.status === 200) {
-          localStorage.setItem("userPad", JSON.stringify(response.data.data));
+          localStorage.setItem("tutorPad", JSON.stringify(response.data.data));
           toast.success(response.data.message, {
             position: toast.POSITION.TOP_CENTER,
           });
           setTimeout(() => {
-            navigate("/signin");
+            navigate("/dashboard");
           }, 2000);
         }
       })
@@ -78,7 +77,7 @@ const Register = () => {
   };
 
   useEffect(() => {
-    if (localStorage.getItem("userPad")) {
+    if (localStorage.getItem("tutorPad")) {
       navigate("/signin");
     }
   });
@@ -207,7 +206,7 @@ const Register = () => {
 
                   <input
                     type="button"
-                    value="Register"
+                    value="Create My Tutor Account"
                     className="btn btn-block btn-primary"
                     onClick={handleSubmit}
                   />

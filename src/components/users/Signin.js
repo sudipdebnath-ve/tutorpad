@@ -37,9 +37,12 @@ const Signin = () => {
     };
     await axios(config)
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         if (response.status === 200) {
-          localStorage.setItem("userPad", JSON.stringify(response.data.data));
+          localStorage.setItem(
+            "tutorPad",
+            JSON.stringify(response.data.data.token)
+          );
           toast.success(response.data.message, {
             position: toast.POSITION.TOP_CENTER,
           });

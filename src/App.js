@@ -3,7 +3,6 @@ import Dashboard from "./components/users/Dashboard";
 import Register from "./components/users/Register";
 import Signin from "./components/users/Signin";
 import { Routes, Route } from "react-router-dom";
-import Protected from "./components/Protected";
 import MyPreferences from "./components/users/MyPreferences";
 
 function App() {

@@ -1,13 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./assets/css/style.css";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import avatar from "./assets/avatars/avatar.jpg";
 import study from "./assets/images/study.png";
+import { useUserDataContext } from "../../contextApi/userDataContext.js";
 
 const Dashboard = () => {
+  const { userData, logOut } = useUserDataContext();
+  const navigate = useNavigate();
+  console.log(userData);
   const [sidebarToggle, setSidebarToggle] = useState(false);
   const [profileToggle, setProfileToggle] = useState(false);
   const [notificationToggle, setNotificationToggle] = useState(false);
+
   const location = useLocation();
   const { pathname } = location;
   const splitLocation = pathname.split("/");
@@ -27,7 +32,12 @@ const Dashboard = () => {
       setProfileToggle(true);
     }
   };
-
+  useEffect(() => {
+    const token = JSON.parse(localStorage.getItem("tutorPad"));
+    if (!token) {
+      navigate("/signin");
+    }
+  });
   return (
     <div className="wrapper">
       {sidebarToggle ? (
@@ -492,7 +502,7 @@ const Dashboard = () => {
                     className="avatar img-fluid rounded me-1"
                     alt="Charles Hall"
                   />{" "}
-                  <span className="text-dark">Sudip</span>
+                  <span className="text-dark">{userData.first_name}</span>
                 </Link>
                 {profileToggle && (
                   <>
@@ -506,7 +516,7 @@ const Dashboard = () => {
                         &nbsp;Bussiness Settings
                       </Link>
                       <div className="dropdown-divider"></div>
-                      <Link className="dropdown-item" to="#">
+                      <Link className="dropdown-item" onClick={logOut} to="#">
                         <i className="fa fa-sign-out" aria-hidden="true"></i>{" "}
                         &nbsp;Log out
                       </Link>
@@ -530,7 +540,7 @@ const Dashboard = () => {
             ></div> */}
 
             <h1 className="h3 mb-3">
-              <strong>Let's get started, Sudip!</strong>
+              <strong>Let's get started, {userData.first_name}!</strong>
             </h1>
 
             <div className="row d-flex">
