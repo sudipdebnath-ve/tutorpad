@@ -107,7 +107,7 @@ const Signin = () => {
                       <div className="control__indicator"></div>
                     </label>
                     <span className="ml-auto">
-                      <Link to="#" className="forgot-pass">
+                      <Link to="/forget-password" className="forgot-pass">
                         Forgot Password
                       </Link>
                     </span>

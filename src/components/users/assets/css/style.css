@@ -126,46 +126,6 @@ hr {
   margin: 1rem 0;
   opacity: 0.25;
 }
-.h1,
-.h2,
-.h3,
-.h4,
-.h5,
-.h6,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  color: var(--bs-heading-color);
-  font-weight: 400;
-  line-height: 1.2;
-  margin-bottom: 0.5rem;
-  margin-top: 0;
-}
-.h1,
-h1 {
-  font-size: 1.75rem;
-}
-.h2,
-h2 {
-  font-size: 1.53125rem;
-}
-.h3,
-h3 {
-  font-size: 1.3125rem;
-}
-.h4,
-h4 {
-  font-size: 1.09375rem;
-}
-.h5,
-.h6,
-h5,
-h6 {
-  font-size: 0.875rem;
-}
 p {
   margin-bottom: 1rem;
   margin-top: 0;
@@ -11604,6 +11564,7 @@ span.flatpickr-weekday {
 .attendance h3 {
   display: inline;
   font-weight: 600;
+  font-size: 24px;
 }
 .attendance-user {
   display: inline;
@@ -11611,8 +11572,8 @@ span.flatpickr-weekday {
   border: 1px solid #c3c3c3;
   padding: 5px;
   border-radius: 5px;
-  left: 271px;
-  top: 23px;
+  left: 315px;
+  top: 24px;
 }
 
 .attendance h5 {
@@ -11635,8 +11596,12 @@ span.flatpickr-weekday {
   border: 1px solid #c3c3c3;
   padding: 5px;
   border-radius: 5px;
-  left: 183px;
-  top: 23px;
+  left: 223px;
+  top: 24px;
+}
+.default-set h3 {
+  font-weight: 600;
+  font-size: 24px;
 }
 .email-notification .attendance-user {
   display: inline;
@@ -11644,8 +11609,8 @@ span.flatpickr-weekday {
   border: 1px solid #c3c3c3;
   padding: 5px;
   border-radius: 5px;
-  left: 337px;
-  top: 23px;
+  left: 387px;
+  top: 24px;
 }
 .email-notification h5,
 .default-set h5 {
@@ -11661,5 +11626,6 @@ span.flatpickr-weekday {
 }
 .email-notification h3 {
   font-weight: 600;
+  font-size: 24px;
 }
 /******************* My Preferences end********************/

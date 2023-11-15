@@ -1,0 +1,5 @@
+.half,
+.half .container > .row {
+  height: auto;
+  min-height: 600px;
+}

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import avatar from "./assets/avatars/avatar.jpg";
+import { useUserDataContext } from "../../contextApi/userDataContext.js";
 
 const MyPreferences = () => {
+  const { userData, logOut } = useUserDataContext();
   const [sidebarToggle, setSidebarToggle] = useState(false);
   const [profileToggle, setProfileToggle] = useState(false);
   const [notificationToggle, setNotificationToggle] = useState(false);
@@ -511,7 +513,7 @@ const MyPreferences = () => {
                         &nbsp;Bussiness Settings
                       </Link>
                       <div className="dropdown-divider"></div>
-                      <Link className="dropdown-item" to="#">
+                      <Link className="dropdown-item" onClick={logOut} to="#">
                         <i className="fa fa-sign-out" aria-hidden="true"></i>{" "}
                         &nbsp;Log out
                       </Link>
@@ -538,10 +540,12 @@ const MyPreferences = () => {
                       <i className="fa fa-pencil" aria-hidden="true"></i>
                     </div>
 
-                    <div className="title-user">Sudip Debnath</div>
+                    <div className="title-user">
+                      {userData.first_name} {userData.last_name}
+                    </div>
                     <div className="email-user">
                       <i className="fa fa-envelope" aria-hidden="true"></i>{" "}
-                      sudip@virtualemployee.com
+                      {userData.email}
                     </div>
                     <div className="location-user">
                       <i className="fa fa-map-marker" aria-hidden="true"></i>{" "}
