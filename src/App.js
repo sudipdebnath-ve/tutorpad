@@ -1,7 +1,7 @@
 import "./App.css";
 import Dashboard from "./components/users/Dashboard";
-import Register from "./components/users/Register";
-import Signin from "./components/users/Signin";
+import Register from "./components/registerLogin/Register";
+import Signin from "./components/registerLogin/Signin";
 import { Routes, Route } from "react-router-dom";
 import MyPreferences from "./components/users/MyPreferences";
 

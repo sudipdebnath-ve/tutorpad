@@ -7,21 +7,21 @@ const userDataContext = createContext();
 export const useUserDataContext = () => useContext(userDataContext);
 
 const AppContext = ({ children }) => {
-  const token = JSON.parse(localStorage.getItem("tutorPad"));
   const [userData, setUserData] = useState({});
-  const validateconfig = {
-    method: "GET",
-    url: `${API_URL}user`,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
 
   useEffect(() => {
     fetchData();
   });
 
   const fetchData = async () => {
+    const token = JSON.parse(localStorage.getItem("tutorPad"));
+    const validateconfig = {
+      method: "GET",
+      url: `${API_URL}user`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
     await axios(validateconfig)
       .then((response) => {
         if (response.status === 200) {
