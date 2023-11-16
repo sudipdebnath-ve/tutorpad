@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import bgimage from "../../assets/images/bg.jpg";
 import "react-toastify/dist/ReactToastify.css";
 import { API_URL } from "../../utils/config.js";
@@ -13,12 +13,7 @@ const ForgetPassword = () => {
   const [success, setSuccess] = useState(false);
   const [message, setMessage] = useState("");
 
-  const navigate = useNavigate();
   const handleSubmit = async () => {
-    // maskedEmail = email.replace(
-    //   /(?<=.)(.+?)(?=.@)/gi,
-    //   "*".repeat(email.split("@")[0].length - 2)
-    // );
     const config = {
       method: "POST",
       url: `${API_URL}forgetpass`,
@@ -28,11 +23,11 @@ const ForgetPassword = () => {
       data: JSON.stringify({
         email,
       }),
-      validateStatus: (status) => status !== 404,
+      // validateStatus: (status) => status !== 404,
     };
     await axios(config)
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         if (response.status === 200) {
           setSuccess(true);
           setMaskedEmail(
@@ -45,9 +40,9 @@ const ForgetPassword = () => {
         }
       })
       .catch((error) => {
-        console.log(error.response);
+        // console.log(error.response.data.data);
         if (error.response.data.success === false) {
-          setError(error.response.data);
+          setError(error.response.data.data);
         }
       });
   };
@@ -109,7 +104,7 @@ const ForgetPassword = () => {
                       </div>
 
                       <small style={{ color: "red" }}>
-                        {error?.message?.length ? error.message : <></>}
+                        {error?.email?.length ? error.email[0] : <></>}
                       </small>
 
                       <input
@@ -122,7 +117,7 @@ const ForgetPassword = () => {
                   </>
                 )}
                 <br></br>
-                Don't have an account?<Link to="/"> Register Here</Link>
+                Already have an account?<Link to="/signin"> Sign In </Link>here
               </div>
             </div>
           </div>

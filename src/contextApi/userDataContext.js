@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { API_URL } from "../utils/config.js";
+import { useNavigate } from "react-router-dom";
 
 const userDataContext = createContext();
 
@@ -9,9 +10,10 @@ export const useUserDataContext = () => useContext(userDataContext);
 const AppContext = ({ children }) => {
   const [userData, setUserData] = useState({});
 
-  useEffect(() => {
-    fetchData();
-  });
+  // useEffect(() => {
+  //   fetchData();
+  // });
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     const token = JSON.parse(localStorage.getItem("tutorPad"));
@@ -35,6 +37,7 @@ const AppContext = ({ children }) => {
 
   const logOut = () => {
     localStorage.removeItem("tutorPad");
+    navigate("/signin");
   };
 
   return (

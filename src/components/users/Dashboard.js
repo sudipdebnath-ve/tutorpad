@@ -1,21 +1,19 @@
 import React, { useEffect, useState } from "react";
 import "./assets/css/style.css";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import avatar from "./assets/avatars/avatar.jpg";
 import study from "./assets/images/study.png";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
+import MiniSidebar from "../sidebar/MiniSidebar.js";
+import Sidebar from "../sidebar/Sidebar.js";
 
 const Dashboard = () => {
-  const { userData, logOut } = useUserDataContext();
+  const { userData, logOut, fetchData } = useUserDataContext();
   const navigate = useNavigate();
   console.log(userData);
   const [sidebarToggle, setSidebarToggle] = useState(false);
   const [profileToggle, setProfileToggle] = useState(false);
   const [notificationToggle, setNotificationToggle] = useState(false);
-
-  const location = useLocation();
-  const { pathname } = location;
-  const splitLocation = pathname.split("/");
 
   const handleSidebarToggle = () => {
     if (sidebarToggle === true) {
@@ -36,268 +34,19 @@ const Dashboard = () => {
     const token = JSON.parse(localStorage.getItem("tutorPad"));
     if (!token) {
       navigate("/signin");
+    } else {
+      fetchData();
     }
-  });
+  }, []);
   return (
     <div className="wrapper">
       {sidebarToggle ? (
         <>
-          <nav id="sidebar" className="minisidebar js-sidebar">
-            <div className="sidebar-content js-simplebar">
-              <Link className="sidebar-brand" to="/dashboard"></Link>
-              <ul className="sidebar-nav">
-                <li
-                  className={`sidebar-item ${
-                    splitLocation[1] === "dashboard" ? "active" : ""
-                  }`}
-                >
-                  <Link className="sidebar-link" to="/dashboard">
-                    <i className="fa fa-home" aria-hidden="true"></i>
-                  </Link>
-                </li>
-
-                <li
-                  className={`sidebar-item ${
-                    splitLocation[1] === "students" ? "active" : ""
-                  }`}
-                >
-                  <Link className="sidebar-link" to="/dashboard">
-                    <i className="fa fa-graduation-cap" aria-hidden="true"></i>
-                  </Link>
-                </li>
-
-                <li
-                  className={`sidebar-item ${
-                    splitLocation[1] === "calendar" ? "active" : ""
-                  }`}
-                >
-                  <Link className="sidebar-link" to="#">
-                    <i className="fa fa-calendar" aria-hidden="true"></i>
-                  </Link>
-                </li>
-
-                <li
-                  className={`sidebar-item ${
-                    splitLocation[1] === "lending-library" ? "active" : ""
-                  }`}
-                >
-                  <Link className="sidebar-link" to="#">
-                    <i className="fa fa-book" aria-hidden="true"></i>
-                  </Link>
-                </li>
-
-                <li
-                  className={`sidebar-item ${
-                    splitLocation[1] === "online-resources" ? "active" : ""
-                  }`}
-                >
-                  <Link className="sidebar-link" to="#">
-                    <i className="fa fa-cloud-download" aria-hidden="true"></i>
-                  </Link>
-                </li>
-
-                <li
-                  className={`sidebar-item ${
-                    splitLocation[1] === "familiies-and-invoices"
-                      ? "active"
-                      : ""
-                  }`}
-                >
-                  <Link className="sidebar-link" to="#">
-                    <i className="fa fa-credit-card-alt" aria-hidden="true"></i>
-                  </Link>
-                </li>
-
-                <li
-                  className={`sidebar-item ${
-                    splitLocation[1] === "expenses-and-other-revenues"
-                      ? "active"
-                      : ""
-                  }`}
-                >
-                  <Link className="sidebar-link" to="#">
-                    <i className="fa fa-calculator" aria-hidden="true"></i>
-                  </Link>
-                </li>
-
-                <li
-                  className={`sidebar-item ${
-                    splitLocation[1] === "mileage" ? "active" : ""
-                  }`}
-                >
-                  <Link className="sidebar-link" to="#">
-                    <i className="fa fa-bar-chart" aria-hidden="true"></i>
-                  </Link>
-                </li>
-
-                <li
-                  className={`sidebar-item ${
-                    splitLocation[1] === "website" ? "active" : ""
-                  }`}
-                >
-                  <Link className="sidebar-link" to="#">
-                    <i className="fa fa-window-restore" aria-hidden="true"></i>
-                  </Link>
-                </li>
-
-                <li
-                  className={`sidebar-item ${
-                    splitLocation[1] === "news-blog-posts" ? "active" : ""
-                  }`}
-                >
-                  <Link className="sidebar-link" to="#">
-                    <i className="fa fa-bullhorn" aria-hidden="true"></i>
-                  </Link>
-                </li>
-                <li
-                  className={`sidebar-item ${
-                    splitLocation[1] === "bussiness-reports" ? "active" : ""
-                  }`}
-                >
-                  <Link className="sidebar-link" to="#">
-                    <i className="fa fa-file-text" aria-hidden="true"></i>
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </nav>
+          <MiniSidebar />
         </>
       ) : (
         <>
-          <nav id="sidebar" className="sidebar js-sidebar">
-            <div className="sidebar-content js-simplebar">
-              <Link className="sidebar-brand" to="/dashboard">
-                <span className="align-middle">TutorPad</span>
-              </Link>
-              <ul className="sidebar-nav">
-                <li
-                  className={`sidebar-item ${
-                    splitLocation[1] === "dashboard" ? "active" : ""
-                  }`}
-                >
-                  <Link className="sidebar-link" to="/dashboard">
-                    <i className="fa fa-home" aria-hidden="true"></i>
-                    <span className="align-middle">Dashboard</span>
-                  </Link>
-                </li>
-
-                <li
-                  className={`sidebar-item ${
-                    splitLocation[1] === "students" ? "active" : ""
-                  }`}
-                >
-                  <Link className="sidebar-link" to="/dashboard">
-                    <i className="fa fa-graduation-cap" aria-hidden="true"></i>
-                    <span className="align-middle">Students</span>
-                  </Link>
-                </li>
-
-                <li
-                  className={`sidebar-item ${
-                    splitLocation[1] === "calendar" ? "active" : ""
-                  }`}
-                >
-                  <Link className="sidebar-link" to="#">
-                    <i className="fa fa-calendar" aria-hidden="true"></i>
-                    <span className="align-middle">Calendar</span>
-                  </Link>
-                </li>
-
-                <li
-                  className={`sidebar-item ${
-                    splitLocation[1] === "lending-library" ? "active" : ""
-                  }`}
-                >
-                  <Link className="sidebar-link" to="#">
-                    <i className="fa fa-book" aria-hidden="true"></i>
-                    <span className="align-middle">Lending Library</span>
-                  </Link>
-                </li>
-
-                <li
-                  className={`sidebar-item ${
-                    splitLocation[1] === "online-resources" ? "active" : ""
-                  }`}
-                >
-                  <Link className="sidebar-link" to="#">
-                    <i className="fa fa-cloud-download" aria-hidden="true"></i>
-                    <span className="align-middle">Online Resources</span>
-                  </Link>
-                </li>
-
-                <li
-                  className={`sidebar-item ${
-                    splitLocation[1] === "familiies-and-invoices"
-                      ? "active"
-                      : ""
-                  }`}
-                >
-                  <Link className="sidebar-link" to="#">
-                    <i className="fa fa-credit-card-alt" aria-hidden="true"></i>
-                    <span className="align-middle">Families & Invoices</span>
-                  </Link>
-                </li>
-
-                <li
-                  className={`sidebar-item ${
-                    splitLocation[1] === "expenses-and-other-revenues"
-                      ? "active"
-                      : ""
-                  }`}
-                >
-                  <Link className="sidebar-link" to="#">
-                    <i className="fa fa-calculator" aria-hidden="true"></i>
-                    <span className="align-middle">
-                      Expenses & other Revenues
-                    </span>
-                  </Link>
-                </li>
-
-                <li
-                  className={`sidebar-item ${
-                    splitLocation[1] === "mileage" ? "active" : ""
-                  }`}
-                >
-                  <Link className="sidebar-link" to="#">
-                    <i className="fa fa-bar-chart" aria-hidden="true"></i>
-                    <span className="align-middle">Mileage</span>
-                  </Link>
-                </li>
-
-                <li
-                  className={`sidebar-item ${
-                    splitLocation[1] === "website" ? "active" : ""
-                  }`}
-                >
-                  <Link className="sidebar-link" to="#">
-                    <i className="fa fa-window-restore" aria-hidden="true"></i>
-                    <span className="align-middle">Website</span>
-                  </Link>
-                </li>
-
-                <li
-                  className={`sidebar-item ${
-                    splitLocation[1] === "news-blog-posts" ? "active" : ""
-                  }`}
-                >
-                  <Link className="sidebar-link" to="#">
-                    <i className="fa fa-bullhorn" aria-hidden="true"></i>
-                    <span className="align-middle">News & Blog Posts</span>
-                  </Link>
-                </li>
-                <li
-                  className={`sidebar-item ${
-                    splitLocation[1] === "bussiness-reports" ? "active" : ""
-                  }`}
-                >
-                  <Link className="sidebar-link" to="#">
-                    <i className="fa fa-file-text" aria-hidden="true"></i>
-                    <span className="align-middle">Bussiness Reports</span>
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </nav>
+          <Sidebar />
         </>
       )}
 
@@ -516,7 +265,7 @@ const Dashboard = () => {
                         &nbsp;Bussiness Settings
                       </Link>
                       <div className="dropdown-divider"></div>
-                      <Link className="dropdown-item" onClick={logOut} to="#">
+                      <Link className="dropdown-item" onClick={logOut}>
                         <i className="fa fa-sign-out" aria-hidden="true"></i>{" "}
                         &nbsp;Log out
                       </Link>

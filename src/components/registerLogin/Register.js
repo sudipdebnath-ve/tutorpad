@@ -107,7 +107,7 @@ const Register = () => {
                     <input
                       type="text"
                       className="form-control"
-                      placeholder="firstname"
+                      placeholder="First Name"
                       name="firstname"
                       onChange={handleChange}
                       required
@@ -120,7 +120,7 @@ const Register = () => {
                     <input
                       type="text"
                       className="form-control"
-                      placeholder="lastname"
+                      placeholder="Last Name"
                       name="lastname"
                       onChange={handleChange}
                       required

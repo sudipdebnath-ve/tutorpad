@@ -5,8 +5,14 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { API_URL } from "../../utils/config.js";
 import axios from "axios";
+import { useUserDataContext } from "../../contextApi/userDataContext.js";
+import LanguageOption from "../LanguageOption.js";
+import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 
 const Signin = () => {
+  const { t } = useTranslation();
+  const { fetchData } = useUserDataContext();
   const navigate = useNavigate();
   const [userdetails, setUserdetails] = useState({
     email: "",
@@ -47,8 +53,9 @@ const Signin = () => {
             position: toast.POSITION.TOP_CENTER,
           });
           setTimeout(() => {
+            fetchData();
             navigate("/dashboard");
-          }, 2000);
+          }, 3000);
         }
       })
       .catch((error) => {
@@ -57,6 +64,9 @@ const Signin = () => {
           setError(error.response.data);
         }
       });
+  };
+  const handleClick = (e) => {
+    i18next.changeLanguage(e.target.value);
   };
 
   return (
@@ -67,6 +77,7 @@ const Signin = () => {
         <div className="container">
           <div className="row align-items-center justify-content-center">
             <div className="col-md-12">
+              <LanguageOption onChange={(e) => handleClick(e)} />
               <div className="form-block mx-auto">
                 <div className="text-center mb-5">
                   <h3>
@@ -75,22 +86,22 @@ const Signin = () => {
                 </div>
                 <form>
                   <div className="form-group first">
-                    <label htmlFor="email">Email</label>
+                    <label htmlFor="email">{t("email")}</label>
                     <input
                       type="email"
                       className="form-control"
-                      placeholder="your-email@gmail.com"
+                      placeholder={t("email placeholder")}
                       name="email"
                       onChange={handleChange}
                       required
                     />
                   </div>
                   <div className="form-group last mb-3">
-                    <label htmlFor="password">Password</label>
+                    <label htmlFor="password">{t("password")}</label>
                     <input
                       type="password"
                       className="form-control"
-                      placeholder="Your Password"
+                      placeholder={t("password placeholder")}
                       name="password"
                       onChange={handleChange}
                       required
@@ -102,13 +113,13 @@ const Signin = () => {
 
                   <div className="d-sm-flex mb-5 align-items-center justify-content-between">
                     <label className="control control--checkbox mb-3 mb-sm-0">
-                      <span className="caption">Remember me</span>
+                      <span className="caption">{t("remember me")}</span>
                       <input type="checkbox" />
                       <div className="control__indicator"></div>
                     </label>
                     <span className="ml-auto">
                       <Link to="/forget-password" className="forgot-pass">
-                        Forgot Password
+                        {t("forgot password")}
                       </Link>
                     </span>
                   </div>
@@ -121,7 +132,8 @@ const Signin = () => {
                   />
                 </form>
                 <br></br>
-                Don't have an account?<Link to="/"> Register Here</Link>
+                {t("don't have an account?")}
+                <Link to="/"> {t("register here")}</Link>
               </div>
             </div>
           </div>
