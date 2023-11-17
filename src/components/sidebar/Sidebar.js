@@ -132,6 +132,16 @@ const Sidebar = () => {
               <span className="align-middle">Bussiness Reports</span>
             </Link>
           </li>
+          <li
+            className={`sidebar-item ${
+              splitLocation[1] === "email-templates" ? "active" : ""
+            }`}
+          >
+            <Link className="sidebar-link" to="/email-templates">
+              <i className="fa fa-text-width" aria-hidden="true"></i>
+              <span className="align-middle">Email Templates</span>
+            </Link>
+          </li>
         </ul>
       </div>
     </nav>

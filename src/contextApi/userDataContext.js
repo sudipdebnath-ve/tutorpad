@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import axios from "axios";
 import { API_URL } from "../utils/config.js";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +9,7 @@ export const useUserDataContext = () => useContext(userDataContext);
 
 const AppContext = ({ children }) => {
   const [userData, setUserData] = useState({});
-
+  const [sidebarToggle, setSidebarToggle] = useState(false);
   // useEffect(() => {
   //   fetchData();
   // });
@@ -37,11 +37,15 @@ const AppContext = ({ children }) => {
 
   const logOut = () => {
     localStorage.removeItem("tutorPad");
-    navigate("/signin");
+    setTimeout(() => {
+      navigate("/signin");
+    }, 1000);
   };
 
   return (
-    <userDataContext.Provider value={{ fetchData, userData, logOut }}>
+    <userDataContext.Provider
+      value={{ fetchData, userData, logOut, sidebarToggle, setSidebarToggle }}
+    >
       {children}
     </userDataContext.Provider>
   );
