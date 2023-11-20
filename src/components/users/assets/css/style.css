@@ -11629,3 +11629,56 @@ span.flatpickr-weekday {
   font-size: 24px;
 }
 /******************* My Preferences end********************/
+
+/******************* Email Template start********************/
+.choose-template {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  padding-bottom: 50px;
+}
+.choose-template h5 {
+  font-size: 20px;
+  font-weight: 600;
+}
+.choose-template select {
+  width: 220px;
+  background-color: #fb771a;
+  border: none;
+  height: 40px;
+  color: #ffffff;
+  border-radius: 5px;
+  padding: 8px;
+  font-size: 15px;
+}
+.input-title {
+  display: flex;
+  gap: 53px;
+  align-items: center;
+  padding: 0px 0px 50px;
+}
+.sub-btn {
+  display: flex;
+  gap: 50px;
+}
+.editor {
+  display: flex;
+  gap: 43px;
+}
+.input-title input {
+  width: 300px;
+}
+.sub-btn {
+  padding-top: 40px;
+}
+.sub-btn input {
+  margin: 0 auto;
+  width: 80px;
+  background-color: #fb771a;
+  padding: 6px;
+  color: #fff;
+  border: none;
+  font-size: 15px;
+  border-radius: 5px;
+}
+/******************* Email Template end********************/
