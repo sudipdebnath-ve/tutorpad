@@ -5,78 +5,98 @@ import MiniSidebar from "../sidebar/MiniSidebar.js";
 import Sidebar from "../sidebar/Sidebar.js";
 import TopBar from "../sidebar/TopBar.js";
 import { Editor } from "@tinymce/tinymce-react";
+import axios from "axios";
+import { API_URL } from "../../utils/config.js";
 
 const EmailTemplates = () => {
-  const { sidebarToggle, userData, fetchData } = useUserDataContext();
-  const [email, setEmail] = useState("");
+  const {
+    sidebarToggle,
+    userData,
+    fetchData,
+    emailTemplate,
+    emailTemplateData,
+  } = useUserDataContext();
+
+  const [token, setToken] = useState("");
+  const [message, setMessage] = useState("");
+  const [emailData, setEmailData] = useState({
+    template_title: "",
+    template_content: "",
+  });
+  const [emailOnchange, setEmailOnchange] = useState(false);
   const editorRef = useRef(null);
   const navigate = useNavigate();
-  const log = () => {
-    if (editorRef.current) {
-      console.log(editorRef.current.getContent());
-    }
+
+  const handleSaveData = async () => {
+    const validateconfig = {
+      method: "POST",
+      url: `${API_URL}user/save_et`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      data: JSON.stringify({
+        user_id: emailData.user_id,
+        template_id: emailData.id,
+        template_title: emailData.template_title,
+        template_content: editorRef.current.getContent(),
+      }),
+    };
+    await axios(validateconfig)
+      .then((response) => {
+        console.log(response.data);
+        setMessage(response.data.message);
+
+        setTimeout(() => {
+          setMessage("");
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
-  console.log(userData);
-  // const handleImageUpload = (blobInfo, progress, failure) => {
-  //   return new Promise((resolve, reject) => {
-  //     const xhr = new XMLHttpRequest();
-  //     xhr.open("POST", "http://localhost:3000/server.php", true);
+  // console.log(emailTemplateData);
 
-  //     const formData = new FormData();
-  //     formData.append("file", blobInfo.blob(), blobInfo.filename());
-  //     //console.log(blobInfo.filename())
-
-  //     xhr.upload.onprogress = (e) => {
-  //       progress((e.loaded / e.total) * 100);
-  //       if (progress && typeof progress === "function") {
-  //         const percent = 0;
-  //         progress(percent);
-  //       }
-  //     };
-
-  //     xhr.onload = () => {
-  //       if (xhr.status === 403) {
-  //         reject({ message: "HTTP Error: " + xhr.status, remove: true });
-  //         return;
-  //       }
-
-  //       if (xhr.status < 200 || xhr.status >= 300) {
-  //         reject("HTTP Error: " + xhr.status);
-  //         return;
-  //       }
-
-  //       const json = JSON.parse(xhr.responseText);
-
-  //       if (!json || typeof json.location != "string") {
-  //         reject("Invalid JSON: " + xhr.responseText);
-  //         return;
-  //       }
-
-  //       resolve(json.location);
-  //     };
-
-  //     xhr.onerror = () => {
-  //       reject({ message: "Image upload failed", remove: true });
-  //       if (failure && typeof failure === "function") {
-  //         failure("Image upload failed");
-  //       }
-  //     };
-
-  //     xhr.send(formData);
-  //   });
-  // };
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem("tutorPad"));
     if (!token) {
       navigate("/signin");
     } else {
       fetchData();
+      setToken(token);
     }
+    emailTemplate();
   }, []);
 
-  const handleEmailTemplate = (e) => {
-    console.log(e.target.value);
-    setEmail(e.target.value);
+  const handleEmailTemplate = async (e) => {
+    if (e.target.value === 0) {
+      setEmailOnchange(false);
+    } else {
+      setEmailOnchange(true);
+    }
+    const validateconfig = {
+      method: "GET",
+      url: `${API_URL}user/et/${e.target.value}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(validateconfig)
+      .then((response) => {
+        // console.log(response.data);
+        if (response.data.success === true) {
+          setEmailData(response.data.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handleChange = (e) => {
+    e.preventDefault();
+    const name = e.target.name;
+    const value = e.target.value;
+    setEmailData({ ...emailData, [name]: value });
   };
   return (
     <div className="wrapper">
@@ -99,12 +119,18 @@ const EmailTemplates = () => {
               <div className="col-xl-12 col-xxl-12 choose-template">
                 <h5>Choose Template</h5>
                 <select onChange={handleEmailTemplate}>
-                  <option>Select an Option</option>
-                  <option value="registration">Registration</option>
-                  <option value="forget">Forget Password</option>
+                  <option value="0">Select an Option</option>
+                  {emailTemplateData.map((item) => {
+                    const { id, template_name } = item;
+                    return (
+                      <option key={id} value={id}>
+                        {template_name}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
-              {email === "registration" && (
+              {emailOnchange && (
                 <>
                   <div className="col-xl-12 col-xxl-12">
                     <div className="input-title">
@@ -113,7 +139,9 @@ const EmailTemplates = () => {
                         type="text"
                         className="form-control"
                         placeholder="Email Title"
-                        name="email_title"
+                        name="template_title"
+                        value={emailData.template_title}
+                        onChange={handleChange}
                       ></input>
                     </div>
                     <div className="editor">
@@ -121,7 +149,10 @@ const EmailTemplates = () => {
                       <Editor
                         apiKey="pz9f1zsrw3kqfmqecr5si4gbtfljkwc6nhqicfr9dstcvmdn"
                         onInit={(evt, editor) => (editorRef.current = editor)}
-                        initialValue={`Hello ${userData.first_name}`}
+                        initialValue={
+                          emailData.template_content &&
+                          `${emailData.template_content}`
+                        }
                         init={{
                           height: "400",
                           plugins:
@@ -142,61 +173,26 @@ const EmailTemplates = () => {
                             ),
                         }}
                       />
-                      {/* <button onClick={log}>Log editor content</button> */}
                     </div>
-                    <div className="sub-btn">
-                      <input type="submit" value="Submit" />
-                    </div>
-                  </div>
-                </>
-              )}
-              {email === "forget" && (
-                <>
-                  <div className="col-xl-12 col-xxl-12">
-                    <div className="input-title">
-                      <h6>Template Title</h6>
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Email Title"
-                        name="email_title"
-                      ></input>
-                    </div>
-                    <div className="editor">
-                      <h6>Template Body</h6>
-                      <Editor
-                        apiKey="pz9f1zsrw3kqfmqecr5si4gbtfljkwc6nhqicfr9dstcvmdn"
-                        onInit={(evt, editor) => (editorRef.current = editor)}
-                        initialValue={`Hello ${userData.first_name}`}
-                        init={{
-                          height: "400",
-                          plugins:
-                            "ai tinycomments mentions anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed permanentpen footnotes advtemplate advtable advcode editimage tableofcontents mergetags powerpaste tinymcespellchecker autocorrect a11ychecker typography inlinecss",
-                          toolbar:
-                            "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
-                          tinycomments_mode: "embedded",
-                          // images_upload_url: "http://localhost:8000/server.php",
-                          // automatic_uploads: true,
-                          // images_reuse_filename: true,
-                          // images_upload_handler: handleImageUpload,
-                          // tinycomments_author: "Author name",
-                          // mergetags_list: [
-                          //   { value: "First.Name", title: "First Name" },
-                          //   { value: "Email", title: "Email" },
-                          // ],
-                          paste_data_images: true,
-                          ai_request: (request, respondWith) =>
-                            respondWith.string(() =>
-                              Promise.reject(
-                                "See docs to implement AI Assistant"
-                              )
-                            ),
+                    {message && (
+                      <span
+                        style={{
+                          color: "green",
+                          textAlign: "center",
+                          display: "block",
+                          transition: "opacity 1s ease",
+                          paddingTop: "10px",
                         }}
-                      />
-                      {/* <button onClick={log}>Log editor content</button> */}
-                    </div>
+                      >
+                        {message}
+                      </span>
+                    )}
                     <div className="sub-btn">
-                      <input type="submit" value="Submit" />
+                      <input
+                        type="button"
+                        value="Submit"
+                        onClick={handleSaveData}
+                      />
                     </div>
                   </div>
                 </>
