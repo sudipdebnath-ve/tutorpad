@@ -1,12 +1,11 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
-import MiniSidebar from "../sidebar/MiniSidebar.js";
-import Sidebar from "../sidebar/Sidebar.js";
-import TopBar from "../sidebar/TopBar.js";
+import { Sidebar, MiniSidebar, TopBar } from "../sidebar";
 import { Editor } from "@tinymce/tinymce-react";
 import axios from "axios";
 import { API_URL } from "../../utils/config.js";
+import TinyMCE from "../TinyMCE.js";
 
 const EmailTemplates = () => {
   const {
@@ -39,7 +38,7 @@ const EmailTemplates = () => {
         user_id: emailData.user_id,
         template_id: emailData.id,
         template_title: emailData.template_title,
-        template_content: editorRef.current.getContent(),
+        // template_content: editorRef.current.getContent(),
       }),
     };
     await axios(validateconfig)
@@ -55,7 +54,6 @@ const EmailTemplates = () => {
         console.log(error);
       });
   };
-  // console.log(emailTemplateData);
 
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem("tutorPad"));
@@ -146,7 +144,7 @@ const EmailTemplates = () => {
                     </div>
                     <div className="editor">
                       <h6>Template Body</h6>
-                      <Editor
+                      {/* <Editor
                         apiKey="pz9f1zsrw3kqfmqecr5si4gbtfljkwc6nhqicfr9dstcvmdn"
                         onInit={(evt, editor) => (editorRef.current = editor)}
                         initialValue={
@@ -160,6 +158,10 @@ const EmailTemplates = () => {
                           toolbar:
                             "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
                           tinycomments_mode: "embedded",
+                          images_upload_url: "http://localhost:3000/server.php",
+                          automatic_uploads: true,
+                          images_reuse_filename: true,
+                          images_upload_handler: handleImageUpload,
                           // tinycomments_author: "Author name",
                           // mergetags_list: [
                           //   { value: "First.Name", title: "First Name" },
@@ -172,7 +174,8 @@ const EmailTemplates = () => {
                               )
                             ),
                         }}
-                      />
+                      /> */}
+                      <TinyMCE />
                     </div>
                     {message && (
                       <span
