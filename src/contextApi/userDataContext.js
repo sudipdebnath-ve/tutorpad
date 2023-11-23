@@ -6,11 +6,17 @@ import { useNavigate } from "react-router-dom";
 const userDataContext = createContext();
 
 export const useUserDataContext = () => useContext(userDataContext);
+const token = JSON.parse(localStorage.getItem("tutorPad"));
 
 const AppContext = ({ children }) => {
   const [userData, setUserData] = useState({});
   const [sidebarToggle, setSidebarToggle] = useState(false);
   const [emailTemplateData, setEmailTemplateData] = useState([]);
+  const [emailOnchange, setEmailOnchange] = useState(false);
+  const [emailData, setEmailData] = useState({
+    template_title: "",
+    template_content: "",
+  });
 
   const navigate = useNavigate();
 
@@ -34,6 +40,14 @@ const AppContext = ({ children }) => {
       });
   };
 
+  const logOut = () => {
+    localStorage.removeItem("tutorPad");
+    setTimeout(() => {
+      navigate("/signin");
+    }, 1000);
+  };
+
+  // Email Template start
   const emailTemplate = async () => {
     const token = JSON.parse(localStorage.getItem("tutorPad"));
     const validateconfig = {
@@ -55,12 +69,32 @@ const AppContext = ({ children }) => {
       });
   };
 
-  const logOut = () => {
-    localStorage.removeItem("tutorPad");
-    setTimeout(() => {
-      navigate("/signin");
-    }, 1000);
+  const handleEmailTemplate = async (e) => {
+    const token = JSON.parse(localStorage.getItem("tutorPad"));
+    if (e.target.value === 0) {
+      setEmailOnchange(false);
+    } else {
+      setEmailOnchange(true);
+    }
+    const validateconfig = {
+      method: "GET",
+      url: `${API_URL}user/et/${e.target.value}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(validateconfig)
+      .then((response) => {
+        // console.log(response.data);
+        if (response.data.success === true) {
+          setEmailData(response.data.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
+  // Email Template emd
 
   return (
     <userDataContext.Provider
@@ -72,6 +106,11 @@ const AppContext = ({ children }) => {
         setSidebarToggle,
         emailTemplate,
         emailTemplateData,
+        handleEmailTemplate,
+        emailOnchange,
+        emailData,
+        setEmailData,
+        token,
       }}
     >
       {children}
