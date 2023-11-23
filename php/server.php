@@ -2,7 +2,7 @@
     //Adpated from the postAcceptor.php file example from the documentation https://www.tiny.cloud/docs/tinymce/6/php-upload-handler/
 	$accepted_origins = array('http://localhost:3000');
 
-	$imageFolder = dirname(__FILE__).'/' . 'images/';
+	$imageFolder = $_SERVER['DOCUMENT_ROOT'].'/' . 'php/images/';
 
     //handle same-origin requests, which won't set or be valid unliess configured to allow origins
     if (isset($_SERVER['HTTP_ORIGIN'])) {
@@ -36,7 +36,7 @@
         move_uploaded_file($temp['tmp_name'], $filetowrite);
 
         $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? "https://" : "http://";
-        $localAddress = 'localhost:3000/images/';
+        $localAddress = 'localhost/php/images/';
         $baseurl = $protocol . $localAddress; //$_SERVER["HTTP_HOST"] . rtrim(dirname($_SERVER['REQUEST_URI']), "/") . "/";
 
     //Send the required JSON object that has 'location' as a property back to TinyMCE
