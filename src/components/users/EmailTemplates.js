@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import { Sidebar, MiniSidebar, TopBar } from "../sidebar";
 import TinyMCE from "../TinyMCE.js";
+import axios from "axios";
+import { API_URL } from "../../utils/config.js";
 
 const EmailTemplates = () => {
   const {
@@ -22,9 +24,29 @@ const EmailTemplates = () => {
       navigate("/signin");
     } else {
       fetchData();
+      getShortcodes();
     }
     emailTemplate();
   }, []);
+
+  const getShortcodes = async () => {
+    const validateconfig = {
+      method: "GET",
+      url: `${API_URL}user/etps`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(validateconfig)
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.success === true) {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <div className="wrapper">

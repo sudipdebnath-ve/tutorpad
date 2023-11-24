@@ -6,6 +6,7 @@ import { Routes, Route } from "react-router-dom";
 import MyPreferences from "./components/users/MyPreferences";
 import ForgetPassword from "./components/registerLogin/ForgetPassword";
 import EmailTemplates from "./components/users/EmailTemplates";
+import Student from "./components/users/Student";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Route index element={<Register />} />
       <Route path="/signin" element={<Signin />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/students" element={<Student />} />
       <Route path="/my-preferences" element={<MyPreferences />} />
       <Route path="/forget-password" element={<ForgetPassword />} />
       <Route path="/email-templates" element={<EmailTemplates />} />

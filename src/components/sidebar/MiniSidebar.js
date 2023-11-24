@@ -26,7 +26,7 @@ const MiniSidebar = () => {
               splitLocation[1] === "students" ? "active" : ""
             }`}
           >
-            <Link className="sidebar-link" to="/dashboard">
+            <Link className="sidebar-link" to="/students">
               <i className="fa fa-graduation-cap" aria-hidden="true"></i>
             </Link>
           </li>

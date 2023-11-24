@@ -40,6 +40,87 @@ const Dashboard = () => {
               <strong>Let's get started, {userData.first_name}!</strong>
             </h1>
 
+            <div className="row all-step">
+              <div className="col-xl-8 col-xxl-8 steps">
+                <div className="card step1">
+                  <div className="card-body">
+                    <div className="row">
+                      <div className="col-auto">
+                        <div className="stat text-primary">
+                          <i class="fa fa-check" aria-hidden="true"></i>
+                        </div>
+                      </div>
+                      <div className="col mt-0">
+                        <h5 className="card-title">Create Account</h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                <div className="card">
+                  <div className="card-body">
+                    <div className="row">
+                      <div className="col-auto">
+                        <div className="stat text-primary">
+                          <i class="fa fa-user-plus" aria-hidden="true"></i>
+                        </div>
+                      </div>
+                      <div className="col mt-0">
+                        <h5 className="card-title">Add Student</h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                <div className="card">
+                  <div className="card-body">
+                    <div className="row">
+                      <div className="col-auto">
+                        <div className="stat text-primary">
+                          <i class="fa fa-calendar" aria-hidden="true"></i>
+                        </div>
+                      </div>
+                      <div className="col mt-0">
+                        <h5 className="card-title">Schedule Event</h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                <div className="card">
+                  <div className="card-body">
+                    <div className="row">
+                      <div className="col-auto">
+                        <div className="stat text-primary">
+                          <i class="fa fa-file-text" aria-hidden="true"></i>
+                        </div>
+                      </div>
+                      <div className="col mt-0">
+                        <h5 className="card-title">Create Invoice</h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+
+                <div className="card">
+                  <div className="card-body">
+                    <div className="row">
+                      <div className="col-auto">
+                        <div className="stat text-primary">
+                          <i class="fa fa-gift" aria-hidden="true"></i>
+                        </div>
+                      </div>
+                      <div className="col mt-0">
+                        <h5 className="card-title">You've Got It!</h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-xl-4 col-xxl-4 d-flex"></div>
+            </div>
+
             <div className="row d-flex">
               <div className="col-xl-8 col-xxl-8 d-flex">
                 <div className="w-100">

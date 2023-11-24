@@ -11682,3 +11682,102 @@ span.flatpickr-weekday {
   border-radius: 5px;
 }
 /******************* Email Template end********************/
+
+/******************* Dashboard start********************/
+
+.steps {
+  display: flex;
+  align-items: center;
+}
+.steps .step1 {
+  background: #fb771a;
+  color: #ffffff;
+}
+.steps .step1 .card-title {
+  color: #ffffff;
+}
+.steps .card-title {
+  text-align: center;
+}
+.steps .card-body {
+  padding: 15px;
+}
+.steps .col-auto {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding-bottom: 15px;
+}
+.steps .card-title {
+  margin-bottom: 0;
+}
+.all-step {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.steps .card {
+  margin-bottom: 0;
+}
+
+/******************* Dashboard end********************/
+
+/******************* Student start********************/
+
+.student .nav-link.active {
+  color: #fb771a !important;
+}
+.student .nav-link {
+  color: #000000 !important;
+  font-weight: 600;
+  width: 200px;
+}
+.student .dropdown {
+  background-color: #ffffff;
+  padding: 3px 13px;
+  border-radius: 5px;
+  border: 1px solid #c2c2c2;
+}
+.dropdown.addnew {
+  background-color: #fb771a;
+  border-radius: 5px;
+  border: none;
+}
+.student .dropdown a {
+  border: none;
+}
+.addnew a {
+  color: #ffffff;
+  border: none;
+}
+.student .dropdown {
+  margin-right: 10px;
+}
+.student .card-header {
+  display: flex;
+}
+.student i {
+  color: #000;
+}
+.dropdown.addnew i {
+  color: #ffffff;
+}
+.student .dropdown-toggle:after {
+  border: solid;
+  border-width: 0 2px 2px 0px;
+  display: inline-block;
+  padding: 2px 2px 2px 2px;
+  transform: rotate(45deg);
+  margin-left: 11px;
+}
+.dropdown.addnew:hover {
+  background-color: #d96c22;
+}
+.dropdown.addnew a:hover {
+  color: #ffffff;
+}
+.options {
+  opacity: 0.6;
+}
+/******************* Student end********************/
