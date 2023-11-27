@@ -9936,7 +9936,7 @@ fieldset:disabled .btn {
   transition: background 0.1s ease-in-out, color 0.1s ease-in-out;
 }
 .dropdown-menu {
-  top: auto;
+  top: 48px;
   right: 0;
 }
 .dropdown-menu-lg {
@@ -11752,10 +11752,16 @@ span.flatpickr-weekday {
   border: none;
 }
 .student .dropdown {
-  margin-right: 10px;
+  margin-right: 9px;
 }
 .student .card-header {
   display: flex;
+  width: 50%;
+}
+.student .card {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
 }
 .student i {
   color: #000;
@@ -11778,6 +11784,83 @@ span.flatpickr-weekday {
   color: #ffffff;
 }
 .options {
-  opacity: 0.6;
+  opacity: 0.4;
+}
+.student .card.flex-fill.w-100 .card-header:nth-child(even) {
+  justify-content: flex-end;
+}
+.student .card-body {
+  width: 100%;
+}
+.student .chart {
+  width: 30%;
+}
+.student h4 {
+  text-align: center;
+}
+.student .addnewstudent {
+  display: block;
+  width: 155px;
+  margin: 0 auto;
+  background-color: #fb771a;
+  border-radius: 5px;
+  border: none;
+  padding: 5px;
+}
+.student .addnewstudent i {
+  color: #fff;
+  padding-left: 15px;
+}
+.student .addnewstudent a {
+  color: #fff;
+}
+.addNewDropdown {
+  display: block;
+}
+.addNewDropdown a {
+  color: #000000;
+}
+.addNewDropdown i {
+  color: #000000 !important;
+  padding-right: 10px;
+}
+.addNewDropdown a:hover {
+  color: #000000 !important;
+  background-color: #c2c2c2;
+}
+.addNewDropdown .dropdown-divider {
+  margin: 4px 0;
+}
+.addNewDropdown.search {
+  padding: 12px 12px;
+  width: 290px;
+}
+.addNewDropdown.search .form-control {
+  height: 40px;
+  margin-bottom: 15px;
+}
+.addNewDropdown.search label {
+  font-size: 14px;
+  font-weight: 600;
+}
+.button-search {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  padding-top: 10px;
+}
+.button-search button {
+  border: 1px solid #c2c2c2;
+  border-radius: 4px;
+  height: 34px;
+  padding: 5px 10px;
+  background: #ffffff;
+  width: 112px;
+}
+.button-search button:last-child {
+  background: #fb771a;
+  color: #ffffff;
+  border: none;
 }
 /******************* Student end********************/

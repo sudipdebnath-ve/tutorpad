@@ -39,7 +39,6 @@ const TopBar = () => {
               className="nav-icon dropdown-toggle"
               to="#"
               id="alertsDropdown"
-              data-bs-toggle="dropdown"
               onClick={() => setNotificationToggle(!notificationToggle)}
             >
               <div className="position-relative">
@@ -103,7 +102,6 @@ const TopBar = () => {
               className="nav-icon dropdown-toggle"
               to="#"
               id="messagesDropdown"
-              data-bs-toggle="dropdown"
             >
               <div className="position-relative">
                 <i className="fa fa-question-circle" aria-hidden="true"></i>
@@ -202,7 +200,6 @@ const TopBar = () => {
             <Link
               className="nav-icon dropdown-toggle d-inline-block d-sm-none"
               to="#"
-              data-bs-toggle="dropdown"
             >
               <i className="align-middle" data-feather="settings"></i>
             </Link>
@@ -210,7 +207,6 @@ const TopBar = () => {
             <Link
               className="nav-link dropdown-toggle d-none d-sm-inline-block"
               to="#"
-              data-bs-toggle="dropdown"
               onClick={handleProfileToggle}
             >
               <img
