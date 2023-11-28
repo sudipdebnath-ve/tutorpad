@@ -104,7 +104,10 @@ const Student = () => {
                               {addNewDropdown && (
                                 <>
                                   <div className="dropdown-menu addNewDropdown">
-                                    <Link className="dropdown-item">
+                                    <Link
+                                      className="dropdown-item"
+                                      to={"/students/add"}
+                                    >
                                       <i
                                         className="fa fa-plus"
                                         aria-hidden="true"
