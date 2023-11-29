@@ -13,7 +13,6 @@ const StudentAdd = () => {
   React.useEffect(() => {
     const stepMenuOne = document.querySelector(".formbold-step-menu1");
     const stepMenuTwo = document.querySelector(".formbold-step-menu2");
-    const stepMenuThree = document.querySelector(".formbold-step-menu3");
 
     const stepOne = document.querySelector(".formbold-form-step-1");
     const stepTwo = document.querySelector(".formbold-form-step-2");
@@ -43,10 +42,25 @@ const StudentAdd = () => {
           stepTwo.classList.remove("active");
 
           formBackBtn.classList.remove("active");
+          formSubmitBtn.textContent = "Next Step";
         });
-      } else if (stepTwo.className === "formbold-step-menu2 active") {
-        formSubmitBtn.textContent = "Submit";
-        document.querySelector("form").submit();
+      } else if (stepMenuTwo.className === "formbold-step-menu2 active") {
+        // console.log(stepTwo);
+        var firstname = document.forms["myForm"]["firstname"].value;
+        if (firstname == "") {
+          alert("Name must be filled out");
+          stepMenuOne.classList.add("active");
+          stepMenuTwo.classList.remove("active");
+
+          stepOne.classList.add("active");
+          stepTwo.classList.remove("active");
+
+          formBackBtn.classList.remove("active");
+        } else {
+          formSubmitBtn.textContent = "Submit";
+        }
+
+        // document.querySelector("form").submit();
       }
     });
   });
@@ -83,7 +97,7 @@ const StudentAdd = () => {
                   </div>
                   <h1>Add New Student</h1>
                   <div className="formbold-form-wrapper">
-                    <form method="POST">
+                    <form name="myForm" method="POST">
                       <div className="formbold-steps">
                         <ul>
                           <li className="formbold-step-menu1 active">
@@ -110,6 +124,7 @@ const StudentAdd = () => {
                               type="text"
                               name="firstname"
                               className="form-control"
+                              required
                             />
                           </div>
                           <div>
@@ -123,6 +138,7 @@ const StudentAdd = () => {
                               type="text"
                               name="lastname"
                               className="form-control"
+                              required
                             />
                           </div>
                         </div>
@@ -508,6 +524,7 @@ const StudentAdd = () => {
                               type="text"
                               name="parentfirstname"
                               className="form-control"
+                              required
                             />
                           </div>
                           <div>
@@ -521,6 +538,7 @@ const StudentAdd = () => {
                               type="text"
                               name="parentlastname"
                               className="form-control"
+                              required
                             />
                           </div>
                         </div>
@@ -692,49 +710,76 @@ const StudentAdd = () => {
                       </div>
 
                       <div className="formbold-form-step-2">
-                        <div>
-                          <label
-                            htmlFor="message"
-                            className="formbold-form-label"
-                          >
-                            {" "}
-                            Message{" "}
-                          </label>
-                          <textarea
-                            rows="6"
-                            name="message"
-                            id="message"
-                            placeholder="Type your message"
-                            className="form-control"
-                          ></textarea>
+                        <h5>Set Up Automatic Invoicing</h5>
+                        <p className="py-3">
+                          You can set up automatic invoicing now, or you can set
+                          it up later in the family account.
+                        </p>
+                        <div className="formbold-input-flex diff">
+                          <div>
+                            <div>
+                              <label
+                                htmlFor="invoicing"
+                                className="formbold-form-label"
+                              >
+                                Would you like to set up automatic invoicing for
+                                this family now?
+                              </label>
+                            </div>
+                            <div className="invoicing">
+                              <div>
+                                <input
+                                  type="radio"
+                                  className="status"
+                                  name="invoicing"
+                                />
+                                Yes
+                                <br />
+                              </div>
+
+                              <div>
+                                <input
+                                  type="radio"
+                                  className="status"
+                                  name="invoicing"
+                                />
+                                No
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
 
                       <div className="formbold-form-btn-wrapper">
                         <button className="formbold-back-btn">Back</button>
+                        <div className="btn-end">
+                          <Link className="cancel" to="/students">
+                            Cancel
+                          </Link>
 
-                        <button className="formbold-btn">
-                          Next Step
-                          <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 16 16"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <g clipPath="url(#clip0_1675_1807)">
-                              <path
-                                d="M10.7814 7.33312L7.20541 3.75712L8.14808 2.81445L13.3334 7.99979L8.14808 13.1851L7.20541 12.2425L10.7814 8.66645H2.66675V7.33312H10.7814Z"
-                                fill="white"
-                              />
-                            </g>
-                            <defs>
-                              <clipPath id="clip0_1675_1807">
-                                <rect width="16" height="16" fill="white" />
-                              </clipPath>
-                            </defs>
-                          </svg>
-                        </button>
+                          <button className="formbold-btn">
+                            Next Step
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 16 16"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <g clipPath="url(#clip0_1675_1807)">
+                                <path
+                                  d="M10.7814 7.33312L7.20541 3.75712L8.14808 2.81445L13.3334 7.99979L8.14808 13.1851L7.20541 12.2425L10.7814 8.66645H2.66675V7.33312H10.7814Z"
+                                  fill="white"
+                                />
+                              </g>
+                              <defs>
+                                <clipPath id="clip0_1675_1807">
+                                  <rect width="16" height="16" fill="white" />
+                                </clipPath>
+                              </defs>
+                            </svg>
+                          </button>
+                        </div>
                       </div>
                     </form>
                   </div>
