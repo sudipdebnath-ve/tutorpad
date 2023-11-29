@@ -24,6 +24,21 @@ const StudentAdd = () => {
       event.preventDefault();
       if (stepMenuOne.className === "formbold-step-menu1 active") {
         event.preventDefault();
+        let input = document.getElementsByTagName("input");
+        // console.log(input);
+        let count = 0;
+
+        for (let [key, value] of Object.entries(input)) {
+          console.log("value", value);
+          if (value.required && value.value == "") {
+            value.className = "border-2 border-danger form-control";
+            let label = document.getElementById(value.name);
+            // label.className = "text-danger";
+            console.log("label", value.name);
+          } else {
+            value.className = "form-control";
+          }
+        }
 
         stepMenuOne.classList.remove("active");
         stepMenuTwo.classList.add("active");
@@ -47,8 +62,8 @@ const StudentAdd = () => {
       } else if (stepMenuTwo.className === "formbold-step-menu2 active") {
         // console.log(stepTwo);
         var firstname = document.forms["myForm"]["firstname"].value;
-        if (firstname == "") {
-          alert("Name must be filled out");
+        if (firstname === "") {
+          // alert("Name must be filled out");
           stepMenuOne.classList.add("active");
           stepMenuTwo.classList.remove("active");
 
@@ -115,7 +130,7 @@ const StudentAdd = () => {
                         <div className="formbold-input-flex">
                           <div>
                             <label
-                              htmlFor="firstname"
+                              // htmlFor="firstname"
                               className="formbold-form-label"
                             >
                               First name
@@ -123,6 +138,7 @@ const StudentAdd = () => {
                             <input
                               type="text"
                               name="firstname"
+                              id="firstname"
                               className="form-control"
                               required
                             />
