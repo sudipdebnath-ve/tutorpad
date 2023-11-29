@@ -4,6 +4,7 @@ import Sidebar from "../../sidebar/Sidebar.js";
 import TopBar from "../../sidebar/TopBar.js";
 import { useUserDataContext } from "../../../contextApi/userDataContext.js";
 import "./assets/css/style.css";
+import { Link } from "react-router-dom";
 
 const StudentAdd = () => {
   const { sidebarToggle } = useUserDataContext();
@@ -75,8 +76,12 @@ const StudentAdd = () => {
           <div className="container-fluid p-0">
             <div className="row d-flex">
               <div className="col-xl-12 col-xxl-12">
-                <h1 className="text-center">Add New Student</h1>
                 <div className="formbold-main-wrapper">
+                  <div className="back-link">
+                    <i className="fa fa-arrow-left" aria-hidden="true"></i>
+                    <Link to="/students"> Back to Students</Link>
+                  </div>
+                  <h1>Add New Student</h1>
                   <div className="formbold-form-wrapper">
                     <form method="POST">
                       <div className="formbold-steps">
@@ -466,7 +471,7 @@ const StudentAdd = () => {
                                 This student's family is a/an
                               </label>
                             </div>
-                            <div className="studentStatus">
+                            <div className="studentFamily">
                               <div>
                                 <input
                                   type="radio"
@@ -475,10 +480,8 @@ const StudentAdd = () => {
                                 />
                                 New Family
                                 <br />
-                                <small className="d-block">
-                                  reates a new account in Families & Invoices
-                                </small>
                               </div>
+
                               <div>
                                 <input
                                   type="radio"
@@ -488,6 +491,202 @@ const StudentAdd = () => {
                                 Existing Family
                               </div>
                             </div>
+                            <small className="d-block">
+                              reates a new account in Families & Invoices
+                            </small>
+                          </div>
+                        </div>
+                        <div className="formbold-input-flex">
+                          <div>
+                            <label
+                              htmlFor="parentfirstname"
+                              className="formbold-form-label"
+                            >
+                              Parent First Name
+                            </label>
+                            <input
+                              type="text"
+                              name="parentfirstname"
+                              className="form-control"
+                            />
+                          </div>
+                          <div>
+                            <label
+                              htmlFor="parentlastname"
+                              className="formbold-form-label"
+                            >
+                              Parent Last name
+                            </label>
+                            <input
+                              type="text"
+                              name="parentlastname"
+                              className="form-control"
+                            />
+                          </div>
+                        </div>
+                        <div className="formbold-input-flex">
+                          <div>
+                            <label
+                              htmlFor="parentemail"
+                              className="formbold-form-label"
+                            >
+                              Email Address <span>Optional</span>
+                            </label>
+                            <input
+                              type="email"
+                              name="parentemail"
+                              className="form-control"
+                            />
+                          </div>
+                          <div>
+                            <label
+                              htmlFor="parentmobile"
+                              className="formbold-form-label"
+                            >
+                              Mobile Number <span>Optional</span>
+                            </label>
+                            <input
+                              type="text"
+                              name="parentmobile"
+                              className="form-control"
+                            />
+                            <input type="checkbox" className="sms" name="sms" />
+                            SMS Capable
+                          </div>
+                        </div>
+                        <div className="formbold-input-flex diff">
+                          <div>
+                            <label
+                              htmlFor="parentaddress"
+                              className="formbold-form-label"
+                            >
+                              Address <span>Optional</span>
+                            </label>
+                            <br></br>
+
+                            <textarea
+                              name="parentaddress"
+                              className="form-control"
+                            />
+                          </div>
+                        </div>
+                        <div className="formbold-input-flex">
+                          <div>
+                            <label
+                              htmlFor="parentpreferences"
+                              className="formbold-form-label"
+                            >
+                              Preferences
+                            </label>
+                            <br></br>
+                            <div className="preference">
+                              <input
+                                type="checkbox"
+                                name="parentemailpreference"
+                              />
+                              Send email lesson reminders
+                            </div>
+                            <div className="preference">
+                              <input
+                                type="checkbox"
+                                name="parentsmspreference"
+                              />
+                              Send SMS lesson reminders
+                            </div>
+                            <span>
+                              Will only be sent if SMS messaging is allowed
+                            </span>
+                          </div>
+                        </div>
+                        <div className="formbold-input-flex">
+                          <div>
+                            <label
+                              htmlFor="lessoncat"
+                              className="formbold-form-label"
+                            >
+                              Default Lesson Category
+                            </label>
+                            <select name="lessoncat" className="form-control">
+                              <option>Group Lesson</option>
+                              <option>Lesson</option>
+                              <option>Vacation</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label
+                              htmlFor="lessonlen"
+                              className="formbold-form-label"
+                            >
+                              Default Lesson Length
+                            </label>
+                            <input
+                              type="text"
+                              name="lessonlen"
+                              className="form-control"
+                            />
+                          </div>
+                        </div>
+                        <div className="formbold-input-flex diff">
+                          <div>
+                            <label
+                              htmlFor="billing"
+                              className="formbold-form-label"
+                            >
+                              Default Billing
+                            </label>
+                            <br></br>
+                            <div className="preference">
+                              <input type="radio" name="billing" />
+                              Don't automatically create any calendar-generated
+                              charges
+                            </div>
+                            <div className="preference">
+                              <input type="radio" name="parentsmspreference" />
+                              Student pays based on the number of lessons taken
+                            </div>
+                            <div className="preference">
+                              <input type="radio" name="parentsmspreference" />
+                              Student pays the same amount each month regardless
+                              of number of lessons
+                            </div>
+                            <div className="preference">
+                              <input type="radio" name="parentsmspreference" />
+                              Student pays an hourly rate
+                            </div>
+                            <span>
+                              Charges will automatically adjust to lesson length
+                            </span>
+                          </div>
+                        </div>
+                        <div className="formbold-input-flex">
+                          <div>
+                            <label
+                              htmlFor="price"
+                              className="formbold-form-label"
+                            >
+                              Price <span>per hour</span>
+                            </label>
+                            <input
+                              type="text"
+                              name="price"
+                              className="form-control"
+                            />
+                          </div>
+                        </div>
+                        <div className="formbold-input-flex diff">
+                          <div>
+                            <label
+                              htmlFor="note"
+                              className="formbold-form-label"
+                            >
+                              Note <span>Optional</span>
+                            </label>
+                            <br></br>
+                            <span>
+                              Use this area for any private notes you wish to
+                              keep.
+                            </span>
+                            <textarea name="note" className="form-control" />
                           </div>
                         </div>
                       </div>

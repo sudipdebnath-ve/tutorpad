@@ -1,13 +1,13 @@
 .formbold-main-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 12px 48px 48px 48px;
+  margin: 0 auto;
+  max-width: 700px;
+  width: 100%;
 }
 
 .formbold-form-wrapper {
   margin: 0 auto;
-  max-width: 600px;
+  max-width: 700px;
   width: 100%;
   background: white;
   padding: 20px;
@@ -77,7 +77,12 @@
   font-size: 12px;
   line-height: 1;
 }
-
+.formbold-input-flex span {
+  color: #a3a1a1;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1;
+}
 .formbold-form-confirm {
   border-bottom: 1px solid #dde3ec;
   padding-bottom: 35px;
@@ -164,8 +169,9 @@
   box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.05);
 }
 .studentadd h1 {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 600;
+  margin: 15px 0px;
 }
 .studentadd .form-control {
   padding: 0.6rem 0.85rem;
@@ -220,4 +226,14 @@
 }
 .studentadd hr {
   margin: 2em 0;
+}
+.back-link a {
+  font-size: 16px;
+  color: #f8771e;
+  font-weight: 600;
+}
+.studentFamily {
+  display: flex;
+  padding-top: 8px;
+  gap: 35%;
 }
