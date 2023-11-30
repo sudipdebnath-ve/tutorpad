@@ -10,7 +10,8 @@ const StudentAdd = () => {
   const { sidebarToggle } = useUserDataContext();
   const [additionalDetails, setAdditionalDetails] = useState(false);
 
-  React.useEffect(() => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     const stepMenuOne = document.querySelector(".formbold-step-menu1");
     const stepMenuTwo = document.querySelector(".formbold-step-menu2");
 
@@ -20,33 +21,48 @@ const StudentAdd = () => {
     const formSubmitBtn = document.querySelector(".formbold-btn");
     const formBackBtn = document.querySelector(".formbold-back-btn");
 
-    formSubmitBtn.addEventListener("click", function (event) {
-      event.preventDefault();
-      if (stepMenuOne.className === "formbold-step-menu1 active") {
-        event.preventDefault();
-        let input = document.getElementsByTagName("input");
-        // console.log(input);
-        let count = 0;
+    let input = document.querySelectorAll("input[type=text]");
 
-        for (let [key, value] of Object.entries(input)) {
-          console.log("value", value);
-          if (value.required && value.value == "") {
-            value.className = "border-2 border-danger form-control";
-            let label = document.getElementById(value.name);
-            // label.className = "text-danger";
-            console.log("label", value.name);
-          } else {
-            value.className = "form-control";
-          }
+    let req = false;
+    var firstname = document.getElementById("firstname").value;
+    var lastname = document.getElementById("lastname").value;
+    var parentfirstname = document.getElementById("parentfirstname").value;
+    var parentlastname = document.getElementById("parentlastname").value;
+
+    for (let [key, value] of Object.entries(input)) {
+      // console.log("value", value.value);
+      if (
+        value.required === true &&
+        (value.value === "" || value.value === undefined)
+      ) {
+        // console.log("value.required", value.required);
+        // console.log("value.value", value.value);
+        value.className = "border-2 border-danger form-control";
+        let label = document.getElementById(value.name);
+        label.className = "formbold-form-label text-danger";
+        req = true;
+        label.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+          inline: "start",
+        });
+      } else if (value.required && value.value) {
+        // console.log("value", value.value);
+        if (req === false) {
+          stepMenuOne.classList.remove("active");
+          stepMenuTwo.classList.add("active");
+
+          stepOne.classList.remove("active");
+          stepTwo.classList.add("active");
+
+          formBackBtn.classList.add("active");
+          formSubmitBtn.textContent = "Submit";
         }
+        console.log(req);
+        value.className = "form-control";
+        let label = document.getElementById(value.name);
+        label.className = "formbold-form-label";
 
-        stepMenuOne.classList.remove("active");
-        stepMenuTwo.classList.add("active");
-
-        stepOne.classList.remove("active");
-        stepTwo.classList.add("active");
-
-        formBackBtn.classList.add("active");
         formBackBtn.addEventListener("click", function (event) {
           event.preventDefault();
 
@@ -57,28 +73,11 @@ const StudentAdd = () => {
           stepTwo.classList.remove("active");
 
           formBackBtn.classList.remove("active");
-          formSubmitBtn.textContent = "Next Step";
         });
-      } else if (stepMenuTwo.className === "formbold-step-menu2 active") {
-        // console.log(stepTwo);
-        var firstname = document.forms["myForm"]["firstname"].value;
-        if (firstname === "") {
-          // alert("Name must be filled out");
-          stepMenuOne.classList.add("active");
-          stepMenuTwo.classList.remove("active");
-
-          stepOne.classList.add("active");
-          stepTwo.classList.remove("active");
-
-          formBackBtn.classList.remove("active");
-        } else {
-          formSubmitBtn.textContent = "Submit";
-        }
-
-        // document.querySelector("form").submit();
       }
-    });
-  });
+    }
+  };
+
   const handleAdditionalDetails = () => {
     if (additionalDetails === true) {
       setAdditionalDetails(false);
@@ -112,7 +111,7 @@ const StudentAdd = () => {
                   </div>
                   <h1>Add New Student</h1>
                   <div className="formbold-form-wrapper">
-                    <form name="myForm" method="POST">
+                    <form name="myForm">
                       <div className="formbold-steps">
                         <ul>
                           <li className="formbold-step-menu1 active">
@@ -130,15 +129,15 @@ const StudentAdd = () => {
                         <div className="formbold-input-flex">
                           <div>
                             <label
-                              // htmlFor="firstname"
+                              htmlFor="firstname"
                               className="formbold-form-label"
+                              id="firstname"
                             >
                               First name
                             </label>
                             <input
                               type="text"
                               name="firstname"
-                              id="firstname"
                               className="form-control"
                               required
                             />
@@ -147,6 +146,7 @@ const StudentAdd = () => {
                             <label
                               htmlFor="lastname"
                               className="formbold-form-label"
+                              id="lastname"
                             >
                               Last name
                             </label>
@@ -533,6 +533,7 @@ const StudentAdd = () => {
                             <label
                               htmlFor="parentfirstname"
                               className="formbold-form-label"
+                              id="parentfirstname"
                             >
                               Parent First Name
                             </label>
@@ -547,6 +548,7 @@ const StudentAdd = () => {
                             <label
                               htmlFor="parentlastname"
                               className="formbold-form-label"
+                              id="parentlastname"
                             >
                               Parent Last name
                             </label>
@@ -773,7 +775,10 @@ const StudentAdd = () => {
                             Cancel
                           </Link>
 
-                          <button className="formbold-btn">
+                          <button
+                            className="formbold-btn"
+                            onClick={handleSubmit}
+                          >
                             Next Step
                             <svg
                               width="16"
