@@ -115,7 +115,10 @@ const Student = () => {
                                       New Student
                                     </Link>
                                     <div className="dropdown-divider"></div>
-                                    <Link className="dropdown-item">
+                                    <Link
+                                      className="dropdown-item"
+                                      to={"/students/import"}
+                                    >
                                       <i
                                         class="fa fa-cloud-download"
                                         aria-hidden="true"

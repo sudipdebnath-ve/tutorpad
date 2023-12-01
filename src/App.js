@@ -8,6 +8,7 @@ import ForgetPassword from "./components/registerLogin/ForgetPassword";
 import EmailTemplates from "./components/users/EmailTemplates";
 import Student from "./components/users/Student";
 import StudentAdd from "./components/users/students/StudentAdd";
+import StudentImport from "./components/users/students/StudentImport";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
       <Route path="/forget-password" element={<ForgetPassword />} />
       <Route path="/email-templates" element={<EmailTemplates />} />
       <Route path="/students/add" element={<StudentAdd />} />
+      <Route path="/students/import" element={<StudentImport />} />
     </Routes>
   );
 }

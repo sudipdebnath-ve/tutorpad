@@ -24,10 +24,10 @@ const StudentAdd = () => {
     let input = document.querySelectorAll("input[type=text]");
 
     let req = false;
-    var firstname = document.getElementById("firstname").value;
-    var lastname = document.getElementById("lastname").value;
-    var parentfirstname = document.getElementById("parentfirstname").value;
-    var parentlastname = document.getElementById("parentlastname").value;
+    // var firstname = document.getElementById("firstname").value;
+    // var lastname = document.getElementById("lastname").value;
+    // var parentfirstname = document.getElementById("parentfirstname").value;
+    // var parentlastname = document.getElementById("parentlastname").value;
 
     for (let [key, value] of Object.entries(input)) {
       // console.log("value", value.value);
@@ -677,16 +677,16 @@ const StudentAdd = () => {
                               charges
                             </div>
                             <div className="preference">
-                              <input type="radio" name="parentsmspreference" />
+                              <input type="radio" name="billing" />
                               Student pays based on the number of lessons taken
                             </div>
                             <div className="preference">
-                              <input type="radio" name="parentsmspreference" />
+                              <input type="radio" name="billing" />
                               Student pays the same amount each month regardless
                               of number of lessons
                             </div>
                             <div className="preference">
-                              <input type="radio" name="parentsmspreference" />
+                              <input type="radio" name="billing" />
                               Student pays an hourly rate
                             </div>
                             <span>
