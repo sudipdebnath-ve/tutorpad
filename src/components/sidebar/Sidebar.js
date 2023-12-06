@@ -51,7 +51,7 @@ const Sidebar = () => {
               splitLocation[1] === "lending-library" ? "active" : ""
             }`}
           >
-            <Link className="sidebar-link" to="#">
+            <Link className="sidebar-link" to="/lending-library">
               <i className="fa fa-book" aria-hidden="true"></i>
               <span className="align-middle">Lending Library</span>
             </Link>

@@ -109,6 +109,131 @@ const StudentImport = () => {
                           <i className="fa fa-upload" aria-hidden="true"></i>{" "}
                           <input type="file" name="file"></input>
                         </div>
+                        <div className="formbold-input-flex mt-3">
+                          <div className="invoicing">
+                            <div>
+                              <input
+                                type="checkbox"
+                                className="status"
+                                name="column_header"
+                                checked
+                              />
+                              Use the first row as the column header
+                              <br />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="default-setting">
+                          <div className="default">
+                            <strong>Sudip Debnath</strong>
+                            <div className="edit-setting-import">
+                              <i class="fa fa-pencil" aria-hidden="true"></i>{" "}
+                              <span>Edit Default Settings</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="formbold-input-flex diff">
+                          <div>
+                            <div>
+                              <label
+                                htmlFor="status"
+                                className="formbold-form-label"
+                              >
+                                What status do you want to assign to these
+                                students?
+                              </label>
+                            </div>
+                            <div className="studentStatus">
+                              <div>
+                                <input
+                                  type="radio"
+                                  className="status"
+                                  name="student_status"
+                                />
+                                <span
+                                  className="bg-design"
+                                  style={{
+                                    color: "#18790b",
+                                    backgroundColor: "#b3f3b3bd",
+                                    borderRadius: "5px",
+                                  }}
+                                >
+                                  Active
+                                </span>
+                              </div>
+                              <div>
+                                <input
+                                  type="radio"
+                                  className="status"
+                                  name="student_status"
+                                />
+                                <span
+                                  className="bg-design"
+                                  style={{
+                                    color: "#005c5c",
+                                    backgroundColor: "rgb(179 210 243 / 74%)",
+                                    borderRadius: "5px",
+                                  }}
+                                >
+                                  Trial
+                                </span>
+                              </div>
+                              <div>
+                                <input
+                                  type="radio"
+                                  className="status"
+                                  name="student_status"
+                                />
+                                <span
+                                  className="bg-design"
+                                  style={{
+                                    color: "#e34c00",
+                                    backgroundColor: "rgb(253 232 222 / 74%)",
+                                    borderRadius: "5px",
+                                  }}
+                                >
+                                  Waiting
+                                </span>
+                              </div>
+                              <div>
+                                <input
+                                  type="radio"
+                                  className="status"
+                                  name="student_status"
+                                />
+                                <span
+                                  className="bg-design"
+                                  style={{
+                                    color: "#604274",
+                                    backgroundColor: "rgb(238 205 249 / 74%)",
+                                    borderRadius: "5px",
+                                  }}
+                                >
+                                  Lead
+                                </span>
+                              </div>
+                              <div>
+                                <input
+                                  type="radio"
+                                  className="status"
+                                  name="student_status"
+                                />
+                                <span
+                                  className="bg-design"
+                                  style={{
+                                    color: "#344242",
+                                    backgroundColor: "rgb(208 219 231 / 74%)",
+                                    borderRadius: "5px",
+                                  }}
+                                >
+                                  Inactive
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
                         <div className="formbold-form-btn-wrapper">
                           <button className="formbold-back-btn">Back</button>
                           <div className="btn-end">

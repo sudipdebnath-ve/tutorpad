@@ -297,6 +297,54 @@
   border: 2px dashed #c2c2c2;
   text-align: center;
   padding: 50px;
+  border-radius: 5px;
 }
-
+.default-setting {
+  border: 1px solid #c2c2c2;
+  padding: 20px;
+  border-radius: 5px;
+}
+.default {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px 15px;
+  background: #f3f3f3;
+  border-radius: 3px;
+  border-bottom: 1px solid #c2c2c2;
+}
+.edit-setting-import {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #c2c2c2;
+  padding: 4px 14px;
+  border-radius: 5px;
+  background: #fdfbfb;
+}
+.edit-setting-import:hover {
+  background: #e6e4e4;
+  cursor: pointer;
+}
 /*************************** Student Import End **************************/
+
+/*************************** Student Email Start **************************/
+
+.studentemail h1 {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 15px 0px;
+}
+.from p {
+  border: 1px solid #c2c2c2;
+  padding: 0.6rem 0.85rem;
+}
+.studentemail .form-control {
+  padding: 0.6rem 0.85rem;
+}
+.studentemail .formbold-input-flex {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+/*************************** Student Email Start **************************/

@@ -24,10 +24,10 @@ const StudentAdd = () => {
     let input = document.querySelectorAll("input[type=text]");
 
     let req = false;
-    // var firstname = document.getElementById("firstname").value;
-    // var lastname = document.getElementById("lastname").value;
-    // var parentfirstname = document.getElementById("parentfirstname").value;
-    // var parentlastname = document.getElementById("parentlastname").value;
+    var firstname = document.getElementById("firstname").value;
+    var lastname = document.getElementById("lastname").value;
+    var parentfirstname = document.getElementById("parentfirstname").value;
+    var parentlastname = document.getElementById("parentlastname").value;
 
     for (let [key, value] of Object.entries(input)) {
       // console.log("value", value.value);
@@ -164,13 +164,15 @@ const StudentAdd = () => {
                             <label
                               htmlFor="email"
                               className="formbold-form-label"
+                              id="email"
                             >
-                              Email Address <span>Optional</span>
+                              Email Address
                             </label>
                             <input
                               type="email"
                               name="email"
                               className="form-control"
+                              required
                             />
                           </div>
                           <div>
@@ -178,13 +180,15 @@ const StudentAdd = () => {
                               <label
                                 htmlFor="phone"
                                 className="formbold-form-label"
+                                id="phone"
                               >
-                                Phone Number <span>Optional</span>
+                                Phone Number
                               </label>
                               <input
                                 type="text"
                                 name="phone"
                                 className="form-control"
+                                required
                               />
                             </div>
                             <input type="checkbox" className="sms" name="sms" />

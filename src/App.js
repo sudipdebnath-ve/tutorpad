@@ -9,6 +9,9 @@ import EmailTemplates from "./components/users/EmailTemplates";
 import Student from "./components/users/Student";
 import StudentAdd from "./components/users/students/StudentAdd";
 import StudentImport from "./components/users/students/StudentImport";
+import StudentEmailMessage from "./components/users/students/StudentEmailMessage";
+import LendingLibrary from "./components/users/LendingLibrary";
+import Details from "./components/users/lending-library/Details";
 
 function App() {
   return (
@@ -22,6 +25,9 @@ function App() {
       <Route path="/email-templates" element={<EmailTemplates />} />
       <Route path="/students/add" element={<StudentAdd />} />
       <Route path="/students/import" element={<StudentImport />} />
+      <Route path="/students/message" element={<StudentEmailMessage />} />
+      <Route path="/lending-library" element={<LendingLibrary />} />
+      <Route path="/lending-library/details" element={<Details />} />
     </Routes>
   );
 }

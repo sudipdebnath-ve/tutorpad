@@ -11864,3 +11864,16 @@ span.flatpickr-weekday {
   border: none;
 }
 /******************* Student end********************/
+
+/******************* Lending Library Start ********************/
+
+.student .lending {
+  display: block;
+  width: 175px;
+  margin: 0 auto;
+  background-color: #fb771a;
+  border-radius: 5px;
+  border: none;
+  padding: 5px;
+}
+/******************* Lending Library End ********************/

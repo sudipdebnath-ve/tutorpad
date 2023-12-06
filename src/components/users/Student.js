@@ -144,7 +144,10 @@ const Student = () => {
                                     className="dropdown-menu addNewDropdown"
                                     aria-labelledby="dropdownMenuLink"
                                   >
-                                    <Link className="dropdown-item">
+                                    <Link
+                                      className="dropdown-item"
+                                      to="/students/message"
+                                    >
                                       New Email
                                     </Link>
                                     <div className="dropdown-divider"></div>
