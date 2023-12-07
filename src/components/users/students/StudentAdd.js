@@ -5,10 +5,18 @@ import TopBar from "../../sidebar/TopBar.js";
 import { useUserDataContext } from "../../../contextApi/userDataContext.js";
 import "./assets/css/style.css";
 import { Link } from "react-router-dom";
+import { API_URL } from "../../../utils/config.js";
+import axios from "axios";
 
 const StudentAdd = () => {
-  const { sidebarToggle } = useUserDataContext();
+  const { sidebarToggle, token } = useUserDataContext();
   const [additionalDetails, setAdditionalDetails] = useState(false);
+  const [formData, setFormData] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    phone: "",
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -18,16 +26,13 @@ const StudentAdd = () => {
     const stepOne = document.querySelector(".formbold-form-step-1");
     const stepTwo = document.querySelector(".formbold-form-step-2");
 
-    const formSubmitBtn = document.querySelector(".formbold-btn");
+    // const formSubmitBtn = document.querySelector(".formbold-btn");
     const formBackBtn = document.querySelector(".formbold-back-btn");
 
     let input = document.querySelectorAll("input[type=text]");
+    // let email = document.querySelectorAll("input[type=email]");
 
     let req = false;
-    var firstname = document.getElementById("firstname").value;
-    var lastname = document.getElementById("lastname").value;
-    var parentfirstname = document.getElementById("parentfirstname").value;
-    var parentlastname = document.getElementById("parentlastname").value;
 
     for (let [key, value] of Object.entries(input)) {
       // console.log("value", value.value);
@@ -35,19 +40,21 @@ const StudentAdd = () => {
         value.required === true &&
         (value.value === "" || value.value === undefined)
       ) {
-        // console.log("value.required", value.required);
+        // console.log("value.name", value.name);
         // console.log("value.value", value.value);
+
         value.className = "border-2 border-danger form-control";
         let label = document.getElementById(value.name);
         label.className = "formbold-form-label text-danger";
         req = true;
+
         label.scrollIntoView({
           behavior: "smooth",
           block: "start",
           inline: "start",
         });
       } else if (value.required && value.value) {
-        // console.log("value", value.value);
+        console.log("value", value.value);
         if (req === false) {
           stepMenuOne.classList.remove("active");
           stepMenuTwo.classList.add("active");
@@ -56,7 +63,7 @@ const StudentAdd = () => {
           stepTwo.classList.add("active");
 
           formBackBtn.classList.add("active");
-          formSubmitBtn.textContent = "Submit";
+          // formSubmitBtn.textContent = "Submit";
         }
         console.log(req);
         value.className = "form-control";
@@ -76,6 +83,38 @@ const StudentAdd = () => {
         });
       }
     }
+  };
+
+  const handleChange = (e) => {
+    e.preventDefault();
+    const name = e.target.name;
+    const value = e.target.value;
+    setFormData({ ...formData, [name]: value });
+  };
+  const formSubmit = async (e) => {
+    e.preventDefault();
+    const config = {
+      method: "POST",
+      url: `${API_URL}user/create-student`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: {
+        first_name: formData.firstname,
+        last_name: formData.lastname,
+        email: formData.email,
+        phone: formData.phone,
+        user_id: 4,
+      },
+      // validateStatus: (status) => status !== 404,
+    };
+    await axios(config)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const handleAdditionalDetails = () => {
@@ -139,6 +178,7 @@ const StudentAdd = () => {
                               type="text"
                               name="firstname"
                               className="form-control"
+                              onChange={handleChange}
                               required
                             />
                           </div>
@@ -154,6 +194,7 @@ const StudentAdd = () => {
                               type="text"
                               name="lastname"
                               className="form-control"
+                              onChange={handleChange}
                               required
                             />
                           </div>
@@ -173,6 +214,7 @@ const StudentAdd = () => {
                               name="email"
                               className="form-control"
                               required
+                              onChange={handleChange}
                             />
                           </div>
                           <div>
@@ -189,6 +231,7 @@ const StudentAdd = () => {
                                 name="phone"
                                 className="form-control"
                                 required
+                                onChange={handleChange}
                               />
                             </div>
                             <input type="checkbox" className="sms" name="sms" />
@@ -545,7 +588,6 @@ const StudentAdd = () => {
                               type="text"
                               name="parentfirstname"
                               className="form-control"
-                              required
                             />
                           </div>
                           <div>
@@ -560,7 +602,6 @@ const StudentAdd = () => {
                               type="text"
                               name="parentlastname"
                               className="form-control"
-                              required
                             />
                           </div>
                         </div>
@@ -729,6 +770,40 @@ const StudentAdd = () => {
                             <textarea name="note" className="form-control" />
                           </div>
                         </div>
+
+                        <div className="formbold-form-btn-wrapper">
+                          <div className="btn-end">
+                            <Link className="cancel" to="/students">
+                              Cancel
+                            </Link>
+
+                            <button
+                              className="formbold-btn"
+                              onClick={handleSubmit}
+                            >
+                              Next Step
+                              <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 16 16"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <g clipPath="url(#clip0_1675_1807)">
+                                  <path
+                                    d="M10.7814 7.33312L7.20541 3.75712L8.14808 2.81445L13.3334 7.99979L8.14808 13.1851L7.20541 12.2425L10.7814 8.66645H2.66675V7.33312H10.7814Z"
+                                    fill="white"
+                                  />
+                                </g>
+                                <defs>
+                                  <clipPath id="clip0_1675_1807">
+                                    <rect width="16" height="16" fill="white" />
+                                  </clipPath>
+                                </defs>
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
                       </div>
 
                       <div className="formbold-form-step-2">
@@ -770,40 +845,20 @@ const StudentAdd = () => {
                             </div>
                           </div>
                         </div>
-                      </div>
+                        <div className="formbold-form-btn-wrapper">
+                          <button className="formbold-back-btn">Back</button>
+                          <div className="btn-end">
+                            <Link className="cancel" to="/students">
+                              Cancel
+                            </Link>
 
-                      <div className="formbold-form-btn-wrapper">
-                        <button className="formbold-back-btn">Back</button>
-                        <div className="btn-end">
-                          <Link className="cancel" to="/students">
-                            Cancel
-                          </Link>
-
-                          <button
-                            className="formbold-btn"
-                            onClick={handleSubmit}
-                          >
-                            Next Step
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
+                            <button
+                              className="formbold-btn"
+                              onClick={formSubmit}
                             >
-                              <g clipPath="url(#clip0_1675_1807)">
-                                <path
-                                  d="M10.7814 7.33312L7.20541 3.75712L8.14808 2.81445L13.3334 7.99979L8.14808 13.1851L7.20541 12.2425L10.7814 8.66645H2.66675V7.33312H10.7814Z"
-                                  fill="white"
-                                />
-                              </g>
-                              <defs>
-                                <clipPath id="clip0_1675_1807">
-                                  <rect width="16" height="16" fill="white" />
-                                </clipPath>
-                              </defs>
-                            </svg>
-                          </button>
+                              Submit
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </form>

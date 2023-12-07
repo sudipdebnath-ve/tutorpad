@@ -34,8 +34,6 @@ const Signin = () => {
       url: `${API_URL}login`,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "*",
       },
       data: {
         email: userdetails.email,

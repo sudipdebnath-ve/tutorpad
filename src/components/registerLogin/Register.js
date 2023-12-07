@@ -48,8 +48,6 @@ const Register = () => {
       url: `${API_URL}register`,
       headers: {
         "Content-Type": "application/json",
-        // "Access-Control-Allow-Origin": "*",
-        // "Access-Control-Allow-Headers": "*",
       },
       data: JSON.stringify({
         first_name: userdetails.firstname,
