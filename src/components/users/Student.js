@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MiniSidebar from "../sidebar/MiniSidebar.js";
 import Sidebar from "../sidebar/Sidebar.js";
 import TopBar from "../sidebar/TopBar.js";
@@ -6,12 +6,14 @@ import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import adduser from "./assets/images/add-users.webp";
 import students from "./assets/images/students.svg";
 import { Link } from "react-router-dom";
+import FetchStudentDatatable from "./students/FetchStudentDatatable.js";
 
 const Student = () => {
-  const { sidebarToggle } = useUserDataContext();
+  const { sidebarToggle, fetchData, studentData } = useUserDataContext();
   const [addNewDropdown, setAddNewDropdown] = useState(false);
   const [messageDropdown, setMessageDropdown] = useState(false);
   const [searchDropdown, setSearchDropdown] = useState(false);
+
   const handleClickMessage = (e) => {
     if (messageDropdown == false) {
       setMessageDropdown(true);
@@ -34,6 +36,10 @@ const Student = () => {
       setSearchDropdown(false);
     }
   };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <div className="wrapper">
@@ -298,7 +304,15 @@ const Student = () => {
                             <div className="align-self-center w-100">
                               <div className="py-3">
                                 <div className="chart chart-xs">
-                                  <img src={students}></img>
+                                  {/* {studentData ? (
+                                    <> */}
+                                  <FetchStudentDatatable />
+                                  {/* </>
+                                  ) : (
+                                    <>
+                                      <img src={students}></img>
+                                    </>
+                                  )} */}
                                 </div>
                               </div>
                               <h4>

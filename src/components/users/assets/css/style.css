@@ -11793,6 +11793,9 @@ span.flatpickr-weekday {
   width: 100%;
 }
 .student .chart {
+  width: 100%;
+}
+.student .chart img {
   width: 30%;
 }
 .student h4 {

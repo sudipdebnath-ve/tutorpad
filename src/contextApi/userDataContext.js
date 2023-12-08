@@ -10,9 +10,11 @@ const token = JSON.parse(localStorage.getItem("tutorPad"));
 
 const AppContext = ({ children }) => {
   const [userData, setUserData] = useState({});
+  const [userId, setUserId] = useState("");
   const [sidebarToggle, setSidebarToggle] = useState(false);
   const [emailTemplateData, setEmailTemplateData] = useState([]);
   const [emailOnchange, setEmailOnchange] = useState(false);
+  const [studentData, setStudentData] = useState(false);
   const [emailData, setEmailData] = useState({
     template_title: "",
     template_content: "",
@@ -21,7 +23,6 @@ const AppContext = ({ children }) => {
   const navigate = useNavigate();
 
   const fetchData = async () => {
-    const token = JSON.parse(localStorage.getItem("tutorPad"));
     const validateconfig = {
       method: "GET",
       url: `${API_URL}user`,
@@ -33,6 +34,7 @@ const AppContext = ({ children }) => {
       .then((response) => {
         if (response.status === 200) {
           setUserData(response.data);
+          setUserId(response.data.id);
         }
       })
       .catch((error) => {
@@ -96,6 +98,27 @@ const AppContext = ({ children }) => {
   };
   // Email Template emd
 
+  const fetchStudentData = async () => {
+    const validateconfig = {
+      method: "GET",
+      url: `${API_URL}user/get-students?user_id=${userId}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(validateconfig)
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.success === true) {
+          console.log(response.data);
+          setStudentData(response.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <userDataContext.Provider
       value={{
@@ -111,6 +134,9 @@ const AppContext = ({ children }) => {
         emailData,
         setEmailData,
         token,
+        fetchStudentData,
+        studentData,
+        userId,
       }}
     >
       {children}
