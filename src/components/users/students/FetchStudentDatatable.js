@@ -1,76 +1,143 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useUserDataContext } from "../../../contextApi/userDataContext.js";
+import students from "../assets/images/students.svg";
 
 const FetchStudentDatatable = () => {
-  const { fetchStudentData, userId } = useUserDataContext();
+  const [val, setVal] = useState(false);
+  const { fetchStudentData, userId, studentData, setLoading } =
+    useUserDataContext();
 
   useEffect(() => {
     fetchStudentData();
   }, [userId]);
+  console.log(studentData);
 
-  const columns: GridColDef[] = [
+  // const columns: GridColDef[] = [
+  //   { field: "id", headerName: "ID", width: 90 },
+  //   {
+  //     field: "firstName",
+  //     headerName: "First name",
+  //     width: 150,
+  //     editable: true,
+  //   },
+  //   {
+  //     field: "lastName",
+  //     headerName: "Last name",
+  //     width: 150,
+  //     editable: true,
+  //   },
+  //   {
+  //     field: "age",
+  //     headerName: "Age",
+  //     type: "number",
+  //     width: 110,
+  //     editable: true,
+  //   },
+  //   {
+  //     field: "fullName",
+  //     headerName: "Full name",
+  //     description: "This column has a value getter and is not sortable.",
+  //     sortable: false,
+  //     width: 160,
+  //     valueGetter: (params: GridValueGetterParams) =>
+  //       `${params.row.firstName || ""} ${params.row.lastName || ""}`,
+  //   },
+  // ];
+  const columns = [
     { field: "id", headerName: "ID", width: 90 },
     {
-      field: "firstName",
+      field: "first_name",
       headerName: "First name",
       width: 150,
       editable: true,
     },
     {
-      field: "lastName",
+      field: "last_name",
       headerName: "Last name",
       width: 150,
       editable: true,
     },
     {
-      field: "age",
-      headerName: "Age",
-      type: "number",
-      width: 110,
+      field: "phone",
+      headerName: "Phone",
+      width: 150,
       editable: true,
     },
     {
-      field: "fullName",
-      headerName: "Full name",
-      description: "This column has a value getter and is not sortable.",
-      sortable: false,
-      width: 160,
-      valueGetter: (params: GridValueGetterParams) =>
-        `${params.row.firstName || ""} ${params.row.lastName || ""}`,
+      field: "email",
+      headerName: "Email Id",
+      width: 150,
     },
   ];
 
-  const rows = [
-    { id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
-    { id: 2, lastName: "Lannister", firstName: "Cersei", age: 42 },
-    { id: 3, lastName: "Lannister", firstName: "Jaime", age: 45 },
-    { id: 4, lastName: "Stark", firstName: "Arya", age: 16 },
-    { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-    { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
-    { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-    { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-    { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
-  ];
+  useEffect(() => {
+    setVal(true);
+  }, [studentData]);
+  if (val) {
+    var rows = studentData;
+    setLoading(false);
+  } else {
+    setLoading(true);
+  }
   return (
     <div>
-      <Box sx={{ height: 400, width: "100%" }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
-              },
-            },
-          }}
-          pageSizeOptions={[5]}
-          checkboxSelection
-          disableRowSelectionOnClick
-        />
-      </Box>
+      <>
+        {rows ? (
+          <div className="py-3">
+            <div className="chart chart-xs">
+              <Box sx={{ height: 400, width: "100%" }}>
+                <DataGrid
+                  rows={rows}
+                  columns={columns}
+                  initialState={{
+                    pagination: {
+                      paginationModel: {
+                        pageSize: 5,
+                      },
+                    },
+                  }}
+                  pageSizeOptions={[5]}
+                  checkboxSelection
+                  // disableRowSelectionOnClick
+                  slots={{ toolbar: GridToolbar }}
+                  slotProps={{
+                    toolbar: {
+                      showQuickFilter: true,
+                    },
+                  }}
+                />
+              </Box>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="py-3">
+              <div className="chart chart-xs">
+                <img src={students}></img>
+              </div>
+            </div>
+            <h4>
+              <strong>You don't have any students yet</strong>
+            </h4>
+            <p style={{ textAlign: "center" }}>
+              Add your students so you can take their attendance, and more.
+            </p>
+            <div className="addnewstudent">
+              <i className="fa fa-plus" aria-hidden="true"></i>
+              <a className="btn dropdown-toggle" href="#" role="button">
+                Add New
+              </a>
+
+              <div
+                className="dropdown-menu"
+                aria-labelledby="dropdownMenuLink"
+              ></div>
+            </div>
+          </>
+        )}
+      </>
     </div>
   );
 };

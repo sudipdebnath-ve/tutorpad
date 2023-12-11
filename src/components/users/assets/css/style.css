@@ -3829,6 +3829,7 @@ fieldset:disabled .btn {
   flex: 1 1 auto;
   padding: var(--bs-card-spacer-y) var(--bs-card-spacer-x);
 }
+
 .card-title {
   color: var(--bs-card-title-color);
   margin-bottom: var(--bs-card-title-spacer-y);
@@ -11485,7 +11486,13 @@ span.flatpickr-weekday {
 .bg-color {
   background: #eff0ff;
 }
-
+.student .card-body {
+  padding: 6px 22px 35px;
+}
+.css-1knaqv7-MuiButtonBase-root-MuiButton-root {
+  color: #fb771a !important;
+  padding: 20px;
+}
 /******************* My Preferences start********************/
 .initials {
   display: flex;

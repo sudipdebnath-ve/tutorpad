@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import FetchStudentDatatable from "./students/FetchStudentDatatable.js";
 
 const Student = () => {
-  const { sidebarToggle, fetchData, studentData } = useUserDataContext();
+  const { sidebarToggle, fetchData, loading } = useUserDataContext();
   const [addNewDropdown, setAddNewDropdown] = useState(false);
   const [messageDropdown, setMessageDropdown] = useState(false);
   const [searchDropdown, setSearchDropdown] = useState(false);
@@ -195,7 +195,7 @@ const Student = () => {
                             </div>
                           </div>
                           <div className="card-header">
-                            <div className="dropdown options">
+                            {/* <div className="dropdown options">
                               <i
                                 className="fa fa-columns"
                                 aria-hidden="true"
@@ -255,8 +255,8 @@ const Student = () => {
                                   Something else here
                                 </a>
                               </div>
-                            </div>
-                            <div
+                            </div> */}
+                            {/* <div
                               className="dropdown"
                               onClick={handleClickSearch}
                             >
@@ -298,48 +298,11 @@ const Student = () => {
                                   </div>
                                 </>
                               )}
-                            </div>
+                            </div> */}
                           </div>
                           <div className="card-body d-flex">
                             <div className="align-self-center w-100">
-                              <div className="py-3">
-                                <div className="chart chart-xs">
-                                  {/* {studentData ? (
-                                    <> */}
-                                  <FetchStudentDatatable />
-                                  {/* </>
-                                  ) : (
-                                    <>
-                                      <img src={students}></img>
-                                    </>
-                                  )} */}
-                                </div>
-                              </div>
-                              <h4>
-                                <strong>You don't have any students yet</strong>
-                              </h4>
-                              <p style={{ textAlign: "center" }}>
-                                Add your students so you can take their
-                                attendance, and more.
-                              </p>
-                              <div className="addnewstudent">
-                                <i
-                                  className="fa fa-plus"
-                                  aria-hidden="true"
-                                ></i>
-                                <a
-                                  className="btn dropdown-toggle"
-                                  href="#"
-                                  role="button"
-                                >
-                                  Add New
-                                </a>
-
-                                <div
-                                  className="dropdown-menu"
-                                  aria-labelledby="dropdownMenuLink"
-                                ></div>
-                              </div>
+                              <FetchStudentDatatable />
                             </div>
                           </div>
                         </div>
@@ -388,7 +351,7 @@ const Student = () => {
                             </div>
                           </div>
                           <div className="card-header">
-                            <div className="dropdown options">
+                            {/* <div className="dropdown options">
                               <i
                                 className="fa fa-columns"
                                 aria-hidden="true"
@@ -448,8 +411,8 @@ const Student = () => {
                                   Something else here
                                 </a>
                               </div>
-                            </div>
-                            <div className="dropdown options">
+                            </div> */}
+                            {/* <div className="dropdown options">
                               <i
                                 className="fa fa-search"
                                 aria-hidden="true"
@@ -481,7 +444,7 @@ const Student = () => {
                                   Something else here
                                 </a>
                               </div>
-                            </div>
+                            </div> */}
                           </div>
                           <div className="card-body d-flex">
                             <div className="align-self-center w-100">

@@ -30,9 +30,10 @@ const StudentAdd = () => {
     const formBackBtn = document.querySelector(".formbold-back-btn");
 
     let input = document.querySelectorAll("input[type=text]");
-    // let email = document.querySelectorAll("input[type=email]");
+    let emailfield = document.querySelectorAll("input[type=email]");
 
     let req = false;
+    let flagemail = false;
 
     for (let [key, value] of Object.entries(input)) {
       // console.log("value", value.value);
@@ -55,33 +56,58 @@ const StudentAdd = () => {
         });
       } else if (value.required && value.value) {
         console.log("value", value.value);
-        if (req === false) {
-          stepMenuOne.classList.remove("active");
-          stepMenuTwo.classList.add("active");
 
-          stepOne.classList.remove("active");
-          stepTwo.classList.add("active");
-
-          formBackBtn.classList.add("active");
-          // formSubmitBtn.textContent = "Submit";
-        }
-        console.log(req);
         value.className = "form-control";
         let label = document.getElementById(value.name);
         label.className = "formbold-form-label";
-
-        formBackBtn.addEventListener("click", function (event) {
-          event.preventDefault();
-
-          stepMenuOne.classList.add("active");
-          stepMenuTwo.classList.remove("active");
-
-          stepOne.classList.add("active");
-          stepTwo.classList.remove("active");
-
-          formBackBtn.classList.remove("active");
-        });
       }
+    }
+    for (let [key, value] of Object.entries(emailfield)) {
+      // console.log("value", value.value);
+      if (
+        value.required === true &&
+        (value.value === "" || value.value === undefined)
+      ) {
+        // console.log("value.name", value.name);
+        // console.log("value.value", value.value);
+
+        value.className = "border-2 border-danger form-control";
+        let label = document.getElementById(value.name);
+        label.className = "formbold-form-label text-danger";
+        flagemail = true;
+        label.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+          inline: "start",
+        });
+      } else if (value.required && value.value) {
+        console.log("value", value.value);
+
+        value.className = "form-control";
+        let label = document.getElementById(value.name);
+        label.className = "formbold-form-label";
+      }
+    }
+    if (req === false && flagemail === false) {
+      stepMenuOne.classList.remove("active");
+      stepMenuTwo.classList.add("active");
+
+      stepOne.classList.remove("active");
+      stepTwo.classList.add("active");
+
+      formBackBtn.classList.add("active");
+      formBackBtn.addEventListener("click", function (event) {
+        event.preventDefault();
+
+        stepMenuOne.classList.add("active");
+        stepMenuTwo.classList.remove("active");
+
+        stepOne.classList.add("active");
+        stepTwo.classList.remove("active");
+
+        formBackBtn.classList.remove("active");
+      });
+      // formSubmitBtn.textContent = "Submit";
     }
   };
 

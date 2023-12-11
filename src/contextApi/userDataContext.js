@@ -19,6 +19,7 @@ const AppContext = ({ children }) => {
     template_title: "",
     template_content: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -110,8 +111,7 @@ const AppContext = ({ children }) => {
       .then((response) => {
         console.log(response.data);
         if (response.data.success === true) {
-          console.log(response.data);
-          setStudentData(response.data);
+          setStudentData(response.data.data);
         }
       })
       .catch((error) => {
@@ -137,6 +137,8 @@ const AppContext = ({ children }) => {
         fetchStudentData,
         studentData,
         userId,
+        setLoading,
+        loading,
       }}
     >
       {children}
