@@ -7,10 +7,13 @@ import { Link } from "react-router-dom";
 import { useUserDataContext } from "../../../contextApi/userDataContext.js";
 import { API_URL } from "../../../utils/config.js";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const StudentImport = () => {
   const { sidebarToggle, token, userId } = useUserDataContext();
   const [files, setFiles] = useState({});
+  const navigate = useNavigate();
 
   const handleUploadFile = () => {
     const stepMenuOne = document.querySelector(".formbold-step-menu1");
@@ -41,6 +44,12 @@ const StudentImport = () => {
     await axios(config)
       .then((response) => {
         console.log(response);
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        setTimeout(() => {
+          navigate("/students");
+        }, 2000);
       })
       .catch((error) => {
         console.log(error);
@@ -70,6 +79,7 @@ const StudentImport = () => {
         <TopBar />
 
         <main className="content studentadd">
+          <ToastContainer />
           <div className="container-fluid p-0">
             <div className="row d-flex">
               <div className="col-xl-12 col-xxl-12">
