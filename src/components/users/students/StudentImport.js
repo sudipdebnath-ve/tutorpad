@@ -1,13 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MiniSidebar from "../../sidebar/MiniSidebar.js";
 import Sidebar from "../../sidebar/Sidebar.js";
 import TopBar from "../../sidebar/TopBar.js";
 import "./assets/css/style.css";
 import { Link } from "react-router-dom";
 import { useUserDataContext } from "../../../contextApi/userDataContext.js";
+import { API_URL } from "../../../utils/config.js";
+import axios from "axios";
 
 const StudentImport = () => {
-  const { sidebarToggle } = useUserDataContext();
+  const { sidebarToggle, token, userId } = useUserDataContext();
+  const [files, setFiles] = useState({});
 
   const handleUploadFile = () => {
     const stepMenuOne = document.querySelector(".formbold-step-menu1");
@@ -18,6 +21,37 @@ const StudentImport = () => {
     stepMenuTwo.classList.add("active");
     stepOne.classList.remove("active");
     stepTwo.classList.add("active");
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    let formData = new FormData();
+    formData.append("user_id", userId);
+    formData.append("file", files);
+    const config = {
+      method: "POST",
+      url: `${API_URL}user/import-students`,
+      headers: {
+        "Content-Type": "multipart/form-data",
+        "Access-Control-Allow-Origin": "*",
+        Authorization: `Bearer ${token}`,
+      },
+      data: formData,
+    };
+    await axios(config)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleUpload = (e) => {
+    const value = e.target.files[0];
+    // console.log(value);
+
+    setFiles(value);
   };
 
   return (
@@ -107,7 +141,11 @@ const StudentImport = () => {
                         <h5>What file do you want to import?</h5>
                         <div className="input-file">
                           <i className="fa fa-upload" aria-hidden="true"></i>{" "}
-                          <input type="file" name="file"></input>
+                          <input
+                            type="file"
+                            name="file"
+                            onChange={handleUpload}
+                          ></input>
                         </div>
                         <div className="formbold-input-flex mt-3">
                           <div className="invoicing">
@@ -116,7 +154,6 @@ const StudentImport = () => {
                                 type="checkbox"
                                 className="status"
                                 name="column_header"
-                                checked
                               />
                               Use the first row as the column header
                               <br />
@@ -127,7 +164,10 @@ const StudentImport = () => {
                           <div className="default">
                             <strong>Sudip Debnath</strong>
                             <div className="edit-setting-import">
-                              <i class="fa fa-pencil" aria-hidden="true"></i>{" "}
+                              <i
+                                className="fa fa-pencil"
+                                aria-hidden="true"
+                              ></i>{" "}
                               <span>Edit Default Settings</span>
                             </div>
                           </div>
@@ -241,27 +281,11 @@ const StudentImport = () => {
                               Cancel
                             </Link>
 
-                            <button className="formbold-btn">
-                              Next Step
-                              <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 16 16"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <g clipPath="url(#clip0_1675_1807)">
-                                  <path
-                                    d="M10.7814 7.33312L7.20541 3.75712L8.14808 2.81445L13.3334 7.99979L8.14808 13.1851L7.20541 12.2425L10.7814 8.66645H2.66675V7.33312H10.7814Z"
-                                    fill="white"
-                                  />
-                                </g>
-                                <defs>
-                                  <clipPath id="clip0_1675_1807">
-                                    <rect width="16" height="16" fill="white" />
-                                  </clipPath>
-                                </defs>
-                              </svg>
+                            <button
+                              className="formbold-btn"
+                              onClick={handleSubmit}
+                            >
+                              Submit
                             </button>
                           </div>
                         </div>

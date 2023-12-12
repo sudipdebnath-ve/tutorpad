@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { API_URL } from "../utils/config.js";
 import { useNavigate } from "react-router-dom";
@@ -33,6 +33,7 @@ const AppContext = ({ children }) => {
     };
     await axios(validateconfig)
       .then((response) => {
+        // console.log(response);
         if (response.status === 200) {
           setUserData(response.data);
           setUserId(response.data.id);
@@ -42,6 +43,10 @@ const AppContext = ({ children }) => {
         console.log(error);
       });
   };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const logOut = () => {
     localStorage.removeItem("tutorPad");

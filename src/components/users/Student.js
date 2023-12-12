@@ -126,7 +126,7 @@ const Student = () => {
                                       to={"/students/import"}
                                     >
                                       <i
-                                        class="fa fa-cloud-download"
+                                        className="fa fa-cloud-download"
                                         aria-hidden="true"
                                       ></i>
                                       Import Students

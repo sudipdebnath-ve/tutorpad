@@ -12,7 +12,6 @@ const FetchStudentDatatable = () => {
   useEffect(() => {
     fetchStudentData();
   }, [userId]);
-  console.log(studentData);
 
   // const columns: GridColDef[] = [
   //   { field: "id", headerName: "ID", width: 90 },
@@ -60,14 +59,78 @@ const FetchStudentDatatable = () => {
       editable: true,
     },
     {
+      field: "email",
+      headerName: "Email Id",
+      width: 150,
+    },
+    {
+      field: "student_status",
+      headerName: "Status",
+      width: 150,
+    },
+    {
       field: "phone",
       headerName: "Phone",
       width: 150,
-      editable: true,
     },
     {
-      field: "email",
-      headerName: "Email Id",
+      field: "gender",
+      headerName: "Gender",
+      width: 150,
+    },
+    {
+      field: "dob",
+      headerName: "Birthday",
+      width: 150,
+    },
+    {
+      field: "skype",
+      headerName: "Skype Name",
+      width: 150,
+    },
+    {
+      field: "facetime",
+      headerName: "FaceTime Id",
+      width: 150,
+    },
+    {
+      field: "school",
+      headerName: "School",
+      width: 150,
+    },
+    {
+      field: "studentsince",
+      headerName: "Student Since",
+      width: 150,
+    },
+    {
+      field: "referrer",
+      headerName: "Referrer",
+      width: 150,
+    },
+    {
+      field: "subjects",
+      headerName: "Subjects",
+      width: 150,
+    },
+    {
+      field: "skill",
+      headerName: "Skill Level",
+      width: 150,
+    },
+    {
+      field: "parentfirstname",
+      headerName: "Parent First Name",
+      width: 150,
+    },
+    {
+      field: "price",
+      headerName: "Default Price",
+      width: 150,
+    },
+    {
+      field: "lessonlen",
+      headerName: "Default Lesson Length",
       width: 150,
     },
   ];
@@ -92,6 +155,22 @@ const FetchStudentDatatable = () => {
                   rows={rows}
                   columns={columns}
                   initialState={{
+                    columns: {
+                      columnVisibilityModel: {
+                        id: false,
+                        referrer: false,
+                        skill: false,
+                        gender: false,
+                        dob: false,
+                        skype: false,
+                        parentfirstname: false,
+                        studentsince: false,
+                        facetime: false,
+                        price: false,
+                        subjects: false,
+                        school: false,
+                      },
+                    },
                     pagination: {
                       paginationModel: {
                         pageSize: 5,
@@ -100,7 +179,7 @@ const FetchStudentDatatable = () => {
                   }}
                   pageSizeOptions={[5]}
                   checkboxSelection
-                  // disableRowSelectionOnClick
+                  disableRowSelectionOnClick
                   slots={{ toolbar: GridToolbar }}
                   slotProps={{
                     toolbar: {

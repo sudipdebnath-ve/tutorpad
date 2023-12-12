@@ -47,7 +47,7 @@ const Dashboard = () => {
                     <div className="row">
                       <div className="col-auto">
                         <div className="stat text-primary">
-                          <i class="fa fa-check" aria-hidden="true"></i>
+                          <i className="fa fa-check" aria-hidden="true"></i>
                         </div>
                       </div>
                       <div className="col mt-0">
@@ -56,13 +56,13 @@ const Dashboard = () => {
                     </div>
                   </div>
                 </div>
-                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                <i className="fa fa-arrow-right" aria-hidden="true"></i>
                 <div className="card">
                   <div className="card-body">
                     <div className="row">
                       <div className="col-auto">
                         <div className="stat text-primary">
-                          <i class="fa fa-user-plus" aria-hidden="true"></i>
+                          <i className="fa fa-user-plus" aria-hidden="true"></i>
                         </div>
                       </div>
                       <div className="col mt-0">
@@ -71,13 +71,13 @@ const Dashboard = () => {
                     </div>
                   </div>
                 </div>
-                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                <i className="fa fa-arrow-right" aria-hidden="true"></i>
                 <div className="card">
                   <div className="card-body">
                     <div className="row">
                       <div className="col-auto">
                         <div className="stat text-primary">
-                          <i class="fa fa-calendar" aria-hidden="true"></i>
+                          <i className="fa fa-calendar" aria-hidden="true"></i>
                         </div>
                       </div>
                       <div className="col mt-0">
@@ -86,13 +86,13 @@ const Dashboard = () => {
                     </div>
                   </div>
                 </div>
-                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                <i className="fa fa-arrow-right" aria-hidden="true"></i>
                 <div className="card">
                   <div className="card-body">
                     <div className="row">
                       <div className="col-auto">
                         <div className="stat text-primary">
-                          <i class="fa fa-file-text" aria-hidden="true"></i>
+                          <i className="fa fa-file-text" aria-hidden="true"></i>
                         </div>
                       </div>
                       <div className="col mt-0">
@@ -101,14 +101,14 @@ const Dashboard = () => {
                     </div>
                   </div>
                 </div>
-                <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+                <i className="fa fa-long-arrow-right" aria-hidden="true"></i>
 
                 <div className="card">
                   <div className="card-body">
                     <div className="row">
                       <div className="col-auto">
                         <div className="stat text-primary">
-                          <i class="fa fa-gift" aria-hidden="true"></i>
+                          <i className="fa fa-gift" aria-hidden="true"></i>
                         </div>
                       </div>
                       <div className="col mt-0">

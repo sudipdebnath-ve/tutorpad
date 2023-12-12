@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MiniSidebar from "../../sidebar/MiniSidebar.js";
 import Sidebar from "../../sidebar/Sidebar.js";
 import TopBar from "../../sidebar/TopBar.js";
@@ -7,15 +7,44 @@ import "./assets/css/style.css";
 import { Link } from "react-router-dom";
 import { API_URL } from "../../../utils/config.js";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const StudentAdd = () => {
-  const { sidebarToggle, token } = useUserDataContext();
+  const { sidebarToggle, token, userId, fetchData } = useUserDataContext();
   const [additionalDetails, setAdditionalDetails] = useState(false);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    firstname: "",
-    lastname: "",
+    first_name: "",
+    last_name: "",
     email: "",
     phone: "",
+    gender: "",
+    dob: "",
+    skype: "",
+    facetime: "",
+    school: "",
+    studentsince: "",
+    referrer: "",
+    subjects: "",
+    skill: "",
+    student_status: "",
+    studentType: "",
+    studentFamily: "",
+    parentfirstname: "",
+    parentlastname: "",
+    parentemail: "",
+    parentmobile: "",
+    sms: "",
+    parentaddress: "",
+    parentemailpreference: "",
+    parentsmspreference: "",
+    lessoncat: "",
+    lessonlen: "",
+    billing: "",
+    price: "",
+    note: "",
+    invoicing: "",
   });
 
   const handleSubmit = (e) => {
@@ -41,9 +70,6 @@ const StudentAdd = () => {
         value.required === true &&
         (value.value === "" || value.value === undefined)
       ) {
-        // console.log("value.name", value.name);
-        // console.log("value.value", value.value);
-
         value.className = "border-2 border-danger form-control";
         let label = document.getElementById(value.name);
         label.className = "formbold-form-label text-danger";
@@ -55,8 +81,6 @@ const StudentAdd = () => {
           inline: "start",
         });
       } else if (value.required && value.value) {
-        console.log("value", value.value);
-
         value.className = "form-control";
         let label = document.getElementById(value.name);
         label.className = "formbold-form-label";
@@ -107,17 +131,28 @@ const StudentAdd = () => {
 
         formBackBtn.classList.remove("active");
       });
-      // formSubmitBtn.textContent = "Submit";
     }
   };
 
   const handleChange = (e) => {
-    e.preventDefault();
     const name = e.target.name;
     const value = e.target.value;
+    if (name === "phone") {
+      console.log(name);
+      formData["phone"] = value;
+    } else if (name === "student_status") {
+      formData["student_status"] = value;
+    } else if (name === "studentType") {
+      formData["studentType"] = value;
+    } else if (name === "billing") {
+      formData["billing"] = value;
+    }
     setFormData({ ...formData, [name]: value });
+    console.log(formData);
   };
   const formSubmit = async (e) => {
+    console.log(userId);
+    formData["user_id"] = userId;
     e.preventDefault();
     const config = {
       method: "POST",
@@ -125,18 +160,17 @@ const StudentAdd = () => {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      data: {
-        first_name: formData.firstname,
-        last_name: formData.lastname,
-        email: formData.email,
-        phone: formData.phone,
-        user_id: 4,
-      },
-      // validateStatus: (status) => status !== 404,
+      data: formData,
     };
     await axios(config)
       .then((response) => {
         console.log(response);
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        setTimeout(() => {
+          navigate("/students");
+        }, 2000);
       })
       .catch((error) => {
         console.log(error);
@@ -166,6 +200,7 @@ const StudentAdd = () => {
         <TopBar />
 
         <main className="content studentadd">
+          <ToastContainer />
           <div className="container-fluid p-0">
             <div className="row d-flex">
               <div className="col-xl-12 col-xxl-12">
@@ -194,15 +229,15 @@ const StudentAdd = () => {
                         <div className="formbold-input-flex">
                           <div>
                             <label
-                              htmlFor="firstname"
+                              htmlFor="first_name"
                               className="formbold-form-label"
-                              id="firstname"
+                              id="first_name"
                             >
                               First name
                             </label>
                             <input
                               type="text"
-                              name="firstname"
+                              name="first_name"
                               className="form-control"
                               onChange={handleChange}
                               required
@@ -210,15 +245,15 @@ const StudentAdd = () => {
                           </div>
                           <div>
                             <label
-                              htmlFor="lastname"
+                              htmlFor="last_name"
                               className="formbold-form-label"
-                              id="lastname"
+                              id="last_name"
                             >
                               Last name
                             </label>
                             <input
                               type="text"
-                              name="lastname"
+                              name="last_name"
                               className="form-control"
                               onChange={handleChange}
                               required
@@ -260,7 +295,12 @@ const StudentAdd = () => {
                                 onChange={handleChange}
                               />
                             </div>
-                            <input type="checkbox" className="sms" name="sms" />
+                            <input
+                              type="checkbox"
+                              className="sms"
+                              name="sms"
+                              onChange={handleChange}
+                            />
                             SMS Capable
                           </div>
                         </div>
@@ -289,6 +329,7 @@ const StudentAdd = () => {
                                   type="text"
                                   name="gender"
                                   className="form-control"
+                                  onChange={handleChange}
                                 />
                               </div>
                               <div>
@@ -302,6 +343,7 @@ const StudentAdd = () => {
                                   type="date"
                                   name="dob"
                                   className="form-control"
+                                  onChange={handleChange}
                                 />
                               </div>
                             </div>
@@ -317,6 +359,7 @@ const StudentAdd = () => {
                                   type="text"
                                   name="skype"
                                   className="form-control"
+                                  onChange={handleChange}
                                 />
                               </div>
                               <div>
@@ -330,6 +373,7 @@ const StudentAdd = () => {
                                   type="text"
                                   name="facetime"
                                   className="form-control"
+                                  onChange={handleChange}
                                 />
                               </div>
                             </div>
@@ -345,6 +389,7 @@ const StudentAdd = () => {
                                   type="text"
                                   name="school"
                                   className="form-control"
+                                  onChange={handleChange}
                                 />
                               </div>
                             </div>
@@ -360,6 +405,7 @@ const StudentAdd = () => {
                                   type="date"
                                   name="studentsince"
                                   className="form-control"
+                                  onChange={handleChange}
                                 />
                               </div>
                               <div>
@@ -373,6 +419,7 @@ const StudentAdd = () => {
                                   type="text"
                                   name="referrer"
                                   className="form-control"
+                                  onChange={handleChange}
                                 />
                               </div>
                             </div>
@@ -393,6 +440,7 @@ const StudentAdd = () => {
                                   type="text"
                                   name="subjects"
                                   className="form-control"
+                                  onChange={handleChange}
                                 />
                               </div>
                             </div>
@@ -408,6 +456,7 @@ const StudentAdd = () => {
                                   type="text"
                                   name="skill"
                                   className="form-control"
+                                  onChange={handleChange}
                                 />
                               </div>
                             </div>
@@ -424,11 +473,16 @@ const StudentAdd = () => {
                                   <input
                                     type="checkbox"
                                     name="emailpreference"
+                                    onChange={handleChange}
                                   />
                                   Send email lesson reminders
                                 </div>
                                 <div className="preference">
-                                  <input type="checkbox" name="smspreference" />
+                                  <input
+                                    type="checkbox"
+                                    name="smspreference"
+                                    onChange={handleChange}
+                                  />
                                   Send SMS lesson reminders
                                 </div>
                               </div>
@@ -452,6 +506,8 @@ const StudentAdd = () => {
                                   type="radio"
                                   className="status"
                                   name="student_status"
+                                  onChange={handleChange}
+                                  value="active"
                                 />
                                 <span
                                   className="bg-design"
@@ -469,6 +525,8 @@ const StudentAdd = () => {
                                   type="radio"
                                   className="status"
                                   name="student_status"
+                                  onChange={handleChange}
+                                  value="trial"
                                 />
                                 <span
                                   className="bg-design"
@@ -486,6 +544,8 @@ const StudentAdd = () => {
                                   type="radio"
                                   className="status"
                                   name="student_status"
+                                  onChange={handleChange}
+                                  value="Waiting"
                                 />
                                 <span
                                   className="bg-design"
@@ -503,6 +563,8 @@ const StudentAdd = () => {
                                   type="radio"
                                   className="status"
                                   name="student_status"
+                                  onChange={handleChange}
+                                  value="Lead"
                                 />
                                 <span
                                   className="bg-design"
@@ -520,6 +582,8 @@ const StudentAdd = () => {
                                   type="radio"
                                   className="status"
                                   name="student_status"
+                                  onChange={handleChange}
+                                  value="Inactive"
                                 />
                                 <span
                                   className="bg-design"
@@ -552,6 +616,8 @@ const StudentAdd = () => {
                                   type="radio"
                                   className="status"
                                   name="studentType"
+                                  onChange={handleChange}
+                                  value="Adult"
                                 />
                                 Adult
                               </div>
@@ -560,6 +626,8 @@ const StudentAdd = () => {
                                   type="radio"
                                   className="status"
                                   name="studentType"
+                                  onChange={handleChange}
+                                  value="Child"
                                 />
                                 Child
                               </div>
@@ -582,6 +650,7 @@ const StudentAdd = () => {
                                   type="radio"
                                   className="status"
                                   name="studentFamily"
+                                  onChange={handleChange}
                                 />
                                 New Family
                                 <br />
@@ -592,6 +661,7 @@ const StudentAdd = () => {
                                   type="radio"
                                   className="status"
                                   name="studentFamily"
+                                  onChange={handleChange}
                                 />
                                 Existing Family
                               </div>
@@ -614,6 +684,7 @@ const StudentAdd = () => {
                               type="text"
                               name="parentfirstname"
                               className="form-control"
+                              onChange={handleChange}
                             />
                           </div>
                           <div>
@@ -628,6 +699,7 @@ const StudentAdd = () => {
                               type="text"
                               name="parentlastname"
                               className="form-control"
+                              onChange={handleChange}
                             />
                           </div>
                         </div>
@@ -643,6 +715,7 @@ const StudentAdd = () => {
                               type="email"
                               name="parentemail"
                               className="form-control"
+                              onChange={handleChange}
                             />
                           </div>
                           <div>
@@ -656,6 +729,7 @@ const StudentAdd = () => {
                               type="text"
                               name="parentmobile"
                               className="form-control"
+                              onChange={handleChange}
                             />
                             <input type="checkbox" className="sms" name="sms" />
                             SMS Capable
@@ -674,6 +748,7 @@ const StudentAdd = () => {
                             <textarea
                               name="parentaddress"
                               className="form-control"
+                              onChange={handleChange}
                             />
                           </div>
                         </div>
@@ -690,6 +765,7 @@ const StudentAdd = () => {
                               <input
                                 type="checkbox"
                                 name="parentemailpreference"
+                                onChange={handleChange}
                               />
                               Send email lesson reminders
                             </div>
@@ -697,6 +773,7 @@ const StudentAdd = () => {
                               <input
                                 type="checkbox"
                                 name="parentsmspreference"
+                                onChange={handleChange}
                               />
                               Send SMS lesson reminders
                             </div>
@@ -713,7 +790,11 @@ const StudentAdd = () => {
                             >
                               Default Lesson Category
                             </label>
-                            <select name="lessoncat" className="form-control">
+                            <select
+                              name="lessoncat"
+                              className="form-control"
+                              onChange={handleChange}
+                            >
                               <option>Group Lesson</option>
                               <option>Lesson</option>
                               <option>Vacation</option>
@@ -730,6 +811,7 @@ const StudentAdd = () => {
                               type="text"
                               name="lessonlen"
                               className="form-control"
+                              onChange={handleChange}
                             />
                           </div>
                         </div>
@@ -743,21 +825,43 @@ const StudentAdd = () => {
                             </label>
                             <br></br>
                             <div className="preference">
-                              <input type="radio" name="billing" />
+                              <input
+                                type="radio"
+                                name="billing"
+                                onChange={handleChange}
+                                value="Don't automatically create any calendar-generated
+                                charges"
+                              />
                               Don't automatically create any calendar-generated
                               charges
                             </div>
                             <div className="preference">
-                              <input type="radio" name="billing" />
+                              <input
+                                type="radio"
+                                name="billing"
+                                onChange={handleChange}
+                                value="Student pays based on the number of lessons taken"
+                              />
                               Student pays based on the number of lessons taken
                             </div>
                             <div className="preference">
-                              <input type="radio" name="billing" />
+                              <input
+                                type="radio"
+                                name="billing"
+                                onChange={handleChange}
+                                value="Student pays the same amount each month regardless
+                                of number of lessons"
+                              />
                               Student pays the same amount each month regardless
                               of number of lessons
                             </div>
                             <div className="preference">
-                              <input type="radio" name="billing" />
+                              <input
+                                type="radio"
+                                name="billing"
+                                onChange={handleChange}
+                                value="Student pays an hourly rate"
+                              />
                               Student pays an hourly rate
                             </div>
                             <span>
@@ -777,6 +881,7 @@ const StudentAdd = () => {
                               type="text"
                               name="price"
                               className="form-control"
+                              onChange={handleChange}
                             />
                           </div>
                         </div>
@@ -793,7 +898,11 @@ const StudentAdd = () => {
                               Use this area for any private notes you wish to
                               keep.
                             </span>
-                            <textarea name="note" className="form-control" />
+                            <textarea
+                              name="note"
+                              className="form-control"
+                              onChange={handleChange}
+                            />
                           </div>
                         </div>
 
@@ -855,6 +964,7 @@ const StudentAdd = () => {
                                   type="radio"
                                   className="status"
                                   name="invoicing"
+                                  onChange={handleChange}
                                 />
                                 Yes
                                 <br />
@@ -865,6 +975,7 @@ const StudentAdd = () => {
                                   type="radio"
                                   className="status"
                                   name="invoicing"
+                                  onChange={handleChange}
                                 />
                                 No
                               </div>
