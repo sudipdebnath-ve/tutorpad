@@ -181,3 +181,8 @@ label {
 .pass {
   position: relative;
 }
+.loader-center {
+  display: block;
+  margin: 0 auto;
+  padding: 20px;
+}

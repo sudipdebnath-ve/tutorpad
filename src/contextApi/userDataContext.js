@@ -24,6 +24,7 @@ const AppContext = ({ children }) => {
   const navigate = useNavigate();
 
   const fetchData = async () => {
+    setLoading(true);
     const validateconfig = {
       method: "GET",
       url: `${API_URL}user`,
@@ -35,12 +36,14 @@ const AppContext = ({ children }) => {
       .then((response) => {
         // console.log(response);
         if (response.status === 200) {
+          setLoading(false);
           setUserData(response.data);
           setUserId(response.data.id);
         }
       })
       .catch((error) => {
         console.log(error);
+        setLoading(true);
       });
   };
 
@@ -49,14 +52,17 @@ const AppContext = ({ children }) => {
   }, []);
 
   const logOut = () => {
+    setLoading(true);
     localStorage.removeItem("tutorPad");
     setTimeout(() => {
       navigate("/signin");
+      setLoading(false);
     }, 1000);
   };
 
   // Email Template start
   const emailTemplate = async () => {
+    setLoading(true);
     const token = JSON.parse(localStorage.getItem("tutorPad"));
     const validateconfig = {
       method: "GET",
@@ -69,15 +75,18 @@ const AppContext = ({ children }) => {
       .then((response) => {
         // console.log(response.data);
         if (response.data.success === true) {
+          setLoading(false);
           setEmailTemplateData(response.data.data);
         }
       })
       .catch((error) => {
         console.log(error);
+        setLoading(false);
       });
   };
 
   const handleEmailTemplate = async (e) => {
+    setLoading(true);
     const token = JSON.parse(localStorage.getItem("tutorPad"));
     if (e.target.value === 0) {
       setEmailOnchange(false);
@@ -95,16 +104,19 @@ const AppContext = ({ children }) => {
       .then((response) => {
         // console.log(response.data);
         if (response.data.success === true) {
+          setLoading(false);
           setEmailData(response.data.data);
         }
       })
       .catch((error) => {
         console.log(error);
+        setLoading(false);
       });
   };
   // Email Template emd
 
   const fetchStudentData = async () => {
+    setLoading(true);
     const validateconfig = {
       method: "GET",
       url: `${API_URL}user/get-students?user_id=${userId}`,
@@ -114,13 +126,15 @@ const AppContext = ({ children }) => {
     };
     await axios(validateconfig)
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         if (response.data.success === true) {
+          setLoading(false);
           setStudentData(response.data.data);
         }
       })
       .catch((error) => {
         console.log(error);
+        setLoading(false);
       });
   };
 

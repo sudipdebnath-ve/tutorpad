@@ -3,10 +3,11 @@ import Box from "@mui/material/Box";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useUserDataContext } from "../../../contextApi/userDataContext.js";
 import students from "../assets/images/students.svg";
+import Loader from "../../Loader.js";
 
 const FetchStudentDatatable = () => {
   const [val, setVal] = useState(false);
-  const { fetchStudentData, userId, studentData, setLoading } =
+  const { fetchStudentData, userId, studentData, setLoading, loading } =
     useUserDataContext();
 
   useEffect(() => {
@@ -49,6 +50,7 @@ const FetchStudentDatatable = () => {
     {
       field: "first_name",
       headerName: "First name",
+      // headerClassName: "super-app-theme--header",
       width: 150,
       editable: true,
     },
@@ -66,7 +68,7 @@ const FetchStudentDatatable = () => {
     {
       field: "student_status",
       headerName: "Status",
-      width: 150,
+      width: 140,
     },
     {
       field: "phone",
@@ -137,6 +139,7 @@ const FetchStudentDatatable = () => {
 
   useEffect(() => {
     setVal(true);
+    console.log(studentData);
   }, [studentData]);
   if (val) {
     var rows = studentData;
@@ -147,73 +150,97 @@ const FetchStudentDatatable = () => {
   return (
     <div>
       <>
-        {rows ? (
-          <div className="py-3">
-            <div className="chart chart-xs">
-              <Box sx={{ height: 400, width: "100%" }}>
-                <DataGrid
-                  rows={rows}
-                  columns={columns}
-                  initialState={{
-                    columns: {
-                      columnVisibilityModel: {
-                        id: false,
-                        referrer: false,
-                        skill: false,
-                        gender: false,
-                        dob: false,
-                        skype: false,
-                        parentfirstname: false,
-                        studentsince: false,
-                        facetime: false,
-                        price: false,
-                        subjects: false,
-                        school: false,
-                      },
-                    },
-                    pagination: {
-                      paginationModel: {
-                        pageSize: 5,
-                      },
-                    },
-                  }}
-                  pageSizeOptions={[5]}
-                  checkboxSelection
-                  disableRowSelectionOnClick
-                  slots={{ toolbar: GridToolbar }}
-                  slotProps={{
-                    toolbar: {
-                      showQuickFilter: true,
-                    },
-                  }}
-                />
-              </Box>
-            </div>
-          </div>
+        {rows && studentData.length > 0 ? (
+          loading ? (
+            <>
+              <Loader />
+            </>
+          ) : (
+            <>
+              <div className="py-3">
+                <div className="chart chart-xs">
+                  <Box
+                    sx={{
+                      height: 400,
+                      width: "100%",
+                      // "& .super-app-theme--header": {
+                      //   backgroundColor: "rgba(255, 7, 0, 0.55)",
+                      // },
+                    }}
+                  >
+                    <DataGrid
+                      rows={rows}
+                      columns={columns}
+                      initialState={{
+                        columns: {
+                          columnVisibilityModel: {
+                            id: false,
+                            referrer: false,
+                            skill: false,
+                            gender: false,
+                            dob: false,
+                            skype: false,
+                            parentfirstname: false,
+                            studentsince: false,
+                            facetime: false,
+                            price: false,
+                            subjects: false,
+                            school: false,
+                          },
+                        },
+                        pagination: {
+                          paginationModel: {
+                            pageSize: 10,
+                          },
+                        },
+                      }}
+                      pageSizeOptions={[20]}
+                      checkboxSelection
+                      disableRowSelectionOnClick
+                      slots={{ toolbar: GridToolbar }}
+                      slotProps={{
+                        toolbar: {
+                          showQuickFilter: true,
+                        },
+                      }}
+                    />
+                  </Box>
+                </div>
+              </div>
+            </>
+          )
         ) : (
           <>
-            <div className="py-3">
-              <div className="chart chart-xs">
-                <img src={students}></img>
-              </div>
-            </div>
-            <h4>
-              <strong>You don't have any students yet</strong>
-            </h4>
-            <p style={{ textAlign: "center" }}>
-              Add your students so you can take their attendance, and more.
-            </p>
-            <div className="addnewstudent">
-              <i className="fa fa-plus" aria-hidden="true"></i>
-              <a className="btn dropdown-toggle" href="#" role="button">
-                Add New
-              </a>
+            {loading ? (
+              <>
+                <Loader />
+              </>
+            ) : (
+              <>
+                <div className="py-3">
+                  <div className="chart chart-xs">
+                    <img src={students}></img>
+                  </div>
+                </div>
+                <h4>
+                  <strong>You don't have any students yet</strong>
+                </h4>
+                <p style={{ textAlign: "center" }}>
+                  Add your students so you can take their attendance, and more.
+                </p>
+                <div className="addnewstudent">
+                  <i className="fa fa-plus" aria-hidden="true"></i>
+                  <a className="btn dropdown-toggle" href="#" role="button">
+                    Add New
+                  </a>
 
-              <div
-                className="dropdown-menu"
-                aria-labelledby="dropdownMenuLink"
-              ></div>
-            </div>
+                  <div
+                    className="dropdown-menu"
+                    aria-labelledby="dropdownMenuLink"
+                  ></div>
+                </div>
+              </>
+            )}
           </>
         )}
       </>

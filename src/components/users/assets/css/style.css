@@ -11804,6 +11804,8 @@ span.flatpickr-weekday {
 }
 .student .chart img {
   width: 30%;
+  margin: 0 auto;
+  display: block;
 }
 .student h4 {
   text-align: center;

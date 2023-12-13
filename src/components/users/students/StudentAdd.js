@@ -11,7 +11,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const StudentAdd = () => {
-  const { sidebarToggle, token, userId, fetchData } = useUserDataContext();
+  const { sidebarToggle, token, userId } = useUserDataContext();
   const [additionalDetails, setAdditionalDetails] = useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -138,7 +138,6 @@ const StudentAdd = () => {
     const name = e.target.name;
     const value = e.target.value;
     if (name === "phone") {
-      console.log(name);
       formData["phone"] = value;
     } else if (name === "student_status") {
       formData["student_status"] = value;
@@ -146,6 +145,9 @@ const StudentAdd = () => {
       formData["studentType"] = value;
     } else if (name === "billing") {
       formData["billing"] = value;
+    } else if (name === "dob") {
+      formData["dob"] = value;
+      console.log(value);
     }
     setFormData({ ...formData, [name]: value });
     console.log(formData);

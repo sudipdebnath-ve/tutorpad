@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import MiniSidebar from "../sidebar/MiniSidebar.js";
 import Sidebar from "../sidebar/Sidebar.js";
 import TopBar from "../sidebar/TopBar.js";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
-import adduser from "./assets/images/add-users.webp";
 import students from "./assets/images/students.svg";
 import { Link } from "react-router-dom";
 import FetchStudentDatatable from "./students/FetchStudentDatatable.js";
+import Loader from "../Loader.js";
 
 const Student = () => {
-  const { sidebarToggle, fetchData, loading } = useUserDataContext();
+  const { sidebarToggle, loading } = useUserDataContext();
   const [addNewDropdown, setAddNewDropdown] = useState(false);
   const [messageDropdown, setMessageDropdown] = useState(false);
   const [searchDropdown, setSearchDropdown] = useState(false);
@@ -37,10 +37,6 @@ const Student = () => {
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   return (
     <div className="wrapper">
       {sidebarToggle ? (
@@ -55,7 +51,6 @@ const Student = () => {
 
       <div className="main bg-color">
         <TopBar />
-
         <main className="content student">
           <div className="container-fluid p-0">
             <div className="row d-flex">
