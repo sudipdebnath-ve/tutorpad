@@ -9903,7 +9903,7 @@ fieldset:disabled .btn {
 }
 @media (min-width: 992px) {
   .content {
-    padding: 3rem 3rem 1.5rem;
+    padding: 2rem 2rem 1.5rem;
   }
 }
 .navbar-nav .dropdown-menu {
@@ -10191,8 +10191,8 @@ body {
 }
 .sidebar {
   direction: ltr;
-  max-width: 260px;
-  min-width: 260px;
+  max-width: 240px;
+  min-width: 240px;
 }
 .minisidebar {
   direction: ltr;

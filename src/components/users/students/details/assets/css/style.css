@@ -1,0 +1,51 @@
+.student-details .active-user {
+  text-align: center;
+  margin: 15px;
+}
+.student-details .link-to-family {
+  text-align: center;
+}
+.student-details .active-user .active {
+  color: rgb(24, 121, 11);
+  background-color: rgb(206 255 206 / 74%);
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1;
+  padding: 5px;
+}
+.student-details .link-to-family a {
+  color: #fb771a;
+  font-weight: 600;
+}
+.student-details h3 {
+  font-weight: 600;
+  font-size: 16px;
+}
+.arrange-edit-sign {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+.arrange-edit-sign h3 {
+  margin: 0;
+}
+.student-edit-user {
+  display: inline;
+  border: 1px solid #c3c3c3;
+  padding: 5px;
+  border-radius: 5px;
+}
+.student-edit-user.add {
+  padding: 5px 10px;
+}
+.student-details .edit-user {
+  position: absolute;
+  border: 1px solid #c3c3c3;
+  padding: 12px;
+  border-radius: 5px;
+  right: 25px;
+  top: 21px;
+  cursor: pointer;
+}

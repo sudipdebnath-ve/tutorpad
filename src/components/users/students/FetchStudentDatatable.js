@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar, GridValueGetterParams } from "@mui/x-data-grid";
 import { useUserDataContext } from "../../../contextApi/userDataContext.js";
 import students from "../assets/images/students.svg";
 import Loader from "../../Loader.js";
+import { Link } from "react-router-dom";
 
 const FetchStudentDatatable = () => {
   const [val, setVal] = useState(false);
@@ -51,7 +52,17 @@ const FetchStudentDatatable = () => {
       field: "first_name",
       headerName: "First name",
       // headerClassName: "super-app-theme--header",
+      // valueGetter: (params) =>
+      //   `<a href="${params.row.first_name}">${params.row.first_name}</a>`,
       width: 150,
+      // valueGetter: (params: GridValueGetterParams) =>
+      //   `<a href="${params.row.first_name}">${params.row.first_name}</a>`,
+      // },
+      renderCell: (params) => (
+        <Link to={`/students/details/${params.row.id}`}>
+          {params.row.first_name}
+        </Link>
+      ),
       editable: true,
     },
     {
