@@ -5,13 +5,46 @@ import Sidebar from "../../../sidebar/Sidebar.js";
 import TopBar from "../../../sidebar/TopBar.js";
 import "./assets/css/style.css";
 import { useUserDataContext } from "../../../../contextApi/userDataContext.js";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import { API_URL } from "../../../../utils/config.js";
 
 const StudentEditDetails = () => {
-  const { userData, fetchData, sidebarToggle } = useUserDataContext();
+  const { fetchData, sidebarToggle, token, setLoading, loading } =
+    useUserDataContext();
   const [initial, setInitial] = useState("");
+  const [studentFetchData, setStudentFetchData] = useState({});
+  let { id } = useParams();
+
+  const fetchStudentDetails = async () => {
+    setLoading(true);
+    const validateconfig = {
+      method: "GET",
+      url: `${API_URL}user/student/details/${id}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: {
+        user_id: id,
+      },
+    };
+    await axios(validateconfig)
+      .then((response) => {
+        console.log(response.data);
+        setStudentFetchData(response.data.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(true);
+      });
+  };
 
   useEffect(() => {
-    var name = `${userData.first_name}${" "}${userData.last_name}`;
+    fetchStudentDetails();
+    var name = `${studentFetchData.first_name}${" "}${
+      studentFetchData.last_name
+    }`;
 
     var parts = name.split(" ");
     var initials = "";
@@ -21,7 +54,7 @@ const StudentEditDetails = () => {
       }
     }
     setInitial(initials);
-  }, [userData]);
+  }, [id]);
 
   return (
     <div className="wrapper student-details">
@@ -54,11 +87,19 @@ const StudentEditDetails = () => {
                     </div>
 
                     <div className="title-user">
-                      {userData.first_name} {userData.last_name}
+                      {studentFetchData?.first_name}{" "}
+                      {studentFetchData?.last_name}
                     </div>
-                    <div className="active-user">
-                      <span className="active">Active</span>
-                    </div>
+                    {studentFetchData?.student_status && (
+                      <>
+                        <div className="active-user">
+                          <span className="active">
+                            {studentFetchData?.student_status}
+                          </span>
+                        </div>
+                      </>
+                    )}
+
                     <div className="link-to-family">
                       <Link to={"/"}>View Family Account</Link>
                     </div>
@@ -99,13 +140,13 @@ const StudentEditDetails = () => {
                     <br></br>
                   </div>
                   <div
-                    class="accordion accordion-flush"
+                    className="accordion accordion-flush"
                     id="accordionFlushExample"
                   >
-                    <div class="accordion-item">
-                      <h2 class="accordion-header" id="flush-headingOne">
+                    <div className="accordion-item">
+                      <h2 className="accordion-header" id="flush-headingOne">
                         <button
-                          class="accordion-button collapsed"
+                          className="accordion-button collapsed"
                           type="button"
                           data-bs-toggle="collapse"
                           data-bs-target="#flush-collapseOne"
@@ -117,11 +158,11 @@ const StudentEditDetails = () => {
                       </h2>
                       <div
                         id="flush-collapseOne"
-                        class="accordion-collapse collapse"
+                        className="accordion-collapse collapse"
                         aria-labelledby="flush-headingOne"
                         data-bs-parent="#accordionFlushExample"
                       >
-                        <div class="accordion-body">
+                        <div className="accordion-body">
                           Placeholder content for this accordion, which is
                           intended to demonstrate the{" "}
                           <code>.accordion-flush</code> class. This is the first
@@ -129,10 +170,10 @@ const StudentEditDetails = () => {
                         </div>
                       </div>
                     </div>
-                    <div class="accordion-item">
-                      <h2 class="accordion-header" id="flush-headingTwo">
+                    <div className="accordion-item">
+                      <h2 className="accordion-header" id="flush-headingTwo">
                         <button
-                          class="accordion-button collapsed"
+                          className="accordion-button collapsed"
                           type="button"
                           data-bs-toggle="collapse"
                           data-bs-target="#flush-collapseTwo"
@@ -144,11 +185,11 @@ const StudentEditDetails = () => {
                       </h2>
                       <div
                         id="flush-collapseTwo"
-                        class="accordion-collapse collapse"
+                        className="accordion-collapse collapse"
                         aria-labelledby="flush-headingTwo"
                         data-bs-parent="#accordionFlushExample"
                       >
-                        <div class="accordion-body">
+                        <div className="accordion-body">
                           Placeholder content for this accordion, which is
                           intended to demonstrate the{" "}
                           <code>.accordion-flush</code> class. This is the
@@ -157,10 +198,10 @@ const StudentEditDetails = () => {
                         </div>
                       </div>
                     </div>
-                    <div class="accordion-item">
-                      <h2 class="accordion-header" id="flush-headingThree">
+                    <div className="accordion-item">
+                      <h2 className="accordion-header" id="flush-headingThree">
                         <button
-                          class="accordion-button collapsed"
+                          className="accordion-button collapsed"
                           type="button"
                           data-bs-toggle="collapse"
                           data-bs-target="#flush-collapseThree"
@@ -172,11 +213,11 @@ const StudentEditDetails = () => {
                       </h2>
                       <div
                         id="flush-collapseThree"
-                        class="accordion-collapse collapse"
+                        className="accordion-collapse collapse"
                         aria-labelledby="flush-headingThree"
                         data-bs-parent="#accordionFlushExample"
                       >
-                        <div class="accordion-body">
+                        <div className="accordion-body">
                           Placeholder content for this accordion, which is
                           intended to demonstrate the{" "}
                           <code>.accordion-flush</code> class. This is the third

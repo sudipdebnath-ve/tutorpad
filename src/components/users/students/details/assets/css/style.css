@@ -4,6 +4,7 @@
 }
 .student-details .link-to-family {
   text-align: center;
+  padding-top: 10px;
 }
 .student-details .active-user .active {
   color: rgb(24, 121, 11);
