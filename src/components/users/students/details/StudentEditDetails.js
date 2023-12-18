@@ -8,6 +8,7 @@ import { useUserDataContext } from "../../../../contextApi/userDataContext.js";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../../../../utils/config.js";
+import instructors from "../../assets/images/Instructors.svg";
 
 const StudentEditDetails = () => {
   const { fetchData, sidebarToggle, token, setLoading, loading } =
@@ -132,13 +133,6 @@ const StudentEditDetails = () => {
               </div>
               <div className="col-xl-8 col-xxl-8">
                 <div className="card">
-                  <div className="card-body attendance">
-                    <h3>Attendance Preferences</h3>
-                    <div className="attendance-user">
-                      <i className="fa fa-pencil" aria-hidden="true"></i>
-                    </div>
-                    <br></br>
-                  </div>
                   <div
                     className="accordion accordion-flush"
                     id="accordionFlushExample"
@@ -153,7 +147,7 @@ const StudentEditDetails = () => {
                           aria-expanded="false"
                           aria-controls="flush-collapseOne"
                         >
-                          Accordion Item #1
+                          <strong>Student Overview</strong>
                         </button>
                       </h2>
                       <div
@@ -163,13 +157,47 @@ const StudentEditDetails = () => {
                         data-bs-parent="#accordionFlushExample"
                       >
                         <div className="accordion-body">
-                          Placeholder content for this accordion, which is
-                          intended to demonstrate the{" "}
-                          <code>.accordion-flush</code> class. This is the first
-                          item's accordion body.
+                          <div className="student-properties-edit">
+                            <h3>Student Overview</h3>
+                            <div className="student-edit-user">
+                              <i
+                                className="fa fa-pencil"
+                                aria-hidden="true"
+                              ></i>
+                            </div>
+                          </div>
+                          <div className="formbold-input-flex">
+                            <div>
+                              <label
+                                htmlFor="preferences"
+                                className="formbold-form-label"
+                              >
+                                Preferences
+                              </label>
+                              <br></br>
+                              <div className="preference">
+                                <input type="checkbox" name="emailpreference" />
+                                Send email lesson reminders
+                              </div>
+                              <div className="preference">
+                                <input type="checkbox" name="smspreference" />
+                                Send SMS lesson reminders
+                              </div>
+                              <span style={{ paddingLeft: "23px" }}>
+                                Will only be sent if SMS messaging is allowed
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
+                  </div>
+                </div>
+                <div className="card">
+                  <div
+                    className="accordion accordion-flush"
+                    id="accordionFlushExample"
+                  >
                     <div className="accordion-item">
                       <h2 className="accordion-header" id="flush-headingTwo">
                         <button
@@ -180,7 +208,7 @@ const StudentEditDetails = () => {
                           aria-expanded="false"
                           aria-controls="flush-collapseTwo"
                         >
-                          Accordion Item #2
+                          <strong>Family Contacts</strong>
                         </button>
                       </h2>
                       <div
@@ -190,14 +218,88 @@ const StudentEditDetails = () => {
                         data-bs-parent="#accordionFlushExample"
                       >
                         <div className="accordion-body">
-                          Placeholder content for this accordion, which is
-                          intended to demonstrate the{" "}
-                          <code>.accordion-flush</code> class. This is the
-                          second item's accordion body. Let's imagine this being
-                          filled with some actual content.
+                          <div className="student-properties-edit">
+                            {studentFetchData?.parentfirstname !== null &&
+                            studentFetchData?.parentlastname !== null ? (
+                              <>
+                                <h3>
+                                  {`${studentFetchData?.parentfirstname}, ${studentFetchData?.parentlastname}`}
+                                </h3>
+                              </>
+                            ) : (
+                              <>
+                                <strong>Parents Name not submitted</strong>
+                              </>
+                            )}
+
+                            <div className="student-edit-user">
+                              <i
+                                className="fa fa-pencil"
+                                aria-hidden="true"
+                              ></i>
+                            </div>
+                          </div>
+                          <div className="formbold-input-flex">
+                            <div>
+                              <label
+                                htmlFor="preferences"
+                                className="formbold-form-label"
+                              >
+                                Preferences
+                              </label>
+                              <br></br>
+                              <div className="preference">
+                                <input type="checkbox" name="emailpreference" />
+                                Set as the preferred invoice recipient
+                              </div>
+                              <div className="preference">
+                                <input type="checkbox" name="smspreference" />
+                                Show in Student Portal contacts
+                              </div>
+                              <div className="preference">
+                                <input type="checkbox" name="emailpreference" />
+                                Send email lesson reminders
+                              </div>
+                              <div className="preference">
+                                <input type="checkbox" name="smspreference" />
+                                Send SMS lesson reminders
+                              </div>
+                              <span style={{ paddingLeft: "23px" }}>
+                                Will only be sent if SMS messaging is allowed
+                              </span>
+                            </div>
+                          </div>
+                          <hr></hr>
+                          <div className="formbold-form-btn-wrapper">
+                            <div className="btn-end">
+                              <Link className="cancel" to="/students">
+                                <i
+                                  className="fa fa-exchange"
+                                  aria-hidden="true"
+                                ></i>
+                                Change Family
+                              </Link>
+
+                              <button className="formbold-btn">
+                                <i
+                                  style={{ color: "#ffffff" }}
+                                  className="fa fa-plus"
+                                  aria-hidden="true"
+                                ></i>
+                                Add Another Contact
+                              </button>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
+                  </div>
+                </div>
+                <div className="card">
+                  <div
+                    className="accordion accordion-flush"
+                    id="accordionFlushExample"
+                  >
                     <div className="accordion-item">
                       <h2 className="accordion-header" id="flush-headingThree">
                         <button
@@ -208,7 +310,7 @@ const StudentEditDetails = () => {
                           aria-expanded="false"
                           aria-controls="flush-collapseThree"
                         >
-                          Accordion Item #3
+                          <strong>Assigned Tutors</strong>
                         </button>
                       </h2>
                       <div
@@ -218,14 +320,69 @@ const StudentEditDetails = () => {
                         data-bs-parent="#accordionFlushExample"
                       >
                         <div className="accordion-body">
-                          Placeholder content for this accordion, which is
-                          intended to demonstrate the{" "}
-                          <code>.accordion-flush</code> class. This is the third
-                          item's accordion body. Nothing more exciting happening
-                          here in terms of content, but just filling up the
-                          space to make it look, at least at first glance, a bit
-                          more representative of how this would look in a
-                          real-world application.
+                          <h3>Assigned Tutors</h3>
+
+                          <div className="row">
+                            <div className="col-12 col-md-12 col-xxl-12 d-flex order-2 order-xxl-3">
+                              <div className="flex-fill w-100">
+                                <div className="py-3">
+                                  <div className="chart chart-xs">
+                                    <img src={instructors}></img>
+                                  </div>
+                                </div>
+                                <h5>
+                                  <strong>
+                                    There aren't any tutors assigned to this
+                                    student
+                                  </strong>
+                                </h5>
+                                <hr></hr>
+                                <div className="formbold-form-btn-wrapper">
+                                  <div className="btn-end">
+                                    <button className="formbold-btn">
+                                      <i
+                                        style={{ color: "#ffffff" }}
+                                        className="fa fa-plus"
+                                        aria-hidden="true"
+                                      ></i>
+                                      Assign Tutor
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="card">
+                  <div
+                    className="accordion accordion-flush"
+                    id="accordionFlushExample"
+                  >
+                    <div className="accordion-item">
+                      <h2 className="accordion-header" id="flush-headingFour">
+                        <button
+                          className="accordion-button collapsed"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#flush-collapseFour"
+                          aria-expanded="false"
+                          aria-controls="flush-collapseFour"
+                        >
+                          <strong>Study Log</strong>
+                        </button>
+                      </h2>
+                      <div
+                        id="flush-collapseFour"
+                        className="accordion-collapse collapse"
+                        aria-labelledby="flush-headingFour"
+                        data-bs-parent="#accordionFlushExample"
+                      >
+                        <div className="accordion-body">
+                          <div className=""></div>
                         </div>
                       </div>
                     </div>
