@@ -30,7 +30,13 @@ const Register = () => {
     e.preventDefault();
     const name = e.target.name;
     const value = e.target.value;
+    if (name === "bussiness_size") {
+      if (value !== "multi") {
+        value = "single";
+      }
+    }
     setUserdetails({ ...userdetails, [name]: value });
+    // console.log(name, value);
   };
 
   const handleToggle = () => {
@@ -55,6 +61,9 @@ const Register = () => {
         password: userdetails.password,
         c_password: userdetails.rpassword,
         last_name: userdetails.lastname,
+        domain: userdetails.domain,
+        bname: userdetails.bname,
+        bussiness_size: userdetails.bussiness_size,
       }),
       // validateStatus: (status) => status !== 404,
     };
@@ -171,6 +180,16 @@ const Register = () => {
                       {error?.c_password?.length ? error.c_password[0] : <></>}
                     </small>
                   </div>
+                  <div className="form-group d-flex align-items-center last mb-3">
+                    <input
+                      type="text"
+                      className="form-control domain"
+                      placeholder="domain"
+                      name="domain"
+                      onChange={handleChange}
+                    />
+                    <span style={{ fontSize: "16px" }}>.tutorpad.com</span>
+                  </div>
                   <div className="form-group last mb-3">
                     <input
                       type="text"
@@ -186,7 +205,6 @@ const Register = () => {
                       name="bussiness_size"
                       onChange={handleChange}
                     >
-                      <option value="">Bussiness Size</option>
                       <option value="single">It's just me!</option>
                       <option value="multi">
                         I have a business with multiple tutors

@@ -9,13 +9,19 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../../../../utils/config.js";
 import instructors from "../../assets/images/Instructors.svg";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import FetchStudentDatatable from "../FetchStudentDatatable.js";
+import FetchStudyLog from "../FetchStudyLog.js";
 
 const StudentEditDetails = () => {
-  const { fetchData, sidebarToggle, token, setLoading, loading } =
-    useUserDataContext();
+  const { sidebarToggle, token, setLoading } = useUserDataContext();
   const [initial, setInitial] = useState("");
+  const [todayDate, setTodayDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(null);
   const [studentFetchData, setStudentFetchData] = useState({});
   let { id } = useParams();
+  const [isOpen, setIsOpen] = useState(false);
 
   const fetchStudentDetails = async () => {
     setLoading(true);
@@ -55,7 +61,35 @@ const StudentEditDetails = () => {
       }
     }
     setInitial(initials);
+    let today = new Date();
+    let date =
+      today.getDate() +
+      "-" +
+      (today.getMonth() + 1) +
+      "-" +
+      today.getFullYear();
+    setStartDate(date);
   }, [id]);
+  // console.log(startDate);
+
+  const handleChange = (e) => {
+    setIsOpen(!isOpen);
+    console.log(e);
+    let today = new Date(e);
+    let date =
+      today.getDate() +
+      "-" +
+      (today.getMonth() + 1) +
+      "-" +
+      today.getFullYear();
+    setTodayDate(date);
+    setStartDate(date);
+    console.log(date);
+  };
+  const handleClick = (e) => {
+    e.preventDefault();
+    setIsOpen(!isOpen);
+  };
 
   return (
     <div className="wrapper student-details">
@@ -382,7 +416,85 @@ const StudentEditDetails = () => {
                         data-bs-parent="#accordionFlushExample"
                       >
                         <div className="accordion-body">
-                          <div className=""></div>
+                          <div className="calculate-study">
+                            <div>
+                              <div className="days-studied">
+                                <i
+                                  className="fa fa-calendar"
+                                  aria-hidden="true"
+                                ></i>{" "}
+                                <h5>Days Studied</h5>
+                              </div>
+                              <span>
+                                1 day this week <br></br>1 day in the last 30
+                                days
+                              </span>
+                            </div>
+                            <div>
+                              <div className="hours-studied">
+                                <i
+                                  className="fa fa-clock"
+                                  aria-hidden="true"
+                                ></i>{" "}
+                                <h5>Hours Studied</h5>
+                              </div>
+                              <span>
+                                0:10 hours this week{" "}
+                                <i
+                                  className="fa fa-long-arrow-up"
+                                  aria-hidden="true"
+                                ></i>{" "}
+                                <emp>100%</emp>
+                                <br></br>0:10 hours in the last 30 days
+                              </span>
+                            </div>
+                            <div>
+                              <div className="average-study">
+                                <i
+                                  className="fa fa-bar-chart"
+                                  aria-hidden="true"
+                                ></i>{" "}
+                                <h5>Average Study Time</h5>
+                              </div>
+                              <span>
+                                0:10 hours this week{" "}
+                                <i
+                                  className="fa fa-long-arrow-up"
+                                  aria-hidden="true"
+                                ></i>{" "}
+                                <emp>100%</emp>
+                                <br></br>0:10 hours in the last 30 days
+                              </span>
+                            </div>
+                            <div className="student-edit-user">
+                              <i className="fa fa-cog" aria-hidden="true"></i>
+                            </div>
+                          </div>
+                          <div className="calendar-body">
+                            <h5>
+                              {studentFetchData?.first_name}'s Study Log as of{" "}
+                              <emp>{startDate ? startDate : "no"}</emp>{" "}
+                              <i
+                                onClick={handleClick}
+                                className="fa fa-caret-down"
+                                aria-hidden="true"
+                              >
+                                {isOpen && (
+                                  <DatePicker
+                                    selected={todayDate}
+                                    onChange={handleChange}
+                                    inline
+                                  />
+                                )}
+                              </i>
+                            </h5>
+                            <a className="addnew" href="#" role="button">
+                              <i class="fa fa-plus" aria-hidden="true"></i>
+                              Add Time
+                            </a>
+
+                            <FetchStudyLog />
+                          </div>
                         </div>
                       </div>
                     </div>
