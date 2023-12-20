@@ -40,7 +40,7 @@ const Sidebar = () => {
               splitLocation[1] === "calendar" ? "active" : ""
             }`}
           >
-            <Link className="sidebar-link" to="#">
+            <Link className="sidebar-link" to="/calendar">
               <i className="fa fa-calendar" aria-hidden="true"></i>
               <span className="align-middle">Calendar</span>
             </Link>

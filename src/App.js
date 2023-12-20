@@ -13,6 +13,7 @@ import StudentEmailMessage from "./components/users/students/StudentEmailMessage
 import LendingLibrary from "./components/users/LendingLibrary";
 import Details from "./components/users/lending-library/Details";
 import StudentEditDetails from "./components/users/students/details/StudentEditDetails";
+import Calendar from "./components/users/calendar/Calendar";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
       <Route path="/students/message" element={<StudentEmailMessage />} />
       <Route path="/lending-library" element={<LendingLibrary />} />
       <Route path="/lending-library/details" element={<Details />} />
+      <Route path="/calendar" element={<Calendar />} />
     </Routes>
   );
 }
