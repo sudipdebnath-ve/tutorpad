@@ -12,6 +12,43 @@ const Calendars = () => {
   const { sidebarToggle } = useUserDataContext();
   const localizer = momentLocalizer(moment);
 
+  const events = [
+    {
+      title: "DTS STARTS",
+      start: new Date(2023, 11, 13, 0, 0, 0),
+      end: new Date(2023, 11, 20, 0, 0, 0),
+    },
+
+    {
+      title: "DTS ENDS",
+      start: new Date(2023, 11, 6, 0, 0, 0),
+      end: new Date(2023, 11, 13, 0, 0, 0),
+    },
+
+    {
+      title: "Some Event",
+      start: new Date(2023, 11, 9, 0, 0, 0),
+      end: new Date(2023, 11, 9, 0, 0, 0),
+    },
+    {
+      title: "Conference",
+      start: new Date(2023, 11, 11),
+      end: new Date(2023, 11, 13),
+      desc: "Big conference for important people",
+    },
+    {
+      title: "Meeting",
+      start: new Date(2023, 3, 12, 10, 30, 0, 0),
+      end: new Date(2023, 3, 12, 12, 30, 0, 0),
+      desc: "Pre-meeting meeting, to prepare for the meeting",
+    },
+    {
+      title: "Multi-day Event",
+      start: new Date(2023, 10, 20, 19, 30, 0),
+      end: new Date(2023, 10, 22, 2, 0, 0),
+    },
+  ];
+
   return (
     <div className="wrapper">
       {sidebarToggle ? (
@@ -33,15 +70,13 @@ const Calendars = () => {
                 <div>
                   <Calendar
                     localizer={localizer}
-                    // events={myEventsList}
-                    startAccessor="start"
-                    endAccessor="end"
+                    events={events}
                     style={{ height: 500 }}
-                    selectable
+                    step={60}
                     popup={true}
-                    onShowMore={(event) => {
-                      event.preventDefault();
-                    }}
+                    onShowMore={(events, date) =>
+                      this.setState({ showModal: true, events })
+                    }
                     onSelectSlot={(slotInfo) => {
                       console.log(slotInfo);
                     }}

@@ -11564,6 +11564,7 @@ span.flatpickr-weekday {
   border-radius: 5px;
   right: 48px;
   top: 21px;
+  cursor: pointer;
 }
 .attendance {
   position: relative;
@@ -11634,6 +11635,9 @@ span.flatpickr-weekday {
 .email-notification h3 {
   font-weight: 600;
   font-size: 24px;
+}
+.ReactModal__Overlay.ReactModal__Overlay--after-open {
+  background-color: rgba(255, 255, 255, 0.75);
 }
 /******************* My Preferences end********************/
 

@@ -1,13 +1,79 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import MiniSidebar from "../sidebar/MiniSidebar.js";
 import Sidebar from "../sidebar/Sidebar.js";
 import TopBar from "../sidebar/TopBar.js";
+import ReactModal from "react-modal";
+import { API_URL } from "../../utils/config.js";
+import axios from "axios";
 
 const MyPreferences = () => {
-  const { userData, fetchData, sidebarToggle } = useUserDataContext();
+  const { userData, fetchData, sidebarToggle, token, userId } =
+    useUserDataContext();
   const navigate = useNavigate();
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone: "",
+    gender: "",
+    dob: "",
+    skype: "",
+    facetime: "",
+    school: "",
+    studentsince: "",
+    referrer: "",
+    subjects: "",
+    skill: "",
+    student_status: "",
+    studentType: "",
+    studentFamily: "",
+    parentfirstname: "",
+    parentlastname: "",
+    parentemail: "",
+    parentmobile: "",
+    sms: "",
+    parentaddress: "",
+    parentemailpreference: "",
+    parentsmspreference: "",
+    lessoncat: "",
+    lessonlen: "",
+    billing: "",
+    price: "",
+    note: "",
+    invoicing: "",
+  });
+
+  const customStyles = {
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+    },
+    overlay: {
+      background: "#6c5a5669",
+    },
+  };
+
+  // ReactModal.setAppElement("#yourAppElement");
+
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function afterOpenModal() {
+    // references are now sync'd and can be accessed.
+    // subtitle.style.color = "#f00";
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+  }
 
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem("tutorPad"));
@@ -17,6 +83,49 @@ const MyPreferences = () => {
       fetchData();
     }
   }, []);
+
+  const handleChange = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    if (name === "phone") {
+      formData["phone"] = value;
+    } else if (name === "student_status") {
+      formData["student_status"] = value;
+    } else if (name === "studentType") {
+      formData["studentType"] = value;
+    } else if (name === "billing") {
+      formData["billing"] = value;
+    } else if (name === "dob") {
+      formData["dob"] = value;
+      console.log(value);
+    }
+    setFormData({ ...formData, [name]: value });
+    console.log(formData);
+  };
+  const formSubmit = async (e) => {
+    console.log(userId);
+    formData["user_id"] = userId;
+    e.preventDefault();
+    const config = {
+      method: "POST",
+      url: `${API_URL}user/create-student`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: formData,
+    };
+    await axios(config)
+      .then((response) => {
+        console.log(response);
+
+        // setTimeout(() => {
+        //   navigate("/students");
+        // }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <div className="wrapper">
@@ -32,7 +141,164 @@ const MyPreferences = () => {
 
       <div className="main bg-color">
         <TopBar />
+        <ReactModal
+          isOpen={modalIsOpen}
+          onAfterOpen={afterOpenModal}
+          onRequestClose={closeModal}
+          style={customStyles}
+          contentLabel="Example Modal"
+        >
+          <button onClick={closeModal}>X</button>
+          <form name="studentProfile">
+            <div className="formbold-form-step-1 active">
+              <div className="formbold-input-flex">
+                <div>
+                  <label
+                    htmlFor="first_name"
+                    className="formbold-form-label"
+                    id="first_name"
+                  >
+                    First name
+                  </label>
+                  <input
+                    type="text"
+                    name="first_name"
+                    className="form-control"
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="last_name"
+                    className="formbold-form-label"
+                    id="last_name"
+                  >
+                    Last name
+                  </label>
+                  <input
+                    type="text"
+                    name="last_name"
+                    className="form-control"
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="formbold-input-flex">
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="formbold-form-label"
+                    id="email"
+                  >
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    className="form-control"
+                    required
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
+                  <div>
+                    <label
+                      htmlFor="phone"
+                      className="formbold-form-label"
+                      id="phone"
+                    >
+                      Phone Number
+                    </label>
+                    <input
+                      type="text"
+                      name="phone"
+                      className="form-control"
+                      required
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <input
+                    type="checkbox"
+                    className="sms"
+                    name="sms"
+                    onChange={handleChange}
+                  />
+                  SMS Capable
+                </div>
+              </div>
+              <div className="formbold-input-flex diff">
+                <div>
+                  <div>
+                    <label
+                      htmlFor="studentFamily"
+                      className="formbold-form-label"
+                    >
+                      This student's family is a/an
+                    </label>
+                  </div>
+                  <div className="studentFamily">
+                    <div>
+                      <input
+                        type="radio"
+                        className="status"
+                        name="studentFamily"
+                        onChange={handleChange}
+                      />
+                      New Family
+                      <br />
+                    </div>
 
+                    <div>
+                      <input
+                        type="radio"
+                        className="status"
+                        name="studentFamily"
+                        onChange={handleChange}
+                      />
+                      Existing Family
+                    </div>
+                  </div>
+                  <small className="d-block">
+                    reates a new account in Families & Invoices
+                  </small>
+                </div>
+              </div>
+              <div className="formbold-input-flex diff">
+                <div>
+                  <label
+                    htmlFor="parentaddress"
+                    className="formbold-form-label"
+                  >
+                    Address <span>Optional</span>
+                  </label>
+                  <br></br>
+
+                  <textarea
+                    name="parentaddress"
+                    className="form-control"
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="formbold-form-step-2">
+              <div className="formbold-form-btn-wrapper">
+                <div className="btn-end">
+                  <Link className="cancel" to="/students">
+                    Cancel
+                  </Link>
+
+                  <button className="formbold-btn" onClick={formSubmit}>
+                    Submit
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </ReactModal>
         <main className="content">
           <div className="container-fluid p-0">
             <div className="row d-flex">
@@ -44,7 +310,7 @@ const MyPreferences = () => {
                         <h2>SD</h2>
                       </div>
                     </div>
-                    <div className="edit-user">
+                    <div className="edit-user" onClick={openModal}>
                       <i className="fa fa-pencil" aria-hidden="true"></i>
                     </div>
 
