@@ -11639,6 +11639,26 @@ span.flatpickr-weekday {
 .ReactModal__Overlay.ReactModal__Overlay--after-open {
   background-color: rgba(255, 255, 255, 0.75);
 }
+.mypreference-modal h4 {
+  font-weight: 600;
+}
+/* .mypreference-modal .closeModal {
+  text-align: left;
+} */
+.close-h {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 10px 0px 20px 0px;
+}
+.mypreference-modal .form-control {
+  padding: 0.5rem 0.85rem;
+}
+button.closeModal {
+  background: #c06b32;
+  color: #ffffff;
+  border: navajowhite;
+}
 /******************* My Preferences end********************/
 
 /******************* Email Template start********************/

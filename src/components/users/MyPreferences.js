@@ -14,40 +14,22 @@ const MyPreferences = () => {
   const navigate = useNavigate();
   const [modalIsOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({
-    first_name: "",
-    last_name: "",
-    email: "",
+    title: "",
+    first_name: userData.first_name,
+    last_name: userData.last_name,
+    email: userData.email,
     phone: "",
-    gender: "",
-    dob: "",
-    skype: "",
-    facetime: "",
-    school: "",
-    studentsince: "",
-    referrer: "",
+    address: "",
+    virtual_meeting: "",
     subjects: "",
-    skill: "",
-    student_status: "",
-    studentType: "",
-    studentFamily: "",
-    parentfirstname: "",
-    parentlastname: "",
-    parentemail: "",
-    parentmobile: "",
-    sms: "",
-    parentaddress: "",
-    parentemailpreference: "",
-    parentsmspreference: "",
-    lessoncat: "",
-    lessonlen: "",
-    billing: "",
-    price: "",
-    note: "",
-    invoicing: "",
+    location: "",
   });
 
+  console.log(userData);
   const customStyles = {
     content: {
+      width: "60%",
+      height: "80%",
       top: "50%",
       left: "50%",
       right: "auto",
@@ -80,25 +62,25 @@ const MyPreferences = () => {
     if (!token) {
       navigate("/signin");
     } else {
-      fetchData();
+      fetchData(token);
     }
   }, []);
 
   const handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
-    if (name === "phone") {
-      formData["phone"] = value;
-    } else if (name === "student_status") {
-      formData["student_status"] = value;
-    } else if (name === "studentType") {
-      formData["studentType"] = value;
-    } else if (name === "billing") {
-      formData["billing"] = value;
-    } else if (name === "dob") {
-      formData["dob"] = value;
-      console.log(value);
-    }
+    // if (name === "phone") {
+    //   formData["phone"] = value;
+    // } else if (name === "student_status") {
+    //   formData["student_status"] = value;
+    // } else if (name === "studentType") {
+    //   formData["studentType"] = value;
+    // } else if (name === "billing") {
+    //   formData["billing"] = value;
+    // } else if (name === "dob") {
+    //   formData["dob"] = value;
+    //   console.log(value);
+    // }
     setFormData({ ...formData, [name]: value });
     console.log(formData);
   };
@@ -141,6 +123,7 @@ const MyPreferences = () => {
 
       <div className="main bg-color">
         <TopBar />
+
         <ReactModal
           isOpen={modalIsOpen}
           onAfterOpen={afterOpenModal}
@@ -148,157 +131,196 @@ const MyPreferences = () => {
           style={customStyles}
           contentLabel="Example Modal"
         >
-          <button onClick={closeModal}>X</button>
-          <form name="studentProfile">
-            <div className="formbold-form-step-1 active">
-              <div className="formbold-input-flex">
-                <div>
-                  <label
-                    htmlFor="first_name"
-                    className="formbold-form-label"
-                    id="first_name"
-                  >
-                    First name
-                  </label>
-                  <input
-                    type="text"
-                    name="first_name"
-                    className="form-control"
-                    onChange={handleChange}
-                    required
-                  />
+          <div className="mypreference-modal">
+            <div className="close-h">
+              <h4>Edit Profile</h4>
+              <button className="closeModal" onClick={closeModal}>
+                X
+              </button>
+            </div>
+            <form name="studentProfile">
+              <div className="formbold-form-step-1 active">
+                <div className="formbold-input-flex diff">
+                  <div>
+                    <label htmlFor="title" className="formbold-form-label">
+                      Title
+                    </label>
+
+                    <input
+                      type="text"
+                      name="title"
+                      className="form-control"
+                      onChange={handleChange}
+                    />
+                  </div>
                 </div>
-                <div>
-                  <label
-                    htmlFor="last_name"
-                    className="formbold-form-label"
-                    id="last_name"
-                  >
-                    Last name
-                  </label>
-                  <input
-                    type="text"
-                    name="last_name"
-                    className="form-control"
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-              </div>
-              <div className="formbold-input-flex">
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="formbold-form-label"
-                    id="email"
-                  >
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    className="form-control"
-                    required
-                    onChange={handleChange}
-                  />
-                </div>
-                <div>
+                <div className="formbold-input-flex">
                   <div>
                     <label
-                      htmlFor="phone"
+                      htmlFor="first_name"
                       className="formbold-form-label"
-                      id="phone"
+                      id="first_name"
                     >
-                      Phone Number
+                      First name
                     </label>
                     <input
                       type="text"
-                      name="phone"
+                      name="first_name"
+                      className="form-control"
+                      onChange={handleChange}
+                      placeholder={formData?.first_name}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="last_name"
+                      className="formbold-form-label"
+                      id="last_name"
+                    >
+                      Last name
+                    </label>
+                    <input
+                      type="text"
+                      name="last_name"
+                      className="form-control"
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="formbold-input-flex">
+                  <div>
+                    <label
+                      htmlFor="email"
+                      className="formbold-form-label"
+                      id="email"
+                    >
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
                       className="form-control"
                       required
                       onChange={handleChange}
                     />
                   </div>
-                  <input
-                    type="checkbox"
-                    className="sms"
-                    name="sms"
-                    onChange={handleChange}
-                  />
-                  SMS Capable
+                  <div>
+                    <div>
+                      <label
+                        htmlFor="phone"
+                        className="formbold-form-label"
+                        id="phone"
+                      >
+                        Phone Number <span>Optional</span>
+                      </label>
+                      <input
+                        type="text"
+                        name="phone"
+                        className="form-control"
+                        onChange={handleChange}
+                      />
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className="formbold-input-flex diff">
-                <div>
+
+                <div className="formbold-input-flex diff">
                   <div>
                     <label
-                      htmlFor="studentFamily"
+                      htmlFor="parentaddress"
                       className="formbold-form-label"
                     >
-                      This student's family is a/an
+                      Address <span>Optional</span>
                     </label>
+                    <br></br>
+
+                    <textarea
+                      name="parentaddress"
+                      className="form-control"
+                      onChange={handleChange}
+                    />
                   </div>
-                  <div className="studentFamily">
-                    <div>
-                      <input
-                        type="radio"
-                        className="status"
-                        name="studentFamily"
-                        onChange={handleChange}
-                      />
-                      New Family
-                      <br />
-                    </div>
+                </div>
+                <div className="formbold-input-flex diff">
+                  <div>
+                    <label
+                      htmlFor="parentaddress"
+                      className="formbold-form-label"
+                    >
+                      Virtual Meeting <span>Optional</span>
+                      <br></br>
+                      <span>
+                        Share a link to Zoom, Google Meet, or any other video
+                        conferencing application.
+                      </span>
+                    </label>
+                    <br></br>
 
-                    <div>
-                      <input
-                        type="radio"
-                        className="status"
-                        name="studentFamily"
-                        onChange={handleChange}
-                      />
-                      Existing Family
-                    </div>
+                    <input
+                      type="text"
+                      name="virtual_meeting"
+                      className="form-control"
+                      onChange={handleChange}
+                    />
                   </div>
-                  <small className="d-block">
-                    reates a new account in Families & Invoices
-                  </small>
+                </div>
+                <div className="formbold-input-flex diff">
+                  <div>
+                    <label
+                      htmlFor="parentaddress"
+                      className="formbold-form-label"
+                    >
+                      Subjects <span>Optional</span>
+                      <br></br>
+                      <span>
+                        Use a semicolon or press the Enter key to separate
+                        entries
+                      </span>
+                    </label>
+                    <br></br>
+
+                    <input
+                      type="text"
+                      name="subject"
+                      className="form-control"
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+                <div className="formbold-input-flex diff">
+                  <div>
+                    <label htmlFor="location" className="formbold-form-label">
+                      Preferred Location
+                    </label>
+                    <select
+                      name="location"
+                      className="form-control"
+                      onChange={handleChange}
+                    >
+                      <option>First Available Location</option>
+                    </select>
+                  </div>
                 </div>
               </div>
-              <div className="formbold-input-flex diff">
-                <div>
-                  <label
-                    htmlFor="parentaddress"
-                    className="formbold-form-label"
-                  >
-                    Address <span>Optional</span>
-                  </label>
-                  <br></br>
 
-                  <textarea
-                    name="parentaddress"
-                    className="form-control"
-                    onChange={handleChange}
-                  />
+              <div className="formbold-form-step-2">
+                <div className="formbold-form-btn-wrapper">
+                  <div className="btn-end">
+                    <Link className="cancel" to="/students">
+                      Cancel
+                    </Link>
+
+                    <button className="formbold-btn" onClick={formSubmit}>
+                      Submit
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-
-            <div className="formbold-form-step-2">
-              <div className="formbold-form-btn-wrapper">
-                <div className="btn-end">
-                  <Link className="cancel" to="/students">
-                    Cancel
-                  </Link>
-
-                  <button className="formbold-btn" onClick={formSubmit}>
-                    Submit
-                  </button>
-                </div>
-              </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </ReactModal>
+
         <main className="content">
           <div className="container-fluid p-0">
             <div className="row d-flex">

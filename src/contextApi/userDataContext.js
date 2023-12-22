@@ -23,7 +23,7 @@ const AppContext = ({ children }) => {
 
   const navigate = useNavigate();
 
-  const fetchData = async () => {
+  const fetchData = async (token) => {
     setLoading(true);
     const validateconfig = {
       method: "GET",

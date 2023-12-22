@@ -30,13 +30,9 @@ const Register = () => {
     e.preventDefault();
     const name = e.target.name;
     const value = e.target.value;
-    if (name === "bussiness_size") {
-      if (value !== "multi") {
-        value = "single";
-      }
-    }
+
     setUserdetails({ ...userdetails, [name]: value });
-    // console.log(name, value);
+    console.log(name, value);
   };
 
   const handleToggle = () => {
@@ -69,7 +65,7 @@ const Register = () => {
     };
     await axios(config)
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         if (response.status === 200) {
           localStorage.setItem(
             "tutorPad",
@@ -79,7 +75,6 @@ const Register = () => {
             position: toast.POSITION.TOP_CENTER,
           });
           setTimeout(() => {
-            fetchData();
             navigate("/dashboard");
           }, 2000);
         }
@@ -190,6 +185,9 @@ const Register = () => {
                     />
                     <span style={{ fontSize: "16px" }}>.tutorpad.com</span>
                   </div>
+                  <small style={{ color: "red" }}>
+                    {error?.domain?.length ? error.domain[0] : <></>}
+                  </small>
                   <div className="form-group last mb-3">
                     <input
                       type="text"
@@ -204,12 +202,21 @@ const Register = () => {
                       className="form-control"
                       name="bussiness_size"
                       onChange={handleChange}
+                      required
                     >
+                      <option value="">Bussiness Size</option>
                       <option value="single">It's just me!</option>
                       <option value="multi">
                         I have a business with multiple tutors
                       </option>
                     </select>
+                    <small style={{ color: "red" }}>
+                      {error?.bussiness_size?.length ? (
+                        error.bussiness_size[0]
+                      ) : (
+                        <></>
+                      )}
+                    </small>
                   </div>
 
                   <div className="d-sm-flex mb-5 align-items-center justify-content-between">

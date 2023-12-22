@@ -12,11 +12,13 @@ const Dashboard = () => {
   // console.log(userData);
 
   useEffect(() => {
-    const token = JSON.parse(localStorage.getItem("tutorPad"));
+    var token = JSON.parse(localStorage.getItem("tutorPad"));
     if (!token) {
       navigate("/signin");
     } else {
-      fetchData();
+      setTimeout(() => {
+        fetchData(token);
+      }, 2000);
     }
   }, []);
   return (
@@ -37,7 +39,7 @@ const Dashboard = () => {
         <main className="content">
           <div className="container-fluid p-0">
             <h1 className="h3 mb-3">
-              <strong>Let's get started, {userData.first_name}!</strong>
+              <strong>Let's get started, {userData?.first_name}!</strong>
             </h1>
 
             <div className="row all-step">
