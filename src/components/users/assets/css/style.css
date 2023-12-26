@@ -11593,7 +11593,7 @@ span.flatpickr-weekday {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 16px;
+  font-size: 15px;
 }
 .card-body {
   padding: 35px 22px;
@@ -11658,6 +11658,26 @@ button.closeModal {
   background: #c06b32;
   color: #ffffff;
   border: navajowhite;
+}
+.b-none {
+  border: none;
+}
+.mypreference-modal .formbold-form-btn-wrapper {
+  margin-top: 12px;
+  margin-bottom: 15px;
+  justify-content: end;
+}
+.sec-acc h3 {
+  font-weight: 600;
+  font-size: 20px;
+}
+.make-pad .input-check {
+  padding-bottom: 8px;
+}
+.payroll-img img{
+  width: 40%;
+  margin: 0 auto;
+  display: block;
 }
 /******************* My Preferences end********************/
 

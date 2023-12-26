@@ -11,7 +11,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const StudentAdd = () => {
-  const { sidebarToggle, token, userId } = useUserDataContext();
+  const { fetchData, sidebarToggle, token, userId } = useUserDataContext();
   const [additionalDetails, setAdditionalDetails] = useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -46,6 +46,15 @@ const StudentAdd = () => {
     note: "",
     invoicing: "",
   });
+
+  useEffect(() => {
+    const token = JSON.parse(localStorage.getItem("tutorPad"));
+    if (!token) {
+      navigate("/signin");
+    } else {
+      fetchData(token);
+    }
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -150,7 +159,7 @@ const StudentAdd = () => {
       console.log(value);
     }
     setFormData({ ...formData, [name]: value });
-    console.log(formData);
+    // console.log(formData);
   };
   const formSubmit = async (e) => {
     console.log(userId);
