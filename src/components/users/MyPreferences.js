@@ -15,6 +15,8 @@ const MyPreferences = () => {
     useUserDataContext();
   const navigate = useNavigate();
   const [modalIsOpen, setIsOpen] = useState(false);
+  const [attendFlag, setAttendFlag] = useState(false);
+  const [availFlag, setAvailFlag] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     first_name: "",
@@ -43,11 +45,27 @@ const MyPreferences = () => {
       background: "#6c5a5669",
     },
   };
+  const passwordStyles = {
+    content: {
+      width: "60%",
+      height: "60%",
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+      border: "none",
+    },
+    overlay: {
+      background: "#6c5a5669",
+    },
+  };
 
   // ReactModal.setAppElement("#yourAppElement");
 
-  function openModal() {
-    setIsOpen(true);
+  function openModal(e) {
+    setIsOpen(e);
   }
 
   function afterOpenModal() {
@@ -115,6 +133,9 @@ const MyPreferences = () => {
       });
   };
 
+  const saveAttendancePreference = () => {
+    setAttendFlag(true);
+  };
   return (
     <div className="wrapper">
       {sidebarToggle ? (
@@ -131,7 +152,7 @@ const MyPreferences = () => {
         <TopBar />
 
         <ReactModal
-          isOpen={modalIsOpen}
+          isOpen={modalIsOpen === "profile"}
           onAfterOpen={afterOpenModal}
           onRequestClose={closeModal}
           style={customStyles}
@@ -254,7 +275,6 @@ const MyPreferences = () => {
                         </div>
                       </div>
                     </div>
-
                     <div className="formbold-input-flex diff">
                       <div>
                         <label
@@ -340,7 +360,91 @@ const MyPreferences = () => {
                 <hr></hr>
                 <div className="formbold-form-btn-wrapper">
                   <div className="btn-end">
-                    <Link className="cancel" to="/students">
+                    <Link className="cancel" onClick={closeModal}>
+                      Cancel
+                    </Link>
+
+                    <button className="formbold-btn" onClick={formSubmit}>
+                      Submit
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </ReactModal>
+        <ReactModal
+          isOpen={modalIsOpen === "password"}
+          onAfterOpen={afterOpenModal}
+          onRequestClose={closeModal}
+          style={passwordStyles}
+          contentLabel="Change Password"
+        >
+          <div className="mypreference-modal">
+            <div className="close-h">
+              <h4>Change Password</h4>
+              <button className="closeModal" onClick={closeModal}>
+                X
+              </button>
+            </div>
+            <form name="studentProfile">
+              <div className="row d-flex">
+                <div className="col-xl-12 col-xxl-12">
+                  <div className="formbold-form-step-1 active">
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label
+                          htmlFor="current_password"
+                          className="formbold-form-label"
+                          id="current_password"
+                        >
+                          First name
+                        </label>
+                        <input
+                          type="password"
+                          name="current_password"
+                          className="form-control"
+                        />
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label
+                          htmlFor="new_password"
+                          className="formbold-form-label"
+                          id="new_password"
+                        >
+                          New Password
+                        </label>
+                        <input
+                          type="password"
+                          name="new_password"
+                          className="form-control"
+                        />
+                      </div>
+                      <div>
+                        <div>
+                          <label
+                            htmlFor="change_new_password"
+                            className="formbold-form-label"
+                            id="change_new_password"
+                          >
+                            Change New Password
+                          </label>
+                          <input
+                            type="text"
+                            name="change_new_password"
+                            className="form-control"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr></hr>
+                <div className="formbold-form-btn-wrapper">
+                  <div className="btn-end">
+                    <Link className="cancel" onClick={closeModal}>
                       Cancel
                     </Link>
 
@@ -366,7 +470,10 @@ const MyPreferences = () => {
                         <h2>SD</h2>
                       </div>
                     </div>
-                    <div className="edit-user" onClick={openModal}>
+                    <div
+                      className="edit-user"
+                      onClick={(e) => openModal("profile")}
+                    >
                       <i className="fa fa-pencil" aria-hidden="true"></i>
                     </div>
 
@@ -385,7 +492,9 @@ const MyPreferences = () => {
                       <Link to="#" className="logout">
                         Log Out of All Devices
                       </Link>
-                      <Link to="#">Change Password</Link>
+                      <Link onClick={(e) => openModal("password")}>
+                        Change Password
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -445,7 +554,10 @@ const MyPreferences = () => {
                           <div className="student-properties-edit sec-acc">
                             <h3>Attendance Preferences</h3>
 
-                            <div className="student-edit-user">
+                            <div
+                              className="student-edit-user"
+                              onClick={(e) => setAttendFlag(!e.target.value)}
+                            >
                               <i
                                 className="fa fa-pencil"
                                 aria-hidden="true"
@@ -542,7 +654,10 @@ const MyPreferences = () => {
                           <div className="student-properties-edit sec-acc">
                             <h3>Email Notification Preferences</h3>
 
-                            <div className="student-edit-user">
+                            <div
+                              className="student-edit-user"
+                              onClick={(e) => setAttendFlag(!e.target.value)}
+                            >
                               <i
                                 className="fa fa-pencil"
                                 aria-hidden="true"
@@ -597,6 +712,27 @@ const MyPreferences = () => {
                               Don't Email
                             </div>
                           </div>
+                          {attendFlag && (
+                            <>
+                              <div className="formbold-form-btn-wrapper justify-content-end">
+                                <div className="btn-end">
+                                  <Link
+                                    className="cancel"
+                                    onClick={() => setAttendFlag(false)}
+                                  >
+                                    Cancel
+                                  </Link>
+
+                                  <button
+                                    className="formbold-btn"
+                                    onClick={saveAttendancePreference}
+                                  >
+                                    Save
+                                  </button>
+                                </div>
+                              </div>
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -633,6 +769,7 @@ const MyPreferences = () => {
                             <button
                               className="formbold-btn"
                               style={{ fontSize: "14px", padding: "6px 16px" }}
+                              onClick={(e) => setAvailFlag(!e.target.value)}
                             >
                               <i
                                 style={{ color: "#ffffff" }}
@@ -656,27 +793,187 @@ const MyPreferences = () => {
                           <p>
                             You haven't added your tutoring availability yet
                           </p>
+                          {availFlag && (
+                            <>
+                              <div className="availablity">
+                                <div className="formbold-input-flex diff">
+                                  <div>
+                                    <label
+                                      htmlFor="availability"
+                                      className="formbold-form-label"
+                                    >
+                                      Add Availability
+                                    </label>
+                                  </div>
+                                </div>
+                                <div className="formbold-input-flex diff">
+                                  <div>
+                                    <div>
+                                      <label
+                                        htmlFor="days"
+                                        className="formbold-form-label"
+                                      >
+                                        Days
+                                      </label>
+                                    </div>
+                                    <div className="studentStatus">
+                                      <div>
+                                        <input
+                                          type="checkbox"
+                                          className="status"
+                                          name="sun"
+                                          value="Sun"
+                                        />
+                                        Sun
+                                      </div>
+                                      <div>
+                                        <input
+                                          type="checkbox"
+                                          className="status"
+                                          name="mon"
+                                          value="Mon"
+                                        />
+                                        Mon
+                                      </div>
+                                      <div>
+                                        <input
+                                          type="checkbox"
+                                          className="status"
+                                          name="tue"
+                                          value="Tue"
+                                        />
+                                        Tue
+                                      </div>
+                                      <div>
+                                        <input
+                                          type="checkbox"
+                                          className="status"
+                                          name="wed"
+                                          value="Wed"
+                                        />
+                                        Wed
+                                      </div>
+                                      <div>
+                                        <input
+                                          type="checkbox"
+                                          className="status"
+                                          name="thu"
+                                          value="Thu"
+                                        />
+                                        Thu
+                                      </div>
+                                      <div>
+                                        <input
+                                          type="checkbox"
+                                          className="status"
+                                          name="fri"
+                                          value="Fri"
+                                        />
+                                        Fri
+                                      </div>
+                                      <div>
+                                        <input
+                                          type="checkbox"
+                                          className="status"
+                                          name="sat"
+                                          value="Sat"
+                                        />
+                                        Sat
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="formbold-input-flex">
+                                  <div>
+                                    <label
+                                      htmlFor="start_date"
+                                      className="formbold-form-label"
+                                    >
+                                      Start Date <span>Optional</span>
+                                    </label>
+                                    <input
+                                      type="date"
+                                      name="start_date"
+                                      className="form-control"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label
+                                      htmlFor="end_date"
+                                      className="formbold-form-label"
+                                    >
+                                      End Date <span>Optional</span>
+                                    </label>
+                                    <input
+                                      type="date"
+                                      name="end_date"
+                                      className="form-control"
+                                    />
+                                  </div>
+                                </div>
+                                <div className="formbold-input-flex">
+                                  <div>
+                                    <label
+                                      htmlFor="start_time"
+                                      className="formbold-form-label"
+                                    >
+                                      Start Time
+                                    </label>
+                                    <input
+                                      type="time"
+                                      name="start_time"
+                                      className="form-control"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label
+                                      htmlFor="end_time"
+                                      className="formbold-form-label"
+                                    >
+                                      End Time
+                                    </label>
+                                    <input
+                                      type="time"
+                                      name="end_time"
+                                      className="form-control"
+                                    />
+                                  </div>
+                                </div>
+                                <div className="formbold-input-flex diff">
+                                  <div>
+                                    <label
+                                      htmlFor="note"
+                                      className="formbold-form-label"
+                                    >
+                                      Note <span>Optional</span>
+                                    </label>
 
-                          {/* <div className="formbold-form-btn-wrapper">
-                            <div className="btn-end">
-                              <Link className="cancel" to="/students">
-                                <i
-                                  className="fa fa-exchange"
-                                  aria-hidden="true"
-                                ></i>
-                                Change Family
-                              </Link>
+                                    <textarea
+                                      name="note"
+                                      className="form-control"
+                                    />
+                                  </div>
+                                </div>
+                                <div className="formbold-form-btn-wrapper justify-content-end">
+                                  <div className="btn-end">
+                                    <Link
+                                      className="cancel"
+                                      onClick={() => setAvailFlag(false)}
+                                    >
+                                      Cancel
+                                    </Link>
 
-                              <button className="formbold-btn">
-                                <i
-                                  style={{ color: "#ffffff" }}
-                                  className="fa fa-plus"
-                                  aria-hidden="true"
-                                ></i>
-                                Add Another Contact
-                              </button>
-                            </div>
-                          </div> */}
+                                    <button
+                                      className="formbold-btn"
+                                      onClick={saveAttendancePreference}
+                                    >
+                                      Save
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>

@@ -55,6 +55,7 @@
   border: 1px solid #c3c3c3;
   padding: 4px;
   border-radius: 5px;
+  cursor: pointer;
 }
 .student-properties-edit {
   display: flex;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import avatar from "../users/assets/avatars/avatar.jpg";
@@ -7,8 +7,20 @@ const TopBar = () => {
   const { userData, logOut, setSidebarToggle, sidebarToggle } =
     useUserDataContext();
 
+  const [pageName, setPageName] = useState("");
   const [profileToggle, setProfileToggle] = useState(false);
   const [notificationToggle, setNotificationToggle] = useState(false);
+
+  useEffect(() => {
+    let name = window.location.pathname;
+    var new_str = name.replace("/", "");
+    var new_str = new_str.replace("-", " ");
+    console.log(new_str);
+    setPageName(new_str);
+    if (new_str.includes("students") && new_str.includes("details")) {
+      setPageName("Student Details");
+    }
+  }, []);
 
   const handleSidebarToggle = () => {
     if (sidebarToggle === true) {
@@ -30,7 +42,11 @@ const TopBar = () => {
       <Link className="sidebar-toggle" onClick={handleSidebarToggle}>
         <i className="hamburger align-self-center"></i>
       </Link>
-      <h2 style={{ margin: "0" }}>Home</h2>
+      <h2 style={{ margin: "0" }}>
+        <strong>
+          {pageName ? pageName.charAt(0).toUpperCase() + pageName.slice(1) : ""}
+        </strong>
+      </h2>
 
       <div className="navbar-collapse collapse">
         <ul className="navbar-nav navbar-align">

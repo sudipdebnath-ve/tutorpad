@@ -11674,10 +11674,15 @@ button.closeModal {
 .make-pad .input-check {
   padding-bottom: 8px;
 }
-.payroll-img img{
+.payroll-img img {
   width: 40%;
   margin: 0 auto;
   display: block;
+}
+.availablity {
+  border: var(--bs-accordion-border-width) solid
+    var(--bs-accordion-border-color);
+  padding: 20px;
 }
 /******************* My Preferences end********************/
 
