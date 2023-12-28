@@ -348,3 +348,58 @@
   margin-bottom: 15px;
 }
 /*************************** Student Email Start **************************/
+
+/*************************** Student Message History Start **************************/
+
+.mes-history-drop {
+  border: none;
+  background: #eff0ff;
+  color: #495057;
+  width: 162px;
+  padding: 0px;
+  font-weight: 600;
+}
+.mes-history-drop option {
+  font-size: 14px;
+  padding: 15px;
+}
+.mes-history-drop:focus-visible {
+  border: none;
+}
+.messagehistory h1 {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 15px 0px;
+}
+.messagehistory .chart {
+  width: 30%;
+}
+.messagehistory .add-message {
+  background: #fb771a;
+  display: block;
+  margin: 0 auto;
+  width: 220px;
+  border-radius: 5px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+.messagehistory .add-message i {
+  color: #ffffff;
+}
+.messagehistory .add-message a {
+  color: #ffffff;
+  border: none;
+}
+.create-mes.dropdown-menu.addNewDropdown {
+  position: absolute;
+  right: 389px;
+  top: -86px;
+}
+
+.position-set {
+  position: relative;
+}
+/*************************** Student Message History Start **************************/

@@ -152,7 +152,10 @@ const Student = () => {
                                       New Email
                                     </Link>
                                     <div className="dropdown-divider"></div>
-                                    <Link className="dropdown-item">
+                                    <Link
+                                      className="dropdown-item"
+                                      to="/students/message-history"
+                                    >
                                       Go to Message History{" "}
                                     </Link>
                                   </div>

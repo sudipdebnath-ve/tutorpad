@@ -17,8 +17,8 @@ const TopBar = () => {
     var new_str = new_str.replace("-", " ");
     console.log(new_str);
     setPageName(new_str);
-    if (new_str.includes("students") && new_str.includes("details")) {
-      setPageName("Student Details");
+    if (new_str.includes("students")) {
+      setPageName("Students");
     }
   }, []);
 

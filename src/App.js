@@ -14,6 +14,7 @@ import LendingLibrary from "./components/users/LendingLibrary";
 import Details from "./components/users/lending-library/Details";
 import StudentEditDetails from "./components/users/students/details/StudentEditDetails";
 import Calendar from "./components/users/calendar/Calendar";
+import StudentMessageHistory from "./components/users/students/StudentMessageHistory";
 
 function App() {
   return (
@@ -29,6 +30,10 @@ function App() {
       <Route path="students/details/:id" element={<StudentEditDetails />} />
       <Route path="/students/import" element={<StudentImport />} />
       <Route path="/students/message" element={<StudentEmailMessage />} />
+      <Route
+        path="/students/message-history"
+        element={<StudentMessageHistory />}
+      />
       <Route path="/lending-library" element={<LendingLibrary />} />
       <Route path="/lending-library/details" element={<Details />} />
       <Route path="/calendar" element={<Calendar />} />
