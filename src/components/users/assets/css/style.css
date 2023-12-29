@@ -11938,3 +11938,61 @@ button.closeModal {
   padding: 5px;
 }
 /******************* Lending Library End ********************/
+
+/******************* Online Resources Start ********************/
+
+.onlineresources .arrange {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+.onlineresources .resource {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+  border: 1px solid #dbd8d8;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  border-radius: 5px;
+}
+.onlineresources .resource .dis {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.onlineresources .folder-files p {
+  margin: 0;
+}
+.onlineresources .image-user {
+  width: 42px;
+  height: 42px;
+  background: #fb771a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid #ffffff;
+  color: #ffffff;
+}
+.onlineresources .image-user h2 {
+  font-size: 15px;
+  font-weight: 500;
+}
+/******************* Online Resources End ********************/
+
+/******************* Bussiness Settings Start ********************/
+
+.bussinesssetting .location-user,
+.bussinesssetting .email-user {
+  font-size: 15px;
+}
+.bussinesssetting .location-user {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+  padding-top: 10px;
+}
+.bussinesssetting .location-user i {
+  padding-top: 4px;
+}
+/******************* Bussiness Settings End ********************/

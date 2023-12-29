@@ -15,6 +15,8 @@ import Details from "./components/users/lending-library/Details";
 import StudentEditDetails from "./components/users/students/details/StudentEditDetails";
 import Calendar from "./components/users/calendar/Calendar";
 import StudentMessageHistory from "./components/users/students/StudentMessageHistory";
+import OnlineResources from "./components/users/OnlineResources";
+import BussinessSettings from "./components/users/BussinessSettings";
 
 function App() {
   return (
@@ -37,6 +39,8 @@ function App() {
       <Route path="/lending-library" element={<LendingLibrary />} />
       <Route path="/lending-library/details" element={<Details />} />
       <Route path="/calendar" element={<Calendar />} />
+      <Route path="/online-resources" element={<OnlineResources />} />
+      <Route path="/bussiness-settings" element={<BussinessSettings />} />
     </Routes>
   );
 }

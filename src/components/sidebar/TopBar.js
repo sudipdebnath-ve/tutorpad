@@ -239,7 +239,7 @@ const TopBar = () => {
                     <i className="fa fa-user" aria-hidden="true"></i> &nbsp; My
                     Preferences
                   </Link>
-                  <Link className="dropdown-item" to="#">
+                  <Link className="dropdown-item" to="/bussiness-settings">
                     <i className="fa fa-cog" aria-hidden="true"></i>{" "}
                     &nbsp;Bussiness Settings
                   </Link>

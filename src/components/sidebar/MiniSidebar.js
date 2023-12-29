@@ -56,7 +56,7 @@ const MiniSidebar = () => {
               splitLocation[1] === "online-resources" ? "active" : ""
             }`}
           >
-            <Link className="sidebar-link" to="#">
+            <Link className="sidebar-link" to="/online-resources">
               <i className="fa fa-cloud-download" aria-hidden="true"></i>
             </Link>
           </li>
