@@ -9,6 +9,8 @@ import { API_URL } from "../../utils/config.js";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import payroll from "../users/assets/images/payroll.svg";
+import Select from "react-select";
+import countryList from "react-select-country-list";
 
 const BussinessSettings = () => {
   const { userData, fetchData, sidebarToggle, token, userId } =
@@ -17,6 +19,8 @@ const BussinessSettings = () => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [attendFlag, setAttendFlag] = useState(false);
   const [availFlag, setAvailFlag] = useState(false);
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState({});
   const [formData, setFormData] = useState({
     title: "",
     first_name: "",
@@ -84,6 +88,16 @@ const BussinessSettings = () => {
     } else {
       fetchData(token);
     }
+  }, []);
+  useEffect(() => {
+    fetch(
+      "https://valid.layercode.workers.dev/list/countries?format=select&flags=true&value=code"
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setCountries(data.countries);
+        setSelectedCountry(data.userSelectValue);
+      });
   }, []);
 
   const handleChange = (e) => {
@@ -530,7 +544,7 @@ const BussinessSettings = () => {
                               ></i>
                             </div>
                           </div>
-                          <div className="formbold-input-flex">
+                          <div className="formbold-input-flex diff">
                             <div>
                               <label
                                 htmlFor="preferences"
@@ -553,38 +567,13 @@ const BussinessSettings = () => {
                             </div>
                           </div>
 
-                          <div className="formbold-input-flex diff">
-                            <div>
-                              <div>
-                                <label
-                                  htmlFor="studentFamily"
-                                  className="formbold-form-label"
-                                >
-                                  Default Notes View
-                                </label>
-                              </div>
-                              <div className="input-radio">
-                                <input
-                                  type="radio"
-                                  value="Student"
-                                  selected
-                                ></input>
-                                Student
-                                <input type="radio" value="Parent"></input>
-                                Parent
-                                <input type="radio" value="Private"></input>
-                                Private
-                              </div>
-                            </div>
-                          </div>
-
                           <div className="formbold-input-flex diff mb-0">
                             <div>
                               <label
                                 htmlFor="preferences"
                                 className="formbold-form-label"
                               >
-                                Lesson Notes
+                                'Not Specified' Location in Events
                               </label>
                               <br></br>
                               <div
@@ -595,32 +584,15 @@ const BussinessSettings = () => {
                                   type="checkbox"
                                   name="automatically_copy_lesson"
                                 />
-                                Automatically copy lesson notes when I take
-                                attendance
+                                Allow 'Not Specified' as a location option in
+                                calendar events
                               </div>
-                            </div>
-                          </div>
-
-                          <div className="formbold-input-flex diff">
-                            <div
-                              className="input-radio"
-                              style={{ fontSize: "15px" }}
-                            >
-                              <input
-                                type="radio"
-                                value="Student"
-                                selected
-                              ></input>
-                              Copy from most recent event
-                              <input type="radio" value="Parent"></input>
-                              Copy from same category only
                             </div>
                           </div>
                         </div>
                         <div className="accordion-body pt-0">
                           <div className="student-properties-edit sec-acc">
-                            <h3>Email Notification Preferences</h3>
-
+                            <h3>Naming Format</h3>
                             <div
                               className="student-edit-user"
                               onClick={(e) => setAttendFlag(!e.target.value)}
@@ -631,75 +603,72 @@ const BussinessSettings = () => {
                               ></i>
                             </div>
                           </div>
-
-                          <small className="small">
-                            Select what you'd like to be notified about via
-                            email and how often
-                          </small>
-                          <div className="make-pad pb-3">
-                            <div className="input-check">
-                              <input type="checkbox"></input>
-                              When any student registers for a lesson/event
-                              through the Student Portal
-                            </div>
-                            <div className="input-check">
-                              <input type="checkbox"></input>
-                              When any student cancels a lesson/event through
-                              the Student Portal
-                            </div>
-                            <div className="input-check">
-                              <input type="checkbox"></input>
-                              When any parent or student completes the sign-up
-                              form
-                            </div>
-                            <div className="input-check">
-                              <input type="checkbox"></input>
-                              When any parent or student disables email
-                              reminders
-                            </div>
-                            <div className="input-check">
-                              <input type="checkbox"></input>
-                              Allow students to email me from the Study Log
-                            </div>
-                          </div>
-                          <div className="email-pad-top">
-                            <h5>
-                              <strong>Email Daily Agenda</strong>
-                            </h5>
-                            <div className="input-radio">
-                              <input type="radio" value="Day Before"></input>
-                              Day Before
-                              <br />
-                              Between 16:00 and 23:00
-                              <input type="radio" value="Same Day"></input>
-                              Same Day
-                              <br />
-                              Between 0:00 and 15:00
-                              <input type="radio" value="Don't Email"></input>
-                              Don't Email
-                            </div>
-                          </div>
-                          {attendFlag && (
-                            <>
-                              <div className="formbold-form-btn-wrapper justify-content-end">
-                                <div className="btn-end">
-                                  <Link
-                                    className="cancel"
-                                    onClick={() => setAttendFlag(false)}
-                                  >
-                                    Cancel
-                                  </Link>
-
-                                  <button
-                                    className="formbold-btn"
-                                    onClick={saveAttendancePreference}
-                                  >
-                                    Save
-                                  </button>
-                                </div>
+                          <div className="formbold-input-flex diff">
+                            <div>
+                              <div>
+                                <label
+                                  htmlFor="studentFamily"
+                                  className="formbold-form-label"
+                                >
+                                  Tutor Name Format
+                                </label>
                               </div>
-                            </>
-                          )}
+                              <div className="input-radio">
+                                <input
+                                  type="radio"
+                                  value="Student"
+                                  selected
+                                ></input>
+                                Last, First
+                                <input type="radio" value="Parent"></input>
+                                First Last
+                              </div>
+                            </div>
+                          </div>
+                          <div className="formbold-input-flex diff">
+                            <div>
+                              <div>
+                                <label
+                                  htmlFor="studentFamily"
+                                  className="formbold-form-label"
+                                >
+                                  Student Name Format
+                                </label>
+                              </div>
+                              <div className="input-radio">
+                                <input
+                                  type="radio"
+                                  value="Student"
+                                  selected
+                                ></input>
+                                Last, First
+                                <input type="radio" value="Parent"></input>
+                                First Last
+                              </div>
+                            </div>
+                          </div>
+                          <div className="formbold-input-flex diff">
+                            <div>
+                              <div>
+                                <label
+                                  htmlFor="studentFamily"
+                                  className="formbold-form-label"
+                                >
+                                  Parent Name Format
+                                </label>
+                              </div>
+                              <div className="input-radio">
+                                <input
+                                  type="radio"
+                                  value="Student"
+                                  selected
+                                ></input>
+                                Last, First
+                                <input type="radio" value="Parent"></input>
+                                First Last
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -720,7 +689,7 @@ const BussinessSettings = () => {
                           aria-expanded="false"
                           aria-controls="flush-collapseTwo"
                         >
-                          <strong>Availablity</strong>
+                          <strong>Membership</strong>
                         </button>
                       </h2>
                       <div
@@ -731,35 +700,71 @@ const BussinessSettings = () => {
                       >
                         <div className="accordion-body">
                           <div className="student-properties-edit sec-acc">
-                            <h3>Availability</h3>
-
-                            <button
-                              className="formbold-btn"
-                              style={{ fontSize: "14px", padding: "6px 16px" }}
-                              onClick={(e) => setAvailFlag(!e.target.value)}
+                            <h3>Membership Plan</h3>
+                            <div
+                              className="student-edit-user"
+                              onClick={(e) => setAttendFlag(!e.target.value)}
                             >
                               <i
-                                style={{ color: "#ffffff" }}
-                                className="fa fa-plus"
+                                className="fa fa-pencil"
                                 aria-hidden="true"
                               ></i>
-                              Add
-                            </button>
+                            </div>
                           </div>
-                          <div className="formbold-input-flex">
-                            <span style={{ lineHeight: "1.6" }}>
-                              Enter your tutoring availability here to provide a
-                              visual cue of your availability on the calendar
-                              (visible in "Day" view or "Timeline" view).
-                              Setting your availability will not add or remove
-                              lessons from the calendar, or prevent lessons from
-                              being scheduled outside of these days/times.
-                            </span>
+                          <div className="acc-content">
+                            <p>Plan</p>
+                            <h6>
+                              TutorBird Monthly - 2 Tutors & Admins ($ 19.90
+                              USD)
+                            </h6>
                           </div>
-
-                          <p>
-                            You haven't added your tutoring availability yet
-                          </p>
+                          <hr></hr>
+                          <div className="student-properties-edit sec-acc">
+                            <h3>Payment Method</h3>
+                          </div>
+                          {!availFlag && (
+                            <>
+                              <div className="payment-method">
+                                <h6>
+                                  <strong>No payment method on file</strong>
+                                </h6>
+                                <div className="credit-button">
+                                  <button
+                                    className="formbold-btn"
+                                    style={{
+                                      fontSize: "14px",
+                                      padding: "6px 16px",
+                                    }}
+                                    onClick={(e) =>
+                                      setAvailFlag(!e.target.value)
+                                    }
+                                  >
+                                    <i
+                                      style={{ color: "#ffffff" }}
+                                      className="fa fa-plus"
+                                      aria-hidden="true"
+                                    ></i>
+                                    Subscribe with Credit Card
+                                  </button>
+                                  <Link
+                                    className="formbold-btn"
+                                    style={{
+                                      fontSize: "14px",
+                                      padding: "6px 16px",
+                                    }}
+                                    to="https://www.paypal.com/"
+                                  >
+                                    <i
+                                      style={{ color: "#ffffff" }}
+                                      className="fa fa-plus"
+                                      aria-hidden="true"
+                                    ></i>
+                                    Subscribe with Paypal
+                                  </Link>
+                                </div>
+                              </div>
+                            </>
+                          )}
                           {availFlag && (
                             <>
                               <div className="availablity">
@@ -773,108 +778,20 @@ const BussinessSettings = () => {
                                     </label>
                                   </div>
                                 </div>
+
                                 <div className="formbold-input-flex diff">
-                                  <div>
-                                    <div>
-                                      <label
-                                        htmlFor="days"
-                                        className="formbold-form-label"
-                                      >
-                                        Days
-                                      </label>
-                                    </div>
-                                    <div className="studentStatus">
-                                      <div>
-                                        <input
-                                          type="checkbox"
-                                          className="status"
-                                          name="sun"
-                                          value="Sun"
-                                        />
-                                        Sun
-                                      </div>
-                                      <div>
-                                        <input
-                                          type="checkbox"
-                                          className="status"
-                                          name="mon"
-                                          value="Mon"
-                                        />
-                                        Mon
-                                      </div>
-                                      <div>
-                                        <input
-                                          type="checkbox"
-                                          className="status"
-                                          name="tue"
-                                          value="Tue"
-                                        />
-                                        Tue
-                                      </div>
-                                      <div>
-                                        <input
-                                          type="checkbox"
-                                          className="status"
-                                          name="wed"
-                                          value="Wed"
-                                        />
-                                        Wed
-                                      </div>
-                                      <div>
-                                        <input
-                                          type="checkbox"
-                                          className="status"
-                                          name="thu"
-                                          value="Thu"
-                                        />
-                                        Thu
-                                      </div>
-                                      <div>
-                                        <input
-                                          type="checkbox"
-                                          className="status"
-                                          name="fri"
-                                          value="Fri"
-                                        />
-                                        Fri
-                                      </div>
-                                      <div>
-                                        <input
-                                          type="checkbox"
-                                          className="status"
-                                          name="sat"
-                                          value="Sat"
-                                        />
-                                        Sat
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="formbold-input-flex">
                                   <div>
                                     <label
                                       htmlFor="start_date"
                                       className="formbold-form-label"
                                     >
-                                      Start Date <span>Optional</span>
+                                      Card Number
                                     </label>
                                     <input
-                                      type="date"
+                                      type="text"
                                       name="start_date"
                                       className="form-control"
-                                    />
-                                  </div>
-                                  <div>
-                                    <label
-                                      htmlFor="end_date"
-                                      className="formbold-form-label"
-                                    >
-                                      End Date <span>Optional</span>
-                                    </label>
-                                    <input
-                                      type="date"
-                                      name="end_date"
-                                      className="form-control"
+                                      placeholder="1234 1234 1234"
                                     />
                                   </div>
                                 </div>
@@ -884,12 +801,13 @@ const BussinessSettings = () => {
                                       htmlFor="start_time"
                                       className="formbold-form-label"
                                     >
-                                      Start Time
+                                      Expiry
                                     </label>
                                     <input
-                                      type="time"
+                                      type="text"
                                       name="start_time"
                                       className="form-control"
+                                      placeholder="MM/YY"
                                     />
                                   </div>
                                   <div>
@@ -897,27 +815,69 @@ const BussinessSettings = () => {
                                       htmlFor="end_time"
                                       className="formbold-form-label"
                                     >
-                                      End Time
+                                      CVC
                                     </label>
                                     <input
-                                      type="time"
+                                      type="text"
                                       name="end_time"
                                       className="form-control"
+                                      placeholder="CVC"
+                                    />
+                                  </div>
+                                </div>
+                                <div className="formbold-input-flex diff">
+                                  <span>
+                                    By providing your card information, you
+                                    allow TutorBird to charge your card for
+                                    future payments in accordance with their
+                                    terms.
+                                  </span>
+                                </div>
+                                <div className="formbold-input-flex diff">
+                                  <div>
+                                    <label
+                                      htmlFor="start_time"
+                                      className="formbold-form-label"
+                                    >
+                                      Full Name
+                                    </label>
+                                    <input
+                                      type="text"
+                                      name="start_time"
+                                      className="form-control"
+                                      placeholder="First and last name"
                                     />
                                   </div>
                                 </div>
                                 <div className="formbold-input-flex diff">
                                   <div>
                                     <label
-                                      htmlFor="note"
+                                      htmlFor="start_time"
                                       className="formbold-form-label"
                                     >
-                                      Note <span>Optional</span>
+                                      Country or region
                                     </label>
-
+                                    <Select
+                                      options={countries}
+                                      value={selectedCountry}
+                                      onChange={(selectedOption) =>
+                                        setSelectedCountry(selectedOption)
+                                      }
+                                    />
+                                  </div>
+                                </div>
+                                <div className="formbold-input-flex diff">
+                                  <div>
+                                    <label
+                                      htmlFor="start_time"
+                                      className="formbold-form-label"
+                                    >
+                                      Address
+                                    </label>
                                     <textarea
-                                      name="note"
+                                      name="start_time"
                                       className="form-control"
+                                      placeholder="First and last name"
                                     />
                                   </div>
                                 </div>
@@ -941,6 +901,47 @@ const BussinessSettings = () => {
                               </div>
                             </>
                           )}
+                          <hr></hr>
+                          <div className="student-properties-edit sec-acc">
+                            <h3>Membership Fee</h3>
+                            <div
+                              className="student-edit-user"
+                              onClick={(e) => setAttendFlag(!e.target.value)}
+                            >
+                              <i
+                                className="fa fa-pencil"
+                                aria-hidden="true"
+                              ></i>
+                            </div>
+                          </div>
+                          <div className="acc-content">
+                            <h6>
+                              <strong>Membership Fee Category</strong>
+                            </h6>
+                            <p>Memberships and Dues</p>
+                          </div>
+                          <hr></hr>
+                          <div className="student-properties-edit sec-acc">
+                            <h3>Billing History</h3>
+                          </div>
+                          <div className="row">
+                            <div className="col-12 col-md-12 col-xxl-12 d-flex order-2 order-xxl-3">
+                              <div className="flex-fill w-100">
+                                <div className="py-3">
+                                  <div className="chart chart-xs payroll-img">
+                                    <img src={payroll}></img>
+                                  </div>
+                                </div>
+                                <h6 className="text-center">
+                                  <strong>You haven't been billed yet</strong>
+                                  <p className="pt-3">
+                                    Add your payment method above to subscribe
+                                    to TutorBird
+                                  </p>
+                                </h6>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -961,7 +962,7 @@ const BussinessSettings = () => {
                           aria-expanded="false"
                           aria-controls="flush-collapseThree"
                         >
-                          <strong>Payroll</strong>
+                          <strong>Accounts & Invoices</strong>
                         </button>
                       </h2>
                       <div
@@ -971,20 +972,125 @@ const BussinessSettings = () => {
                         data-bs-parent="#accordionFlushExample"
                       >
                         <div className="accordion-body">
-                          <div className="row">
-                            <div className="col-12 col-md-12 col-xxl-12 d-flex order-2 order-xxl-3">
-                              <div className="flex-fill w-100">
-                                <div className="py-3">
-                                  <div className="chart chart-xs payroll-img">
-                                    <img src={payroll}></img>
-                                  </div>
-                                </div>
-                                <h6 className="text-center">
-                                  <strong>
-                                    You haven't added any payroll entries yet
-                                  </strong>
-                                </h6>
+                          <div className="student-properties-edit sec-acc">
+                            <h3>Family Account</h3>
+                            <div
+                              className="student-edit-user"
+                              onClick={(e) => setAttendFlag(!e.target.value)}
+                            >
+                              <i
+                                className="fa fa-pencil"
+                                aria-hidden="true"
+                              ></i>
+                            </div>
+                          </div>
+                          <div className="formbold-input-flex diff">
+                            <div>
+                              <label
+                                htmlFor="preferences"
+                                className="formbold-form-label"
+                              >
+                                Payment Methods -
+                              </label>
+                            </div>
+                            <div>
+                              <label htmlFor="preferences">
+                                None Specified
+                              </label>
+                            </div>
+                          </div>
+                          <div className="formbold-input-flex diff">
+                            <div>
+                              <div>
+                                <label
+                                  htmlFor="studentFamily"
+                                  className="formbold-form-label"
+                                >
+                                  Default Balance Date
+                                </label>
                               </div>
+                              <div className="input-radio">
+                                <input
+                                  type="radio"
+                                  value="Student"
+                                  selected
+                                ></input>
+                                Today
+                                <input type="radio" value="Parent"></input>
+                                End of month
+                                <input type="radio" value="Parent"></input>
+                                Day of month
+                                <input type="radio" value="Parent"></input>
+                                Specific date
+                              </div>
+                            </div>
+                          </div>
+                          <hr></hr>
+                          <div className="student-properties-edit sec-acc">
+                            <h3>Invoice Settings</h3>
+                            <div
+                              className="student-edit-user"
+                              onClick={(e) => setAttendFlag(!e.target.value)}
+                            >
+                              <i
+                                className="fa fa-pencil"
+                                aria-hidden="true"
+                              ></i>
+                            </div>
+                          </div>
+                          <div className="formbold-input-flex diff">
+                            <div>
+                              <div>
+                                <label
+                                  htmlFor="studentFamily"
+                                  className="formbold-form-label"
+                                >
+                                  Automatic Late Payment Fee
+                                </label>
+                              </div>
+                              <div className="input-radio">
+                                <input
+                                  type="radio"
+                                  value="Student"
+                                  selected
+                                ></input>
+                                None
+                                <input type="radio" value="Parent"></input>
+                                Fixed amount (₹)
+                                <input type="radio" value="Parent"></input>
+                                Percentage (%)
+                              </div>
+                            </div>
+                          </div>
+                          <div className="formbold-input-flex diff">
+                            <div>
+                              <label
+                                htmlFor="preferences"
+                                className="formbold-form-label"
+                              >
+                                Notifications & Reminders
+                              </label>
+                              <br></br>
+                              <div className="preference">
+                                <input type="checkbox" name="emailpreference" />
+                                Send SMS invoice notifications and invoice
+                                reminders
+                              </div>
+                              <div className="preference">
+                                <input type="checkbox" name="smspreference" />
+                                Send an overdue invoice reminder
+                              </div>
+                            </div>
+                          </div>
+                          <div className="formbold-input-flex">
+                            <div>
+                              <label
+                                htmlFor="preferences"
+                                className="formbold-form-label"
+                              >
+                                Email Timeframe
+                              </label>
+                              <p>Between 8:00 AM and 9:00 AM</p>
                             </div>
                           </div>
                         </div>

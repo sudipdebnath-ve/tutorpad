@@ -15,7 +15,6 @@ const TopBar = () => {
     let name = window.location.pathname;
     var new_str = name.replace("/", "");
     var new_str = new_str.replace("-", " ");
-    console.log(new_str);
     setPageName(new_str);
     if (new_str.includes("students")) {
       setPageName("Students");

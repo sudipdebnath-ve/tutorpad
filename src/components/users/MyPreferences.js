@@ -123,10 +123,10 @@ const MyPreferences = () => {
           position: toast.POSITION.TOP_CENTER,
         });
 
-        setTimeout(() => {
-          setIsOpen(false);
-          window.location.reload(false);
-        }, 2000);
+        // setTimeout(() => {
+        //   setIsOpen(false);
+        //   window.location.reload(false);
+        // }, 2000);
       })
       .catch((error) => {
         console.log(error);

@@ -11995,4 +11995,21 @@ button.closeModal {
 .bussinesssetting .location-user i {
   padding-top: 4px;
 }
+.payment-method {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.payment-method .credit-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.payment-method h6 {
+  margin: 0;
+  font-size: 16px;
+}
+/* .bussinesssetting .acc-content {
+  padding: 10px 0px 20px 0px;
+} */
 /******************* Bussiness Settings End ********************/
