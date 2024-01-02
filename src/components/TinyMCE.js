@@ -13,7 +13,7 @@ export default function TinyMCE() {
   const handleImageUpload = (blobInfo, progress, failure) => {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.open("POST", "http://localhost/php/server.php", true);
+      xhr.open("POST", `${API_URL}user/uploadmedia`, true);
 
       const formData = new FormData();
       formData.append("file", blobInfo.blob(), blobInfo.filename());

@@ -192,7 +192,7 @@ const Register = () => {
                     <input
                       type="text"
                       className="form-control"
-                      placeholder="Bussiness Name (Optional)"
+                      placeholder="Business Name (Optional)"
                       name="bname"
                       onChange={handleChange}
                     />
@@ -200,11 +200,11 @@ const Register = () => {
                   <div className="form-group last mb-3">
                     <select
                       className="form-control"
-                      name="bussiness_size"
+                      name="business_size"
                       onChange={handleChange}
                       required
                     >
-                      <option value="">Bussiness Size</option>
+                      <option value="">Business Size</option>
                       <option value="single">It's just me!</option>
                       <option value="multi">
                         I have a business with multiple tutors
