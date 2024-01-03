@@ -15,7 +15,10 @@ const MyPreferences = () => {
     useUserDataContext();
   const navigate = useNavigate();
   const [modalIsOpen, setIsOpen] = useState(false);
+  const [profilePhoto, setProfilePhoto] = useState("");
   const [attendFlag, setAttendFlag] = useState(false);
+  const [attendDisabled, setAttenddisabled] = useState(true);
+  const [emailDisabled, setEmaildisabled] = useState(true);
   const [availFlag, setAvailFlag] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
@@ -28,6 +31,7 @@ const MyPreferences = () => {
     subjects: "",
     location: "",
   });
+  const [generalTabData, setGeneralTabData] = useState({});
 
   // console.log(userData);
   const customStyles = {
@@ -86,27 +90,43 @@ const MyPreferences = () => {
     }
   }, []);
 
+  const handleAttendEdit = (e) => {
+    setAttendFlag(!e.target.value);
+    setAttenddisabled(false);
+  };
+  // const handleAttend=(e)=>{
+
+  // }
+  const handleEmailEdit = (e) => {
+    setAttendFlag(!e.target.value);
+    setEmaildisabled(false);
+  };
+  const handleCancelAttendFlag = (e) => {
+    setAttendFlag(false);
+    setAttenddisabled(true);
+    setEmaildisabled(true);
+  };
   const handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
-    // if (name === "phone") {
-    //   formData["phone"] = value;
-    // } else if (name === "student_status") {
-    //   formData["student_status"] = value;
-    // } else if (name === "studentType") {
-    //   formData["studentType"] = value;
-    // } else if (name === "billing") {
-    //   formData["billing"] = value;
-    // } else if (name === "dob") {
-    //   formData["dob"] = value;
-    //   console.log(value);
-    // }
+    if (name === "photo") {
+      setProfilePhoto(URL.createObjectURL(e.target.files[0]));
+    }
+
     setFormData({ ...formData, [name]: value });
-    // console.log(formData);
+  };
+  const handleGeneralTabChange = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+
+    setGeneralTabData({ ...generalTabData, [name]: value });
   };
   const formSubmit = async (e) => {
-    console.log(formData);
     formData["user_id"] = userId;
+    if (profilePhoto) {
+      formData["photo"] = profilePhoto;
+    }
+
     e.preventDefault();
     const config = {
       method: "PATCH",
@@ -123,6 +143,38 @@ const MyPreferences = () => {
           position: toast.POSITION.TOP_CENTER,
         });
 
+        setTimeout(() => {
+          setIsOpen(false);
+          window.location.reload(false);
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const formGeneralTabSubmit = async (e) => {
+    generalTabData["user_id"] = userId;
+
+    console.log(generalTabData);
+    e.preventDefault();
+    const config = {
+      method: "PATCH",
+      url: `${API_URL}user/savedata`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: generalTabData,
+    };
+    await axios(config)
+      .then((response) => {
+        console.log(response);
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        setAttendFlag(false);
+        setAttenddisabled(true);
+        setEmaildisabled(true);
         // setTimeout(() => {
         //   setIsOpen(false);
         //   window.location.reload(false);
@@ -131,10 +183,6 @@ const MyPreferences = () => {
       .catch((error) => {
         console.log(error);
       });
-  };
-
-  const saveAttendancePreference = () => {
-    setAttendFlag(true);
   };
   return (
     <div className="wrapper">
@@ -170,11 +218,7 @@ const MyPreferences = () => {
                 <div className="col-xl-4 col-xxl-4">
                   <div className="formbold-input-flex justify-content-center">
                     <div>
-                      <label
-                        htmlFor="photo"
-                        className="formbold-form-label"
-                        id="photo"
-                      >
+                      <label htmlFor="photo" className="formbold-form-label">
                         Photo <span>Optional</span>
                       </label>
                       <div className="initials py-3">
@@ -553,10 +597,9 @@ const MyPreferences = () => {
                         <div className="accordion-body">
                           <div className="student-properties-edit sec-acc">
                             <h3>Attendance Preferences</h3>
-
                             <div
                               className="student-edit-user"
-                              onClick={(e) => setAttendFlag(!e.target.value)}
+                              onClick={handleAttendEdit}
                             >
                               <i
                                 className="fa fa-pencil"
@@ -567,7 +610,7 @@ const MyPreferences = () => {
                           <div className="formbold-input-flex">
                             <div>
                               <label
-                                htmlFor="preferences"
+                                htmlFor="overdue_attendence"
                                 className="formbold-form-label"
                               >
                                 Overdue Attendance
@@ -580,6 +623,9 @@ const MyPreferences = () => {
                                 <input
                                   type="checkbox"
                                   name="overdue_attendence"
+                                  value="Overdue Attendance"
+                                  disabled={attendDisabled}
+                                  onChange={handleGeneralTabChange}
                                 />
                                 Show overdue attendance on homepage
                               </div>
@@ -600,12 +646,26 @@ const MyPreferences = () => {
                                 <input
                                   type="radio"
                                   value="Student"
-                                  selected
+                                  name="default_notes_view"
+                                  disabled={attendDisabled}
+                                  onChange={handleGeneralTabChange}
                                 ></input>
                                 Student
-                                <input type="radio" value="Parent"></input>
+                                <input
+                                  type="radio"
+                                  value="Parent"
+                                  name="default_notes_view"
+                                  disabled={attendDisabled}
+                                  onChange={handleGeneralTabChange}
+                                ></input>
                                 Parent
-                                <input type="radio" value="Private"></input>
+                                <input
+                                  type="radio"
+                                  value="Private"
+                                  name="default_notes_view"
+                                  disabled={attendDisabled}
+                                  onChange={handleGeneralTabChange}
+                                ></input>
                                 Private
                               </div>
                             </div>
@@ -627,6 +687,10 @@ const MyPreferences = () => {
                                 <input
                                   type="checkbox"
                                   name="automatically_copy_lesson"
+                                  value="Automatically copy lesson notes when I take
+                                  attendance"
+                                  disabled={attendDisabled}
+                                  onChange={handleGeneralTabChange}
                                 />
                                 Automatically copy lesson notes when I take
                                 attendance
@@ -641,11 +705,19 @@ const MyPreferences = () => {
                             >
                               <input
                                 type="radio"
-                                value="Student"
-                                selected
+                                value="Copy from most recent event"
+                                name="copy_recent_event"
+                                disabled={attendDisabled}
+                                onChange={handleGeneralTabChange}
                               ></input>
                               Copy from most recent event
-                              <input type="radio" value="Parent"></input>
+                              <input
+                                type="radio"
+                                value="Copy from same category only"
+                                name="copy_recent_event"
+                                disabled={attendDisabled}
+                                onChange={handleGeneralTabChange}
+                              ></input>
                               Copy from same category only
                             </div>
                           </div>
@@ -656,7 +728,7 @@ const MyPreferences = () => {
 
                             <div
                               className="student-edit-user"
-                              onClick={(e) => setAttendFlag(!e.target.value)}
+                              onClick={handleEmailEdit}
                             >
                               <i
                                 className="fa fa-pencil"
@@ -671,27 +743,61 @@ const MyPreferences = () => {
                           </small>
                           <div className="make-pad pb-3">
                             <div className="input-check">
-                              <input type="checkbox"></input>
+                              <input
+                                type="checkbox"
+                                name="student_register_lesson"
+                                value="When any student registers for a lesson/event
+                                through the Student Portal"
+                                disabled={emailDisabled}
+                                onChange={handleGeneralTabChange}
+                              ></input>
                               When any student registers for a lesson/event
                               through the Student Portal
                             </div>
                             <div className="input-check">
-                              <input type="checkbox"></input>
+                              <input
+                                type="checkbox"
+                                name="student_cancel_lesson"
+                                value="When any student cancels a lesson/event through
+                                the Student Portal"
+                                disabled={emailDisabled}
+                                onChange={handleGeneralTabChange}
+                              ></input>
                               When any student cancels a lesson/event through
                               the Student Portal
                             </div>
                             <div className="input-check">
-                              <input type="checkbox"></input>
+                              <input
+                                type="checkbox"
+                                name="parent_student_signup"
+                                value="When any parent or student completes the sign-up
+                                form"
+                                disabled={emailDisabled}
+                                onChange={handleGeneralTabChange}
+                              ></input>
                               When any parent or student completes the sign-up
                               form
                             </div>
                             <div className="input-check">
-                              <input type="checkbox"></input>
+                              <input
+                                type="checkbox"
+                                name="parent_student_disable_email_reminder"
+                                value="When any parent or student disables email
+                                reminders"
+                                disabled={emailDisabled}
+                                onChange={handleGeneralTabChange}
+                              ></input>
                               When any parent or student disables email
                               reminders
                             </div>
                             <div className="input-check">
-                              <input type="checkbox"></input>
+                              <input
+                                type="checkbox"
+                                name="allow_student_email_studylog"
+                                value="Allow students to email me from the Study Log"
+                                disabled={emailDisabled}
+                                onChange={handleGeneralTabChange}
+                              ></input>
                               Allow students to email me from the Study Log
                             </div>
                           </div>
@@ -700,15 +806,33 @@ const MyPreferences = () => {
                               <strong>Email Daily Agenda</strong>
                             </h5>
                             <div className="input-radio">
-                              <input type="radio" value="Day Before"></input>
+                              <input
+                                type="radio"
+                                value="Day Before"
+                                name="daily_agenda"
+                                disabled={emailDisabled}
+                                onChange={handleGeneralTabChange}
+                              ></input>
                               Day Before
                               <br />
                               Between 16:00 and 23:00
-                              <input type="radio" value="Same Day"></input>
+                              <input
+                                type="radio"
+                                value="Same Day"
+                                name="daily_agenda"
+                                disabled={emailDisabled}
+                                onChange={handleGeneralTabChange}
+                              ></input>
                               Same Day
                               <br />
                               Between 0:00 and 15:00
-                              <input type="radio" value="Don't Email"></input>
+                              <input
+                                type="radio"
+                                value="Don't Email"
+                                name="daily_agenda"
+                                disabled={emailDisabled}
+                                onChange={handleGeneralTabChange}
+                              ></input>
                               Don't Email
                             </div>
                           </div>
@@ -718,14 +842,14 @@ const MyPreferences = () => {
                                 <div className="btn-end">
                                   <Link
                                     className="cancel"
-                                    onClick={() => setAttendFlag(false)}
+                                    onClick={handleCancelAttendFlag}
                                   >
                                     Cancel
                                   </Link>
 
                                   <button
                                     className="formbold-btn"
-                                    onClick={saveAttendancePreference}
+                                    onClick={formGeneralTabSubmit}
                                   >
                                     Save
                                   </button>
@@ -823,6 +947,7 @@ const MyPreferences = () => {
                                           className="status"
                                           name="sun"
                                           value="Sun"
+                                          onChange={handleGeneralTabChange}
                                         />
                                         Sun
                                       </div>
@@ -832,6 +957,7 @@ const MyPreferences = () => {
                                           className="status"
                                           name="mon"
                                           value="Mon"
+                                          onChange={handleGeneralTabChange}
                                         />
                                         Mon
                                       </div>
@@ -841,6 +967,7 @@ const MyPreferences = () => {
                                           className="status"
                                           name="tue"
                                           value="Tue"
+                                          onChange={handleGeneralTabChange}
                                         />
                                         Tue
                                       </div>
@@ -850,6 +977,7 @@ const MyPreferences = () => {
                                           className="status"
                                           name="wed"
                                           value="Wed"
+                                          onChange={handleGeneralTabChange}
                                         />
                                         Wed
                                       </div>
@@ -859,6 +987,7 @@ const MyPreferences = () => {
                                           className="status"
                                           name="thu"
                                           value="Thu"
+                                          onChange={handleGeneralTabChange}
                                         />
                                         Thu
                                       </div>
@@ -868,6 +997,7 @@ const MyPreferences = () => {
                                           className="status"
                                           name="fri"
                                           value="Fri"
+                                          onChange={handleGeneralTabChange}
                                         />
                                         Fri
                                       </div>
@@ -877,6 +1007,7 @@ const MyPreferences = () => {
                                           className="status"
                                           name="sat"
                                           value="Sat"
+                                          onChange={handleGeneralTabChange}
                                         />
                                         Sat
                                       </div>
@@ -895,6 +1026,7 @@ const MyPreferences = () => {
                                       type="date"
                                       name="start_date"
                                       className="form-control"
+                                      onChange={handleGeneralTabChange}
                                     />
                                   </div>
                                   <div>
@@ -908,6 +1040,7 @@ const MyPreferences = () => {
                                       type="date"
                                       name="end_date"
                                       className="form-control"
+                                      onChange={handleGeneralTabChange}
                                     />
                                   </div>
                                 </div>
@@ -923,6 +1056,7 @@ const MyPreferences = () => {
                                       type="time"
                                       name="start_time"
                                       className="form-control"
+                                      onChange={handleGeneralTabChange}
                                     />
                                   </div>
                                   <div>
@@ -936,6 +1070,7 @@ const MyPreferences = () => {
                                       type="time"
                                       name="end_time"
                                       className="form-control"
+                                      onChange={handleGeneralTabChange}
                                     />
                                   </div>
                                 </div>
@@ -951,6 +1086,7 @@ const MyPreferences = () => {
                                     <textarea
                                       name="note"
                                       className="form-control"
+                                      onChange={handleGeneralTabChange}
                                     />
                                   </div>
                                 </div>
@@ -965,7 +1101,7 @@ const MyPreferences = () => {
 
                                     <button
                                       className="formbold-btn"
-                                      onClick={saveAttendancePreference}
+                                      onClick={formGeneralTabSubmit}
                                     >
                                       Save
                                     </button>

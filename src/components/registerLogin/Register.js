@@ -86,11 +86,11 @@ const Register = () => {
       });
   };
 
-  useEffect(() => {
-    if (localStorage.getItem("tutorPad")) {
-      navigate("/signin");
-    }
-  });
+  // useEffect(() => {
+  //   if (localStorage.getItem("tutorPad")) {
+  //     navigate("/signin");
+  //   }
+  // });
 
   return (
     <div className="d-md-flex half">
