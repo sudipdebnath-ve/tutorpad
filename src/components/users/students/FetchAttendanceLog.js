@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { DataGrid, GridToolbar, GridValueGetterParams } from "@mui/x-data-grid";
 import { useUserDataContext } from "../../../contextApi/userDataContext.js";
-import students from "../assets/images/students.svg";
+import attendence from "../students/assets/images/attendance.svg";
 import Loader from "../../Loader.js";
 import { Link } from "react-router-dom";
 
-const FetchStudyLog = () => {
+const FetchAttendanceLog = () => {
   const [val, setVal] = useState(false);
   const { fetchStudentData, userId, studentData, setLoading, loading } =
     useUserDataContext();
@@ -48,7 +48,7 @@ const FetchStudyLog = () => {
 
   useEffect(() => {
     setVal(true);
-    // console.log(studentData);
+    console.log(studentData);
   }, [studentData]);
   if (val) {
     var rows = studentData;
@@ -109,14 +109,18 @@ const FetchStudyLog = () => {
               <>
                 <div className="py-3">
                   <div className="chart chart-xs">
-                    <img src={students}></img>
+                    <img src={attendence} alt="attendence"></img>
                   </div>
                 </div>
-                <h4 style={{ textAlign: "center" }}>
-                  <strong>You don't have any students yet</strong>
-                </h4>
+                <h5 className="my-1" style={{ textAlign: "center" }}>
+                  <strong>
+                    There aren't any events scheduled as of the date you
+                    selected
+                  </strong>
+                </h5>
                 <p style={{ textAlign: "center" }}>
-                  Add your students so you can take their attendance, and more.
+                  Adjust to a date in the future or go to the calendar to
+                  schedule some lessons
                 </p>
               </>
             )}
@@ -127,4 +131,4 @@ const FetchStudyLog = () => {
   );
 };
 
-export default FetchStudyLog;
+export default FetchAttendanceLog;

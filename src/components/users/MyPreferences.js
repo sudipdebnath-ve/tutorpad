@@ -20,6 +20,7 @@ const MyPreferences = () => {
   const [attendDisabled, setAttenddisabled] = useState(true);
   const [emailDisabled, setEmaildisabled] = useState(true);
   const [availFlag, setAvailFlag] = useState(false);
+  const [initial, setInitial] = useState("");
   const [formData, setFormData] = useState({
     title: "",
     first_name: "",
@@ -89,6 +90,18 @@ const MyPreferences = () => {
       fetchData(token);
     }
   }, []);
+  useEffect(() => {
+    var name = `${userData.first_name}${" "}${userData.last_name}`;
+
+    var parts = name.split(" ");
+    var initials = "";
+    for (var i = 0; i < parts.length; i++) {
+      if (parts[i].length > 0 && parts[i] !== "") {
+        initials += parts[i][0];
+      }
+    }
+    setInitial(initials);
+  }, [userData]);
 
   const handleAttendEdit = (e) => {
     setAttendFlag(!e.target.value);
@@ -173,6 +186,7 @@ const MyPreferences = () => {
           position: toast.POSITION.TOP_CENTER,
         });
         setAttendFlag(false);
+        setAvailFlag(false);
         setAttenddisabled(true);
         setEmaildisabled(true);
         // setTimeout(() => {
@@ -223,7 +237,7 @@ const MyPreferences = () => {
                       </label>
                       <div className="initials py-3">
                         <div className="image-user">
-                          <h2>SD</h2>
+                          <h2>{initial}</h2>
                         </div>
                       </div>
                       <input
@@ -511,7 +525,7 @@ const MyPreferences = () => {
                   <div className="card-body">
                     <div className="initials">
                       <div className="image-user">
-                        <h2>SD</h2>
+                        <h2>{initial}</h2>
                       </div>
                     </div>
                     <div
@@ -542,7 +556,7 @@ const MyPreferences = () => {
                     </div>
                   </div>
                 </div>
-                <div className="card">
+                {/* <div className="card">
                   <div className="card-body default-set">
                     <h3>Default Settings</h3>
                     <div className="attendance-user">
@@ -567,7 +581,7 @@ const MyPreferences = () => {
                     </h5>
                     <span>₹ 30.00</span>
                   </div>
-                </div>
+                </div> */}
               </div>
               <div className="col-xl-8 col-xxl-8">
                 <div className="card">

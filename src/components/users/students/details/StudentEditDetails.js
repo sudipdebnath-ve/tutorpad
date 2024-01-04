@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import MiniSidebar from "../../../sidebar/MiniSidebar.js";
 import Sidebar from "../../../sidebar/Sidebar.js";
 import TopBar from "../../../sidebar/TopBar.js";
@@ -11,8 +11,10 @@ import { API_URL } from "../../../../utils/config.js";
 import instructors from "../../assets/images/Instructors.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import FetchStudentDatatable from "../FetchStudentDatatable.js";
 import FetchStudyLog from "../FetchStudyLog.js";
+import FetchAttendanceLog from "../FetchAttendanceLog.js";
+import lending from "../assets/images/lending.svg";
+import ReactModal from "react-modal";
 
 const StudentEditDetails = () => {
   const { sidebarToggle, token, setLoading } = useUserDataContext();
@@ -20,11 +22,14 @@ const StudentEditDetails = () => {
   const [todayDate, setTodayDate] = useState(new Date());
   const [startDate, setStartDate] = useState(null);
   const [studentFetchData, setStudentFetchData] = useState({});
+  const [modalIsOpen, setIsOpens] = useState(false);
+
   let { id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
 
-  const fetchStudentDetails = async () => {
+  const fetchStudentDetails = async (id) => {
     setLoading(true);
+    console.log(id);
     const validateconfig = {
       method: "GET",
       url: `${API_URL}user/student/details/${id}`,
@@ -48,7 +53,10 @@ const StudentEditDetails = () => {
   };
 
   useEffect(() => {
-    fetchStudentDetails();
+    fetchStudentDetails(id);
+  }, [id]);
+
+  useEffect(() => {
     var name = `${studentFetchData.first_name}${" "}${
       studentFetchData.last_name
     }`;
@@ -69,8 +77,7 @@ const StudentEditDetails = () => {
       "-" +
       today.getFullYear();
     setStartDate(date);
-  }, [id]);
-  // console.log(startDate);
+  }, [studentFetchData]);
 
   const handleChange = (e) => {
     setIsOpen(!isOpen);
@@ -91,6 +98,55 @@ const StudentEditDetails = () => {
     setIsOpen(!isOpen);
   };
 
+  // console.log(userData);
+  const customStyles = {
+    content: {
+      width: "60%",
+      height: "80%",
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+    },
+    overlay: {
+      background: "#6c5a5669",
+    },
+  };
+  const passwordStyles = {
+    content: {
+      width: "60%",
+      height: "60%",
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+      border: "none",
+    },
+    overlay: {
+      background: "#6c5a5669",
+    },
+  };
+
+  // ReactModal.setAppElement("#yourAppElement");
+
+  function openModal() {
+    setIsOpens(true);
+  }
+
+  function afterOpenModal() {
+    // references are now sync'd and can be accessed.
+    // subtitle.style.color = "#f00";
+  }
+
+  function closeModal() {
+    setIsOpens(false);
+  }
+
+  console.log(modalIsOpen);
   return (
     <div className="wrapper student-details">
       {sidebarToggle ? (
@@ -106,6 +162,222 @@ const StudentEditDetails = () => {
       <div className="main bg-color">
         <TopBar />
 
+        <ReactModal
+          isOpen={modalIsOpen}
+          onAfterOpen={afterOpenModal}
+          onRequestClose={closeModal}
+          style={customStyles}
+          contentLabel="Example Modal"
+        >
+          <div className="mypreference-modal">
+            <div className="close-h">
+              <h4>Edit Profile</h4>
+              <button className="closeModal" onClick={closeModal}>
+                X
+              </button>
+            </div>
+            <form name="studentProfile">
+              <div className="row d-flex">
+                <div className="col-xl-4 col-xxl-4">
+                  <div className="formbold-input-flex justify-content-center">
+                    <div>
+                      <label htmlFor="photo" className="formbold-form-label">
+                        Photo <span>Optional</span>
+                      </label>
+                      <div className="initials py-3">
+                        <div className="image-user">
+                          <h2>{initial}</h2>
+                        </div>
+                      </div>
+                      <input
+                        type="file"
+                        name="photo"
+                        className="form-control b-none"
+                        onChange={handleChange}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="col-xl-8 col-xxl-8">
+                  <div className="formbold-form-step-1 active">
+                    <div className="formbold-input-flex diff">
+                      <div>
+                        <label htmlFor="title" className="formbold-form-label">
+                          Title
+                        </label>
+
+                        <input
+                          type="text"
+                          name="title"
+                          className="form-control"
+                          onChange={handleChange}
+                        />
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label
+                          htmlFor="first_name"
+                          className="formbold-form-label"
+                          id="first_name"
+                        >
+                          First name
+                        </label>
+                        <input
+                          type="text"
+                          name="first_name"
+                          className="form-control"
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="last_name"
+                          className="formbold-form-label"
+                          id="last_name"
+                        >
+                          Last name
+                        </label>
+                        <input
+                          type="text"
+                          name="last_name"
+                          className="form-control"
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label
+                          htmlFor="email"
+                          className="formbold-form-label"
+                          id="email"
+                        >
+                          Email Address
+                        </label>
+                        <input
+                          type="email"
+                          name="email"
+                          className="form-control"
+                          onChange={handleChange}
+                        />
+                      </div>
+                      <div>
+                        <div>
+                          <label
+                            htmlFor="phone"
+                            className="formbold-form-label"
+                            id="phone"
+                          >
+                            Phone Number <span>Optional</span>
+                          </label>
+                          <input
+                            type="text"
+                            name="phone"
+                            className="form-control"
+                            onChange={handleChange}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex diff">
+                      <div>
+                        <label
+                          htmlFor="parentaddress"
+                          className="formbold-form-label"
+                        >
+                          Address <span>Optional</span>
+                        </label>
+                        <br></br>
+
+                        <textarea
+                          name="parentaddress"
+                          className="form-control"
+                          onChange={handleChange}
+                        />
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex diff">
+                      <div>
+                        <label
+                          htmlFor="parentaddress"
+                          className="formbold-form-label"
+                        >
+                          Virtual Meeting <span>Optional</span>
+                          <br></br>
+                          <span>
+                            Share a link to Zoom, Google Meet, or any other
+                            video conferencing application.
+                          </span>
+                        </label>
+                        <br></br>
+
+                        <input
+                          type="text"
+                          name="virtual_meeting"
+                          className="form-control"
+                          onChange={handleChange}
+                        />
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex diff">
+                      <div>
+                        <label
+                          htmlFor="subject"
+                          className="formbold-form-label"
+                        >
+                          Subjects <span>Optional</span>
+                          <br></br>
+                          <span>
+                            Use a semicolon or press the Enter key to separate
+                            entries
+                          </span>
+                        </label>
+                        <br></br>
+
+                        <input
+                          type="text"
+                          name="subject"
+                          className="form-control"
+                          onChange={handleChange}
+                        />
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex diff">
+                      <div>
+                        <label
+                          htmlFor="location"
+                          className="formbold-form-label"
+                        >
+                          Preferred Location
+                        </label>
+                        <select
+                          name="location"
+                          className="form-control"
+                          onChange={handleChange}
+                        >
+                          <option>First Available Location</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr></hr>
+                <div className="formbold-form-btn-wrapper">
+                  <div className="btn-end">
+                    <Link className="cancel" onClick={closeModal}>
+                      Cancel
+                    </Link>
+
+                    <button className="formbold-btn">Submit</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </ReactModal>
         <main className="content">
           <div className="container-fluid p-0">
             <div className="row d-flex">
@@ -117,7 +389,7 @@ const StudentEditDetails = () => {
                         <h2>{initial && initial.toLocaleUpperCase()}</h2>
                       </div>
                     </div>
-                    <div className="edit-user">
+                    <div className="edit-user" onClick={openModal}>
                       <i className="fa fa-pencil" aria-hidden="true"></i>
                     </div>
 
@@ -489,11 +761,290 @@ const StudentEditDetails = () => {
                               </i>
                             </h5>
                             <a className="addnew" href="#" role="button">
-                              <i class="fa fa-plus" aria-hidden="true"></i>
+                              <i className="fa fa-plus" aria-hidden="true"></i>
                               Add Time
                             </a>
 
                             <FetchStudyLog />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="card">
+                  <div
+                    className="accordion accordion-flush"
+                    id="accordionFlushExample"
+                  >
+                    <div className="accordion-item">
+                      <h2 className="accordion-header" id="flush-headingFive">
+                        <button
+                          className="accordion-button collapsed"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#flush-collapseFive"
+                          aria-expanded="false"
+                          aria-controls="flush-collapseFive"
+                        >
+                          <strong>Attendence and Notes</strong>
+                        </button>
+                      </h2>
+                      <div
+                        id="flush-collapseFive"
+                        className="accordion-collapse collapse"
+                        aria-labelledby="flush-headingFive"
+                        data-bs-parent="#accordionFlushExample"
+                      >
+                        <div className="accordion-body">
+                          <div className="student-properties-edit">
+                            <h3>Average attendance for last 90 days</h3>
+                          </div>
+                          <div className="avg-attend">
+                            <div className="avg-data">
+                              <span>0</span>
+                              <span>Present</span>
+                            </div>
+                            <div className="avg-data">
+                              <span>0</span>
+                              <span>Unrecorded</span>
+                            </div>
+                            <div className="avg-data">
+                              <span>0</span>
+                              <span>Student Absences</span>
+                            </div>
+                            <div className="avg-data">
+                              <span>0</span>
+                              <span>Total Events</span>
+                            </div>
+                          </div>
+                          <div className="formbold-form-btn-wrapper">
+                            <div className="btn-end">
+                              <button className="formbold-btn">
+                                <i
+                                  style={{ color: "#ffffff" }}
+                                  className="fa fa-plus"
+                                  aria-hidden="true"
+                                ></i>
+                                Create Report
+                              </button>
+                            </div>
+                          </div>
+                          <div className="calendar-body">
+                            <h5>
+                              {studentFetchData?.first_name}'s attendance
+                              records as of{" "}
+                              <emp>{startDate ? startDate : "no"}</emp>{" "}
+                              <i
+                                onClick={handleClick}
+                                className="fa fa-caret-down"
+                                aria-hidden="true"
+                              >
+                                {isOpen && (
+                                  <DatePicker
+                                    selected={todayDate}
+                                    onChange={handleChange}
+                                    inline
+                                  />
+                                )}
+                              </i>
+                            </h5>
+
+                            <FetchAttendanceLog />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="card">
+                  <div
+                    className="accordion accordion-flush"
+                    id="accordionFlushExample"
+                  >
+                    <div className="accordion-item">
+                      <h2 className="accordion-header" id="flush-headingSix">
+                        <button
+                          className="accordion-button collapsed"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#flush-collapseSix"
+                          aria-expanded="false"
+                          aria-controls="flush-collapseSix"
+                        >
+                          <strong>Message History</strong>
+                        </button>
+                      </h2>
+                      <div
+                        id="flush-collapseSix"
+                        className="accordion-collapse collapse"
+                        aria-labelledby="flush-headingSix"
+                        data-bs-parent="#accordionFlushExample"
+                      >
+                        <div className="accordion-body">
+                          <div className="col-xl-12 col-xxl-12">
+                            <h5>
+                              <strong>Messages from the </strong>
+                              <select className="mes-history-drop">
+                                <option>Last 3 Months</option>
+                                <option>Last 6 Months</option>
+                                <option>Last Year</option>
+                                <option>Entire History</option>
+                                <option>Scheduled Queue (Upcoming)</option>
+                              </select>
+                            </h5>
+                          </div>
+                          <div className="col-xl-12 col-xxl-12">
+                            <div className="tab-content" id="myTabContent">
+                              <div
+                                className="tab-pane fade show active"
+                                id="home"
+                                role="tabpanel"
+                                aria-labelledby="home-tab"
+                              >
+                                <div className="row">
+                                  <div className="col-12 col-md-12 col-xxl-12 d-flex order-2 order-xxl-3">
+                                    <div className="flex-fill w-100">
+                                      <div className="card-body d-flex">
+                                        <div className="align-self-center w-100">
+                                          <div className="py-3">
+                                            <div className="chart chart-xs">
+                                              <img
+                                                src={lending}
+                                                alt="lending"
+                                              ></img>
+                                            </div>
+                                          </div>
+                                          <h5 style={{ textAlign: "center" }}>
+                                            <strong>
+                                              You haven't sent any emails or SMS
+                                              messages during this time
+                                            </strong>
+                                          </h5>
+                                          <div class="position-set">
+                                            <div className="add-message">
+                                              <i
+                                                className="fa fa-plus"
+                                                aria-hidden="true"
+                                              ></i>
+                                              <Link
+                                                className="btn"
+                                                role="button"
+                                              >
+                                                Create New Message
+                                              </Link>
+                                              <i
+                                                class="fa fa-caret-down"
+                                                aria-hidden="true"
+                                              ></i>
+                                            </div>
+                                            {/* {createMessage && (
+                                              <>
+                                                <div
+                                                  className="create-mes dropdown-menu addNewDropdown"
+                                                  aria-labelledby="dropdownMenuLink"
+                                                >
+                                                  <Link
+                                                    className="dropdown-item"
+                                                    to="/students"
+                                                  >
+                                                    <i
+                                                      class="fa fa-envelope"
+                                                      aria-hidden="true"
+                                                    ></i>
+                                                    Email Student
+                                                  </Link>
+                                                  <div className="dropdown-divider"></div>
+                                                  <Link
+                                                    className="dropdown-item"
+                                                    to="/students/message-history"
+                                                  >
+                                                    <i
+                                                      class="fa fa-envelope"
+                                                      aria-hidden="true"
+                                                    ></i>
+                                                    Email All{" "}
+                                                  </Link>
+                                                </div>
+                                              </>
+                                            )} */}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="card">
+                  <div
+                    className="accordion accordion-flush"
+                    id="accordionFlushExample"
+                  >
+                    <div className="accordion-item">
+                      <h2 className="accordion-header" id="flush-headingSeven">
+                        <button
+                          className="accordion-button collapsed"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#flush-collapseSeven"
+                          aria-expanded="false"
+                          aria-controls="flush-collapseSeven"
+                        >
+                          <strong>Student Portal</strong>
+                        </button>
+                      </h2>
+                      <div
+                        id="flush-collapseSeven"
+                        className="accordion-collapse collapse"
+                        aria-labelledby="flush-headingSeven"
+                        data-bs-parent="#accordionFlushExample"
+                      >
+                        <div className="accordion-body">
+                          <div className="access">
+                            <h3>Student Access</h3>
+                            <span>Disabled</span>
+                          </div>
+                          <p>Set up Student Portal access for this student</p>
+
+                          <div className="student-access">
+                            <i
+                              class="fa fa-exclamation-triangle"
+                              aria-hidden="true"
+                            ></i>
+
+                            <strong>
+                              If you'd like this student to have their own
+                              access to the Portal, you'll first need to provide
+                              an email address in their profile.
+                            </strong>
+                          </div>
+                          <hr></hr>
+                          <div className="access">
+                            <h3>Parent Access</h3>
+                            <span>Disabled</span>
+                          </div>
+                          <p>
+                            Set up Student Portal access for this student's
+                            parents
+                          </p>
+
+                          <div className="student-access">
+                            <i
+                              class="fa fa-exclamation-triangle"
+                              aria-hidden="true"
+                            ></i>
+
+                            <strong>
+                              Please provide an email address for this parent
+                              first
+                            </strong>
                           </div>
                         </div>
                       </div>

@@ -20,7 +20,9 @@ const Register = () => {
     email: "",
     password: "",
     rpassword: "",
-    bussiness_size: "",
+    domain: "",
+    bname: "",
+    business_size: "",
   });
   const [type, setType] = useState("password");
   const [icon, setIcon] = useState(eyeOff);
@@ -59,7 +61,7 @@ const Register = () => {
         last_name: userdetails.lastname,
         domain: userdetails.domain,
         bname: userdetails.bname,
-        bussiness_size: userdetails.bussiness_size,
+        business_size: userdetails.business_size,
       }),
       // validateStatus: (status) => status !== 404,
     };
