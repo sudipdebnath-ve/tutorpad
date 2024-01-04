@@ -29,7 +29,7 @@ const MyPreferences = () => {
     phone: "",
     tenant_data: [
       {
-        parentaddress: "",
+        address: "",
         virtual_meeting: "",
         subjects: "",
         location: "",
@@ -125,8 +125,8 @@ const MyPreferences = () => {
     const name = e.target.name;
     const value = e.target.value;
     console.log(name, value);
-    if (name === "parentaddress") {
-      formData.tenant_data[0].parentaddress = value;
+    if (name === "address") {
+      formData.tenant_data[0].address = value;
     } else if (name === "virtual_meeting") {
       formData.tenant_data[0].virtual_meeting = value;
     } else if (name === "subjects") {
@@ -151,7 +151,7 @@ const MyPreferences = () => {
     if (profilePhoto) {
       formData["photo"] = profilePhoto;
     }
-    delete formData.parentaddress;
+    delete formData.address;
     delete formData.virtual_meeting;
     delete formData.subjects;
     delete formData.location;
@@ -349,7 +349,7 @@ const MyPreferences = () => {
                     <div className="formbold-input-flex diff">
                       <div>
                         <label
-                          htmlFor="parentaddress"
+                          htmlFor="address"
                           className="formbold-form-label"
                         >
                           Address <span>Optional</span>
@@ -357,7 +357,7 @@ const MyPreferences = () => {
                         <br></br>
 
                         <textarea
-                          name="parentaddress"
+                          name="address"
                           className="form-control"
                           onChange={handleChange}
                         />
@@ -366,7 +366,7 @@ const MyPreferences = () => {
                     <div className="formbold-input-flex diff">
                       <div>
                         <label
-                          htmlFor="parentaddress"
+                          htmlFor="virtual_meeting"
                           className="formbold-form-label"
                         >
                           Virtual Meeting <span>Optional</span>
