@@ -155,7 +155,11 @@ const MyPreferences = () => {
         toast.success(response.data.message, {
           position: toast.POSITION.TOP_CENTER,
         });
-
+        setAttendFlag(false);
+        setAvailFlag(false);
+        setAttenddisabled(true);
+        setEmaildisabled(true);
+        setIsOpen(false);
         // setTimeout(() => {
         //   setIsOpen(false);
         //   window.location.reload(false);
