@@ -27,10 +27,14 @@ const MyPreferences = () => {
     last_name: "",
     email: "",
     phone: "",
-    address: "",
-    virtual_meeting: "",
-    subjects: "",
-    location: "",
+    tenant_data: [
+      {
+        parentaddress: "",
+        virtual_meeting: "",
+        subjects: "",
+        location: "",
+      },
+    ],
   });
   const [generalTabData, setGeneralTabData] = useState({});
 
@@ -107,9 +111,7 @@ const MyPreferences = () => {
     setAttendFlag(!e.target.value);
     setAttenddisabled(false);
   };
-  // const handleAttend=(e)=>{
 
-  // }
   const handleEmailEdit = (e) => {
     setAttendFlag(!e.target.value);
     setEmaildisabled(false);
@@ -122,10 +124,20 @@ const MyPreferences = () => {
   const handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
+    console.log(name, value);
+    if (name === "parentaddress") {
+      formData.tenant_data[0].parentaddress = value;
+    } else if (name === "virtual_meeting") {
+      formData.tenant_data[0].virtual_meeting = value;
+    } else if (name === "subjects") {
+      formData.tenant_data[0].subjects = value;
+    } else if (name === "location") {
+      formData.tenant_data[0].location = value;
+    }
     if (name === "photo") {
       setProfilePhoto(URL.createObjectURL(e.target.files[0]));
     }
-
+    delete formData.parentaddress;
     setFormData({ ...formData, [name]: value });
   };
   const handleGeneralTabChange = (e) => {
@@ -139,7 +151,10 @@ const MyPreferences = () => {
     if (profilePhoto) {
       formData["photo"] = profilePhoto;
     }
-
+    delete formData.parentaddress;
+    delete formData.virtual_meeting;
+    delete formData.subjects;
+    delete formData.location;
     e.preventDefault();
     const config = {
       method: "PATCH",
@@ -160,10 +175,6 @@ const MyPreferences = () => {
         setAttenddisabled(true);
         setEmaildisabled(true);
         setIsOpen(false);
-        // setTimeout(() => {
-        //   setIsOpen(false);
-        //   window.location.reload(false);
-        // }, 2000);
       })
       .catch((error) => {
         console.log(error);
@@ -274,7 +285,6 @@ const MyPreferences = () => {
                         <label
                           htmlFor="first_name"
                           className="formbold-form-label"
-                          id="first_name"
                         >
                           First name
                         </label>
@@ -290,7 +300,6 @@ const MyPreferences = () => {
                         <label
                           htmlFor="last_name"
                           className="formbold-form-label"
-                          id="last_name"
                         >
                           Last name
                         </label>
@@ -380,7 +389,7 @@ const MyPreferences = () => {
                     <div className="formbold-input-flex diff">
                       <div>
                         <label
-                          htmlFor="subject"
+                          htmlFor="subjects"
                           className="formbold-form-label"
                         >
                           Subjects <span>Optional</span>
@@ -394,7 +403,7 @@ const MyPreferences = () => {
 
                         <input
                           type="text"
-                          name="subject"
+                          name="subjects"
                           className="form-control"
                           onChange={handleChange}
                         />
