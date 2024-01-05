@@ -27,7 +27,7 @@ const AppContext = ({ children }) => {
     setLoading(true);
     const validateconfig = {
       method: "GET",
-      url: `${API_URL}user`,
+      url: `${API_URL}user/tenant/details`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -37,7 +37,7 @@ const AppContext = ({ children }) => {
         // console.log(response);
         if (response.status === 200) {
           setLoading(false);
-          setUserData(response.data);
+          setUserData(response.data.data);
           setUserId(response.data.id);
         }
       })

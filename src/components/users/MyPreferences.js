@@ -23,9 +23,7 @@ const MyPreferences = () => {
   const [initial, setInitial] = useState("");
   const [formData, setFormData] = useState({});
   const [tenantData, setTenantData] = useState([]);
-  const [generalTabData, setGeneralTabData] = useState({});
 
-  // console.log(userData);
   const customStyles = {
     content: {
       width: "60%",
@@ -92,6 +90,12 @@ const MyPreferences = () => {
       }
     }
     setInitial(initials);
+    formData.first_name = userData?.first_name;
+    formData.last_name = userData?.last_name;
+    formData.email = userData?.email;
+    formData.phone = userData?.phone;
+    formData.title = userData?.business_data?.business_name;
+    tenantData.address = userData?.business_data?.address;
   }, [userData]);
 
   const handleAttendEdit = (e) => {
@@ -108,6 +112,7 @@ const MyPreferences = () => {
     setAttenddisabled(true);
     setEmaildisabled(true);
   };
+
   const handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
@@ -128,12 +133,12 @@ const MyPreferences = () => {
       setProfilePhoto(URL.createObjectURL(e.target.files[0]));
     }
   };
-  const handleGeneralTabChange = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
+  // const handleGeneralTabChange = (e) => {
+  //   const name = e.target.name;
+  //   const value = e.target.value;
 
-    setGeneralTabData({ ...generalTabData, [name]: value });
-  };
+  //   setGeneralTabData({ ...generalTabData, [name]: value });
+  // };
   const formSubmit = async (e) => {
     formData["user_id"] = userId;
     if (profilePhoto) {
@@ -162,45 +167,49 @@ const MyPreferences = () => {
         setAvailFlag(false);
         setAttenddisabled(true);
         setEmaildisabled(true);
+        fetchData(token);
         setIsOpen(false);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const formGeneralTabSubmit = async (e) => {
-    generalTabData["user_id"] = userId;
-
-    console.log(generalTabData);
-    e.preventDefault();
-    const config = {
-      method: "PATCH",
-      url: `${API_URL}user/savedata`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      data: generalTabData,
-    };
-    await axios(config)
-      .then((response) => {
-        console.log(response);
-        toast.success(response.data.message, {
-          position: toast.POSITION.TOP_CENTER,
-        });
-        setAttendFlag(false);
-        setAvailFlag(false);
-        setAttenddisabled(true);
-        setEmaildisabled(true);
         // setTimeout(() => {
         //   setIsOpen(false);
-        //   window.location.reload(false);
-        // }, 2000);
+        // }, 1000);
       })
       .catch((error) => {
         console.log(error);
       });
   };
+
+  // const formGeneralTabSubmit = async (e) => {
+  //   generalTabData["user_id"] = userId;
+
+  //   console.log(generalTabData);
+  //   e.preventDefault();
+  //   const config = {
+  //     method: "PATCH",
+  //     url: `${API_URL}user/savedata`,
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //     data: generalTabData,
+  //   };
+  //   await axios(config)
+  //     .then((response) => {
+  //       console.log(response);
+  //       toast.success(response.data.message, {
+  //         position: toast.POSITION.TOP_CENTER,
+  //       });
+  //       setAttendFlag(false);
+  //       setAvailFlag(false);
+  //       setAttenddisabled(true);
+  //       setEmaildisabled(true);
+  //       // setTimeout(() => {
+  //       //   setIsOpen(false);
+  //       //   window.location.reload(false);
+  //       // }, 2000);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
   return (
     <div className="wrapper">
       {sidebarToggle ? (
@@ -264,6 +273,7 @@ const MyPreferences = () => {
                           type="text"
                           name="title"
                           className="form-control"
+                          value={formData.title}
                           onChange={handleChange}
                         />
                       </div>
@@ -280,6 +290,7 @@ const MyPreferences = () => {
                           type="text"
                           name="first_name"
                           className="form-control"
+                          value={formData.first_name}
                           onChange={handleChange}
                           required
                         />
@@ -295,6 +306,7 @@ const MyPreferences = () => {
                           type="text"
                           name="last_name"
                           className="form-control"
+                          value={formData.last_name}
                           onChange={handleChange}
                           required
                         />
@@ -313,6 +325,7 @@ const MyPreferences = () => {
                           type="email"
                           name="email"
                           className="form-control"
+                          value={formData.email}
                           onChange={handleChange}
                         />
                       </div>
@@ -329,6 +342,7 @@ const MyPreferences = () => {
                             type="text"
                             name="phone"
                             className="form-control"
+                            value={formData.phone}
                             onChange={handleChange}
                           />
                         </div>
@@ -347,6 +361,7 @@ const MyPreferences = () => {
                         <textarea
                           name="address"
                           className="form-control"
+                          value={tenantData.address}
                           onChange={handleChange}
                         />
                       </div>
@@ -663,7 +678,7 @@ const MyPreferences = () => {
                                   value="Student"
                                   name="default_notes_view"
                                   disabled={attendDisabled}
-                                  onChange={handleGeneralTabChange}
+                                  onChange={handleChange}
                                 ></input>
                                 Student
                                 <input
@@ -671,7 +686,7 @@ const MyPreferences = () => {
                                   value="Parent"
                                   name="default_notes_view"
                                   disabled={attendDisabled}
-                                  onChange={handleGeneralTabChange}
+                                  onChange={handleChange}
                                 ></input>
                                 Parent
                                 <input
@@ -679,7 +694,7 @@ const MyPreferences = () => {
                                   value="Private"
                                   name="default_notes_view"
                                   disabled={attendDisabled}
-                                  onChange={handleGeneralTabChange}
+                                  onChange={handleChange}
                                 ></input>
                                 Private
                               </div>
@@ -705,7 +720,7 @@ const MyPreferences = () => {
                                   value="Automatically copy lesson notes when I take
                                   attendance"
                                   disabled={attendDisabled}
-                                  onChange={handleGeneralTabChange}
+                                  onChange={handleChange}
                                 />
                                 Automatically copy lesson notes when I take
                                 attendance
@@ -723,7 +738,7 @@ const MyPreferences = () => {
                                 value="Copy from most recent event"
                                 name="copy_recent_event"
                                 disabled={attendDisabled}
-                                onChange={handleGeneralTabChange}
+                                onChange={handleChange}
                               ></input>
                               Copy from most recent event
                               <input
@@ -731,7 +746,7 @@ const MyPreferences = () => {
                                 value="Copy from same category only"
                                 name="copy_recent_event"
                                 disabled={attendDisabled}
-                                onChange={handleGeneralTabChange}
+                                onChange={handleChange}
                               ></input>
                               Copy from same category only
                             </div>
@@ -764,7 +779,7 @@ const MyPreferences = () => {
                                 value="When any student registers for a lesson/event
                                 through the Student Portal"
                                 disabled={emailDisabled}
-                                onChange={handleGeneralTabChange}
+                                onChange={handleChange}
                               ></input>
                               When any student registers for a lesson/event
                               through the Student Portal
@@ -776,7 +791,7 @@ const MyPreferences = () => {
                                 value="When any student cancels a lesson/event through
                                 the Student Portal"
                                 disabled={emailDisabled}
-                                onChange={handleGeneralTabChange}
+                                onChange={handleChange}
                               ></input>
                               When any student cancels a lesson/event through
                               the Student Portal
@@ -788,7 +803,7 @@ const MyPreferences = () => {
                                 value="When any parent or student completes the sign-up
                                 form"
                                 disabled={emailDisabled}
-                                onChange={handleGeneralTabChange}
+                                onChange={handleChange}
                               ></input>
                               When any parent or student completes the sign-up
                               form
@@ -800,7 +815,7 @@ const MyPreferences = () => {
                                 value="When any parent or student disables email
                                 reminders"
                                 disabled={emailDisabled}
-                                onChange={handleGeneralTabChange}
+                                onChange={handleChange}
                               ></input>
                               When any parent or student disables email
                               reminders
@@ -811,7 +826,7 @@ const MyPreferences = () => {
                                 name="allow_student_email_studylog"
                                 value="Allow students to email me from the Study Log"
                                 disabled={emailDisabled}
-                                onChange={handleGeneralTabChange}
+                                onChange={handleChange}
                               ></input>
                               Allow students to email me from the Study Log
                             </div>
@@ -826,7 +841,7 @@ const MyPreferences = () => {
                                 value="Day Before"
                                 name="daily_agenda"
                                 disabled={emailDisabled}
-                                onChange={handleGeneralTabChange}
+                                onChange={handleChange}
                               ></input>
                               Day Before
                               <br />
@@ -836,7 +851,7 @@ const MyPreferences = () => {
                                 value="Same Day"
                                 name="daily_agenda"
                                 disabled={emailDisabled}
-                                onChange={handleGeneralTabChange}
+                                onChange={handleChange}
                               ></input>
                               Same Day
                               <br />
@@ -846,7 +861,7 @@ const MyPreferences = () => {
                                 value="Don't Email"
                                 name="daily_agenda"
                                 disabled={emailDisabled}
-                                onChange={handleGeneralTabChange}
+                                onChange={handleChange}
                               ></input>
                               Don't Email
                             </div>
@@ -962,7 +977,7 @@ const MyPreferences = () => {
                                           className="status"
                                           name="sun"
                                           value="Sun"
-                                          onChange={handleGeneralTabChange}
+                                          onChange={handleChange}
                                         />
                                         Sun
                                       </div>
@@ -972,7 +987,7 @@ const MyPreferences = () => {
                                           className="status"
                                           name="mon"
                                           value="Mon"
-                                          onChange={handleGeneralTabChange}
+                                          onChange={handleChange}
                                         />
                                         Mon
                                       </div>
@@ -982,7 +997,7 @@ const MyPreferences = () => {
                                           className="status"
                                           name="tue"
                                           value="Tue"
-                                          onChange={handleGeneralTabChange}
+                                          onChange={handleChange}
                                         />
                                         Tue
                                       </div>
@@ -992,7 +1007,7 @@ const MyPreferences = () => {
                                           className="status"
                                           name="wed"
                                           value="Wed"
-                                          onChange={handleGeneralTabChange}
+                                          onChange={handleChange}
                                         />
                                         Wed
                                       </div>
@@ -1002,7 +1017,7 @@ const MyPreferences = () => {
                                           className="status"
                                           name="thu"
                                           value="Thu"
-                                          onChange={handleGeneralTabChange}
+                                          onChange={handleChange}
                                         />
                                         Thu
                                       </div>
@@ -1012,7 +1027,7 @@ const MyPreferences = () => {
                                           className="status"
                                           name="fri"
                                           value="Fri"
-                                          onChange={handleGeneralTabChange}
+                                          onChange={handleChange}
                                         />
                                         Fri
                                       </div>
@@ -1022,7 +1037,7 @@ const MyPreferences = () => {
                                           className="status"
                                           name="sat"
                                           value="Sat"
-                                          onChange={handleGeneralTabChange}
+                                          onChange={handleChange}
                                         />
                                         Sat
                                       </div>
@@ -1041,7 +1056,7 @@ const MyPreferences = () => {
                                       type="date"
                                       name="start_date"
                                       className="form-control"
-                                      onChange={handleGeneralTabChange}
+                                      onChange={handleChange}
                                     />
                                   </div>
                                   <div>
@@ -1055,7 +1070,7 @@ const MyPreferences = () => {
                                       type="date"
                                       name="end_date"
                                       className="form-control"
-                                      onChange={handleGeneralTabChange}
+                                      onChange={handleChange}
                                     />
                                   </div>
                                 </div>
@@ -1071,7 +1086,7 @@ const MyPreferences = () => {
                                       type="time"
                                       name="start_time"
                                       className="form-control"
-                                      onChange={handleGeneralTabChange}
+                                      onChange={handleChange}
                                     />
                                   </div>
                                   <div>
@@ -1085,7 +1100,7 @@ const MyPreferences = () => {
                                       type="time"
                                       name="end_time"
                                       className="form-control"
-                                      onChange={handleGeneralTabChange}
+                                      onChange={handleChange}
                                     />
                                   </div>
                                 </div>
@@ -1101,7 +1116,7 @@ const MyPreferences = () => {
                                     <textarea
                                       name="note"
                                       className="form-control"
-                                      onChange={handleGeneralTabChange}
+                                      onChange={handleChange}
                                     />
                                   </div>
                                 </div>
@@ -1116,7 +1131,7 @@ const MyPreferences = () => {
 
                                     <button
                                       className="formbold-btn"
-                                      onClick={formGeneralTabSubmit}
+                                      onClick={formSubmit}
                                     >
                                       Save
                                     </button>
