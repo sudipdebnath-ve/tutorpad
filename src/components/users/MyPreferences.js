@@ -21,21 +21,8 @@ const MyPreferences = () => {
   const [emailDisabled, setEmaildisabled] = useState(true);
   const [availFlag, setAvailFlag] = useState(false);
   const [initial, setInitial] = useState("");
-  const [formData, setFormData] = useState({
-    title: "",
-    first_name: "",
-    last_name: "",
-    email: "",
-    phone: "",
-    tenant_data: [
-      {
-        address: "",
-        virtual_meeting: "",
-        subjects: "",
-        location: "",
-      },
-    ],
-  });
+  const [formData, setFormData] = useState({});
+  const [tenantData, setTenantData] = useState([]);
   const [generalTabData, setGeneralTabData] = useState({});
 
   // console.log(userData);
@@ -125,20 +112,21 @@ const MyPreferences = () => {
     const name = e.target.name;
     const value = e.target.value;
     console.log(name, value);
-    if (name === "address") {
-      formData.tenant_data[0].address = value;
-    } else if (name === "virtual_meeting") {
-      formData.tenant_data[0].virtual_meeting = value;
-    } else if (name === "subjects") {
-      formData.tenant_data[0].subjects = value;
-    } else if (name === "location") {
-      formData.tenant_data[0].location = value;
+    if (
+      name === "title" ||
+      name === "first_name" ||
+      name === "last_name" ||
+      name === "email" ||
+      name === "phone"
+    ) {
+      setFormData({ ...formData, [name]: value });
+    } else {
+      setTenantData({ ...tenantData, [name]: value });
     }
+
     if (name === "photo") {
       setProfilePhoto(URL.createObjectURL(e.target.files[0]));
     }
-    delete formData.parentaddress;
-    setFormData({ ...formData, [name]: value });
   };
   const handleGeneralTabChange = (e) => {
     const name = e.target.name;
@@ -151,10 +139,10 @@ const MyPreferences = () => {
     if (profilePhoto) {
       formData["photo"] = profilePhoto;
     }
-    delete formData.address;
-    delete formData.virtual_meeting;
-    delete formData.subjects;
-    delete formData.location;
+    formData["tenant_data"] = tenantData;
+
+    console.log(formData);
+
     e.preventDefault();
     const config = {
       method: "PATCH",
@@ -469,7 +457,7 @@ const MyPreferences = () => {
                           className="formbold-form-label"
                           id="current_password"
                         >
-                          First name
+                          Current Password
                         </label>
                         <input
                           type="password"
@@ -652,7 +640,7 @@ const MyPreferences = () => {
                                   name="overdue_attendence"
                                   value="Overdue Attendance"
                                   disabled={attendDisabled}
-                                  onChange={handleGeneralTabChange}
+                                  onChange={handleChange}
                                 />
                                 Show overdue attendance on homepage
                               </div>
@@ -876,7 +864,7 @@ const MyPreferences = () => {
 
                                   <button
                                     className="formbold-btn"
-                                    onClick={formGeneralTabSubmit}
+                                    onClick={formSubmit}
                                   >
                                     Save
                                   </button>
