@@ -89,6 +89,7 @@ const MyPreferences = () => {
         initials += parts[i][0];
       }
     }
+
     setInitial(initials);
     formData.first_name = userData?.first_name;
     formData.last_name = userData?.last_name;
@@ -96,8 +97,16 @@ const MyPreferences = () => {
     formData.phone = userData?.phone;
     formData.title = userData?.business_data?.business_name;
     tenantData.address = userData?.business_data?.address;
+    tenantData.virtual_meeting = userData?.business_data?.virtual_meeting;
+    tenantData.subjects = userData?.business_data?.subjects;
   }, [userData]);
 
+  if (userData?.business_data) {
+    if (Object.keys(userData?.business_data).includes("overdue_attendence")) {
+      console.log("true");
+    }
+  }
+  console.log(userData);
   const handleAttendEdit = (e) => {
     setAttendFlag(!e.target.value);
     setAttenddisabled(false);
@@ -169,9 +178,6 @@ const MyPreferences = () => {
         setEmaildisabled(true);
         fetchData(token);
         setIsOpen(false);
-        // setTimeout(() => {
-        //   setIsOpen(false);
-        // }, 1000);
       })
       .catch((error) => {
         console.log(error);
@@ -656,6 +662,9 @@ const MyPreferences = () => {
                                   value="Overdue Attendance"
                                   disabled={attendDisabled}
                                   onChange={handleChange}
+                                  // checked={Object.keys(
+                                  //   formData?.business_data
+                                  // ).includes("overdue_attendence")}
                                 />
                                 Show overdue attendance on homepage
                               </div>
