@@ -23,6 +23,7 @@ const MyPreferences = () => {
   const [initial, setInitial] = useState("");
   const [formData, setFormData] = useState({});
   const [tenantData, setTenantData] = useState([]);
+  const [updatePass, setUpdatePass] = useState({});
 
   const customStyles = {
     content: {
@@ -99,14 +100,29 @@ const MyPreferences = () => {
     tenantData.address = userData?.business_data?.address;
     tenantData.virtual_meeting = userData?.business_data?.virtual_meeting;
     tenantData.subjects = userData?.business_data?.subjects;
+    tenantData.overdue_attendence = userData?.business_data?.overdue_attendence;
+    tenantData.default_notes_view = userData?.business_data?.default_notes_view;
+    tenantData.copy_recent_event = userData?.business_data?.copy_recent_event;
+    tenantData.automatically_copy_lesson =
+      userData?.business_data?.automatically_copy_lesson;
+    tenantData.student_register_lesson =
+      userData?.business_data?.student_register_lesson;
+    tenantData.student_cancel_lesson =
+      userData?.business_data?.student_cancel_lesson;
+    tenantData.parent_student_signup =
+      userData?.business_data?.parent_student_signup;
+    tenantData.parent_student_disable_email_reminder =
+      userData?.business_data?.parent_student_disable_email_reminder;
+    tenantData.allow_student_email_studylog =
+      userData?.business_data?.allow_student_email_studylog;
+    tenantData.daily_agenda = userData?.business_data?.daily_agenda;
   }, [userData]);
 
-  if (userData?.business_data) {
-    if (Object.keys(userData?.business_data).includes("overdue_attendence")) {
-      console.log("true");
-    }
-  }
-  console.log(userData);
+  // if (userData?.business_data) {
+  //   if (tenantData?.default_notes_view !== "") {
+  //     console.log(userData);
+  //   }
+  // }
   const handleAttendEdit = (e) => {
     setAttendFlag(!e.target.value);
     setAttenddisabled(false);
@@ -124,7 +140,7 @@ const MyPreferences = () => {
 
   const handleChange = (e) => {
     const name = e.target.name;
-    const value = e.target.value;
+    let value = e.target.value;
     console.log(name, value);
     if (
       name === "title" ||
@@ -135,6 +151,21 @@ const MyPreferences = () => {
     ) {
       setFormData({ ...formData, [name]: value });
     } else {
+      if (
+        name === "overdue_attendence" ||
+        name === "automatically_copy_lesson" ||
+        name === "student_register_lesson" ||
+        name === "student_cancel_lesson" ||
+        name === "parent_student_disable_email_reminder" ||
+        name === "allow_student_email_studylog" ||
+        name === "parent_student_signup"
+      ) {
+        if (e.target.checked) {
+          value = "true";
+        } else {
+          value = null;
+        }
+      }
       setTenantData({ ...tenantData, [name]: value });
     }
 
@@ -142,12 +173,7 @@ const MyPreferences = () => {
       setProfilePhoto(URL.createObjectURL(e.target.files[0]));
     }
   };
-  // const handleGeneralTabChange = (e) => {
-  //   const name = e.target.name;
-  //   const value = e.target.value;
 
-  //   setGeneralTabData({ ...generalTabData, [name]: value });
-  // };
   const formSubmit = async (e) => {
     formData["user_id"] = userId;
     if (profilePhoto) {
@@ -168,7 +194,7 @@ const MyPreferences = () => {
     };
     await axios(config)
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         toast.success(response.data.message, {
           position: toast.POSITION.TOP_CENTER,
         });
@@ -184,38 +210,41 @@ const MyPreferences = () => {
       });
   };
 
-  // const formGeneralTabSubmit = async (e) => {
-  //   generalTabData["user_id"] = userId;
+  const handleChangePassword = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
 
-  //   console.log(generalTabData);
-  //   e.preventDefault();
-  //   const config = {
-  //     method: "PATCH",
-  //     url: `${API_URL}user/savedata`,
-  //     headers: {
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //     data: generalTabData,
-  //   };
-  //   await axios(config)
-  //     .then((response) => {
-  //       console.log(response);
-  //       toast.success(response.data.message, {
-  //         position: toast.POSITION.TOP_CENTER,
-  //       });
-  //       setAttendFlag(false);
-  //       setAvailFlag(false);
-  //       setAttenddisabled(true);
-  //       setEmaildisabled(true);
-  //       // setTimeout(() => {
-  //       //   setIsOpen(false);
-  //       //   window.location.reload(false);
-  //       // }, 2000);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // };
+    setUpdatePass({ ...updatePass, [name]: value });
+  };
+
+  const formSubmitPassword = async (e) => {
+    updatePass["user_id"] = userData.id;
+
+    console.log(updatePass);
+    e.preventDefault();
+    const config = {
+      method: "PATCH",
+      url: `${API_URL}user/update-password`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: updatePass,
+    };
+    await axios(config)
+      .then((response) => {
+        console.log(response);
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        setAttendFlag(false);
+        setAvailFlag(false);
+        setAttenddisabled(true);
+        setEmaildisabled(true);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <div className="wrapper">
       {sidebarToggle ? (
@@ -484,6 +513,7 @@ const MyPreferences = () => {
                           type="password"
                           name="current_password"
                           className="form-control"
+                          onChange={handleChangePassword}
                         />
                       </div>
                     </div>
@@ -492,7 +522,6 @@ const MyPreferences = () => {
                         <label
                           htmlFor="new_password"
                           className="formbold-form-label"
-                          id="new_password"
                         >
                           New Password
                         </label>
@@ -500,6 +529,7 @@ const MyPreferences = () => {
                           type="password"
                           name="new_password"
                           className="form-control"
+                          onChange={handleChangePassword}
                         />
                       </div>
                       <div>
@@ -509,12 +539,13 @@ const MyPreferences = () => {
                             className="formbold-form-label"
                             id="change_new_password"
                           >
-                            Change New Password
+                            Confirm New Password
                           </label>
                           <input
-                            type="text"
-                            name="change_new_password"
+                            type="password"
+                            name="confirm_new_password"
                             className="form-control"
+                            onChange={handleChangePassword}
                           />
                         </div>
                       </div>
@@ -528,7 +559,10 @@ const MyPreferences = () => {
                       Cancel
                     </Link>
 
-                    <button className="formbold-btn" onClick={formSubmit}>
+                    <button
+                      className="formbold-btn"
+                      onClick={formSubmitPassword}
+                    >
                       Submit
                     </button>
                   </div>
@@ -659,12 +693,14 @@ const MyPreferences = () => {
                                 <input
                                   type="checkbox"
                                   name="overdue_attendence"
-                                  value="Overdue Attendance"
+                                  value="true"
                                   disabled={attendDisabled}
                                   onChange={handleChange}
-                                  // checked={Object.keys(
-                                  //   formData?.business_data
-                                  // ).includes("overdue_attendence")}
+                                  checked={
+                                    tenantData?.overdue_attendence !== null
+                                      ? true
+                                      : false
+                                  }
                                 />
                                 Show overdue attendance on homepage
                               </div>
@@ -675,7 +711,7 @@ const MyPreferences = () => {
                             <div>
                               <div>
                                 <label
-                                  htmlFor="studentFamily"
+                                  htmlFor="default_notes_view"
                                   className="formbold-form-label"
                                 >
                                   Default Notes View
@@ -688,6 +724,11 @@ const MyPreferences = () => {
                                   name="default_notes_view"
                                   disabled={attendDisabled}
                                   onChange={handleChange}
+                                  checked={
+                                    tenantData?.default_notes_view === "Student"
+                                      ? true
+                                      : false
+                                  }
                                 ></input>
                                 Student
                                 <input
@@ -696,6 +737,11 @@ const MyPreferences = () => {
                                   name="default_notes_view"
                                   disabled={attendDisabled}
                                   onChange={handleChange}
+                                  checked={
+                                    tenantData?.default_notes_view === "Parent"
+                                      ? true
+                                      : false
+                                  }
                                 ></input>
                                 Parent
                                 <input
@@ -704,6 +750,11 @@ const MyPreferences = () => {
                                   name="default_notes_view"
                                   disabled={attendDisabled}
                                   onChange={handleChange}
+                                  checked={
+                                    tenantData?.default_notes_view === "Private"
+                                      ? true
+                                      : false
+                                  }
                                 ></input>
                                 Private
                               </div>
@@ -713,7 +764,7 @@ const MyPreferences = () => {
                           <div className="formbold-input-flex diff mb-0">
                             <div>
                               <label
-                                htmlFor="preferences"
+                                htmlFor="automatically_copy_lesson"
                                 className="formbold-form-label"
                               >
                                 Lesson Notes
@@ -726,10 +777,15 @@ const MyPreferences = () => {
                                 <input
                                   type="checkbox"
                                   name="automatically_copy_lesson"
-                                  value="Automatically copy lesson notes when I take
-                                  attendance"
+                                  value="true"
                                   disabled={attendDisabled}
                                   onChange={handleChange}
+                                  checked={
+                                    tenantData?.automatically_copy_lesson !==
+                                    null
+                                      ? true
+                                      : false
+                                  }
                                 />
                                 Automatically copy lesson notes when I take
                                 attendance
@@ -748,6 +804,12 @@ const MyPreferences = () => {
                                 name="copy_recent_event"
                                 disabled={attendDisabled}
                                 onChange={handleChange}
+                                checked={
+                                  tenantData?.copy_recent_event ===
+                                  "Copy from most recent event"
+                                    ? true
+                                    : false
+                                }
                               ></input>
                               Copy from most recent event
                               <input
@@ -756,6 +818,12 @@ const MyPreferences = () => {
                                 name="copy_recent_event"
                                 disabled={attendDisabled}
                                 onChange={handleChange}
+                                checked={
+                                  tenantData?.copy_recent_event ===
+                                  "Copy from same category only"
+                                    ? true
+                                    : false
+                                }
                               ></input>
                               Copy from same category only
                             </div>
@@ -789,6 +857,11 @@ const MyPreferences = () => {
                                 through the Student Portal"
                                 disabled={emailDisabled}
                                 onChange={handleChange}
+                                checked={
+                                  tenantData?.student_register_lesson !== null
+                                    ? true
+                                    : false
+                                }
                               ></input>
                               When any student registers for a lesson/event
                               through the Student Portal
@@ -801,6 +874,11 @@ const MyPreferences = () => {
                                 the Student Portal"
                                 disabled={emailDisabled}
                                 onChange={handleChange}
+                                checked={
+                                  tenantData?.student_cancel_lesson !== null
+                                    ? true
+                                    : false
+                                }
                               ></input>
                               When any student cancels a lesson/event through
                               the Student Portal
@@ -813,6 +891,11 @@ const MyPreferences = () => {
                                 form"
                                 disabled={emailDisabled}
                                 onChange={handleChange}
+                                checked={
+                                  tenantData?.parent_student_signup !== null
+                                    ? true
+                                    : false
+                                }
                               ></input>
                               When any parent or student completes the sign-up
                               form
@@ -825,6 +908,12 @@ const MyPreferences = () => {
                                 reminders"
                                 disabled={emailDisabled}
                                 onChange={handleChange}
+                                checked={
+                                  tenantData?.parent_student_disable_email_reminder !==
+                                  null
+                                    ? true
+                                    : false
+                                }
                               ></input>
                               When any parent or student disables email
                               reminders
@@ -836,6 +925,12 @@ const MyPreferences = () => {
                                 value="Allow students to email me from the Study Log"
                                 disabled={emailDisabled}
                                 onChange={handleChange}
+                                checked={
+                                  tenantData?.allow_student_email_studylog !==
+                                  null
+                                    ? true
+                                    : false
+                                }
                               ></input>
                               Allow students to email me from the Study Log
                             </div>
@@ -851,6 +946,11 @@ const MyPreferences = () => {
                                 name="daily_agenda"
                                 disabled={emailDisabled}
                                 onChange={handleChange}
+                                checked={
+                                  tenantData?.daily_agenda === "Day Before"
+                                    ? true
+                                    : false
+                                }
                               ></input>
                               Day Before
                               <br />
@@ -861,6 +961,11 @@ const MyPreferences = () => {
                                 name="daily_agenda"
                                 disabled={emailDisabled}
                                 onChange={handleChange}
+                                checked={
+                                  tenantData?.daily_agenda === "Same Day"
+                                    ? true
+                                    : false
+                                }
                               ></input>
                               Same Day
                               <br />
@@ -871,6 +976,11 @@ const MyPreferences = () => {
                                 name="daily_agenda"
                                 disabled={emailDisabled}
                                 onChange={handleChange}
+                                checked={
+                                  tenantData?.daily_agenda === "Don't Email"
+                                    ? true
+                                    : false
+                                }
                               ></input>
                               Don't Email
                             </div>
