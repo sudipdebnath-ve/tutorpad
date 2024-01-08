@@ -11684,6 +11684,30 @@ button.closeModal {
     var(--bs-accordion-border-color);
   padding: 20px;
 }
+.edit-availability-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border: 1px solid #c2c2c2;
+  padding: 15px;
+  border-radius: 5px;
+  line-height: 1.8;
+}
+.availability-data {
+  display: inline-grid;
+  font-size: 15px;
+}
+.availability-edit-del {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.availability-edit-del div {
+  border: 1px solid #c3c3c3;
+  padding: 5px 7px;
+  border-radius: 5px;
+  cursor: pointer;
+}
 /******************* My Preferences end********************/
 
 /******************* Email Template start********************/
@@ -12003,7 +12027,7 @@ button.closeModal {
 .payment-method .credit-button {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 .payment-method h6 {
   margin: 0;

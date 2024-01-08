@@ -23,6 +23,7 @@ const MyPreferences = () => {
   const [initial, setInitial] = useState("");
   const [formData, setFormData] = useState({});
   const [tenantData, setTenantData] = useState([]);
+  const [availData, setAvailData] = useState({});
   const [updatePass, setUpdatePass] = useState({});
 
   const customStyles = {
@@ -240,6 +241,41 @@ const MyPreferences = () => {
         setAvailFlag(false);
         setAttenddisabled(true);
         setEmaildisabled(true);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleAvailChange = (e) => {
+    const name = e.target.name;
+    let value = e.target.value;
+    console.log(name, value);
+
+    setAvailData({ ...availData, [name]: value });
+  };
+  const formAvailSubmit = async () => {
+    availData["user_id"] = userData.id;
+    // availData["days"] = availData.sun
+    //   ? availData.sun
+    //   : availData.mon
+    //   ? availData.mon.availData.sun
+    //   : "";
+    // console.log(availData);
+    const config = {
+      method: "POST",
+      url: `${API_URL}user/add-availability`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: availData,
+    };
+    await axios(config)
+      .then((response) => {
+        console.log(response);
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
       })
       .catch((error) => {
         console.log(error);
@@ -1096,7 +1132,7 @@ const MyPreferences = () => {
                                           className="status"
                                           name="sun"
                                           value="Sun"
-                                          onChange={handleChange}
+                                          onChange={handleAvailChange}
                                         />
                                         Sun
                                       </div>
@@ -1106,7 +1142,7 @@ const MyPreferences = () => {
                                           className="status"
                                           name="mon"
                                           value="Mon"
-                                          onChange={handleChange}
+                                          onChange={handleAvailChange}
                                         />
                                         Mon
                                       </div>
@@ -1116,7 +1152,7 @@ const MyPreferences = () => {
                                           className="status"
                                           name="tue"
                                           value="Tue"
-                                          onChange={handleChange}
+                                          onChange={handleAvailChange}
                                         />
                                         Tue
                                       </div>
@@ -1126,7 +1162,7 @@ const MyPreferences = () => {
                                           className="status"
                                           name="wed"
                                           value="Wed"
-                                          onChange={handleChange}
+                                          onChange={handleAvailChange}
                                         />
                                         Wed
                                       </div>
@@ -1136,7 +1172,7 @@ const MyPreferences = () => {
                                           className="status"
                                           name="thu"
                                           value="Thu"
-                                          onChange={handleChange}
+                                          onChange={handleAvailChange}
                                         />
                                         Thu
                                       </div>
@@ -1146,7 +1182,7 @@ const MyPreferences = () => {
                                           className="status"
                                           name="fri"
                                           value="Fri"
-                                          onChange={handleChange}
+                                          onChange={handleAvailChange}
                                         />
                                         Fri
                                       </div>
@@ -1156,7 +1192,7 @@ const MyPreferences = () => {
                                           className="status"
                                           name="sat"
                                           value="Sat"
-                                          onChange={handleChange}
+                                          onChange={handleAvailChange}
                                         />
                                         Sat
                                       </div>
@@ -1175,7 +1211,7 @@ const MyPreferences = () => {
                                       type="date"
                                       name="start_date"
                                       className="form-control"
-                                      onChange={handleChange}
+                                      onChange={handleAvailChange}
                                     />
                                   </div>
                                   <div>
@@ -1189,7 +1225,7 @@ const MyPreferences = () => {
                                       type="date"
                                       name="end_date"
                                       className="form-control"
-                                      onChange={handleChange}
+                                      onChange={handleAvailChange}
                                     />
                                   </div>
                                 </div>
@@ -1205,7 +1241,7 @@ const MyPreferences = () => {
                                       type="time"
                                       name="start_time"
                                       className="form-control"
-                                      onChange={handleChange}
+                                      onChange={handleAvailChange}
                                     />
                                   </div>
                                   <div>
@@ -1219,7 +1255,7 @@ const MyPreferences = () => {
                                       type="time"
                                       name="end_time"
                                       className="form-control"
-                                      onChange={handleChange}
+                                      onChange={handleAvailChange}
                                     />
                                   </div>
                                 </div>
@@ -1235,7 +1271,7 @@ const MyPreferences = () => {
                                     <textarea
                                       name="note"
                                       className="form-control"
-                                      onChange={handleChange}
+                                      onChange={handleAvailChange}
                                     />
                                   </div>
                                 </div>
@@ -1250,7 +1286,7 @@ const MyPreferences = () => {
 
                                     <button
                                       className="formbold-btn"
-                                      onClick={formSubmit}
+                                      onClick={formAvailSubmit}
                                     >
                                       Save
                                     </button>
@@ -1259,6 +1295,23 @@ const MyPreferences = () => {
                               </div>
                             </>
                           )}
+                          <div className="edit-availability-section">
+                            <div className="availability-data">
+                              <strong>Sun, Mon, Tue, Wed, Thu, Fri, Sat</strong>
+                              <span>11-01-2024 to 12-01-2024</span>
+                            </div>
+                            <div className="availability-time">
+                              <span>12:00 to 21:00</span>
+                            </div>
+                            <div className="availability-edit-del">
+                              <div>
+                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                              </div>
+                              <div>
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
