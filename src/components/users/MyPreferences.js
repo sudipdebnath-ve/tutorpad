@@ -24,6 +24,7 @@ const MyPreferences = () => {
   const [formData, setFormData] = useState({});
   const [tenantData, setTenantData] = useState([]);
   const [availData, setAvailData] = useState({});
+  const [days, setDays] = useState({});
   const [updatePass, setUpdatePass] = useState({});
 
   const customStyles = {
@@ -250,18 +251,28 @@ const MyPreferences = () => {
   const handleAvailChange = (e) => {
     const name = e.target.name;
     let value = e.target.value;
-    console.log(name, value);
+    // console.log(name, value);
 
-    setAvailData({ ...availData, [name]: value });
+    if (
+      name === "sun" ||
+      name == "mon" ||
+      name == "tue" ||
+      name == "wed" ||
+      name == "thu" ||
+      name == "fri" ||
+      name == "sat"
+    ) {
+      setDays({ ...days, [name]: value });
+    } else {
+      setAvailData({ ...availData, [name]: value });
+    }
   };
   const formAvailSubmit = async () => {
     availData["user_id"] = userData.id;
-    // availData["days"] = availData.sun
-    //   ? availData.sun
-    //   : availData.mon
-    //   ? availData.mon.availData.sun
-    //   : "";
-    // console.log(availData);
+    let arr = Object.values(days);
+    let text = arr.toString();
+    availData["days"] = text;
+
     const config = {
       method: "POST",
       url: `${API_URL}user/add-availability`,
