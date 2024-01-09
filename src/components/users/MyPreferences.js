@@ -11,8 +11,15 @@ import { ToastContainer, toast } from "react-toastify";
 import payroll from "../users/assets/images/payroll.svg";
 
 const MyPreferences = () => {
-  const { userData, fetchData, sidebarToggle, token, userId } =
-    useUserDataContext();
+  const {
+    userData,
+    fetchData,
+    sidebarToggle,
+    token,
+    userId,
+    getAvailabilityData,
+    allAvailabilityData,
+  } = useUserDataContext();
   const navigate = useNavigate();
   const [modalIsOpen, setIsOpen] = useState(false);
   const [profilePhoto, setProfilePhoto] = useState("");
@@ -26,6 +33,7 @@ const MyPreferences = () => {
   const [availData, setAvailData] = useState({});
   const [days, setDays] = useState({});
   const [updatePass, setUpdatePass] = useState({});
+  const [error, setError] = useState({});
 
   const customStyles = {
     content: {
@@ -80,6 +88,7 @@ const MyPreferences = () => {
       navigate("/signin");
     } else {
       fetchData(token);
+      allAvailabilityData();
     }
   }, []);
   useEffect(() => {
@@ -120,11 +129,6 @@ const MyPreferences = () => {
     tenantData.daily_agenda = userData?.business_data?.daily_agenda;
   }, [userData]);
 
-  // if (userData?.business_data) {
-  //   if (tenantData?.default_notes_view !== "") {
-  //     console.log(userData);
-  //   }
-  // }
   const handleAttendEdit = (e) => {
     setAttendFlag(!e.target.value);
     setAttenddisabled(false);
@@ -143,7 +147,7 @@ const MyPreferences = () => {
   const handleChange = (e) => {
     const name = e.target.name;
     let value = e.target.value;
-    console.log(name, value);
+    // console.log(name, value);
     if (
       name === "title" ||
       name === "first_name" ||
@@ -267,11 +271,14 @@ const MyPreferences = () => {
       setAvailData({ ...availData, [name]: value });
     }
   };
+
   const formAvailSubmit = async () => {
     availData["user_id"] = userData.id;
     let arr = Object.values(days);
-    let text = arr.toString();
-    availData["days"] = text;
+    let allday = arr.toString();
+    availData["days"] = allday;
+
+    console.log(availData);
 
     const config = {
       method: "POST",
@@ -287,11 +294,39 @@ const MyPreferences = () => {
         toast.success(response.data.message, {
           position: toast.POSITION.TOP_CENTER,
         });
+        setAvailFlag(false);
+        allAvailabilityData();
+      })
+      .catch((error) => {
+        console.log(error.response.data.data);
+        if (error.response.data.success === false) {
+          setError(error.response.data.data);
+        }
+      });
+  };
+
+  const deleteAvailability = async (id) => {
+    const config = {
+      method: "DELETE",
+      url: `${API_URL}user/delete-availability/${id}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    console.log(id);
+    await axios(config)
+      .then((response) => {
+        console.log(response);
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        allAvailabilityData();
       })
       .catch((error) => {
         console.log(error);
       });
   };
+
   return (
     <div className="wrapper">
       {sidebarToggle ? (
@@ -1136,6 +1171,13 @@ const MyPreferences = () => {
                                         Days
                                       </label>
                                     </div>
+                                    <small style={{ color: "red" }}>
+                                      {error?.days?.length ? (
+                                        error?.days[0]
+                                      ) : (
+                                        <></>
+                                      )}
+                                    </small>
                                     <div className="studentStatus">
                                       <div>
                                         <input
@@ -1210,6 +1252,7 @@ const MyPreferences = () => {
                                     </div>
                                   </div>
                                 </div>
+
                                 <div className="formbold-input-flex">
                                   <div>
                                     <label
@@ -1240,6 +1283,13 @@ const MyPreferences = () => {
                                     />
                                   </div>
                                 </div>
+                                <small style={{ color: "red" }}>
+                                  {error?.end_date?.length ? (
+                                    error?.end_date[0]
+                                  ) : (
+                                    <></>
+                                  )}
+                                </small>
                                 <div className="formbold-input-flex">
                                   <div>
                                     <label
@@ -1306,23 +1356,49 @@ const MyPreferences = () => {
                               </div>
                             </>
                           )}
-                          <div className="edit-availability-section">
-                            <div className="availability-data">
-                              <strong>Sun, Mon, Tue, Wed, Thu, Fri, Sat</strong>
-                              <span>11-01-2024 to 12-01-2024</span>
-                            </div>
-                            <div className="availability-time">
-                              <span>12:00 to 21:00</span>
-                            </div>
-                            <div className="availability-edit-del">
-                              <div>
-                                <i class="fa fa-pencil" aria-hidden="true"></i>
-                              </div>
-                              <div>
-                                <i class="fa fa-trash" aria-hidden="true"></i>
-                              </div>
-                            </div>
-                          </div>
+                          {!availFlag && (
+                            <>
+                              {getAvailabilityData?.map((item, index) => {
+                                console.log(item);
+                                return (
+                                  <div
+                                    className="edit-availability-section"
+                                    key={index}
+                                  >
+                                    <div className="availability-data">
+                                      <strong>{item.days.toString()}</strong>
+                                      <span>
+                                        {item.start_date} to {item.end_date}
+                                      </span>
+                                      <span>{item.note}</span>
+                                    </div>
+                                    <div className="availability-time">
+                                      <span>
+                                        {item.start_time} to {item.end_time}
+                                      </span>
+                                    </div>
+                                    <div className="availability-edit-del">
+                                      <div>
+                                        <i
+                                          className="fa fa-pencil"
+                                          aria-hidden="true"
+                                        ></i>
+                                      </div>
+                                      <div>
+                                        <i
+                                          className="fa fa-trash"
+                                          aria-hidden="true"
+                                          onClick={() =>
+                                            deleteAvailability(item.id)
+                                          }
+                                        ></i>
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>

@@ -15,6 +15,7 @@ const AppContext = ({ children }) => {
   const [emailTemplateData, setEmailTemplateData] = useState([]);
   const [emailOnchange, setEmailOnchange] = useState(false);
   const [studentData, setStudentData] = useState(false);
+  const [getAvailabilityData, setGetAvailabilityData] = useState([]);
   const [emailData, setEmailData] = useState({
     template_title: "",
     template_content: "",
@@ -138,6 +139,28 @@ const AppContext = ({ children }) => {
       });
   };
 
+  //Availability
+
+  const allAvailabilityData = async () => {
+    const config = {
+      method: "GET",
+      url: `${API_URL}user/get-availabilities`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(config)
+      .then((response) => {
+        // console.log(response);
+        if (response.status === 200) {
+          setGetAvailabilityData(response.data.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <userDataContext.Provider
       value={{
@@ -158,6 +181,8 @@ const AppContext = ({ children }) => {
         userId,
         setLoading,
         loading,
+        allAvailabilityData,
+        getAvailabilityData,
       }}
     >
       {children}
