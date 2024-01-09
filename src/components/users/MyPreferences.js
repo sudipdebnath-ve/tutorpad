@@ -34,6 +34,7 @@ const MyPreferences = () => {
   const [days, setDays] = useState({});
   const [updatePass, setUpdatePass] = useState({});
   const [error, setError] = useState({});
+  const [editA, setEditA] = useState({});
 
   const customStyles = {
     content: {
@@ -54,6 +55,22 @@ const MyPreferences = () => {
     content: {
       width: "60%",
       height: "60%",
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+      border: "none",
+    },
+    overlay: {
+      background: "#6c5a5669",
+    },
+  };
+  const availStyles = {
+    content: {
+      width: "60%",
+      height: "80%",
       top: "50%",
       left: "50%",
       right: "auto",
@@ -255,7 +272,24 @@ const MyPreferences = () => {
   const handleAvailChange = (e) => {
     const name = e.target.name;
     let value = e.target.value;
-    // console.log(name, value);
+
+    if (
+      name === "sun" ||
+      name == "mon" ||
+      name == "tue" ||
+      name == "wed" ||
+      name == "thu" ||
+      name == "fri" ||
+      name == "sat"
+    ) {
+      setDays({ ...days, [name]: value });
+    } else {
+      setAvailData({ ...availData, [name]: value });
+    }
+  };
+  const handleAvailChangePopup = (e) => {
+    const name = e.target.name;
+    let value = e.target.value;
 
     if (
       name === "sun" ||
@@ -316,7 +350,6 @@ const MyPreferences = () => {
     console.log(id);
     await axios(config)
       .then((response) => {
-        console.log(response);
         toast.success(response.data.message, {
           position: toast.POSITION.TOP_CENTER,
         });
@@ -324,6 +357,61 @@ const MyPreferences = () => {
       })
       .catch((error) => {
         console.log(error);
+      });
+  };
+  const editAvailability = async (id) => {
+    openModal("updateAvail");
+
+    const config = {
+      method: "GET",
+      url: `${API_URL}user/get-availability/${id}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(config)
+      .then((response) => {
+        console.log(response.data.data);
+        setEditA(response.data.data);
+        availData["start_date"] = response.data.data.start_date;
+        availData["end_date"] = response.data.data.end_date;
+        availData["start_time"] = response.data.data.start_time;
+        availData["end_time"] = response.data.data.end_time;
+        availData["note"] = response.data.data.note;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const updateAvailability = async (e) => {
+    let arr = Object.values(days);
+    let allday = arr.toString();
+    availData["days"] = allday;
+    availData["id"] = editA.id;
+    e.preventDefault();
+    // console.log(availData);
+    const config = {
+      method: "PATCH",
+      url: `${API_URL}user/update-availability`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: availData,
+    };
+    await axios(config)
+      .then((response) => {
+        console.log(response.data);
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        setIsOpen(false);
+        allAvailabilityData();
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.response.data.success === false) {
+          setError(error.response.data.data);
+        }
       });
   };
 
@@ -644,6 +732,224 @@ const MyPreferences = () => {
                     <button
                       className="formbold-btn"
                       onClick={formSubmitPassword}
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </ReactModal>
+        <ReactModal
+          isOpen={modalIsOpen === "updateAvail"}
+          onAfterOpen={afterOpenModal}
+          onRequestClose={closeModal}
+          style={availStyles}
+          contentLabel="Change Password"
+        >
+          <div className="mypreference-modal">
+            <div className="close-h">
+              <h4>Update Availability</h4>
+              <button className="closeModal" onClick={closeModal}>
+                X
+              </button>
+            </div>
+            <form name="studentProfile">
+              <div className="row d-flex">
+                <div className="col-xl-12 col-xxl-12">
+                  <div className="formbold-form-step-1 active">
+                    <div className="formbold-input-flex diff">
+                      <div>
+                        <div>
+                          <label htmlFor="days" className="formbold-form-label">
+                            Days
+                          </label>
+                        </div>
+                        <small style={{ color: "red" }}>
+                          {error?.days?.length ? error?.days[0] : <></>}
+                        </small>
+                        <div className="studentStatus">
+                          <div>
+                            <input
+                              type="checkbox"
+                              className="status"
+                              name="sun"
+                              value="Sun"
+                              onChange={handleAvailChangePopup}
+                              // checked={
+                              //   days?.sun !== null ||
+                              //   days?.sun !== undefined ||
+                              //   days?.sun !== ""
+                              //     ? true
+                              //     : false
+                              // }
+                            />
+                            Sun
+                          </div>
+                          <div>
+                            <input
+                              type="checkbox"
+                              className="status"
+                              name="mon"
+                              value="Mon"
+                              onChange={handleAvailChangePopup}
+                              // checked={days?.mon !== null ? true : false}
+                            />
+                            Mon
+                          </div>
+                          <div>
+                            <input
+                              type="checkbox"
+                              className="status"
+                              name="tue"
+                              value="Tue"
+                              onChange={handleAvailChangePopup}
+                              // checked={days?.tue !== null ? true : false}
+                            />
+                            Tue
+                          </div>
+                          <div>
+                            <input
+                              type="checkbox"
+                              className="status"
+                              name="wed"
+                              value="Wed"
+                              onChange={handleAvailChangePopup}
+                              // checked={days?.wed !== null ? true : false}
+                            />
+                            Wed
+                          </div>
+                          <div>
+                            <input
+                              type="checkbox"
+                              className="status"
+                              name="thu"
+                              value="Thu"
+                              onChange={handleAvailChangePopup}
+                              // checked={days?.thu !== null ? true : false}
+                            />
+                            Thu
+                          </div>
+                          <div>
+                            <input
+                              type="checkbox"
+                              className="status"
+                              name="fri"
+                              value="Fri"
+                              onChange={handleAvailChangePopup}
+                              // checked={days?.fri !== null ? true : false}
+                            />
+                            Fri
+                          </div>
+                          <div>
+                            <input
+                              type="checkbox"
+                              className="status"
+                              name="sat"
+                              value="Sat"
+                              onChange={handleAvailChangePopup}
+                              // checked={days?.sat !== null ? true : false}
+                            />
+                            Sat
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label
+                          htmlFor="start_date"
+                          className="formbold-form-label"
+                        >
+                          Start Date <span>Optional</span>
+                        </label>
+                        <input
+                          type="date"
+                          name="start_date"
+                          className="form-control"
+                          value={availData.start_date}
+                          onChange={handleAvailChangePopup}
+                        />
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="end_date"
+                          className="formbold-form-label"
+                        >
+                          End Date <span>Optional</span>
+                        </label>
+                        <input
+                          type="date"
+                          name="end_date"
+                          className="form-control"
+                          value={availData.end_date}
+                          onChange={handleAvailChangePopup}
+                        />
+                      </div>
+                    </div>
+                    <small style={{ color: "red" }}>
+                      {error?.end_date?.length ? error?.end_date[0] : <></>}
+                    </small>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label
+                          htmlFor="start_time"
+                          className="formbold-form-label"
+                        >
+                          Start Time
+                        </label>
+                        <input
+                          type="time"
+                          name="start_time"
+                          className="form-control"
+                          value={availData.start_time}
+                          onChange={handleAvailChangePopup}
+                        />
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="end_time"
+                          className="formbold-form-label"
+                        >
+                          End Time
+                        </label>
+                        <input
+                          type="time"
+                          name="end_time"
+                          className="form-control"
+                          value={availData.end_time}
+                          onChange={handleAvailChangePopup}
+                        />
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex diff">
+                      <div>
+                        <label htmlFor="note" className="formbold-form-label">
+                          Note <span>Optional</span>
+                        </label>
+
+                        <textarea
+                          name="note"
+                          className="form-control"
+                          value={availData.note}
+                          onChange={handleAvailChangePopup}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr></hr>
+                <div className="formbold-form-btn-wrapper">
+                  <div className="btn-end">
+                    <Link className="cancel" onClick={closeModal}>
+                      Cancel
+                    </Link>
+
+                    <button
+                      className="formbold-btn"
+                      onClick={updateAvailability}
                     >
                       Submit
                     </button>
@@ -1359,14 +1665,36 @@ const MyPreferences = () => {
                           {!availFlag && (
                             <>
                               {getAvailabilityData?.map((item, index) => {
-                                console.log(item);
+                                let day = JSON.parse(item.days);
                                 return (
                                   <div
                                     className="edit-availability-section"
                                     key={index}
                                   >
                                     <div className="availability-data">
-                                      <strong>{item.days.toString()}</strong>
+                                      <div className="d-flex">
+                                        {day.map((single_day, index) => {
+                                          if (index === day.length - 1) {
+                                            return (
+                                              <>
+                                                <strong key={index}>
+                                                  {`${single_day}`}
+                                                </strong>
+                                              </>
+                                            );
+                                          } else {
+                                            return (
+                                              <>
+                                                <strong>
+                                                  {`${single_day}${","}`}
+                                                  &nbsp;
+                                                </strong>
+                                              </>
+                                            );
+                                          }
+                                        })}
+                                      </div>
+
                                       <span>
                                         {item.start_date} to {item.end_date}
                                       </span>
@@ -1382,6 +1710,9 @@ const MyPreferences = () => {
                                         <i
                                           className="fa fa-pencil"
                                           aria-hidden="true"
+                                          onClick={() =>
+                                            editAvailability(item.id)
+                                          }
                                         ></i>
                                       </div>
                                       <div>
