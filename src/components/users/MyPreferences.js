@@ -22,7 +22,7 @@ const MyPreferences = () => {
   } = useUserDataContext();
   const navigate = useNavigate();
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [profilePhoto, setProfilePhoto] = useState("");
+  const [profilePhoto, setProfilePhoto] = useState({});
   const [attendFlag, setAttendFlag] = useState(false);
   const [attendDisabled, setAttenddisabled] = useState(true);
   const [emailDisabled, setEmaildisabled] = useState(true);
@@ -161,7 +161,7 @@ const MyPreferences = () => {
     setEmaildisabled(true);
   };
 
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     const name = e.target.name;
     let value = e.target.value;
     // console.log(name, value);
@@ -192,16 +192,35 @@ const MyPreferences = () => {
       setTenantData({ ...tenantData, [name]: value });
     }
 
-    if (name === "photo") {
-      setProfilePhoto(URL.createObjectURL(e.target.files[0]));
+    if (name === "file") {
+      setProfilePhoto(e.target.files[0]);
+      console.log(e.target.files[0]);
+      profilePhoto["file"] = e.target.files[0];
+      profilePhoto["user_id"] = userId;
+      const config = {
+        method: "POST",
+        url: `${API_URL}user/uploadmedia`,
+        headers: {
+          "content-type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+        data: profilePhoto,
+      };
+      await axios(config)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   };
 
   const formSubmit = async (e) => {
     formData["user_id"] = userId;
-    if (profilePhoto) {
-      formData["photo"] = profilePhoto;
-    }
+    // if (profilePhoto) {
+    //   formData["photo"] = profilePhoto;
+    // }
     formData["tenant_data"] = tenantData;
 
     console.log(formData);
@@ -459,7 +478,7 @@ const MyPreferences = () => {
                       </div>
                       <input
                         type="file"
-                        name="photo"
+                        name="file"
                         className="form-control b-none"
                         onChange={handleChange}
                       />
