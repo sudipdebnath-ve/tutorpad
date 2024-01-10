@@ -194,7 +194,7 @@ const MyPreferences = () => {
 
     if (name === "file") {
       setProfilePhoto(e.target.files[0]);
-      console.log(e.target.files[0]);
+      // console.log(e.target.files[0]);
       profilePhoto["file"] = e.target.files[0];
       profilePhoto["user_id"] = userId;
       const config = {
