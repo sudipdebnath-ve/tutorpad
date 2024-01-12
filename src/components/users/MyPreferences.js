@@ -199,7 +199,7 @@ const MyPreferences = () => {
       profilePhoto["user_id"] = userId;
       const config = {
         method: "POST",
-        url: `${API_URL}user/uploadmedia`,
+        url: `${API_URL}user/update-dp`,
         headers: {
           "content-type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
@@ -294,12 +294,12 @@ const MyPreferences = () => {
 
     if (
       name === "sun" ||
-      name == "mon" ||
-      name == "tue" ||
-      name == "wed" ||
-      name == "thu" ||
-      name == "fri" ||
-      name == "sat"
+      name === "mon" ||
+      name === "tue" ||
+      name === "wed" ||
+      name === "thu" ||
+      name === "fri" ||
+      name === "sat"
     ) {
       setDays({ ...days, [name]: value });
     } else {
@@ -312,12 +312,12 @@ const MyPreferences = () => {
 
     if (
       name === "sun" ||
-      name == "mon" ||
-      name == "tue" ||
-      name == "wed" ||
-      name == "thu" ||
-      name == "fri" ||
-      name == "sat"
+      name === "mon" ||
+      name === "tue" ||
+      name === "wed" ||
+      name === "thu" ||
+      name === "fri" ||
+      name === "sat"
     ) {
       setDays({ ...days, [name]: value });
     } else {
@@ -1784,7 +1784,7 @@ const MyPreferences = () => {
                               <div className="flex-fill w-100">
                                 <div className="py-3">
                                   <div className="chart chart-xs payroll-img">
-                                    <img src={payroll}></img>
+                                    <img src={payroll} alt="payroll"></img>
                                   </div>
                                 </div>
                                 <h6 className="text-center">

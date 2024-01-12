@@ -12039,3 +12039,30 @@ button.closeModal {
   padding: 10px 0px 20px 0px;
 } */
 /******************* Bussiness Settings End ********************/
+
+/******************* Calendar Start ********************/
+
+.ReactModalPortal {
+  position: relative;
+  z-index: 9999;
+}
+.calendar-modal .popup-icons {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  font-size: 18px;
+}
+.calendar-modal .calendar-date-time h4 {
+  font-size: 20px;
+  font-weight: 700;
+}
+.calendar-modal .current-date {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 10px;
+}
+.close-h.add {
+  padding-bottom: 0;
+}
+/******************* Calendar End ********************/
