@@ -12065,4 +12065,20 @@ button.closeModal {
 .close-h.add {
   padding-bottom: 0;
 }
+.calendar-modal .multi {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 9px;
+  cursor: pointer;
+}
+.calendar-modal .multi i {
+  font-size: 16px;
+}
+.calendar-modal .multi:hover {
+  background: #ebebeb;
+}
+.calendar-modal .form-control {
+  padding: 0.5rem 0.85rem;
+}
 /******************* Calendar End ********************/

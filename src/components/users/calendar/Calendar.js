@@ -9,6 +9,7 @@ import moment from "moment";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import ReactModal from "react-modal";
+import { Link } from "react-router-dom";
 
 const Calendars = () => {
   const { sidebarToggle, userData, fetchData } = useUserDataContext();
@@ -70,6 +71,36 @@ const Calendars = () => {
       background: "#6c5a5669",
     },
   };
+  const addEventStyles = {
+    content: {
+      width: "25%",
+      height: "auto",
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+    },
+    overlay: {
+      background: "#6c5a5669",
+    },
+  };
+  const quickAddLessonStyles = {
+    content: {
+      width: "45%",
+      height: "90%",
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+    },
+    overlay: {
+      background: "#6c5a5669",
+    },
+  };
   function openModal(e) {
     setIsOpen(e);
   }
@@ -96,6 +127,10 @@ const Calendars = () => {
     let startDate = e.start.toDateString();
     setStartDate(startDate);
     setEndDate(e.end);
+  };
+  const openQuickAddLessonModal = (e) => {
+    openModal("quickAddLesson");
+    console.log(e);
   };
 
   return (
@@ -149,7 +184,7 @@ const Calendars = () => {
           isOpen={modalIsOpen === "addEvent"}
           onAfterOpen={afterOpenModal}
           onRequestClose={closeModal}
-          style={customStyles}
+          style={addEventStyles}
           contentLabel="Example Modal"
         >
           <div className="calendar-modal">
@@ -163,8 +198,209 @@ const Calendars = () => {
             </div>
             <div className="calendar-date-time">0 Scheduled Event(s)</div>
             <hr></hr>
-            <i class="fa fa-calendar" aria-hidden="true"></i>
-            <strong>Quick-Add Lesson</strong>
+            <div className="multi" onClick={openQuickAddLessonModal}>
+              <i class="fa fa-calendar-check" aria-hidden="true"></i>
+              <div>
+                <strong>Quick-Add Lesson</strong>
+                <p>
+                  Create a new lesson with your default category, length, and
+                  price.
+                </p>
+              </div>
+            </div>
+            <div className="multi">
+              <i class="fa fa-calendar-plus" aria-hidden="true"></i>
+              <div>
+                <strong>New Event</strong>
+                <p>Create a new event with custom settings.</p>
+              </div>
+            </div>
+            <div className="multi">
+              <i class="fa fa-calendar" aria-hidden="true"></i>
+              <div>
+                <strong>New Non-Tutoring Event</strong>
+                <p>Create a new event that doesn't require students.</p>
+              </div>
+            </div>
+          </div>
+        </ReactModal>
+        <ReactModal
+          isOpen={modalIsOpen === "quickAddLesson"}
+          onAfterOpen={afterOpenModal}
+          onRequestClose={closeModal}
+          style={quickAddLessonStyles}
+          contentLabel="Example Modal"
+        >
+          <div className="calendar-modal">
+            <div className="close-h add">
+              <h4>
+                <strong>Quick Add Lesson</strong>
+              </h4>
+              <button className="closeModal" onClick={closeModal}>
+                X
+              </button>
+            </div>
+            <br></br>
+            <form name="studentProfile">
+              <div className="row d-flex">
+                <div className="col-xl-12 col-xxl-12">
+                  <div className="formbold-form-step-1 active">
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label htmlFor="tutor" className="formbold-form-label">
+                          Tutor
+                        </label>
+                        <input
+                          type="text"
+                          name="tutor"
+                          className="form-control"
+                          // value={formData.first_name}
+                          // onChange={handleChange}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="student"
+                          className="formbold-form-label"
+                        >
+                          Student
+                        </label>
+                        <input
+                          type="text"
+                          name="student"
+                          className="form-control"
+                          // value={formData.last_name}
+                          // onChange={handleChange}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label
+                          htmlFor="location"
+                          className="formbold-form-label"
+                        >
+                          Location
+                        </label>
+                        <input
+                          type="text"
+                          name="location"
+                          className="form-control"
+                          // value={formData.email}
+                          // onChange={handleChange}
+                        />
+                      </div>
+                      <div>
+                        <div>
+                          <label htmlFor="date" className="formbold-form-label">
+                            Date
+                          </label>
+                          <input
+                            type="date"
+                            name="date"
+                            className="form-control"
+                            // value={formData.phone}
+                            // onChange={handleChange}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label
+                          htmlFor="address"
+                          className="formbold-form-label"
+                        >
+                          Time
+                        </label>
+                        <br></br>
+
+                        <input
+                          type="time"
+                          name="time"
+                          className="form-control"
+                          // value={tenantData.address}
+                          // onChange={handleChange}
+                        />
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <div
+                          className="preference"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="event_repeats"
+                            value="This event repeats"
+                          />
+                          This event repeats
+                        </div>
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex diff">
+                      <div>
+                        <div>
+                          <label
+                            htmlFor="default_notes_view"
+                            className="formbold-form-label"
+                          >
+                            Visibility
+                          </label>
+                        </div>
+                        <div className="input-radio">
+                          <input
+                            type="radio"
+                            value="Public - Visible on the Student Portal calendar to all students"
+                            name="visibility"
+                          ></input>
+                          Public - Visible on the Student Portal calendar to all
+                          students
+                        </div>
+                        <div className="input-radio">
+                          <input
+                            type="radio"
+                            value="Private - Visible on the Student Portal calendar to current attendees only"
+                            name="visibility"
+                          ></input>
+                          Private - Visible on the Student Portal calendar to
+                          current attendees only
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="formbold-input-flex">
+                      <div>
+                        <div
+                          className="preference"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="event_credit"
+                            value="This event requires a make-up credit"
+                          />
+                          This event requires a make-up credit
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr></hr>
+                <div className="formbold-form-btn-wrapper">
+                  <div className="btn-end">
+                    <Link className="cancel" onClick={closeModal}>
+                      Cancel
+                    </Link>
+
+                    <button className="formbold-btn">Save</button>
+                  </div>
+                </div>
+              </div>
+            </form>
           </div>
         </ReactModal>
         <main className="content student">
