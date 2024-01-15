@@ -40,9 +40,9 @@ const StudentMessageHistory = () => {
               <div className="col-xl-12 col-xxl-12">
                 <div className="back-link">
                   <i className="fa fa-arrow-left" aria-hidden="true"></i>
-                  <Link to="/students"> Back to Students</Link>
+                  <Link to="/students"> To Student Overview</Link>
                 </div>
-                <h1>New Email</h1>
+                <h1>Message History</h1>
                 <h5>
                   <strong>Messages from the </strong>
                   <select className="mes-history-drop">

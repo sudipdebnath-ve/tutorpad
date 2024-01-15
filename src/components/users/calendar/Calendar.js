@@ -132,6 +132,14 @@ const Calendars = () => {
     openModal("quickAddLesson");
     console.log(e);
   };
+  const openNewEventModal = (e) => {
+    openModal("newEvent");
+    console.log(e);
+  };
+  const openNewNonTutoringEventModal = (e) => {
+    openModal("newNonTutoringEvent");
+    console.log(e);
+  };
 
   return (
     <div className="wrapper">
@@ -208,14 +216,14 @@ const Calendars = () => {
                 </p>
               </div>
             </div>
-            <div className="multi">
+            <div className="multi" onClick={openNewEventModal}>
               <i class="fa fa-calendar-plus" aria-hidden="true"></i>
               <div>
                 <strong>New Event</strong>
                 <p>Create a new event with custom settings.</p>
               </div>
             </div>
-            <div className="multi">
+            <div className="multi" onClick={openNewNonTutoringEventModal}>
               <i class="fa fa-calendar" aria-hidden="true"></i>
               <div>
                 <strong>New Non-Tutoring Event</strong>
@@ -250,14 +258,15 @@ const Calendars = () => {
                         <label htmlFor="tutor" className="formbold-form-label">
                           Tutor
                         </label>
-                        <input
-                          type="text"
-                          name="tutor"
-                          className="form-control"
-                          // value={formData.first_name}
-                          // onChange={handleChange}
-                          required
-                        />
+                        <div>
+                          <select
+                            name="tutor"
+                            className="form-control"
+                            // onChange={handleChange}
+                          >
+                            <option></option>
+                          </select>
+                        </div>
                       </div>
                       <div>
                         <label
@@ -266,14 +275,15 @@ const Calendars = () => {
                         >
                           Student
                         </label>
-                        <input
-                          type="text"
-                          name="student"
-                          className="form-control"
-                          // value={formData.last_name}
-                          // onChange={handleChange}
-                          required
-                        />
+                        <div>
+                          <select
+                            name="student"
+                            className="form-control"
+                            // onChange={handleChange}
+                          >
+                            <option></option>
+                          </select>
+                        </div>
                       </div>
                     </div>
                     <div className="formbold-input-flex">
@@ -287,6 +297,243 @@ const Calendars = () => {
                         <input
                           type="text"
                           name="location"
+                          className="form-control"
+                          // value={formData.email}
+                          // onChange={handleChange}
+                        />
+                      </div>
+                      <div>
+                        <div>
+                          <label htmlFor="date" className="formbold-form-label">
+                            Date
+                          </label>
+                          <input
+                            type="date"
+                            name="date"
+                            className="form-control"
+                            // value={formData.phone}
+                            // onChange={handleChange}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label htmlFor="time" className="formbold-form-label">
+                          Time
+                        </label>
+                        <br></br>
+
+                        <input
+                          type="time"
+                          name="time"
+                          className="form-control"
+                          // value={tenantData.address}
+                          // onChange={handleChange}
+                        />
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <div
+                          className="quick_addevent_repeats"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="quick_addevent_repeats"
+                            value="This event repeats"
+                          />
+                          This event repeats
+                        </div>
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex diff">
+                      <div>
+                        <div>
+                          <label
+                            htmlFor="visibility"
+                            className="formbold-form-label"
+                          >
+                            Visibility
+                          </label>
+                        </div>
+                        <div className="input-radio">
+                          <input
+                            type="radio"
+                            value="Public - Visible on the Student Portal calendar to all students"
+                            name="quick_add_visibility"
+                          ></input>
+                          Public - Visible on the Student Portal calendar to all
+                          students
+                        </div>
+                        <div className="input-radio">
+                          <input
+                            type="radio"
+                            value="Private - Visible on the Student Portal calendar to current attendees only"
+                            name="quick_add_visibility"
+                          ></input>
+                          Private - Visible on the Student Portal calendar to
+                          current attendees only
+                        </div>
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <div
+                          className="preference"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="quickadd_event_credit"
+                            value="This event requires a make-up credit"
+                          />
+                          This event requires a make-up credit
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr></hr>
+                <div className="formbold-form-btn-wrapper">
+                  <div className="btn-end">
+                    <Link className="cancel" onClick={closeModal}>
+                      Cancel
+                    </Link>
+
+                    <button className="formbold-btn">Save</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </ReactModal>
+        <ReactModal
+          isOpen={modalIsOpen === "newEvent"}
+          onAfterOpen={afterOpenModal}
+          onRequestClose={closeModal}
+          style={quickAddLessonStyles}
+          contentLabel="Example Modal"
+        >
+          <div className="calendar-modal">
+            <div className="close-h add">
+              <h4>
+                <strong>New Calendar Event</strong>
+              </h4>
+              <button className="closeModal" onClick={closeModal}>
+                X
+              </button>
+            </div>
+            <br></br>
+            <form name="studentProfile">
+              <div className="row d-flex">
+                <div className="col-xl-12 col-xxl-12">
+                  <div className="formbold-form-step-1 active">
+                    <div className="formbold-input-flex align-items-end">
+                      <div>
+                        <label htmlFor="tutor" className="formbold-form-label">
+                          Tutor
+                        </label>
+                        <div>
+                          <select
+                            name="tutor"
+                            className="form-control"
+                            // onChange={handleChange}
+                          >
+                            <option>No Tutor - Entire School</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div>
+                        <div
+                          className="preference"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="add_substitute_tutor"
+                            value="Add substitute tutor"
+                          />
+                          Add substitute tutor
+                        </div>
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label
+                          htmlFor="Substitute Tutor"
+                          className="formbold-form-label"
+                        >
+                          Substitute Tutor
+                        </label>
+                        <input
+                          type="text"
+                          name="substitute_tutor"
+                          className="form-control"
+                          // value={formData.email}
+                          // onChange={handleChange}
+                        />
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex diff">
+                      <div>
+                        <div>
+                          <label
+                            htmlFor="default_notes_view"
+                            className="formbold-form-label"
+                          >
+                            Visibility
+                          </label>
+                        </div>
+                        <div className="input-radio">
+                          <input
+                            type="radio"
+                            value="Public - Visible on the Student Portal calendar to all students"
+                            name="new_event_visibility"
+                          ></input>
+                          Public - Visible on the Student Portal calendar to all
+                          students
+                        </div>
+                        <div className="input-radio">
+                          <input
+                            type="radio"
+                            value="Private - Visible on the Student Portal calendar to current attendees only"
+                            name="new_event_visibility"
+                          ></input>
+                          Private - Visible on the Student Portal calendar to
+                          current attendees only
+                        </div>
+                      </div>
+                    </div>
+                    <div class="input-check">
+                      <input
+                        type="checkbox"
+                        name="student_makeup_credit"
+                        value="This event requires a make-up credit"
+                      />
+                      This event requires a make-up credit
+                    </div>
+                    <div class="input-check">
+                      <input
+                        type="checkbox"
+                        name="student_register_lesson"
+                        value="Allow students to register through the Student Portal"
+                      />
+                      Allow students to register through the Student Portal
+                    </div>
+                    <hr></hr>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label
+                          htmlFor="location"
+                          className="formbold-form-label"
+                        >
+                          Attendees
+                        </label>
+                        <input
+                          type="text"
+                          name="attendees"
                           className="form-control"
                           // value={formData.email}
                           // onChange={handleChange}
@@ -325,6 +572,71 @@ const Calendars = () => {
                           // onChange={handleChange}
                         />
                       </div>
+                      <div>
+                        <label
+                          htmlFor="address"
+                          className="formbold-form-label"
+                        >
+                          Duration
+                        </label>
+                        <br></br>
+
+                        <input
+                          type="text"
+                          name="duration"
+                          className="form-control"
+                          placeholder="30 min"
+                          // value={tenantData.address}
+                          // onChange={handleChange}
+                        />
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex">
+                      <div></div>
+                      <div>
+                        <div
+                          className="preference"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="event_repeats"
+                            value="This event repeats"
+                          />
+                          All Day
+                        </div>
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label
+                          htmlFor="category"
+                          className="formbold-form-label"
+                        >
+                          Category
+                        </label>
+                        <br></br>
+
+                        <select name="category" className="form-control">
+                          <option>Lesson</option>
+                          <option>Group Lesson</option>
+                          <option>Vacation</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="location"
+                          className="formbold-form-label"
+                        >
+                          Location
+                        </label>
+                        <br></br>
+
+                        <select
+                          className="form-control"
+                          name="location"
+                        ></select>
+                      </div>
                     </div>
                     <div className="formbold-input-flex">
                       <div>
@@ -345,33 +657,216 @@ const Calendars = () => {
                       <div>
                         <div>
                           <label
-                            htmlFor="default_notes_view"
+                            htmlFor="student_pricing"
                             className="formbold-form-label"
                           >
-                            Visibility
+                            Student Pricing
                           </label>
                         </div>
                         <div className="input-radio">
                           <input
                             type="radio"
-                            value="Public - Visible on the Student Portal calendar to all students"
-                            name="visibility"
+                            value="Student Default"
+                            name="student_pricing"
                           ></input>
-                          Public - Visible on the Student Portal calendar to all
-                          students
+                          Student Default
                         </div>
                         <div className="input-radio">
                           <input
                             type="radio"
-                            value="Private - Visible on the Student Portal calendar to current attendees only"
-                            name="visibility"
+                            value="No charge (₹ 0.00)"
+                            name="student_pricing"
                           ></input>
-                          Private - Visible on the Student Portal calendar to
-                          current attendees only
+                          No charge (₹ 0.00)
+                        </div>
+                        <div className="input-radio">
+                          <input
+                            type="radio"
+                            value="No charge (₹ 0.00)"
+                            name="student_pricing"
+                          ></input>
+                          Specify price per student
                         </div>
                       </div>
                     </div>
+                    <div className="formbold-input-flex diff">
+                      <div>
+                        <label
+                          htmlFor="public_desc"
+                          className="formbold-form-label"
+                        >
+                          Public Description <span>Optional</span>
+                        </label>
 
+                        <textarea name="public_desc" className="form-control" />
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex diff">
+                      <div>
+                        <label
+                          htmlFor="private_desc"
+                          className="formbold-form-label"
+                        >
+                          Private Description <span>Optional</span>
+                        </label>
+                        <br></br>
+                        <span>
+                          Visible only to you, even if the event is public
+                        </span>
+                        <textarea
+                          name="private_desc"
+                          className="form-control"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr></hr>
+                <div className="formbold-form-btn-wrapper">
+                  <div className="btn-end">
+                    <Link className="cancel" onClick={closeModal}>
+                      Cancel
+                    </Link>
+
+                    <button className="formbold-btn">Save</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </ReactModal>
+        <ReactModal
+          isOpen={modalIsOpen === "newNonTutoringEvent"}
+          onAfterOpen={afterOpenModal}
+          onRequestClose={closeModal}
+          style={quickAddLessonStyles}
+          contentLabel="Example Modal"
+        >
+          <div className="calendar-modal">
+            <div className="close-h add">
+              <h4>
+                <strong>New Non-Tutoring Event</strong>
+              </h4>
+              <button className="closeModal" onClick={closeModal}>
+                X
+              </button>
+            </div>
+            <br></br>
+            <form name="studentProfile">
+              <div className="row d-flex">
+                <div className="col-xl-12 col-xxl-12">
+                  <div className="formbold-form-step-1 active">
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label htmlFor="tutor" className="formbold-form-label">
+                          Tutor
+                        </label>
+                        <div>
+                          <select
+                            name="tutor"
+                            className="form-control"
+                            // onChange={handleChange}
+                          >
+                            <option></option>
+                          </select>
+                        </div>
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="address"
+                          className="formbold-form-label"
+                        >
+                          Category
+                        </label>
+                        <br></br>
+
+                        <select className="form-control">
+                          <option>Lesson</option>
+                          <option>Group Lesson</option>
+                          <option>Vacation</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label
+                          htmlFor="location"
+                          className="formbold-form-label"
+                        >
+                          Location
+                        </label>
+                        <br></br>
+
+                        <select
+                          name="location"
+                          className="form-control"
+                        ></select>
+                      </div>
+                      <div>
+                        <div>
+                          <label htmlFor="date" className="formbold-form-label">
+                            Date
+                          </label>
+                          <input
+                            type="date"
+                            name="date"
+                            className="form-control"
+                            // value={formData.phone}
+                            // onChange={handleChange}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label htmlFor="time" className="formbold-form-label">
+                          Time
+                        </label>
+                        <br></br>
+
+                        <input
+                          type="time"
+                          name="time"
+                          className="form-control"
+                          // value={tenantData.address}
+                          // onChange={handleChange}
+                        />
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="duration"
+                          className="formbold-form-label"
+                        >
+                          Duration
+                        </label>
+                        <br></br>
+
+                        <input
+                          type="text"
+                          name="duration"
+                          className="form-control"
+                          placeholder="30 min"
+                          // value={tenantData.address}
+                          // onChange={handleChange}
+                        />
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex">
+                      <div></div>
+                      <div>
+                        <div
+                          className="preference"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="duration_all_day"
+                            value="This event repeats"
+                          />
+                          All Day
+                        </div>
+                      </div>
+                    </div>
                     <div className="formbold-input-flex">
                       <div>
                         <div
@@ -380,10 +875,37 @@ const Calendars = () => {
                         >
                           <input
                             type="checkbox"
-                            name="event_credit"
-                            value="This event requires a make-up credit"
+                            name="event_repeats"
+                            value="This event repeats"
                           />
-                          This event requires a make-up credit
+                          This event repeats
+                        </div>
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex diff">
+                      <div>
+                        <label
+                          htmlFor="public_desc"
+                          className="formbold-form-label"
+                        >
+                          Public Description <span>Optional</span>
+                        </label>
+
+                        <textarea name="public_desc" className="form-control" />
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex diff">
+                      <div>
+                        <div
+                          className="public_desc_on_calendar"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="public_desc_on_calendar"
+                            value="This event repeats"
+                          />
+                          Show public description directly on calendar
                         </div>
                       </div>
                     </div>
