@@ -10,12 +10,20 @@ import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import ReactModal from "react-modal";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import { API_URL } from "../../../utils/config.js";
 
 const Calendars = () => {
-  const { sidebarToggle, userData, fetchData } = useUserDataContext();
+  const { sidebarToggle, userData, fetchData, token } = useUserDataContext();
   const [modalIsOpen, setIsOpen] = useState(false);
   const [startDate, setStartDate] = useState("");
+
   const [endDate, setEndDate] = useState("");
+  const [addEvent, setAddEvent] = useState({});
+  const [eventRepeats, setEventRepeats] = useState(false);
+  const [repeatsIndefinitely, setRepeatsIndefinitely] = useState(true);
+
   const navigate = useNavigate();
 
   const localizer = momentLocalizer(moment);
@@ -113,6 +121,53 @@ const Calendars = () => {
   function closeModal() {
     setIsOpen(false);
   }
+
+  const handleChange = (e) => {
+    const name = e.target.name;
+    let value = e.target.value;
+
+    if (name === "event_repeats") {
+      if (e.target.checked) {
+        setEventRepeats(true);
+      } else {
+        setEventRepeats(false);
+      }
+    }
+    if (name === "repeats_indefinitely") {
+      if (e.target.checked) {
+        setRepeatsIndefinitely(true);
+      } else {
+        setRepeatsIndefinitely(false);
+      }
+    }
+  };
+
+  const saveEvent = async (e) => {
+    console.log(userData);
+    e.preventDefault();
+    addEvent["event"] = "quickAddLesson";
+    addEvent["user_id"] = userData.id;
+    const config = {
+      method: "POST",
+      url: `${API_URL}user/create-event`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: addEvent,
+    };
+    await axios(config)
+      .then((response) => {
+        console.log(response);
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+
+        setIsOpen(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const handleSelectedEvent = (e) => {
     console.log(e);
@@ -262,7 +317,7 @@ const Calendars = () => {
                           <select
                             name="tutor"
                             className="form-control"
-                            // onChange={handleChange}
+                            onChange={handleChange}
                           >
                             <option></option>
                           </select>
@@ -279,9 +334,9 @@ const Calendars = () => {
                           <select
                             name="student"
                             className="form-control"
-                            // onChange={handleChange}
+                            onChange={handleChange}
                           >
-                            <option></option>
+                            <option>Open Lesson Slot</option>
                           </select>
                         </div>
                       </div>
@@ -299,7 +354,7 @@ const Calendars = () => {
                           name="location"
                           className="form-control"
                           // value={formData.email}
-                          // onChange={handleChange}
+                          onChange={handleChange}
                         />
                       </div>
                       <div>
@@ -311,8 +366,7 @@ const Calendars = () => {
                             type="date"
                             name="date"
                             className="form-control"
-                            // value={formData.phone}
-                            // onChange={handleChange}
+                            onChange={handleChange}
                           />
                         </div>
                       </div>
@@ -329,25 +383,134 @@ const Calendars = () => {
                           name="time"
                           className="form-control"
                           // value={tenantData.address}
-                          // onChange={handleChange}
+                          onChange={handleChange}
                         />
                       </div>
                     </div>
                     <div className="formbold-input-flex">
                       <div>
                         <div
-                          className="quick_addevent_repeats"
+                          className="preference"
                           style={{ fontSize: "15px" }}
                         >
                           <input
                             type="checkbox"
-                            name="quick_addevent_repeats"
+                            name="event_repeats"
                             value="This event repeats"
+                            onChange={handleChange}
                           />
                           This event repeats
                         </div>
                       </div>
                     </div>
+                    {eventRepeats && (
+                      <>
+                        <div className="recurring">
+                          <div className="recurring-head">
+                            <i class="fa fa-undo" aria-hidden="true"></i>{" "}
+                            <strong>Recurring Event</strong>
+                          </div>
+
+                          <div className="formbold-input-flex diff">
+                            <div>
+                              <div>
+                                <label
+                                  htmlFor="frequency"
+                                  className="formbold-form-label"
+                                >
+                                  Frequency
+                                </label>
+                              </div>
+                              <div className="input-radio">
+                                <input
+                                  type="radio"
+                                  value="Daily"
+                                  name="frequency"
+                                  onChange={handleChange}
+                                ></input>
+                                Daily
+                                <input
+                                  type="radio"
+                                  value="Weekly"
+                                  name="frequency"
+                                  onChange={handleChange}
+                                ></input>
+                                Weekly
+                                <input
+                                  type="radio"
+                                  value="Monthly"
+                                  name="frequency"
+                                  onChange={handleChange}
+                                ></input>
+                                Monthly
+                                <input
+                                  type="radio"
+                                  value="yearly"
+                                  name="frequency"
+                                  onChange={handleChange}
+                                ></input>
+                                Yearly
+                              </div>
+                            </div>
+                          </div>
+                          <div className="formbold-input-flex align-items-end">
+                            <div>
+                              <label
+                                htmlFor="time"
+                                className="formbold-form-label"
+                              >
+                                Every
+                              </label>
+                              <br></br>
+                              <input
+                                type="text"
+                                name="every"
+                                className="form-control"
+                                placeholder="1"
+                                // value={tenantData.address}
+                                onChange={handleChange}
+                              />{" "}
+                            </div>
+                            <span>Weeks</span>
+                            {!repeatsIndefinitely && (
+                              <div>
+                                <label
+                                  htmlFor="time"
+                                  className="formbold-form-label"
+                                >
+                                  Repeat Until
+                                </label>
+                                <br></br>
+                                <input
+                                  type="date"
+                                  name="repeat_until"
+                                  className="form-control"
+                                  // value={tenantData.address}
+                                  onChange={handleChange}
+                                />{" "}
+                              </div>
+                            )}
+                          </div>
+                          <div className="formbold-input-flex">
+                            <div>
+                              <div
+                                className="preference"
+                                style={{ fontSize: "15px" }}
+                              >
+                                <input
+                                  type="checkbox"
+                                  name="repeats_indefinitely"
+                                  value="This event repeats"
+                                  onChange={handleChange}
+                                  checked={repeatsIndefinitely}
+                                />
+                                Repeat indefinitely
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    )}
                     <div className="formbold-input-flex diff">
                       <div>
                         <div>
@@ -402,7 +565,9 @@ const Calendars = () => {
                       Cancel
                     </Link>
 
-                    <button className="formbold-btn">Save</button>
+                    <button className="formbold-btn" onClick={saveEvent}>
+                      Save
+                    </button>
                   </div>
                 </div>
               </div>
@@ -925,7 +1090,8 @@ const Calendars = () => {
             </form>
           </div>
         </ReactModal>
-        <main className="content student">
+        <main className="content">
+          <ToastContainer />
           <div className="container-fluid p-0">
             <div className="row d-flex">
               <div className="col-xl-12 col-xxl-12">
