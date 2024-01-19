@@ -15,11 +15,21 @@ import { ToastContainer, toast } from "react-toastify";
 import { API_URL } from "../../../utils/config.js";
 
 const Calendars = () => {
-  const { sidebarToggle, userData, fetchData, token } = useUserDataContext();
+  const {
+    sidebarToggle,
+    userData,
+    fetchData,
+    token,
+    getTutor,
+    allTutors,
+    fetchEvent,
+    allEvents,
+  } = useUserDataContext();
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [startDate, setStartDate] = useState("");
-
-  const [endDate, setEndDate] = useState("");
+  const [eventDesc, setEventDesc] = useState({});
+  const [eventStartTime, setEventStartTime] = useState("");
+  const [eventEndTime, setEventEndTime] = useState("");
+  const [eventDate, setEventDate] = useState("");
   const [addEvent, setAddEvent] = useState({});
   const [eventRepeats, setEventRepeats] = useState(false);
   const [repeatsIndefinitely, setRepeatsIndefinitely] = useState(true);
@@ -36,33 +46,51 @@ const Calendars = () => {
       setTimeout(() => {
         fetchData(token);
       }, 2000);
+      getTutor();
+      fetchEvent();
     }
   }, []);
-  const events = [
-    {
-      title: "DTS STARTS",
-      start: new Date(2024, 0, 13, 0, 0, 0),
-      end: new Date(2024, 0, 13, 0, 0, 0),
-    },
 
-    {
-      title: "DTS ENDS",
-      start: new Date(2024, 0, 9, 0, 0, 0),
-      end: new Date(2024, 0, 9, 0, 0, 0),
-    },
+  // const eventArr = [
+  //   {
+  //     title: "DTS STARTS",
+  //     start: new Date(2024, 0, 13, 0, 0, 0),
+  //     end: new Date(2024, 0, 13, 0, 0, 0),
+  //   },
 
-    {
-      title: "Meeting",
-      start: new Date(2023, 3, 12, 10, 30, 0, 0),
-      end: new Date(2023, 3, 12, 12, 30, 0, 0),
-      desc: "Pre-meeting meeting, to prepare for the meeting",
-    },
-    {
-      title: "Multi-day Event",
-      start: new Date(2023, 10, 20, 19, 30, 0),
-      end: new Date(2023, 10, 22, 2, 0, 0),
-    },
-  ];
+  //   {
+  //     title: "DTS ENDS",
+  //     start: new Date(2024, 0, 9, 0, 0, 0),
+  //     end: new Date(2024, 0, 9, 0, 0, 0),
+  //   },
+
+  //   {
+  //     title: "Meeting",
+  //     start: new Date(2023, 3, 12, 10, 30, 0, 0),
+  //     end: new Date(2023, 3, 12, 12, 30, 0, 0),
+  //     desc: "Pre-meeting meeting, to prepare for the meeting",
+  //   },
+  //   {
+  //     title: "Multi-day Event",
+  //     start: new Date(2023, 10, 20, 19, 30, 0),
+  //     end: new Date(2023, 10, 22, 2, 0, 0),
+  //   },
+  // ];
+  let eventArr = [];
+  if (allEvents) {
+    allEvents?.forEach((element) => {
+      let myObject = {
+        title: element.event_name,
+        start: element.event_date,
+        end: element.event_date,
+        start_time: element.start_time,
+        end_time: element.end_time,
+        desc: element.event_public_desc,
+      };
+
+      eventArr.push(myObject);
+    });
+  }
 
   const customStyles = {
     content: {
@@ -133,6 +161,9 @@ const Calendars = () => {
         setEventRepeats(false);
       }
     }
+    // if (name === "date") {
+    //   setEventDate(value);
+    // }
     if (name === "repeats_indefinitely") {
       if (e.target.checked) {
         setRepeatsIndefinitely(true);
@@ -140,13 +171,23 @@ const Calendars = () => {
         setRepeatsIndefinitely(false);
       }
     }
+    setAddEvent({ ...addEvent, [name]: value });
   };
 
   const saveEvent = async (e) => {
-    console.log(userData);
     e.preventDefault();
-    addEvent["event"] = "quickAddLesson";
-    addEvent["user_id"] = userData.id;
+    let selectedTutor = document.getElementById("tutor");
+    // var value = selectedTutor.value;
+
+    // addEvent["date"] = formatDate(eventDate);
+    addEvent["event_type"] = "quickAddLesson";
+    addEvent["tutor"] = selectedTutor?.value;
+
+    if (!addEvent.hasOwnProperty("quick_add_visibility")) {
+      addEvent["quick_add_visibility"] =
+        "Public - Visible on the Student Portal calendar to all students";
+    }
+    console.log(addEvent);
     const config = {
       method: "POST",
       url: `${API_URL}user/create-event`,
@@ -161,6 +202,7 @@ const Calendars = () => {
         toast.success(response.data.message, {
           position: toast.POSITION.TOP_CENTER,
         });
+        getTutor();
 
         setIsOpen(false);
       })
@@ -172,21 +214,34 @@ const Calendars = () => {
   const handleSelectedEvent = (e) => {
     console.log(e);
     openModal("event");
-    let startDate = e.start.toDateString();
-    setStartDate(startDate);
-    setEndDate(e.end);
+    let [hours, minutes] = e.start_time.split(":");
+    let newTimeString = `${hours}:${minutes}`;
+    let [endhours, endminutes] = e.end_time.split(":");
+    let endTimeString = `${endhours}:${endminutes}`;
+    setEventStartTime(newTimeString);
+    setEventEndTime(endTimeString);
+    setEventDesc(e);
   };
   const openNewAppointmentModal = (e) => {
     openModal("addEvent");
-    console.log(e);
-    let startDate = e.start.toDateString();
-    setStartDate(startDate);
-    setEndDate(e.end);
+    console.log(e.start.toDateString());
+    setEventDate(e.start.toDateString());
   };
   const openQuickAddLessonModal = (e) => {
     openModal("quickAddLesson");
     console.log(e);
   };
+  function formatDate(date) {
+    var d = new Date(date),
+      month = "" + (d.getMonth() + 1),
+      day = "" + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2) month = "0" + month;
+    if (day.length < 2) day = "0" + day;
+
+    return [year, month, day].join("-");
+  }
   const openNewEventModal = (e) => {
     openModal("newEvent");
     console.log(e);
@@ -234,11 +289,11 @@ const Calendars = () => {
               <h4>Lesson with {userData.name}</h4>
               <div className="current-date">
                 <i class="fa fa-calendar" aria-hidden="true"></i>
-                {startDate}
+                {eventDesc.start}
               </div>
               <div className="current-date">
                 <i class="fa fa-clock" aria-hidden="true"></i>
-                17:00 - 17:30
+                {eventStartTime} - {eventEndTime}
               </div>
             </div>
           </div>
@@ -253,7 +308,7 @@ const Calendars = () => {
           <div className="calendar-modal">
             <div className="close-h add">
               <h4>
-                <strong>{startDate}</strong>
+                <strong>{eventDate}</strong>
               </h4>
               <button className="closeModal" onClick={closeModal}>
                 X
@@ -308,6 +363,21 @@ const Calendars = () => {
               <div className="row d-flex">
                 <div className="col-xl-12 col-xxl-12">
                   <div className="formbold-form-step-1 active">
+                    <div className="formbold-input-flex diff">
+                      <div>
+                        <label htmlFor="tutor" className="formbold-form-label">
+                          Title
+                        </label>
+                        <div>
+                          <input
+                            type="text"
+                            name="event_name"
+                            className="form-control"
+                            onChange={handleChange}
+                          />
+                        </div>
+                      </div>
+                    </div>
                     <div className="formbold-input-flex">
                       <div>
                         <label htmlFor="tutor" className="formbold-form-label">
@@ -318,8 +388,14 @@ const Calendars = () => {
                             name="tutor"
                             className="form-control"
                             onChange={handleChange}
+                            id="tutor"
                           >
-                            <option></option>
+                            <option>Select Tutor</option>
+                            {allTutors.map((item) => {
+                              return (
+                                <option value={item.id}>{item.name}</option>
+                              );
+                            })}
                           </select>
                         </div>
                       </div>
@@ -355,17 +431,36 @@ const Calendars = () => {
                           className="form-control"
                           // value={formData.email}
                           onChange={handleChange}
+                          disabled
+                        />
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label
+                          htmlFor="start_date"
+                          className="formbold-form-label"
+                        >
+                          Start Date
+                        </label>
+                        <input
+                          type="date"
+                          name="start_date"
+                          className="form-control"
+                          // value={formatDate(eventDate)}
+                          onChange={handleChange}
                         />
                       </div>
                       <div>
                         <div>
                           <label htmlFor="date" className="formbold-form-label">
-                            Date
+                            End Date
                           </label>
                           <input
                             type="date"
-                            name="date"
+                            name="end_date"
                             className="form-control"
+                            // value={formatDate(eventDate)}
                             onChange={handleChange}
                           />
                         </div>
@@ -373,14 +468,34 @@ const Calendars = () => {
                     </div>
                     <div className="formbold-input-flex">
                       <div>
-                        <label htmlFor="time" className="formbold-form-label">
-                          Time
+                        <label
+                          htmlFor="start_time"
+                          className="formbold-form-label"
+                        >
+                          Start Time
                         </label>
                         <br></br>
 
                         <input
                           type="time"
-                          name="time"
+                          name="start_time"
+                          className="form-control"
+                          // value={tenantData.address}
+                          onChange={handleChange}
+                        />
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="end_time"
+                          className="formbold-form-label"
+                        >
+                          End Time
+                        </label>
+                        <br></br>
+
+                        <input
+                          type="time"
+                          name="end_time"
                           className="form-control"
                           // value={tenantData.address}
                           onChange={handleChange}
@@ -526,6 +641,8 @@ const Calendars = () => {
                             type="radio"
                             value="Public - Visible on the Student Portal calendar to all students"
                             name="quick_add_visibility"
+                            onChange={handleChange}
+                            checked
                           ></input>
                           Public - Visible on the Student Portal calendar to all
                           students
@@ -535,6 +652,7 @@ const Calendars = () => {
                             type="radio"
                             value="Private - Visible on the Student Portal calendar to current attendees only"
                             name="quick_add_visibility"
+                            onChange={handleChange}
                           ></input>
                           Private - Visible on the Student Portal calendar to
                           current attendees only
@@ -551,6 +669,7 @@ const Calendars = () => {
                             type="checkbox"
                             name="quickadd_event_credit"
                             value="This event requires a make-up credit"
+                            onChange={handleChange}
                           />
                           This event requires a make-up credit
                         </div>
@@ -1098,7 +1217,7 @@ const Calendars = () => {
                 <div style={{ zIndex: "1" }}>
                   <Calendar
                     localizer={localizer}
-                    events={events}
+                    events={eventArr}
                     style={{ height: 500 }}
                     step={60}
                     popup={true}

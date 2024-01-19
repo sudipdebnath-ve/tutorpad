@@ -15,7 +15,9 @@ const AppContext = ({ children }) => {
   const [emailTemplateData, setEmailTemplateData] = useState([]);
   const [emailOnchange, setEmailOnchange] = useState(false);
   const [studentData, setStudentData] = useState(false);
+  const [allTutors, setAllTutors] = useState([]);
   const [getAvailabilityData, setGetAvailabilityData] = useState([]);
+  const [allEvents, setAllEvents] = useState([]);
   const [emailData, setEmailData] = useState({
     template_title: "",
     template_content: "",
@@ -139,7 +141,7 @@ const AppContext = ({ children }) => {
       });
   };
 
-  //Availability
+  //Availability start
 
   const allAvailabilityData = async () => {
     const config = {
@@ -160,6 +162,52 @@ const AppContext = ({ children }) => {
         console.log(error);
       });
   };
+
+  //Availability end
+
+  //Tutor
+
+  const getTutor = async () => {
+    const config = {
+      method: "GET",
+      url: `${API_URL}user/get-tutors`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(config)
+      .then((response) => {
+        // console.log(response);
+        if (response.data.success === true) {
+          setAllTutors(response.data.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // Calendar Events Start
+
+  const fetchEvent = async () => {
+    const config = {
+      method: "GET",
+      url: `${API_URL}user/events`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(config)
+      .then((response) => {
+        console.log(response.data.data);
+        setAllEvents(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // Calendar Events End
 
   return (
     <userDataContext.Provider
@@ -183,6 +231,10 @@ const AppContext = ({ children }) => {
         loading,
         allAvailabilityData,
         getAvailabilityData,
+        allTutors,
+        getTutor,
+        fetchEvent,
+        allEvents,
       }}
     >
       {children}
