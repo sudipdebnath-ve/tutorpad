@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import bgimage from "../../assets/images/bg.jpg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../../utils/config.js";
+import { NON_LOGGED_IN_API_URL } from "../../utils/config.js";
 import axios from "axios";
 import { Icon } from "react-icons-kit";
 import { eyeOff } from "react-icons-kit/feather/eyeOff";
@@ -49,7 +49,7 @@ const Register = () => {
   const handleSubmit = async () => {
     const config = {
       method: "POST",
-      url: `${API_URL}register`,
+      url: `${NON_LOGGED_IN_API_URL}register`,
       headers: {
         "Content-Type": "application/json",
       },

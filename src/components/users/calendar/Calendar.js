@@ -92,6 +92,7 @@ const Calendars = () => {
     });
   }
 
+  console.log(allEvents);
   const customStyles = {
     content: {
       width: "25%",

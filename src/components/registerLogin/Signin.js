@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import bgimage from "../../assets/images/bg.jpg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { API_URL } from "../../utils/config.js";
+import { NON_LOGGED_IN_API_URL } from "../../utils/config.js";
 import axios from "axios";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import LanguageOption from "../LanguageOption.js";
@@ -31,7 +31,7 @@ const Signin = () => {
   const handleSubmit = async () => {
     const config = {
       method: "POST",
-      url: `${API_URL}login`,
+      url: `${NON_LOGGED_IN_API_URL}login`,
       headers: {
         "Content-Type": "application/json",
       },

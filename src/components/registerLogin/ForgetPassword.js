@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import bgimage from "../../assets/images/bg.jpg";
 import "react-toastify/dist/ReactToastify.css";
-import { API_URL } from "../../utils/config.js";
+import { NON_LOGGED_IN_API_URL } from "../../utils/config.js";
 import axios from "axios";
 import "./assets/css/style.css";
 
@@ -16,7 +16,7 @@ const ForgetPassword = () => {
   const handleSubmit = async () => {
     const config = {
       method: "POST",
-      url: `${API_URL}forgetpass`,
+      url: `${NON_LOGGED_IN_API_URL}forgetpass`,
       headers: {
         "Content-Type": "application/json",
       },
