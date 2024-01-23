@@ -124,7 +124,7 @@ const BussinessSettings = () => {
     e.preventDefault();
     const config = {
       method: "PATCH",
-      url: `${API_URL}user/savedata`,
+      url: `${API_URL}savedata`,
       headers: {
         Authorization: `Bearer ${token}`,
       },

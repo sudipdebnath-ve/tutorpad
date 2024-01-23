@@ -30,7 +30,7 @@ const AppContext = ({ children }) => {
     setLoading(true);
     const validateconfig = {
       method: "GET",
-      url: `${API_URL}user/tenant/details`,
+      url: `${API_URL}tenant/details`,
       headers: {
         Authorization: `Bearer ${token}`,
       },

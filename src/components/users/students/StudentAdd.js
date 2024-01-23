@@ -167,7 +167,7 @@ const StudentAdd = () => {
     e.preventDefault();
     const config = {
       method: "POST",
-      url: `${API_URL}user/create-student`,
+      url: `${API_URL}create-student`,
       headers: {
         Authorization: `Bearer ${token}`,
       },

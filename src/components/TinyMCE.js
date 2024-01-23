@@ -13,7 +13,7 @@ export default function TinyMCE() {
   const handleImageUpload = (blobInfo, progress, failure) => {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.open("POST", `${API_URL}user/uploadmedia`, true);
+      xhr.open("POST", `${API_URL}uploadmedia`, true);
 
       const formData = new FormData();
       formData.append("file", blobInfo.blob(), blobInfo.filename());
@@ -61,7 +61,7 @@ export default function TinyMCE() {
   const handleSaveData = async () => {
     const validateconfig = {
       method: "POST",
-      url: `${API_URL}user/save_et`,
+      url: `${API_URL}save_et`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,

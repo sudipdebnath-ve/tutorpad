@@ -33,7 +33,7 @@ const StudentImport = () => {
     formData.append("file", files);
     const config = {
       method: "POST",
-      url: `${API_URL}user/import-students`,
+      url: `${API_URL}import-students`,
       headers: {
         "Content-Type": "multipart/form-data",
         "Access-Control-Allow-Origin": "*",

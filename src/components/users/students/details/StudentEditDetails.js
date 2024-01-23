@@ -32,7 +32,7 @@ const StudentEditDetails = () => {
     console.log(id);
     const validateconfig = {
       method: "GET",
-      url: `${API_URL}user/student/details/${id}`,
+      url: `${API_URL}student/details/${id}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -199,7 +199,7 @@ const MyPreferences = () => {
       profilePhoto["user_id"] = userId;
       const config = {
         method: "POST",
-        url: `${API_URL}user/update-dp`,
+        url: `${API_URL}update-dp`,
         headers: {
           "content-type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
@@ -228,7 +228,7 @@ const MyPreferences = () => {
     e.preventDefault();
     const config = {
       method: "PATCH",
-      url: `${API_URL}user/savedata`,
+      url: `${API_URL}savedata`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -266,7 +266,7 @@ const MyPreferences = () => {
     e.preventDefault();
     const config = {
       method: "PATCH",
-      url: `${API_URL}user/update-password`,
+      url: `${API_URL}update-password`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -335,7 +335,7 @@ const MyPreferences = () => {
 
     const config = {
       method: "POST",
-      url: `${API_URL}user/add-availability`,
+      url: `${API_URL}add-availability`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -361,7 +361,7 @@ const MyPreferences = () => {
   const deleteAvailability = async (id) => {
     const config = {
       method: "DELETE",
-      url: `${API_URL}user/delete-availability/${id}`,
+      url: `${API_URL}delete-availability/${id}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -383,7 +383,7 @@ const MyPreferences = () => {
 
     const config = {
       method: "GET",
-      url: `${API_URL}user/get-availability/${id}`,
+      url: `${API_URL}get-availability/${id}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -411,7 +411,7 @@ const MyPreferences = () => {
     // console.log(availData);
     const config = {
       method: "PATCH",
-      url: `${API_URL}user/update-availability`,
+      url: `${API_URL}update-availability`,
       headers: {
         Authorization: `Bearer ${token}`,
       },

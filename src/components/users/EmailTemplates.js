@@ -32,7 +32,7 @@ const EmailTemplates = () => {
   const getShortcodes = async () => {
     const validateconfig = {
       method: "GET",
-      url: `${API_URL}user/etps`,
+      url: `${API_URL}etps`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
