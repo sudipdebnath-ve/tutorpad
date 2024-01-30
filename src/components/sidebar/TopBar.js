@@ -43,7 +43,7 @@ const TopBar = () => {
       </Link>
       <h2 style={{ margin: "0" }}>
         <strong>
-          {pageName ? pageName.charAt(0).toUpperCase() + pageName.slice(1) : ""}
+        {pageName ? pageName.charAt(0).toUpperCase() + pageName.slice(1) : ""}
         </strong>
       </h2>
 

@@ -69,7 +69,7 @@ const AppContext = ({ children }) => {
     const token = JSON.parse(localStorage.getItem("tutorPad"));
     const validateconfig = {
       method: "GET",
-      url: `${API_URL}user/ets`,
+      url: `${API_URL}ets`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -98,7 +98,7 @@ const AppContext = ({ children }) => {
     }
     const validateconfig = {
       method: "GET",
-      url: `${API_URL}user/et/${e.target.value}`,
+      url: `${API_URL}et/${e.target.value}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -122,7 +122,7 @@ const AppContext = ({ children }) => {
     setLoading(true);
     const validateconfig = {
       method: "GET",
-      url: `${API_URL}user/get-students?user_id=${userId}`,
+      url: `${API_URL}get-students?user_id=${userId}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -146,7 +146,7 @@ const AppContext = ({ children }) => {
   const allAvailabilityData = async () => {
     const config = {
       method: "GET",
-      url: `${API_URL}user/get-availabilities`,
+      url: `${API_URL}get-availabilities`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -170,7 +170,7 @@ const AppContext = ({ children }) => {
   const getTutor = async () => {
     const config = {
       method: "GET",
-      url: `${API_URL}user/get-tutors`,
+      url: `${API_URL}get-tutors`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -192,7 +192,7 @@ const AppContext = ({ children }) => {
   const fetchEvent = async () => {
     const config = {
       method: "GET",
-      url: `${API_URL}user/events`,
+      url: `${API_URL}events`,
       headers: {
         Authorization: `Bearer ${token}`,
       },

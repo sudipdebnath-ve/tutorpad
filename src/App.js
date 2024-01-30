@@ -17,6 +17,9 @@ import Calendar from "./components/users/calendar/Calendar";
 import StudentMessageHistory from "./components/users/students/StudentMessageHistory";
 import OnlineResources from "./components/users/OnlineResources";
 import BussinessSettings from "./components/users/BussinessSettings";
+import Tutor from "./components/users/Tutor";
+import TutorAdd from "./components/users/tutors/TutorAdd"
+import StaffAdd from "./components/users/tutors/StaffAdd";
 
 function App() {
   return (
@@ -25,6 +28,9 @@ function App() {
       <Route path="/signin" element={<Signin />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/students" element={<Student />} />
+      <Route path="/tutors" element={<Tutor />} />
+      <Route path="/tutors/add" element={<TutorAdd />} />
+      <Route path="/tutors/addStaff" element={<StaffAdd />} />
       <Route path="/my-preferences" element={<MyPreferences />} />
       <Route path="/forget-password" element={<ForgetPassword />} />
       <Route path="/email-templates" element={<EmailTemplates />} />

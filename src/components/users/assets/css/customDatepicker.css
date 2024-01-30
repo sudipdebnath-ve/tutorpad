@@ -1,0 +1,21 @@
+.custom_datepicker {
+    border: none;
+    background-color: transparent;
+    color: orange;
+    font-weight: bold;
+}
+
+.custom-datepicker-container {
+    position: relative;
+    display: inline-block;
+}
+
+.down-arrow {
+    position: absolute;
+    right: 185px; /* Adjust the right distance according to your design */
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1rem; /* Adjust the font size as needed */
+    color: orange; /* Replace with your desired arrow color */
+    cursor: pointer;
+  }
