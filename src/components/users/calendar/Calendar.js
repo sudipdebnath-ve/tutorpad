@@ -81,8 +81,8 @@ const Calendars = () => {
     allEvents?.forEach((element) => {
       let myObject = {
         title: element.event_name,
-        start: element.event_date,
-        end: element.event_date,
+        start: element.start_date,
+        end: element.end_date,
         start_time: element.start_time,
         end_time: element.end_time,
         desc: element.event_public_desc,
@@ -191,7 +191,7 @@ const Calendars = () => {
     console.log(addEvent);
     const config = {
       method: "POST",
-      url: `${API_URL}user/create-event`,
+      url: `${API_URL}create-event`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
