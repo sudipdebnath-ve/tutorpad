@@ -15,6 +15,7 @@ const AppContext = ({ children }) => {
   const [emailTemplateData, setEmailTemplateData] = useState([]);
   const [emailOnchange, setEmailOnchange] = useState(false);
   const [studentData, setStudentData] = useState(false);
+  const [tutorData, setTutorData] =useState(false);
   const [allTutors, setAllTutors] = useState([]);
   const [getAvailabilityData, setGetAvailabilityData] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
@@ -155,7 +156,7 @@ const AppContext = ({ children }) => {
         // console.log(response.data);
         if (response.data.success === true) {
           setLoading(false);
-          setStudentData(response.data.data);
+          setTutorData(response.data.data);
         }
       })
       .catch((error) => {
@@ -249,6 +250,7 @@ const AppContext = ({ children }) => {
         token,
         fetchStudentData,
         studentData,
+        tutorData,
         userId,
         setLoading,
         loading,

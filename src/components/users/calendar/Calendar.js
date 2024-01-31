@@ -448,7 +448,7 @@ const Calendars = () => {
                           type="date"
                           name="start_date"
                           className="form-control"
-                          // value={formatDate(eventDate)}
+                          value={formatDate(eventDate)}
                           onChange={handleChange}
                         />
                       </div>
@@ -461,7 +461,7 @@ const Calendars = () => {
                             type="date"
                             name="end_date"
                             className="form-control"
-                            // value={formatDate(eventDate)}
+                            value={formatDate(eventDate)}
                             onChange={handleChange}
                           />
                         </div>
@@ -833,7 +833,7 @@ const Calendars = () => {
                             type="date"
                             name="date"
                             className="form-control"
-                            // value={formData.phone}
+                            value={formatDate(eventDate)}
                             // onChange={handleChange}
                           />
                         </div>
