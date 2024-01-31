@@ -8,11 +8,11 @@ import { Link } from "react-router-dom";
 
 const FetchTutorDatatable = () => {
   const [val, setVal] = useState(false);
-  const { fetchStudentData, userId, studentData, setLoading, loading } =
+  const { fetchTutorData, userId, studentData, setLoading, loading } =
     useUserDataContext();
 
   useEffect(() => {
-    //fetchTutorData();
+    fetchTutorData();
   }, [userId]);
 
   // const columns: GridColDef[] = [

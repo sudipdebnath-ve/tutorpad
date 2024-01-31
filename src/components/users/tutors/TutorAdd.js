@@ -22,7 +22,7 @@ const StudentAdd = () => {
     phone: "",
     loginAccess: "",
     address: "",
-    payroll: "",
+    payroll: "No automatic payroll calculation",
     price: "",
     makeup_credits: "",
     virtual_meeting_link: "",
@@ -235,13 +235,7 @@ const StudentAdd = () => {
       });
   };
 
-  const handleAdditionalDetails = () => {
-    if (additionalDetails === true) {
-      setAdditionalDetails(false);
-    } else {
-      setAdditionalDetails(true);
-    }
-  };
+  
   return (
     <div className="wrapper">
       {sidebarToggle ? (
@@ -421,6 +415,7 @@ const StudentAdd = () => {
                                 name="payroll"
                                 onChange={handleChange}
                                 value="No automatic payroll calculation"
+                                checked={formData.payroll === "No automatic payroll calculation"}
                               />
                               No automatic payroll calculation
                             </div>
@@ -430,6 +425,7 @@ const StudentAdd = () => {
                                 name="payroll"
                                 onChange={handleChange}
                                 value="Percentage of tutor's revenue"
+                                checked={formData.payroll === "Percentage of tutor's revenue"}
                               />
                               Percentage of tutor's revenue
                             </div>
@@ -439,11 +435,14 @@ const StudentAdd = () => {
                                 name="payroll"
                                 onChange={handleChange}
                                 value="Flat hourly rate"
+                                checked={formData.payroll === "Flat hourly rate"}
                               />
                              Flat hourly rate
                             </div>
                           </div>
                         </div>
+                        {formData.payroll !== "No automatic payroll calculation" && (
+                         <>
                         <div className="formbold-input-flex">
                           <div>
                             <label
@@ -489,6 +488,8 @@ const StudentAdd = () => {
                             </div>
                           </div>
                         </div>
+                        </>
+                        )}
                         <hr></hr>
                         <div className="formbold-input-flex diff">
                           <div>

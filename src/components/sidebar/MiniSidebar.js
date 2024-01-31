@@ -23,6 +23,16 @@ const MiniSidebar = () => {
 
           <li
             className={`sidebar-item ${
+              splitLocation[1] === "tutors" ? "active" : ""
+            }`}
+          >
+            <Link className="sidebar-link" to="/tutors">
+              <i className="fa fa-id-badge" aria-hidden="true"></i>
+            </Link>
+          </li>
+
+          <li
+            className={`sidebar-item ${
               splitLocation[1] === "students" ? "active" : ""
             }`}
           >
