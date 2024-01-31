@@ -19,6 +19,9 @@ const TopBar = () => {
     if (new_str.includes("students")) {
       setPageName("Students");
     }
+    else if(new_str.includes("tutors")) {
+      setPageName("Tutors");
+    }
   }, []);
 
   const handleSidebarToggle = () => {

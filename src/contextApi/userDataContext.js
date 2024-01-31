@@ -141,6 +141,29 @@ const AppContext = ({ children }) => {
       });
   };
 
+  // const fetchTutorData = async () => {
+  //   setLoading(true);
+  //   const validateconfig = {
+  //     method: "GET",
+  //     url: `${API_URL}get-students?user_id=${userId}`,
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   };
+  //   await axios(validateconfig)
+  //     .then((response) => {
+  //       // console.log(response.data);
+  //       if (response.data.success === true) {
+  //         setLoading(false);
+  //         setStudentData(response.data.data);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       setLoading(false);
+  //     });
+  // };
+
   //Availability start
 
   const allAvailabilityData = async () => {

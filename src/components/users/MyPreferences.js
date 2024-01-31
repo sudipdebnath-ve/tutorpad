@@ -989,6 +989,8 @@ const MyPreferences = () => {
                     <div className="initials">
                       <div className="image-user">
                         <h2>{initial}</h2>
+                        {/* <img src={userData.tenantData.dp_url} />
+                        {console.log(tenantData)} */}
                       </div>
                     </div>
                     <div
