@@ -36,6 +36,7 @@ const MyPreferences = () => {
   const [updatePass, setUpdatePass] = useState({});
   const [error, setError] = useState({});
   const [editA, setEditA] = useState({});
+  const [selectedDays, setSelectedDays] = useState({});
 
   const customStyles = {
     content: {
@@ -160,7 +161,6 @@ const MyPreferences = () => {
     setAttenddisabled(true);
     setEmaildisabled(true);
   };
-
   const handleChange = async (e) => {
     const name = e.target.name;
     let value = e.target.value;
@@ -489,13 +489,12 @@ const MyPreferences = () => {
                             <h2>{initial}</h2>
                           )}
                         </div>
-                        
                       </div>
                       <div className="text-center pb-2">
-                      <small style={{ color: "red" }}>
-                      {error?.file?.length ? error.file[0] : <></>}
+                        <small style={{ color: "red" }}>
+                          {error?.file?.length ? error.file[0] : <></>}
                         </small>
-                        </div>
+                      </div>
                       <input
                         type="file"
                         name="file"
@@ -861,7 +860,11 @@ const MyPreferences = () => {
                               name="wed"
                               value="Wed"
                               onChange={handleAvailChangePopup}
-                              // checked={days?.wed !== null ? true : false}
+                              checked={
+                                days["days"] && days["days"].includes("Wed")
+                                  ? true
+                                  : false
+                              }
                             />
                             Wed
                           </div>
@@ -872,7 +875,11 @@ const MyPreferences = () => {
                               name="thu"
                               value="Thu"
                               onChange={handleAvailChangePopup}
-                              // checked={days?.thu !== null ? true : false}
+                              checked={
+                                days["days"] && days["days"].includes("Thu")
+                                  ? true
+                                  : false
+                              }
                             />
                             Thu
                           </div>
@@ -883,7 +890,11 @@ const MyPreferences = () => {
                               name="fri"
                               value="Fri"
                               onChange={handleAvailChangePopup}
-                              // checked={days?.fri !== null ? true : false}
+                              checked={
+                                days["days"] && days["days"].includes("Fri")
+                                  ? true
+                                  : false
+                              }
                             />
                             Fri
                           </div>
@@ -894,7 +905,11 @@ const MyPreferences = () => {
                               name="sat"
                               value="Sat"
                               onChange={handleAvailChangePopup}
-                              // checked={days?.sat !== null ? true : false}
+                              checked={
+                                days["days"] && days["days"].includes("Sat")
+                                  ? true
+                                  : false
+                              }
                             />
                             Sat
                           </div>
