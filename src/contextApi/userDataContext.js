@@ -170,7 +170,7 @@ const AppContext = ({ children }) => {
   const getTutor = async () => {
     const config = {
       method: "GET",
-      url: `${API_URL}get-tutors`,
+      url: `${API_URL}tutors`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
