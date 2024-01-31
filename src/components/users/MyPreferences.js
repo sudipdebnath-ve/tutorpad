@@ -36,7 +36,7 @@ const MyPreferences = () => {
   const [updatePass, setUpdatePass] = useState({});
   const [error, setError] = useState({});
   const [editA, setEditA] = useState({});
-  const [selectedDays, setSelectedDays] = useState({});
+  const [selectedDays, setSelectedDays] = useState([]);
 
   const customStyles = {
     content: {
@@ -100,7 +100,7 @@ const MyPreferences = () => {
   function closeModal() {
     setIsOpen(false);
   }
-
+  console.log(selectedDays);
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem("tutorPad"));
     if (!token) {
@@ -322,8 +322,15 @@ const MyPreferences = () => {
       name === "fri" ||
       name === "sat"
     ) {
-      console.log(value);
-      setDays({ ...days, [name]: value });
+      const index = selectedDays.indexOf(value);
+      if (index > -1) {
+        selectedDays.splice(index, 1);
+      } else {
+        selectedDays.push(value);
+      }
+      console.log(selectedDays);
+
+      setDays({ ...selectedDays });
     } else {
       setAvailData({ ...availData, [name]: value });
     }
@@ -402,6 +409,7 @@ const MyPreferences = () => {
         availData["end_time"] = response.data.data.end_time;
         availData["note"] = response.data.data.note;
         days["days"] = JSON.parse(response.data.data.days);
+        setSelectedDays(JSON.parse(response.data.data.days));
       })
       .catch((error) => {
         console.log(error);
@@ -816,7 +824,7 @@ const MyPreferences = () => {
                               value="Sun"
                               onChange={handleAvailChangePopup}
                               checked={
-                                days["days"] && days["days"].includes("Sun")
+                                selectedDays && selectedDays.includes("Sun")
                                   ? true
                                   : false
                               }
@@ -831,7 +839,7 @@ const MyPreferences = () => {
                               value="Mon"
                               onChange={handleAvailChangePopup}
                               checked={
-                                days["days"] && days["days"].includes("Mon")
+                                selectedDays && selectedDays.includes("Mon")
                                   ? true
                                   : false
                               }
@@ -846,7 +854,7 @@ const MyPreferences = () => {
                               value="Tue"
                               onChange={handleAvailChangePopup}
                               checked={
-                                days["days"] && days["days"].includes("Tue")
+                                selectedDays && selectedDays.includes("Tue")
                                   ? true
                                   : false
                               }
@@ -861,7 +869,7 @@ const MyPreferences = () => {
                               value="Wed"
                               onChange={handleAvailChangePopup}
                               checked={
-                                days["days"] && days["days"].includes("Wed")
+                                selectedDays && selectedDays.includes("Wed")
                                   ? true
                                   : false
                               }
@@ -876,7 +884,7 @@ const MyPreferences = () => {
                               value="Thu"
                               onChange={handleAvailChangePopup}
                               checked={
-                                days["days"] && days["days"].includes("Thu")
+                                selectedDays && selectedDays.includes("Thu")
                                   ? true
                                   : false
                               }
@@ -891,7 +899,7 @@ const MyPreferences = () => {
                               value="Fri"
                               onChange={handleAvailChangePopup}
                               checked={
-                                days["days"] && days["days"].includes("Fri")
+                                selectedDays && selectedDays.includes("Fri")
                                   ? true
                                   : false
                               }
@@ -906,7 +914,7 @@ const MyPreferences = () => {
                               value="Sat"
                               onChange={handleAvailChangePopup}
                               checked={
-                                days["days"] && days["days"].includes("Sat")
+                                selectedDays && selectedDays.includes("Sat")
                                   ? true
                                   : false
                               }
