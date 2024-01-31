@@ -119,7 +119,6 @@ const MyPreferences = () => {
         initials += parts[i][0];
       }
     }
-    console.log(userData);
     setInitial(initials);
     formData.first_name = userData?.first_name;
     formData.last_name = userData?.last_name;
@@ -320,6 +319,7 @@ const MyPreferences = () => {
       name === "fri" ||
       name === "sat"
     ) {
+      console.log(value);
       setDays({ ...days, [name]: value });
     } else {
       setAvailData({ ...availData, [name]: value });
@@ -398,6 +398,7 @@ const MyPreferences = () => {
         availData["start_time"] = response.data.data.start_time;
         availData["end_time"] = response.data.data.end_time;
         availData["note"] = response.data.data.note;
+        days["days"] = JSON.parse(response.data.data.days);
       })
       .catch((error) => {
         console.log(error);
@@ -806,13 +807,11 @@ const MyPreferences = () => {
                               name="sun"
                               value="Sun"
                               onChange={handleAvailChangePopup}
-                              // checked={
-                              //   days?.sun !== null ||
-                              //   days?.sun !== undefined ||
-                              //   days?.sun !== ""
-                              //     ? true
-                              //     : false
-                              // }
+                              checked={
+                                days["days"] && days["days"].includes("Sun")
+                                  ? true
+                                  : false
+                              }
                             />
                             Sun
                           </div>
@@ -823,7 +822,11 @@ const MyPreferences = () => {
                               name="mon"
                               value="Mon"
                               onChange={handleAvailChangePopup}
-                              // checked={days?.mon !== null ? true : false}
+                              checked={
+                                days["days"] && days["days"].includes("Mon")
+                                  ? true
+                                  : false
+                              }
                             />
                             Mon
                           </div>
@@ -834,7 +837,11 @@ const MyPreferences = () => {
                               name="tue"
                               value="Tue"
                               onChange={handleAvailChangePopup}
-                              // checked={days?.tue !== null ? true : false}
+                              checked={
+                                days["days"] && days["days"].includes("Tue")
+                                  ? true
+                                  : false
+                              }
                             />
                             Tue
                           </div>
