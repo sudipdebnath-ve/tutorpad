@@ -11508,6 +11508,11 @@ span.flatpickr-weekday {
   justify-content: center;
   border-radius: 50%;
 }
+.image-user img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+}
 .initials h2 {
   margin: 0;
 }

@@ -9,6 +9,7 @@ import { API_URL } from "../../utils/config.js";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import payroll from "../users/assets/images/payroll.svg";
+import { init } from "i18next";
 
 const MyPreferences = () => {
   const {
@@ -118,7 +119,7 @@ const MyPreferences = () => {
         initials += parts[i][0];
       }
     }
-
+    console.log(userData);
     setInitial(initials);
     formData.first_name = userData?.first_name;
     formData.last_name = userData?.last_name;
@@ -473,7 +474,16 @@ const MyPreferences = () => {
                       </label>
                       <div className="initials py-3">
                         <div className="image-user">
-                          <h2>{initial}</h2>
+                          {userData?.business_data?.dp_url ? (
+                            <>
+                              <img
+                                src={userData?.business_data?.dp_url}
+                                alt=""
+                              />
+                            </>
+                          ) : (
+                            <h2>{initial}</h2>
+                          )}
                         </div>
                       </div>
                       <input
@@ -988,9 +998,13 @@ const MyPreferences = () => {
                   <div className="card-body">
                     <div className="initials">
                       <div className="image-user">
-                        <h2>{initial}</h2>
-                        {/* <img src={userData.tenantData.dp_url} />
-                        {console.log(tenantData)} */}
+                        {userData?.business_data?.dp_url ? (
+                          <>
+                            <img src={userData?.business_data?.dp_url} alt="" />
+                          </>
+                        ) : (
+                          <h2>{initial}</h2>
+                        )}
                       </div>
                     </div>
                     <div
