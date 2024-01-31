@@ -18,8 +18,7 @@ const TopBar = () => {
     setPageName(new_str);
     if (new_str.includes("students")) {
       setPageName("Students");
-    }
-    else if(new_str.includes("tutors")) {
+    } else if (new_str.includes("tutors")) {
       setPageName("Tutors");
     }
   }, []);
@@ -46,7 +45,7 @@ const TopBar = () => {
       </Link>
       <h2 style={{ margin: "0" }}>
         <strong>
-        {pageName ? pageName.charAt(0).toUpperCase() + pageName.slice(1) : ""}
+          {pageName ? pageName.charAt(0).toUpperCase() + pageName.slice(1) : ""}
         </strong>
       </h2>
 
@@ -227,11 +226,17 @@ const TopBar = () => {
               to="#"
               onClick={handleProfileToggle}
             >
-              <img
-                src={avatar}
-                className="avatar img-fluid rounded me-1"
-                alt="Charles Hall"
-              />{" "}
+              {userData?.business_data?.dp_url ? (
+                <>
+                  <img src={userData?.business_data?.dp_url} alt="" className="avatar img-fluid rounded me-1"  />
+                </>
+              ) : (
+                <img
+                  src={avatar}
+                  className="avatar img-fluid rounded me-1"
+                  alt="Charles Hall"
+                />
+              )}{" "}
               <span className="text-dark">{userData.first_name}</span>
             </Link>
             {profileToggle && (
