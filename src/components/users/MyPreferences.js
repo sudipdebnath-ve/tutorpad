@@ -490,7 +490,7 @@ const MyPreferences = () => {
                         </div>
                         
                       </div>
-                      <div className="text-center">
+                      <div className="text-center pb-2">
                       <small style={{ color: "red" }}>
                       {error?.file?.length ? error.file[0] : <></>}
                         </small>

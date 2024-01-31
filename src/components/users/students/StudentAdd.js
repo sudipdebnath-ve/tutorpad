@@ -14,6 +14,7 @@ const StudentAdd = () => {
   const { fetchData, sidebarToggle, token, userId } = useUserDataContext();
   const [additionalDetails, setAdditionalDetails] = useState(false);
   const navigate = useNavigate();
+  const [error, setError] = useState({});
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -185,6 +186,9 @@ const StudentAdd = () => {
       })
       .catch((error) => {
         console.log(error);
+        if (error.response.data.success === false) {
+          setError(error.response.data.data);
+        }
       });
   };
 
@@ -951,7 +955,7 @@ const StudentAdd = () => {
                           </div>
                         </div>
                       </div>
-
+                      
                       <div className="formbold-form-step-2">
                         <h5>Set Up Automatic Invoicing</h5>
                         <p className="py-3">
@@ -992,6 +996,11 @@ const StudentAdd = () => {
                               </div>
                             </div>
                           </div>
+                        </div>
+                        <div className="text-center">
+                      <small style={{ color: "red" }}>
+                      {error?.email?.length ? error.email[0] : <></>}
+                        </small>
                         </div>
                         <div className="formbold-form-btn-wrapper">
                           <button className="formbold-back-btn">Back</button>
