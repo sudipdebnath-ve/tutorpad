@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 
 const FetchTutorDatatable = () => {
   const [val, setVal] = useState(false);
-  const { fetchTutorData, userId, studentData, setLoading, loading } =
+  const { fetchTutorData, userId, setLoading, loading, tutorData } =
     useUserDataContext();
 
   useEffect(() => {
@@ -59,7 +59,7 @@ const FetchTutorDatatable = () => {
       //   `<a href="${params.row.first_name}">${params.row.first_name}</a>`,
       // },
       renderCell: (params) => (
-        <Link to={`/students/details/${params.row.id}`}>
+        <Link to={`/tutors/details/${params.row.id}`}>
           {params.row.first_name}
         </Link>
       ),
@@ -150,10 +150,10 @@ const FetchTutorDatatable = () => {
 
   useEffect(() => {
     setVal(true);
-    console.log(studentData);
-  }, [studentData]);
+    console.log(tutorData);
+  }, [tutorData]);
   if (val) {
-    var rows = studentData;
+    var rows = tutorData;
     setLoading(false);
   } else {
     setLoading(true);
@@ -161,7 +161,7 @@ const FetchTutorDatatable = () => {
   return (
     <div>
       <>
-        {rows && studentData.length > 0 ? (
+        {rows && tutorData.length > 0 ? (
           loading ? (
             <>
               <Loader />

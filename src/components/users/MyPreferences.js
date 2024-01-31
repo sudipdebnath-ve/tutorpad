@@ -213,6 +213,9 @@ const MyPreferences = () => {
         })
         .catch((error) => {
           console.log(error);
+          if (error.response.data.success === false) {
+            setError(error.response.data.data);
+          }
         });
     }
   };
@@ -485,7 +488,13 @@ const MyPreferences = () => {
                             <h2>{initial}</h2>
                           )}
                         </div>
+                        
                       </div>
+                      <div className="text-center">
+                      <small style={{ color: "red" }}>
+                      {error?.file?.length ? error.file[0] : <></>}
+                        </small>
+                        </div>
                       <input
                         type="file"
                         name="file"

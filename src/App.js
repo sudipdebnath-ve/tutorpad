@@ -20,6 +20,7 @@ import BussinessSettings from "./components/users/BussinessSettings";
 import Tutor from "./components/users/Tutor";
 import TutorAdd from "./components/users/tutors/TutorAdd"
 import StaffAdd from "./components/users/tutors/StaffAdd";
+import TutorEditDetails from "./components/users/tutors/details/TutorEditDetails";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
       <Route path="/students" element={<Student />} />
       <Route path="/tutors" element={<Tutor />} />
       <Route path="/tutors/add" element={<TutorAdd />} />
+      <Route path="/tutors/details/:id" element={<TutorEditDetails />} />
       <Route path="/tutors/addStaff" element={<StaffAdd />} />
       <Route path="/my-preferences" element={<MyPreferences />} />
       <Route path="/forget-password" element={<ForgetPassword />} />

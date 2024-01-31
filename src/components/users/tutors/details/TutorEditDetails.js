@@ -16,7 +16,7 @@ import FetchAttendanceLog from "../FetchAttendanceLog.js";
 import lending from "../assets/images/lending.svg";
 import ReactModal from "react-modal";
 
-const StudentEditDetails = () => {
+const TutorEditDetails = () => {
   const { sidebarToggle, token, setLoading } = useUserDataContext();
   const [initial, setInitial] = useState("");
   const [todayDate, setTodayDate] = useState(new Date());
@@ -32,7 +32,7 @@ const StudentEditDetails = () => {
     console.log(id);
     const validateconfig = {
       method: "GET",
-      url: `${API_URL}student/details/${id}`,
+      url: `${API_URL}tutor/details/${id}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -1060,4 +1060,4 @@ const StudentEditDetails = () => {
   );
 };
 
-export default StudentEditDetails;
+export default TutorEditDetails;
