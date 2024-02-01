@@ -162,9 +162,12 @@ const Calendars = () => {
         setEventRepeats(false);
       }
     }
-    // if (name === "date") {
-    //   setEventDate(value);
-    // }
+    if (name === "start_date" || name === "end_date") {
+      // Use the selected date if it's different from the default eventDate
+      const selectedDate = formatDate(eventDate);
+  
+      setEventDate(value !== selectedDate ? value : formatDate(eventDate));
+    }
     if (name === "repeats_indefinitely") {
       if (e.target.checked) {
         setRepeatsIndefinitely(true);
@@ -183,6 +186,15 @@ const Calendars = () => {
     // addEvent["date"] = formatDate(eventDate);
     addEvent["event_type"] = "quickAddLesson";
     addEvent["tutor"] = selectedTutor?.value;
+
+    // Check if addEvent includes start_date and end_date properties
+  if (!addEvent.hasOwnProperty("start_date")) {
+    addEvent["start_date"] = formatDate(eventDate);
+  }
+
+  if (!addEvent.hasOwnProperty("end_date")) {
+    addEvent["end_date"] = formatDate(eventDate);
+  }
 
     if (!addEvent.hasOwnProperty("quick_add_visibility")) {
       addEvent["quick_add_visibility"] =
