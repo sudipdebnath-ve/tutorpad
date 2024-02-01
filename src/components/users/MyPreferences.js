@@ -281,6 +281,7 @@ const MyPreferences = () => {
         toast.success(response.data.message, {
           position: toast.POSITION.TOP_CENTER,
         });
+        closeModal(); // or setModalIsOpen(false);
         setAttendFlag(false);
         setAvailFlag(false);
         setAttenddisabled(true);
