@@ -287,7 +287,11 @@ const MyPreferences = () => {
         setEmaildisabled(true);
       })
       .catch((error) => {
-        console.log(error);
+        //console.log(error);
+        if (error.response.data.success === false) {
+          setError(error.response.data.data.error);
+        }
+       // console.log(error.response.data.data.error);
       });
   };
 
@@ -731,6 +735,13 @@ const MyPreferences = () => {
                           className="form-control"
                           onChange={handleChangePassword}
                         />
+                         <div className="pt-2">
+                        {error?.length > 0 && (
+                          <small style={{ color: "red" }}>
+                            {error}
+                          </small>
+                        )}
+                        </div>
                       </div>
                     </div>
                     <div className="formbold-input-flex">
@@ -747,6 +758,13 @@ const MyPreferences = () => {
                           className="form-control"
                           onChange={handleChangePassword}
                         />
+                        <div className="pt-2">
+                        {error?.new_password?.length > 0 && (
+                          <small style={{ color: "red" }}>
+                            {error.new_password[0]}
+                          </small>
+                        )}
+                        </div>
                       </div>
                       <div>
                         <div>
@@ -763,6 +781,13 @@ const MyPreferences = () => {
                             className="form-control"
                             onChange={handleChangePassword}
                           />
+                          <div className="pt-2">
+                        {error?.confirm_new_password?.length > 0 && (
+                          <small style={{ color: "red" }}>
+                            {error.confirm_new_password[0]}
+                          </small>
+                        )}
+                        </div>
                         </div>
                       </div>
                     </div>
