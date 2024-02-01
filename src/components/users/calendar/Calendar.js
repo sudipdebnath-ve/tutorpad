@@ -33,6 +33,7 @@ const Calendars = () => {
   const [addEvent, setAddEvent] = useState({});
   const [eventRepeats, setEventRepeats] = useState(false);
   const [repeatsIndefinitely, setRepeatsIndefinitely] = useState(true);
+  const [error, setError] = useState({});
 
   const navigate = useNavigate();
 
@@ -221,6 +222,9 @@ const Calendars = () => {
       })
       .catch((error) => {
         console.log(error);
+        if (error.response.data.success === false) {
+          setError(error.response.data.data);
+        }
       });
   };
 
@@ -388,6 +392,11 @@ const Calendars = () => {
                             className="form-control"
                             onChange={handleChange}
                           />
+                          <div className="pt-2">
+                        <small style={{ color: "red" }}>
+                          {error?.event_name?.length ? error.event_name[0] : <></>}
+                        </small>
+                       </div>
                         </div>
                       </div>
                     </div>
@@ -463,6 +472,11 @@ const Calendars = () => {
                           value={formatDate(eventDate)}
                           onChange={handleChange}
                         />
+                        <div className="pt-2">
+                        <small style={{ color: "red" }}>
+                          {error?.start_date?.length ? error.start_date[0] : <></>}
+                        </small>
+                       </div>
                       </div>
                       <div>
                         <div>
@@ -476,6 +490,11 @@ const Calendars = () => {
                             value={formatDate(eventDate)}
                             onChange={handleChange}
                           />
+                          <div className="pt-2">
+                        <small style={{ color: "red" }}>
+                          {error?.end_date?.length ? error.end_date[0] : <></>}
+                        </small>
+                       </div>
                         </div>
                       </div>
                     </div>
@@ -496,6 +515,11 @@ const Calendars = () => {
                           // value={tenantData.address}
                           onChange={handleChange}
                         />
+                        <div className="pt-2">
+                        <small style={{ color: "red" }}>
+                          {error?.start_time?.length ? error.start_time[0] : <></>}
+                        </small>
+                       </div>
                       </div>
                       <div>
                         <label
@@ -513,6 +537,11 @@ const Calendars = () => {
                           // value={tenantData.address}
                           onChange={handleChange}
                         />
+                        <div className="pt-2">
+                        <small style={{ color: "red" }}>
+                          {error?.end_time?.length ? error.end_time[0] : <></>}
+                        </small>
+                       </div>
                       </div>
                     </div>
                     <div className="formbold-input-flex">
