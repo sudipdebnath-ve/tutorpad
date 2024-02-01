@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 const StudentAdd = () => {
   const { fetchData, sidebarToggle, token, userId } = useUserDataContext();
   const [additionalDetails, setAdditionalDetails] = useState(false);
+  const [error, setError] = useState({});
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
@@ -27,16 +28,15 @@ const StudentAdd = () => {
     makeup_credits: "",
     virtual_meeting_link: "",
     subjects: "",
-    privileges: ""
-    
+    privileges: "",
   });
 
   const [privileges, setPrivileges] = useState({
     administrator: false,
     manage_self_mileage: false,
-    manage_self_take_attendance: false,
+    manage_self_take_attendance: true,
     manage_self_record_payments: false,
-    manage_self_edit: false,
+    manage_self_edit: true,
     manage_self_payroll: false,
     manage_tutor_lesson: false,
     manage_view_tutor: false,
@@ -59,7 +59,7 @@ const StudentAdd = () => {
 
   const handlePrivilegesChange = (e) => {
     const { name, checked } = e.target;
-    if (name === 'administrator' && checked) {
+    if (name === "administrator" && checked) {
       // If "Administrator" checkbox is checked, set all other checkboxes to true
       setPrivileges({
         administrator: checked,
@@ -77,7 +77,7 @@ const StudentAdd = () => {
         add_invoices: checked,
         add_expenses: checked,
         update_online_resources: checked,
-        edit_website:checked,
+        edit_website: checked,
         view_reports: checked,
         others: checked,
       });
@@ -89,7 +89,6 @@ const StudentAdd = () => {
       }));
     }
   };
-
 
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem("tutorPad"));
@@ -232,10 +231,12 @@ const StudentAdd = () => {
       })
       .catch((error) => {
         console.log(error);
+        if (error.response.data.success === false) {
+          setError(error.response.data.data);
+        }
       });
   };
 
-  
   return (
     <div className="wrapper">
       {sidebarToggle ? (
@@ -280,7 +281,7 @@ const StudentAdd = () => {
                       <div className="formbold-form-step-1 active">
                         <div className="formbold-input-flex diff">
                           <div>
-                          <label
+                            <label
                               htmlFor="title"
                               className="formbold-form-label"
                               id="title"
@@ -294,8 +295,8 @@ const StudentAdd = () => {
                               onChange={handleChange}
                             />
                           </div>
-                          </div>
-                          <div className="formbold-input-flex diff">
+                        </div>
+                        <div className="formbold-input-flex diff">
                           <div>
                             <label
                               htmlFor="first_name"
@@ -368,18 +369,22 @@ const StudentAdd = () => {
                         </div>
                         <div className="formbold-input-flex diff">
                           <div>
-                          <input
+                            <input
                               type="checkbox"
                               className="sms"
                               name="loginAccess"
                               onChange={handleChange}
                             />
-                            <label
-                            htmlFor="loginAccess"> Enable login access
+                            <label htmlFor="loginAccess">
+                              {" "}
+                              Enable login access
                             </label>
-                            <br/>
-                            <span>An email will be sent with a link to set up their password</span>
-                            </div>
+                            <br />
+                            <span>
+                              An email will be sent with a link to set up their
+                              password
+                            </span>
+                          </div>
                         </div>
                         <div className="formbold-input-flex diff">
                           <div>
@@ -399,7 +404,7 @@ const StudentAdd = () => {
                           </div>
                         </div>
                         <hr></hr>
-                       
+
                         <div className="formbold-input-flex diff">
                           <div>
                             <label
@@ -415,7 +420,10 @@ const StudentAdd = () => {
                                 name="payroll"
                                 onChange={handleChange}
                                 value="No automatic payroll calculation"
-                                checked={formData.payroll === "No automatic payroll calculation"}
+                                checked={
+                                  formData.payroll ===
+                                  "No automatic payroll calculation"
+                                }
                               />
                               No automatic payroll calculation
                             </div>
@@ -425,7 +433,10 @@ const StudentAdd = () => {
                                 name="payroll"
                                 onChange={handleChange}
                                 value="Percentage of tutor's revenue"
-                                checked={formData.payroll === "Percentage of tutor's revenue"}
+                                checked={
+                                  formData.payroll ===
+                                  "Percentage of tutor's revenue"
+                                }
                               />
                               Percentage of tutor's revenue
                             </div>
@@ -435,60 +446,63 @@ const StudentAdd = () => {
                                 name="payroll"
                                 onChange={handleChange}
                                 value="Flat hourly rate"
-                                checked={formData.payroll === "Flat hourly rate"}
+                                checked={
+                                  formData.payroll === "Flat hourly rate"
+                                }
                               />
-                             Flat hourly rate
+                              Flat hourly rate
                             </div>
                           </div>
                         </div>
-                        {formData.payroll !== "No automatic payroll calculation" && (
-                         <>
-                        <div className="formbold-input-flex">
-                          <div>
-                            <label
-                              htmlFor="payrate_flat_hourly"
-                              className="formbold-form-label"
-                            >
-                              Pay Rate <span>per hour</span>
-                            </label>
-                            <input
-                              type="text"
-                              name="payrate_flat_hourly"
-                              className="form-control"
-                              onChange={handleChange}
-                            />
-                          </div>
-                        </div>
-                        <div className="formbold-input-flex diff">
-                          <div>
-                            <label
-                              htmlFor="makeup_credits"
-                              className="formbold-form-label"
-                            >
-                              Make-Up Credits
-                            </label>
-                            <br></br>
-                            <div className="preference">
-                              <input
-                                type="radio"
-                                name="makeup_credits"
-                                onChange={handleChange}
-                                value="Pay when a make-up credit is issued"
-                              />
-                              Pay when a make-up credit is issued
+                        {formData.payroll !==
+                          "No automatic payroll calculation" && (
+                          <>
+                            <div className="formbold-input-flex">
+                              <div>
+                                <label
+                                  htmlFor="payrate_flat_hourly"
+                                  className="formbold-form-label"
+                                >
+                                  Pay Rate <span>per hour</span>
+                                </label>
+                                <input
+                                  type="text"
+                                  name="payrate_flat_hourly"
+                                  className="form-control"
+                                  onChange={handleChange}
+                                />
+                              </div>
                             </div>
-                            <div className="preference">
-                              <input
-                                type="radio"
-                                name="makeup_credits"
-                                onChange={handleChange}
-                                value="Pay when a make-up credit is used"
-                              />
-                              Pay when a make-up credit is used
+                            <div className="formbold-input-flex diff">
+                              <div>
+                                <label
+                                  htmlFor="makeup_credits"
+                                  className="formbold-form-label"
+                                >
+                                  Make-Up Credits
+                                </label>
+                                <br></br>
+                                <div className="preference">
+                                  <input
+                                    type="radio"
+                                    name="makeup_credits"
+                                    onChange={handleChange}
+                                    value="Pay when a make-up credit is issued"
+                                  />
+                                  Pay when a make-up credit is issued
+                                </div>
+                                <div className="preference">
+                                  <input
+                                    type="radio"
+                                    name="makeup_credits"
+                                    onChange={handleChange}
+                                    value="Pay when a make-up credit is used"
+                                  />
+                                  Pay when a make-up credit is used
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        </div>
-                        </>
+                          </>
                         )}
                         <hr></hr>
                         <div className="formbold-input-flex diff">
@@ -501,10 +515,9 @@ const StudentAdd = () => {
                             </label>
                             <br></br>
                             <span>
-                            Share a link to Zoom, Google Meet, or any other video conferencing application.  
-                            <Link to="#">
-                              Click Here
-                            </Link> to learn more
+                              Share a link to Zoom, Google Meet, or any other
+                              video conferencing application.
+                              <Link to="#">Click Here</Link> to learn more
                             </span>
                             <input
                               type="text"
@@ -514,18 +527,19 @@ const StudentAdd = () => {
                             />
                           </div>
                         </div>
-                        
+
                         <div className="formbold-input-flex diff">
                           <div>
                             <label
                               htmlFor="subjects"
                               className="formbold-form-label"
                             >
-                             Subjects <span>Optional</span>
+                              Subjects <span>Optional</span>
                             </label>
                             <br></br>
                             <span>
-                            Use a semicolon or press the Enter key to separate entries
+                              Use a semicolon or press the Enter key to separate
+                              entries
                             </span>
                             <input
                               type="text"
@@ -569,13 +583,17 @@ const StudentAdd = () => {
                           </div>
                         </div>
                       </div>
-
                       <div className="formbold-form-step-2">
+                      <div className="text-center">
+                            <small style={{ color: "red" }}>
+                              {error?.email?.length ? error.email[0] : <></>}
+                            </small>
+                          </div>
                         <h5>Tutor Privileges</h5>
 
                         <div className="formbold-input-flex diff">
                           <div>
-                          <input
+                            <input
                               type="checkbox"
                               className="administrator"
                               name="administrator"
@@ -583,29 +601,39 @@ const StudentAdd = () => {
                               checked={privileges.administrator}
                             />
                             <label
-                            htmlFor="administrator"
-                            className="form-form-label"> Administrator (all privileges)
+                              htmlFor="administrator"
+                              className="form-form-label"
+                            >
+                              {" "}
+                              Administrator (all privileges)
                             </label>
-                            <br/>
-                             <span>Administrators can access all parts of TutorBird and create other users.</span>
-                            </div>
+                            <br />
+                            <span>
+                              Administrators can access all parts of TutorBird
+                              and create other users.
+                            </span>
+                          </div>
                         </div>
                         <h6 className="formbold-form-label">Manage Self</h6>
                         <div className="formbold-input-flex diff">
                           <div>
-                          <input
+                            <input
                               type="checkbox"
                               className="manage"
                               name="manage_self_take_attendance"
                               onChange={handlePrivilegesChange}
                               checked={privileges.manage_self_take_attendance}
+                              disabled={true}
                             />
                             <label
-                            htmlFor="manage_self_take_attendance"
-                            className="form-form-label"> Take attendance
+                              htmlFor="manage_self_take_attendance"
+                              className="form-form-label"
+                            >
+                              {" "}
+                              Take attendance
                             </label>
                             <br></br>
-                          <input
+                            <input
                               type="checkbox"
                               className="manage"
                               name="manage_self_record_payments"
@@ -613,25 +641,32 @@ const StudentAdd = () => {
                               checked={privileges.manage_self_record_payments}
                             />
                             <label
-                            htmlFor="manage_self_record_payments"
-                            className="form-form-label"> Record payments with attendance
+                              htmlFor="manage_self_record_payments"
+                              className="form-form-label"
+                            >
+                              {" "}
+                              Record payments with attendance
                             </label>
 
                             <br></br>
-                          <input
+                            <input
                               type="checkbox"
                               className="manage"
                               name="manage_self_edit"
                               onChange={handlePrivilegesChange}
                               checked={privileges.manage_self_edit}
+                              disabled={true}
                             />
                             <label
-                            htmlFor="manage_self_edit"
-                            className="form-form-label"> Edit own lessons/events
+                              htmlFor="manage_self_edit"
+                              className="form-form-label"
+                            >
+                              {" "}
+                              Edit own lessons/events
                             </label>
 
                             <br></br>
-                          <input
+                            <input
                               type="checkbox"
                               className="manage"
                               name="manage_self_payroll"
@@ -639,12 +674,15 @@ const StudentAdd = () => {
                               checked={privileges.manage_self_payroll}
                             />
                             <label
-                            htmlFor="manage_self_payroll"
-                            className="form-form-label"> View own payroll privileges
+                              htmlFor="manage_self_payroll"
+                              className="form-form-label"
+                            >
+                              {" "}
+                              View own payroll privileges
                             </label>
 
                             <br></br>
-                          <input
+                            <input
                               type="checkbox"
                               className="manage"
                               name="manage_self_mileage"
@@ -652,17 +690,21 @@ const StudentAdd = () => {
                               checked={privileges.manage_self_mileage}
                             />
                             <label
-                            htmlFor="manage_self_mileage"
-                            className="form-form-label"> Add/edit mileage
+                              htmlFor="manage_self_mileage"
+                              className="form-form-label"
+                            >
+                              {" "}
+                              Add/edit mileage
                             </label>
-                            </div>
+                          </div>
                         </div>
 
-
-                        <h6 className="formbold-form-label">Manage Other Tutors</h6>
+                        <h6 className="formbold-form-label">
+                          Manage Other Tutors
+                        </h6>
                         <div className="formbold-input-flex diff">
                           <div>
-                          <input
+                            <input
                               type="checkbox"
                               className="manage"
                               name="manage_view_tutor"
@@ -670,11 +712,14 @@ const StudentAdd = () => {
                               checked={privileges.manage_view_tutor}
                             />
                             <label
-                            htmlFor="manage_view_tutor"
-                            className="form-form-label"> View other tutor and user contact info
+                              htmlFor="manage_view_tutor"
+                              className="form-form-label"
+                            >
+                              {" "}
+                              View other tutor and user contact info
                             </label>
                             <br></br>
-                          <input
+                            <input
                               type="checkbox"
                               className="manage"
                               name="manage_student_tutor"
@@ -682,12 +727,15 @@ const StudentAdd = () => {
                               checked={privileges.manage_student_tutor}
                             />
                             <label
-                            htmlFor="manage_student_tutor"
-                            className="form-form-label"> Manage students and other tutors' lesson/events
+                              htmlFor="manage_student_tutor"
+                              className="form-form-label"
+                            >
+                              {" "}
+                              Manage students and other tutors' lesson/events
                             </label>
 
                             <br></br>
-                          <input
+                            <input
                               type="checkbox"
                               className="manage"
                               name="manage_tutor_lesson"
@@ -695,16 +743,21 @@ const StudentAdd = () => {
                               checked={privileges.manage_tutor_lesson}
                             />
                             <label
-                            htmlFor="manage_tutor_lesson"
-                            className="form-form-label"> View other tutors' lesson/events
+                              htmlFor="manage_tutor_lesson"
+                              className="form-form-label"
+                            >
+                              {" "}
+                              View other tutors' lesson/events
                             </label>
-                            </div>
+                          </div>
                         </div>
 
-                        <h6 className="formbold-form-label">Manage Student and Parents</h6>
+                        <h6 className="formbold-form-label">
+                          Manage Student and Parents
+                        </h6>
                         <div className="formbold-input-flex diff">
                           <div>
-                          <input
+                            <input
                               type="checkbox"
                               className="manage"
                               name="manage_student_parent"
@@ -712,11 +765,14 @@ const StudentAdd = () => {
                               checked={privileges.manage_student_parent}
                             />
                             <label
-                            htmlFor="manage_student_parent"
-                            className="form-form-label"> View student/parent addresses and phone numbers
+                              htmlFor="manage_student_parent"
+                              className="form-form-label"
+                            >
+                              {" "}
+                              View student/parent addresses and phone numbers
                             </label>
                             <br></br>
-                          <input
+                            <input
                               type="checkbox"
                               className="manage"
                               name="manage_student_parent_email"
@@ -724,12 +780,15 @@ const StudentAdd = () => {
                               checked={privileges.manage_student_parent_email}
                             />
                             <label
-                            htmlFor="manage_student_parent_email"
-                            className="form-form-label"> View student/parent email addresses
+                              htmlFor="manage_student_parent_email"
+                              className="form-form-label"
+                            >
+                              {" "}
+                              View student/parent email addresses
                             </label>
 
                             <br></br>
-                          <input
+                            <input
                               type="checkbox"
                               className="manage"
                               name="download_student_profile"
@@ -737,16 +796,21 @@ const StudentAdd = () => {
                               checked={privileges.download_student_profile}
                             />
                             <label
-                            htmlFor="download_student_profile"
-                            className="form-form-label"> View/download student profile attachments
+                              htmlFor="download_student_profile"
+                              className="form-form-label"
+                            >
+                              {" "}
+                              View/download student profile attachments
                             </label>
-                            </div>
+                          </div>
                         </div>
 
-                        <h6 className="formbold-form-label">Other Privileges</h6>
+                        <h6 className="formbold-form-label">
+                          Other Privileges
+                        </h6>
                         <div className="formbold-input-flex diff">
                           <div>
-                          <input
+                            <input
                               type="checkbox"
                               className="manage"
                               name="add_invoices"
@@ -754,11 +818,14 @@ const StudentAdd = () => {
                               checked={privileges.add_invoices}
                             />
                             <label
-                            htmlFor="add_invoices"
-                            className="form-form-label"> Add/view invoices and accounts
+                              htmlFor="add_invoices"
+                              className="form-form-label"
+                            >
+                              {" "}
+                              Add/view invoices and accounts
                             </label>
                             <br></br>
-                          <input
+                            <input
                               type="checkbox"
                               className="manage"
                               name="add_expenses"
@@ -766,12 +833,15 @@ const StudentAdd = () => {
                               checked={privileges.add_expenses}
                             />
                             <label
-                            htmlFor="add_expenses"
-                            className="form-form-label"> Add/edit expenses and other revenue
+                              htmlFor="add_expenses"
+                              className="form-form-label"
+                            >
+                              {" "}
+                              Add/edit expenses and other revenue
                             </label>
 
                             <br></br>
-                          <input
+                            <input
                               type="checkbox"
                               className="manage"
                               name="update_online_resources"
@@ -779,12 +849,16 @@ const StudentAdd = () => {
                               checked={privileges.update_online_resources}
                             />
                             <label
-                            htmlFor="update_online_resources"
-                            className="form-form-label"> Can add/edit/delete online resources from the school space
+                              htmlFor="update_online_resources"
+                              className="form-form-label"
+                            >
+                              {" "}
+                              Can add/edit/delete online resources from the
+                              school space
                             </label>
 
                             <br></br>
-                          <input
+                            <input
                               type="checkbox"
                               className="manage"
                               name="edit_website"
@@ -792,12 +866,15 @@ const StudentAdd = () => {
                               checked={privileges.edit_website}
                             />
                             <label
-                            htmlFor="edit_website"
-                            className="form-form-label"> Edit website and post news
+                              htmlFor="edit_website"
+                              className="form-form-label"
+                            >
+                              {" "}
+                              Edit website and post news
                             </label>
 
                             <br></br>
-                          <input
+                            <input
                               type="checkbox"
                               className="manage"
                               name="view_reports"
@@ -805,14 +882,20 @@ const StudentAdd = () => {
                               checked={privileges.view_reports}
                             />
                             <label
-                            htmlFor="view_reports"
-                            className="form-form-label"> Create/View reports
+                              htmlFor="view_reports"
+                              className="form-form-label"
+                            >
+                              {" "}
+                              Create/View reports
                             </label>
                             <br></br>
-                            <span>Gives access to reports created by other tutors/admins in the business (may contain sensitive data).</span>
-                            </div>
+                            <span>
+                              Gives access to reports created by other
+                              tutors/admins in the business (may contain
+                              sensitive data).
+                            </span>
+                          </div>
                         </div>
-
 
                         <div className="formbold-form-btn-wrapper">
                           <button className="formbold-back-btn">Back</button>
