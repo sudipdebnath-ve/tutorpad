@@ -408,7 +408,7 @@ const TutorEditDetails = () => {
                     )}
 
                     <div className="link-to-family">
-                      <Link to={"/"}>View Family Account</Link>
+                      <Link to={"/"}>View Account</Link>
                     </div>
                   </div>
                 </div>
@@ -422,7 +422,7 @@ const TutorEditDetails = () => {
                     </div>
                     <span>
                       Click the edit button to add a private note about this
-                      student
+                      tutor
                     </span>
                   </div>
                 </div>
@@ -453,7 +453,7 @@ const TutorEditDetails = () => {
                           aria-expanded="false"
                           aria-controls="flush-collapseOne"
                         >
-                          <strong>Student Overview</strong>
+                          <strong>Tutor Overview</strong>
                         </button>
                       </h2>
                       <div
@@ -464,7 +464,7 @@ const TutorEditDetails = () => {
                       >
                         <div className="accordion-body">
                           <div className="student-properties-edit">
-                            <h3>Student Overview</h3>
+                            <h3>Tutor Overview</h3>
                             <div className="student-edit-user">
                               <i
                                 className="fa fa-pencil"
@@ -514,7 +514,7 @@ const TutorEditDetails = () => {
                           aria-expanded="false"
                           aria-controls="flush-collapseTwo"
                         >
-                          <strong>Family Contacts</strong>
+                          <strong>Tutor Contacts</strong>
                         </button>
                       </h2>
                       <div
@@ -616,7 +616,7 @@ const TutorEditDetails = () => {
                           aria-expanded="false"
                           aria-controls="flush-collapseThree"
                         >
-                          <strong>Assigned Tutors</strong>
+                          <strong>Assigned Students</strong>
                         </button>
                       </h2>
                       <div
@@ -626,7 +626,7 @@ const TutorEditDetails = () => {
                         data-bs-parent="#accordionFlushExample"
                       >
                         <div className="accordion-body">
-                          <h3>Assigned Tutors</h3>
+                          <h3>Assigned Students</h3>
 
                           <div className="row">
                             <div className="col-12 col-md-12 col-xxl-12 d-flex order-2 order-xxl-3">
@@ -638,8 +638,8 @@ const TutorEditDetails = () => {
                                 </div>
                                 <h5>
                                   <strong>
-                                    There aren't any tutors assigned to this
-                                    student
+                                    There aren't any student assigned to this
+                                    tutor
                                   </strong>
                                 </h5>
                                 <hr></hr>
@@ -651,7 +651,7 @@ const TutorEditDetails = () => {
                                         className="fa fa-plus"
                                         aria-hidden="true"
                                       ></i>
-                                      Assign Tutor
+                                      Assign Student
                                     </button>
                                   </div>
                                 </div>
@@ -678,7 +678,7 @@ const TutorEditDetails = () => {
                           aria-expanded="false"
                           aria-controls="flush-collapseFour"
                         >
-                          <strong>Study Log</strong>
+                          <strong>Availability</strong>
                         </button>
                       </h2>
                       <div
@@ -997,7 +997,7 @@ const TutorEditDetails = () => {
                           aria-expanded="false"
                           aria-controls="flush-collapseSeven"
                         >
-                          <strong>Student Portal</strong>
+                          <strong>Tutor Portal</strong>
                         </button>
                       </h2>
                       <div
@@ -1008,10 +1008,10 @@ const TutorEditDetails = () => {
                       >
                         <div className="accordion-body">
                           <div className="access">
-                            <h3>Student Access</h3>
+                            <h3>Tutor Access</h3>
                             <span>Disabled</span>
                           </div>
-                          <p>Set up Student Portal access for this student</p>
+                          <p>Set up Tutor Portal access for this student</p>
 
                           <div className="student-access">
                             <i
