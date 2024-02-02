@@ -17,6 +17,7 @@ import FetchAttendanceLog from "../FetchAttendanceLog.js";
 import lending from "../assets/images/lending.svg";
 import ReactModal from "react-modal";
 import { ToastContainer, toast } from "react-toastify";
+import payroll from "../../assets/images/payroll.svg"
 
 const TutorEditDetails = () => {
   const { sidebarToggle, token, setLoading,userData,getAvailabilityData,
@@ -721,22 +722,22 @@ const TutorEditDetails = () => {
                     id="accordionFlushExample"
                   >
                     <div className="accordion-item">
-                      <h2 className="accordion-header" id="flush-headingThree">
+                      <h2 className="accordion-header" id="flush-headingOne">
                         <button
                           className="accordion-button collapsed"
                           type="button"
                           data-bs-toggle="collapse"
-                          data-bs-target="#flush-collapseThree"
+                          data-bs-target="#flush-collapseOne"
                           aria-expanded="false"
-                          aria-controls="flush-collapseThree"
+                          aria-controls="flush-collapseOne"
                         >
                           <strong>Assigned Students</strong>
                         </button>
                       </h2>
                       <div
-                        id="flush-collapseThree"
+                        id="flush-collapseOne"
                         className="accordion-collapse collapse"
-                        aria-labelledby="flush-headingThree"
+                        aria-labelledby="flush-headingOne"
                         data-bs-parent="#accordionFlushExample"
                       >
                         <div className="accordion-body">
@@ -777,7 +778,7 @@ const TutorEditDetails = () => {
                     </div>
                   </div>
                 </div>
-                 <div className="card">
+                <div className="card">
                   <div
                     className="accordion accordion-flush"
                     id="accordionFlushExample"
@@ -802,76 +803,20 @@ const TutorEditDetails = () => {
                         data-bs-parent="#accordionFlushExample"
                       >
                         <div className="accordion-body">
-                          <div className="student-properties-edit">
-                            {tutorFetchData?.parentfirstname !== null &&
-                            tutorFetchData?.parentlastname !== null ? (
-                              <>
-                                <h3>
-                                  {`${tutorFetchData?.parentfirstname}, ${tutorFetchData?.parentlastname}`}
-                                </h3>
-                              </>
-                            ) : (
-                              <>
-                                <strong>Parents Name not submitted</strong>
-                              </>
-                            )}
-
-                            <div className="student-edit-user">
-                              <i
-                                className="fa fa-pencil"
-                                aria-hidden="true"
-                              ></i>
-                            </div>
-                          </div>
-                          <div className="formbold-input-flex">
-                            <div>
-                              <label
-                                htmlFor="preferences"
-                                className="formbold-form-label"
-                              >
-                                Preferences
-                              </label>
-                              <br></br>
-                              <div className="preference">
-                                <input type="checkbox" name="emailpreference" />
-                                Set as the preferred invoice recipient
+                          <div className="row">
+                            <div className="col-12 col-md-12 col-xxl-12 d-flex order-2 order-xxl-3">
+                              <div className="flex-fill w-100">
+                                <div className="py-3">
+                                  <div className="chart chart-xs payroll-img">
+                                    <img src={payroll} alt="payroll"></img>
+                                  </div>
+                                </div>
+                                <h6 className="text-center">
+                                  <strong>
+                                    You haven't added any payroll entries yet
+                                  </strong>
+                                </h6>
                               </div>
-                              <div className="preference">
-                                <input type="checkbox" name="smspreference" />
-                                Show in Student Portal contacts
-                              </div>
-                              <div className="preference">
-                                <input type="checkbox" name="emailpreference" />
-                                Send email lesson reminders
-                              </div>
-                              <div className="preference">
-                                <input type="checkbox" name="smspreference" />
-                                Send SMS lesson reminders
-                              </div>
-                              <span style={{ paddingLeft: "23px" }}>
-                                Will only be sent if SMS messaging is allowed
-                              </span>
-                            </div>
-                          </div>
-                          <hr></hr>
-                          <div className="formbold-form-btn-wrapper">
-                            <div className="btn-end">
-                              <Link className="cancel" to="/students">
-                                <i
-                                  className="fa fa-exchange"
-                                  aria-hidden="true"
-                                ></i>
-                                Change Family
-                              </Link>
-
-                              <button className="formbold-btn">
-                                <i
-                                  style={{ color: "#ffffff" }}
-                                  className="fa fa-plus"
-                                  aria-hidden="true"
-                                ></i>
-                                Add Another Contact
-                              </button>
                             </div>
                           </div>
                         </div>
@@ -885,22 +830,22 @@ const TutorEditDetails = () => {
                     id="accordionFlushExample"
                   >
                     <div className="accordion-item">
-                      <h2 className="accordion-header" id="flush-headingTwo">
+                      <h2 className="accordion-header" id="flush-headingThree">
                         <button
                           className="accordion-button collapsed"
                           type="button"
                           data-bs-toggle="collapse"
-                          data-bs-target="#flush-collapseTwo"
+                          data-bs-target="#flush-collapseThree"
                           aria-expanded="false"
-                          aria-controls="flush-collapseTwo"
+                          aria-controls="flush-collapseThree"
                         >
                           <strong>Availablity</strong>
                         </button>
                       </h2>
                       <div
-                        id="flush-collapseTwo"
+                        id="flush-collapseThree"
                         className="accordion-collapse collapse"
-                        aria-labelledby="flush-headingTwo"
+                        aria-labelledby="flush-headingThree"
                         data-bs-parent="#accordionFlushExample"
                       >
                         <div className="accordion-body">
@@ -1451,11 +1396,35 @@ const TutorEditDetails = () => {
                       >
                         <div className="accordion-body">
                           <div className="access">
-                            <h3>Tutor Access</h3>
-                            <span>Disabled</span>
+                            <h3>User Privileges</h3>
                           </div>
-                          <p>Set up Tutor Portal access for this student</p>
-
+                          <form className="myForm">
+                          <div className="">
+                          <div className="">
+                          <div>
+                            <input
+                              type="checkbox"
+                              className="administrator"
+                              name="administrator"
+                             // onChange={handlePrivilegesChange}
+                             // checked={privileges.administrator}
+                            />
+                            <label
+                              htmlFor="administrator"
+                              className="form-form-label"
+                            >
+                              {" "}
+                              Administrator (all privileges)
+                            </label>
+                            <br />
+                            <span>
+                              Administrators can access all parts of TutorBird
+                              and create other users.
+                            </span>
+                          </div>
+                        </div>
+                            </div>
+                          </form>
                           <div className="student-access">
                             <i
                               class="fa fa-exclamation-triangle"
