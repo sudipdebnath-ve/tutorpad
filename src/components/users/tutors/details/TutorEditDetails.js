@@ -9,25 +9,35 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../../../../utils/config.js";
 import instructors from "../../assets/images/Instructors.svg";
+import students from "../../assets/images/students.svg"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import FetchStudyLog from "../FetchStudyLog.js";
 import FetchAttendanceLog from "../FetchAttendanceLog.js";
 import lending from "../assets/images/lending.svg";
 import ReactModal from "react-modal";
+import { ToastContainer, toast } from "react-toastify";
 
 const TutorEditDetails = () => {
-  const { sidebarToggle, token, setLoading } = useUserDataContext();
+  const { sidebarToggle, token, setLoading,userData,getAvailabilityData,
+    allAvailabilityData, } = useUserDataContext();
   const [initial, setInitial] = useState("");
   const [todayDate, setTodayDate] = useState(new Date());
   const [startDate, setStartDate] = useState(null);
-  const [studentFetchData, setStudentFetchData] = useState({});
+  const [tutorFetchData, setTutorFetchData] = useState({});
   const [modalIsOpen, setIsOpens] = useState(false);
+  const [error, setError] = useState({});
+  const [availFlag, setAvailFlag] = useState(false);
+  const [availData, setAvailData] = useState({});
+  const [days, setDays] = useState({});
+  const [editA, setEditA] = useState({});
+  const [selectedDays, setSelectedDays] = useState([]);
+
 
   let { id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
 
-  const fetchStudentDetails = async (id) => {
+  const fetchTutorDetails = async (id) => {
     setLoading(true);
     console.log(id);
     const validateconfig = {
@@ -43,7 +53,7 @@ const TutorEditDetails = () => {
     await axios(validateconfig)
       .then((response) => {
         console.log(response.data);
-        setStudentFetchData(response.data.data);
+        setTutorFetchData(response.data.data);
         setLoading(false);
       })
       .catch((error) => {
@@ -53,12 +63,12 @@ const TutorEditDetails = () => {
   };
 
   useEffect(() => {
-    fetchStudentDetails(id);
+    fetchTutorDetails(id);
   }, [id]);
 
   useEffect(() => {
-    var name = `${studentFetchData.first_name}${" "}${
-      studentFetchData.last_name
+    var name = `${tutorFetchData.first_name}${" "}${
+      tutorFetchData.last_name
     }`;
 
     var parts = name.split(" ");
@@ -77,7 +87,7 @@ const TutorEditDetails = () => {
       "-" +
       today.getFullYear();
     setStartDate(date);
-  }, [studentFetchData]);
+  }, [tutorFetchData]);
 
   const handleChange = (e) => {
     setIsOpen(!isOpen);
@@ -96,6 +106,106 @@ const TutorEditDetails = () => {
   const handleClick = (e) => {
     e.preventDefault();
     setIsOpen(!isOpen);
+  };
+
+  const handleAvailChange = (e) => {
+    const name = e.target.name;
+    let value = e.target.value;
+
+    if (
+      name === "sun" ||
+      name === "mon" ||
+      name === "tue" ||
+      name === "wed" ||
+      name === "thu" ||
+      name === "fri" ||
+      name === "sat"
+    ) {
+      setDays({ ...days, [name]: value });
+    } else {
+      setAvailData({ ...availData, [name]: value });
+    }
+  };
+
+  const formAvailSubmit = async () => {
+    availData["user_id"] = userData.id;
+    let arr = Object.values(days);
+    let allday = arr.toString();
+    availData["days"] = allday;
+
+    console.log(availData);
+
+    const config = {
+      method: "POST",
+      url: `${API_URL}add-availability`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: availData,
+    };
+    await axios(config)
+      .then((response) => {
+        console.log(response);
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        setAvailFlag(false);
+        allAvailabilityData();
+      })
+      .catch((error) => {
+        console.log(error.response.data.data);
+        if (error.response.data.success === false) {
+          setError(error.response.data.data);
+        }
+      });
+  };
+
+  const editAvailability = async (id) => {
+    openModal("updateAvail");
+
+    const config = {
+      method: "GET",
+      url: `${API_URL}get-availability/${id}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(config)
+      .then((response) => {
+        console.log(response.data.data);
+        setEditA(response.data.data);
+        availData["start_date"] = response.data.data.start_date;
+        availData["end_date"] = response.data.data.end_date;
+        availData["start_time"] = response.data.data.start_time;
+        availData["end_time"] = response.data.data.end_time;
+        availData["note"] = response.data.data.note;
+        days["days"] = JSON.parse(response.data.data.days);
+        setSelectedDays(JSON.parse(response.data.data.days));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const deleteAvailability = async (id) => {
+    const config = {
+      method: "DELETE",
+      url: `${API_URL}delete-availability/${id}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    console.log(id);
+    await axios(config)
+      .then((response) => {
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        allAvailabilityData();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   // console.log(userData);
@@ -394,21 +504,25 @@ const TutorEditDetails = () => {
                     </div>
 
                     <div className="title-user">
-                      {studentFetchData?.first_name}{" "}
-                      {studentFetchData?.last_name}
+                      {tutorFetchData?.first_name}{" "}
+                      {tutorFetchData?.last_name}
                     </div>
-                    {studentFetchData?.student_status && (
+                    {tutorFetchData?.tutor_status && (
                       <>
                         <div className="active-user">
                           <span className="active">
-                            {studentFetchData?.student_status}
+                            {tutorFetchData?.tutor_status}
                           </span>
                         </div>
                       </>
                     )}
 
                     <div className="link-to-family">
-                      <Link to={"/"}>View Account</Link>
+                      {/* <Link to={"/"}>View Account</Link> */}
+                      <div>
+                      <i class="fa fa-envelope" aria-hidden="true"></i>
+                      <sapn>{" "}{tutorFetchData?.email}</sapn>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -438,7 +552,7 @@ const TutorEditDetails = () => {
                 </div>
               </div>
               <div className="col-xl-8 col-xxl-8">
-                <div className="card">
+                {/* <div className="card">
                   <div
                     className="accordion accordion-flush"
                     id="accordionFlushExample"
@@ -498,8 +612,8 @@ const TutorEditDetails = () => {
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="card">
+                </div> */}
+                {/* <div className="card">
                   <div
                     className="accordion accordion-flush"
                     id="accordionFlushExample"
@@ -525,11 +639,175 @@ const TutorEditDetails = () => {
                       >
                         <div className="accordion-body">
                           <div className="student-properties-edit">
-                            {studentFetchData?.parentfirstname !== null &&
-                            studentFetchData?.parentlastname !== null ? (
+                            {tutorFetchData?.parentfirstname !== null &&
+                            tutorFetchData?.parentlastname !== null ? (
                               <>
                                 <h3>
-                                  {`${studentFetchData?.parentfirstname}, ${studentFetchData?.parentlastname}`}
+                                  {`${tutorFetchData?.parentfirstname}, ${tutorFetchData?.parentlastname}`}
+                                </h3>
+                              </>
+                            ) : (
+                              <>
+                                <strong>Parents Name not submitted</strong>
+                              </>
+                            )}
+
+                            <div className="student-edit-user">
+                              <i
+                                className="fa fa-pencil"
+                                aria-hidden="true"
+                              ></i>
+                            </div>
+                          </div>
+                          <div className="formbold-input-flex">
+                            <div>
+                              <label
+                                htmlFor="preferences"
+                                className="formbold-form-label"
+                              >
+                                Preferences
+                              </label>
+                              <br></br>
+                              <div className="preference">
+                                <input type="checkbox" name="emailpreference" />
+                                Set as the preferred invoice recipient
+                              </div>
+                              <div className="preference">
+                                <input type="checkbox" name="smspreference" />
+                                Show in Student Portal contacts
+                              </div>
+                              <div className="preference">
+                                <input type="checkbox" name="emailpreference" />
+                                Send email lesson reminders
+                              </div>
+                              <div className="preference">
+                                <input type="checkbox" name="smspreference" />
+                                Send SMS lesson reminders
+                              </div>
+                              <span style={{ paddingLeft: "23px" }}>
+                                Will only be sent if SMS messaging is allowed
+                              </span>
+                            </div>
+                          </div>
+                          <hr></hr>
+                          <div className="formbold-form-btn-wrapper">
+                            <div className="btn-end">
+                              <Link className="cancel" to="/students">
+                                <i
+                                  className="fa fa-exchange"
+                                  aria-hidden="true"
+                                ></i>
+                                Change Family
+                              </Link>
+
+                              <button className="formbold-btn">
+                                <i
+                                  style={{ color: "#ffffff" }}
+                                  className="fa fa-plus"
+                                  aria-hidden="true"
+                                ></i>
+                                Add Another Contact
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div> */}
+                <div className="card">
+                  <div
+                    className="accordion accordion-flush"
+                    id="accordionFlushExample"
+                  >
+                    <div className="accordion-item">
+                      <h2 className="accordion-header" id="flush-headingThree">
+                        <button
+                          className="accordion-button collapsed"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#flush-collapseThree"
+                          aria-expanded="false"
+                          aria-controls="flush-collapseThree"
+                        >
+                          <strong>Assigned Students</strong>
+                        </button>
+                      </h2>
+                      <div
+                        id="flush-collapseThree"
+                        className="accordion-collapse collapse"
+                        aria-labelledby="flush-headingThree"
+                        data-bs-parent="#accordionFlushExample"
+                      >
+                        <div className="accordion-body">
+                          <h3>Assigned Students</h3>
+
+                          <div className="row">
+                            <div className="col-12 col-md-12 col-xxl-12 d-flex order-2 order-xxl-3">
+                              <div className="flex-fill w-100">
+                                <div className="py-3">
+                                  <div className="chart chart-xs">
+                                    <img src={students}></img>
+                                  </div>
+                                </div>
+                                <h5>
+                                  <strong>
+                                    There aren't any student assigned to this
+                                    tutor
+                                  </strong>
+                                </h5>
+                                <hr></hr>
+                                <div className="formbold-form-btn-wrapper">
+                                  <div className="btn-end">
+                                    <button className="formbold-btn">
+                                      <i
+                                        style={{ color: "#ffffff" }}
+                                        className="fa fa-plus"
+                                        aria-hidden="true"
+                                      ></i>
+                                      Assign Student
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                 <div className="card">
+                  <div
+                    className="accordion accordion-flush"
+                    id="accordionFlushExample"
+                  >
+                    <div className="accordion-item">
+                      <h2 className="accordion-header" id="flush-headingTwo">
+                        <button
+                          className="accordion-button collapsed"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#flush-collapseTwo"
+                          aria-expanded="false"
+                          aria-controls="flush-collapseTwo"
+                        >
+                          <strong>Payroll</strong>
+                        </button>
+                      </h2>
+                      <div
+                        id="flush-collapseTwo"
+                        className="accordion-collapse collapse"
+                        aria-labelledby="flush-headingTwo"
+                        data-bs-parent="#accordionFlushExample"
+                      >
+                        <div className="accordion-body">
+                          <div className="student-properties-edit">
+                            {tutorFetchData?.parentfirstname !== null &&
+                            tutorFetchData?.parentlastname !== null ? (
+                              <>
+                                <h3>
+                                  {`${tutorFetchData?.parentfirstname}, ${tutorFetchData?.parentlastname}`}
                                 </h3>
                               </>
                             ) : (
@@ -607,166 +885,331 @@ const TutorEditDetails = () => {
                     id="accordionFlushExample"
                   >
                     <div className="accordion-item">
-                      <h2 className="accordion-header" id="flush-headingThree">
+                      <h2 className="accordion-header" id="flush-headingTwo">
                         <button
                           className="accordion-button collapsed"
                           type="button"
                           data-bs-toggle="collapse"
-                          data-bs-target="#flush-collapseThree"
+                          data-bs-target="#flush-collapseTwo"
                           aria-expanded="false"
-                          aria-controls="flush-collapseThree"
+                          aria-controls="flush-collapseTwo"
                         >
-                          <strong>Assigned Students</strong>
+                          <strong>Availablity</strong>
                         </button>
                       </h2>
                       <div
-                        id="flush-collapseThree"
+                        id="flush-collapseTwo"
                         className="accordion-collapse collapse"
-                        aria-labelledby="flush-headingThree"
+                        aria-labelledby="flush-headingTwo"
                         data-bs-parent="#accordionFlushExample"
                       >
                         <div className="accordion-body">
-                          <h3>Assigned Students</h3>
+                          <div className="student-properties-edit sec-acc">
+                            <h3>Availability</h3>
 
-                          <div className="row">
-                            <div className="col-12 col-md-12 col-xxl-12 d-flex order-2 order-xxl-3">
-                              <div className="flex-fill w-100">
-                                <div className="py-3">
-                                  <div className="chart chart-xs">
-                                    <img src={instructors}></img>
+                            <button
+                              className="formbold-btn"
+                              style={{ fontSize: "14px", padding: "6px 16px" }}
+                              onClick={(e) => setAvailFlag(!e.target.value)}
+                            >
+                              <i
+                                style={{ color: "#ffffff" }}
+                                className="fa fa-plus"
+                                aria-hidden="true"
+                              ></i>
+                              Add
+                            </button>
+                          </div>
+                          <div className="formbold-input-flex">
+                            <span style={{ lineHeight: "1.6" }}>
+                              Enter your tutoring availability here to provide a
+                              visual cue of your availability on the calendar
+                              (visible in "Day" view or "Timeline" view).
+                              Setting your availability will not add or remove
+                              lessons from the calendar, or prevent lessons from
+                              being scheduled outside of these days/times.
+                            </span>
+                          </div>
+
+                          <p>
+                            You haven't added your tutoring availability yet
+                          </p>
+                          {availFlag && (
+                            <>
+                              <div className="availablity">
+                                <div className="formbold-input-flex diff">
+                                  <div>
+                                    <label
+                                      htmlFor="availability"
+                                      className="formbold-form-label"
+                                    >
+                                      Add Availability
+                                    </label>
                                   </div>
                                 </div>
-                                <h5>
-                                  <strong>
-                                    There aren't any student assigned to this
-                                    tutor
-                                  </strong>
-                                </h5>
-                                <hr></hr>
-                                <div className="formbold-form-btn-wrapper">
+                                <div className="formbold-input-flex diff">
+                                  <div>
+                                    <div>
+                                      <label
+                                        htmlFor="days"
+                                        className="formbold-form-label"
+                                      >
+                                        Days
+                                      </label>
+                                    </div>
+                                    <small style={{ color: "red" }}>
+                                      {error?.days?.length ? (
+                                        error?.days[0]
+                                      ) : (
+                                        <></>
+                                      )}
+                                    </small>
+                                    <div className="studentStatus">
+                                      <div>
+                                        <input
+                                          type="checkbox"
+                                          className="status"
+                                          name="sun"
+                                          value="Sun"
+                                          onChange={handleAvailChange}
+                                        />
+                                        Sun
+                                      </div>
+                                      <div>
+                                        <input
+                                          type="checkbox"
+                                          className="status"
+                                          name="mon"
+                                          value="Mon"
+                                          onChange={handleAvailChange}
+                                        />
+                                        Mon
+                                      </div>
+                                      <div>
+                                        <input
+                                          type="checkbox"
+                                          className="status"
+                                          name="tue"
+                                          value="Tue"
+                                          onChange={handleAvailChange}
+                                        />
+                                        Tue
+                                      </div>
+                                      <div>
+                                        <input
+                                          type="checkbox"
+                                          className="status"
+                                          name="wed"
+                                          value="Wed"
+                                          onChange={handleAvailChange}
+                                        />
+                                        Wed
+                                      </div>
+                                      <div>
+                                        <input
+                                          type="checkbox"
+                                          className="status"
+                                          name="thu"
+                                          value="Thu"
+                                          onChange={handleAvailChange}
+                                        />
+                                        Thu
+                                      </div>
+                                      <div>
+                                        <input
+                                          type="checkbox"
+                                          className="status"
+                                          name="fri"
+                                          value="Fri"
+                                          onChange={handleAvailChange}
+                                        />
+                                        Fri
+                                      </div>
+                                      <div>
+                                        <input
+                                          type="checkbox"
+                                          className="status"
+                                          name="sat"
+                                          value="Sat"
+                                          onChange={handleAvailChange}
+                                        />
+                                        Sat
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className="formbold-input-flex">
+                                  <div>
+                                    <label
+                                      htmlFor="start_date"
+                                      className="formbold-form-label"
+                                    >
+                                      Start Date <span>Optional</span>
+                                    </label>
+                                    <input
+                                      type="date"
+                                      name="start_date"
+                                      className="form-control"
+                                      onChange={handleAvailChange}
+                                    />
+                                  </div>
+                                  <div>
+                                    <label
+                                      htmlFor="end_date"
+                                      className="formbold-form-label"
+                                    >
+                                      End Date <span>Optional</span>
+                                    </label>
+                                    <input
+                                      type="date"
+                                      name="end_date"
+                                      className="form-control"
+                                      onChange={handleAvailChange}
+                                    />
+                                  </div>
+                                </div>
+                                <small style={{ color: "red" }}>
+                                  {error?.end_date?.length ? (
+                                    error?.end_date[0]
+                                  ) : (
+                                    <></>
+                                  )}
+                                </small>
+                                <div className="formbold-input-flex">
+                                  <div>
+                                    <label
+                                      htmlFor="start_time"
+                                      className="formbold-form-label"
+                                    >
+                                      Start Time
+                                    </label>
+                                    <input
+                                      type="time"
+                                      name="start_time"
+                                      className="form-control"
+                                      onChange={handleAvailChange}
+                                    />
+                                  </div>
+                                  <div>
+                                    <label
+                                      htmlFor="end_time"
+                                      className="formbold-form-label"
+                                    >
+                                      End Time
+                                    </label>
+                                    <input
+                                      type="time"
+                                      name="end_time"
+                                      className="form-control"
+                                      onChange={handleAvailChange}
+                                    />
+                                  </div>
+                                </div>
+                                <div className="formbold-input-flex diff">
+                                  <div>
+                                    <label
+                                      htmlFor="note"
+                                      className="formbold-form-label"
+                                    >
+                                      Note <span>Optional</span>
+                                    </label>
+
+                                    <textarea
+                                      name="note"
+                                      className="form-control"
+                                      onChange={handleAvailChange}
+                                    />
+                                  </div>
+                                </div>
+                                <div className="formbold-form-btn-wrapper justify-content-end">
                                   <div className="btn-end">
-                                    <button className="formbold-btn">
-                                      <i
-                                        style={{ color: "#ffffff" }}
-                                        className="fa fa-plus"
-                                        aria-hidden="true"
-                                      ></i>
-                                      Assign Student
+                                    <Link
+                                      className="cancel"
+                                      onClick={() => setAvailFlag(false)}
+                                    >
+                                      Cancel
+                                    </Link>
+
+                                    <button
+                                      className="formbold-btn"
+                                      onClick={formAvailSubmit}
+                                    >
+                                      Save
                                     </button>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="card">
-                  <div
-                    className="accordion accordion-flush"
-                    id="accordionFlushExample"
-                  >
-                    <div className="accordion-item">
-                      <h2 className="accordion-header" id="flush-headingFour">
-                        <button
-                          className="accordion-button collapsed"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#flush-collapseFour"
-                          aria-expanded="false"
-                          aria-controls="flush-collapseFour"
-                        >
-                          <strong>Availability</strong>
-                        </button>
-                      </h2>
-                      <div
-                        id="flush-collapseFour"
-                        className="accordion-collapse collapse"
-                        aria-labelledby="flush-headingFour"
-                        data-bs-parent="#accordionFlushExample"
-                      >
-                        <div className="accordion-body">
-                          <div className="calculate-study">
-                            <div>
-                              <div className="days-studied">
-                                <i
-                                  className="fa fa-calendar"
-                                  aria-hidden="true"
-                                ></i>{" "}
-                                <h5>Days Studied</h5>
-                              </div>
-                              <span>
-                                1 day this week <br></br>1 day in the last 30
-                                days
-                              </span>
-                            </div>
-                            <div>
-                              <div className="hours-studied">
-                                <i
-                                  className="fa fa-clock"
-                                  aria-hidden="true"
-                                ></i>{" "}
-                                <h5>Hours Studied</h5>
-                              </div>
-                              <span>
-                                0:10 hours this week{" "}
-                                <i
-                                  className="fa fa-long-arrow-up"
-                                  aria-hidden="true"
-                                ></i>{" "}
-                                <emp>100%</emp>
-                                <br></br>0:10 hours in the last 30 days
-                              </span>
-                            </div>
-                            <div>
-                              <div className="average-study">
-                                <i
-                                  className="fa fa-bar-chart"
-                                  aria-hidden="true"
-                                ></i>{" "}
-                                <h5>Average Study Time</h5>
-                              </div>
-                              <span>
-                                0:10 hours this week{" "}
-                                <i
-                                  className="fa fa-long-arrow-up"
-                                  aria-hidden="true"
-                                ></i>{" "}
-                                <emp>100%</emp>
-                                <br></br>0:10 hours in the last 30 days
-                              </span>
-                            </div>
-                            <div className="student-edit-user">
-                              <i className="fa fa-cog" aria-hidden="true"></i>
-                            </div>
-                          </div>
-                          <div className="calendar-body">
-                            <h5>
-                              {studentFetchData?.first_name}'s Study Log as of{" "}
-                              <emp>{startDate ? startDate : "no"}</emp>{" "}
-                              <i
-                                onClick={handleClick}
-                                className="fa fa-caret-down"
-                                aria-hidden="true"
-                              >
-                                {isOpen && (
-                                  <DatePicker
-                                    selected={todayDate}
-                                    onChange={handleChange}
-                                    inline
-                                  />
-                                )}
-                              </i>
-                            </h5>
-                            <a className="addnew" href="#" role="button">
-                              <i className="fa fa-plus" aria-hidden="true"></i>
-                              Add Time
-                            </a>
+                            </>
+                          )}
+                          {!availFlag && (
+                            <>
+                              {getAvailabilityData?.map((item, index) => {
+                                let day = JSON.parse(item.days);
+                                return (
+                                  <div
+                                    className="edit-availability-section"
+                                    key={index}
+                                  >
+                                    <div className="availability-data">
+                                      <div className="d-flex">
+                                        {day.map((single_day, index) => {
+                                          if (index === day.length - 1) {
+                                            return (
+                                              <>
+                                                <strong key={index}>
+                                                  {`${single_day}`}
+                                                </strong>
+                                              </>
+                                            );
+                                          } else {
+                                            return (
+                                              <>
+                                                <strong>
+                                                  {`${single_day}${","}`}
+                                                  &nbsp;
+                                                </strong>
+                                              </>
+                                            );
+                                          }
+                                        })}
+                                      </div>
 
-                            <FetchStudyLog />
-                          </div>
+                                      <span>
+                                        {item.start_date} to {item.end_date}
+                                      </span>
+                                      <span>{item.note}</span>
+                                    </div>
+                                    <div className="availability-time">
+                                      <span>
+                                        {item.start_time} to {item.end_time}
+                                      </span>
+                                    </div>
+                                    <div className="availability-edit-del">
+                                      <div>
+                                        <i
+                                          className="fa fa-pencil"
+                                          aria-hidden="true"
+                                          onClick={() =>
+                                            editAvailability(item.id)
+                                          }
+                                        ></i>
+                                      </div>
+                                      <div>
+                                        <i
+                                          className="fa fa-trash"
+                                          aria-hidden="true"
+                                          onClick={() =>
+                                            deleteAvailability(item.id)
+                                          }
+                                        ></i>
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -832,7 +1275,7 @@ const TutorEditDetails = () => {
                           </div>
                           <div className="calendar-body">
                             <h5>
-                              {studentFetchData?.first_name}'s attendance
+                              {tutorFetchData?.first_name}'s attendance
                               records as of{" "}
                               <emp>{startDate ? startDate : "no"}</emp>{" "}
                               <i
@@ -872,7 +1315,7 @@ const TutorEditDetails = () => {
                           aria-expanded="false"
                           aria-controls="flush-collapseSix"
                         >
-                          <strong>Message History</strong>
+                          <strong>Preferences</strong>
                         </button>
                       </h2>
                       <div
@@ -997,7 +1440,7 @@ const TutorEditDetails = () => {
                           aria-expanded="false"
                           aria-controls="flush-collapseSeven"
                         >
-                          <strong>Tutor Portal</strong>
+                          <strong>Privileges</strong>
                         </button>
                       </h2>
                       <div

@@ -19,16 +19,28 @@ const StudentAdd = () => {
     title: "",
     first_name: "",
     last_name: "",
+    name : "",
+    username: "",
+    password: "",
     email: "",
     phone: "",
-    loginAccess: "",
+    remember_token: "",
+    enable_login_access: "",
+    gender: "",
+    dob: "",
+    skype: "",
+    facetime: "",
     address: "",
     payroll: "No automatic payroll calculation",
-    price: "",
+    payrate_on_revenue: "",
+    payrate_flat_hourly: "",
     makeup_credits: "",
     virtual_meeting_link: "",
     subjects: "",
+    lesson: "Lesson",
     privileges: "",
+    preferred_locatio: "",
+    tutor_status: "tutor"
   });
 
   const [privileges, setPrivileges] = useState({
@@ -189,8 +201,9 @@ const StudentAdd = () => {
   const handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
-    // if (name === "phone") {
-    //   formData["phone"] = value;
+    if (name === "phone") {
+      formData["phone"] = value;
+    }
     // } else if (name === "student_status") {
     //   formData["student_status"] = value;
     // } else if (name === "studentType") {
@@ -372,10 +385,10 @@ const StudentAdd = () => {
                             <input
                               type="checkbox"
                               className="sms"
-                              name="loginAccess"
+                              name="enable_login_access"
                               onChange={handleChange}
                             />
-                            <label htmlFor="loginAccess">
+                            <label htmlFor="enable_login_access">
                               {" "}
                               Enable login access
                             </label>
@@ -454,8 +467,29 @@ const StudentAdd = () => {
                             </div>
                           </div>
                         </div>
-                        {formData.payroll !==
-                          "No automatic payroll calculation" && (
+                        {formData.payroll ===
+                          "Percentage of tutor's revenue" && (
+                          <>
+                            <div className="formbold-input-flex">
+                              <div>
+                                <label
+                                  htmlFor="payrate_on_revenue"
+                                  className="formbold-form-label"
+                                >
+                                  Pay Rate <span>% of Revenue</span>
+                                </label>
+                                <input
+                                  type="text"
+                                  name="payrate_on_revenue"
+                                  className="form-control"
+                                  onChange={handleChange}
+                                />
+                              </div>
+                            </div>
+                            </>
+                        )}
+                        {formData.payroll ===
+                          "Flat hourly rate" && (
                           <>
                             <div className="formbold-input-flex">
                               <div>
@@ -473,6 +507,12 @@ const StudentAdd = () => {
                                 />
                               </div>
                             </div>
+                            </>
+                        )}
+                        {formData.payroll !==
+                          "No automatic payroll calculation" && (
+                          <>
+
                             <div className="formbold-input-flex diff">
                               <div>
                                 <label

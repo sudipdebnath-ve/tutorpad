@@ -77,11 +77,6 @@ const FetchTutorDatatable = () => {
       width: 150,
     },
     {
-      field: "student_status",
-      headerName: "Status",
-      width: 140,
-    },
-    {
       field: "phone",
       headerName: "Phone",
       width: 150,
@@ -107,18 +102,8 @@ const FetchTutorDatatable = () => {
       width: 150,
     },
     {
-      field: "school",
-      headerName: "School",
-      width: 150,
-    },
-    {
-      field: "studentsince",
-      headerName: "Student Since",
-      width: 150,
-    },
-    {
-      field: "referrer",
-      headerName: "Referrer",
+      field: "payroll",
+      headerName: "Payroll",
       width: 150,
     },
     {
@@ -127,23 +112,18 @@ const FetchTutorDatatable = () => {
       width: 150,
     },
     {
-      field: "skill",
-      headerName: "Skill Level",
+      field: "payrate_on_revenue",
+      headerName: "Pay Rate",
       width: 150,
     },
     {
-      field: "parentfirstname",
-      headerName: "Parent First Name",
+      field: "lesson",
+      headerName: "Default Lesson Category",
       width: 150,
     },
     {
-      field: "price",
-      headerName: "Default Price",
-      width: 150,
-    },
-    {
-      field: "lessonlen",
-      headerName: "Default Lesson Length",
+      field: "payrate_flat_hourly",
+      headerName: "Pay Rate Hourly",
       width: 150,
     },
   ];

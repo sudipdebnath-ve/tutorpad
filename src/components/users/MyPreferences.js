@@ -742,6 +742,11 @@ const MyPreferences = () => {
                             {error}
                           </small>
                         )}
+                        {error?.current_password?.length > 0 && (
+                          <small style={{ color: "red" }}>
+                            {error.current_password[0]}
+                          </small>
+                        )}
                         </div>
                       </div>
                     </div>

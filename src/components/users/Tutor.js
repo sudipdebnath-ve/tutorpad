@@ -5,7 +5,7 @@ import MiniSidebar from "../sidebar/MiniSidebar.js";
 import Sidebar from "../sidebar/Sidebar.js";
 import TopBar from "../sidebar/TopBar.js";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
-import students from "./assets/images/students.svg";
+import instructors from "../users/assets/images/Instructors.svg";
 import { Link } from "react-router-dom";
 import FetchTutorDatatable from "./tutors/FetchTutorDatatable.js";
 import Loader from "../Loader.js";
@@ -91,7 +91,7 @@ const Tutor = () => {
                       Tutors
                     </button>
                   </li>
-                  <li className="nav-item" role="presentation">
+                  {/* <li className="nav-item" role="presentation">
                     <button
                       className="nav-link"
                       id="profile-tab"
@@ -104,7 +104,7 @@ const Tutor = () => {
                     >
                       Groups
                     </button>
-                  </li>
+                  </li> */}
                 </ul>
                 <div className="tab-content" id="myTabContent">
                   <div
@@ -168,14 +168,14 @@ const Tutor = () => {
                                   >
                                     <Link
                                       className="dropdown-item"
-                                      to="/students/message"
+                                      to="/tutors/message"
                                     >
                                       New Email
                                     </Link>
                                     <div className="dropdown-divider"></div>
                                     <Link
                                       className="dropdown-item"
-                                      to="/students/message-history"
+                                      to="/tutors/message-history"
                                     >
                                       Go to Message History{" "}
                                     </Link>
@@ -469,7 +469,7 @@ const Tutor = () => {
                             <div className="align-self-center w-100">
                               <div className="py-3">
                                 <div className="chart chart-xs">
-                                  <img src={students}></img>
+                                  <img src={instructors}></img>
                                 </div>
                               </div>
                               <h4>
