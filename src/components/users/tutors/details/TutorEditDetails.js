@@ -9,7 +9,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../../../../utils/config.js";
 import instructors from "../../assets/images/Instructors.svg";
-import students from "../../assets/images/students.svg"
+import students from "../../assets/images/students.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import FetchStudyLog from "../FetchStudyLog.js";
@@ -17,26 +17,51 @@ import FetchAttendanceLog from "../FetchAttendanceLog.js";
 import lending from "../assets/images/lending.svg";
 import ReactModal from "react-modal";
 import { ToastContainer, toast } from "react-toastify";
-import payroll from "../../assets/images/payroll.svg"
+import payroll from "../../assets/images/payroll.svg";
+import attendance from "../assets/images/attendance.svg"
 
 const TutorEditDetails = () => {
-  const { sidebarToggle, token, setLoading,userData,getAvailabilityData,
-    allAvailabilityData, } = useUserDataContext();
+  const {
+    sidebarToggle,
+    token,
+    setLoading,
+    userData,
+    userId,
+    fetchData,
+    getAvailabilityData,
+    allAvailabilityData,
+  } = useUserDataContext();
   const [initial, setInitial] = useState("");
   const [todayDate, setTodayDate] = useState(new Date());
   const [startDate, setStartDate] = useState(null);
   const [tutorFetchData, setTutorFetchData] = useState({});
+  const [attendFlag, setAttendFlag] = useState(false);
   const [modalIsOpen, setIsOpens] = useState(false);
   const [error, setError] = useState({});
+  const [formData, setFormData] = useState({});
   const [availFlag, setAvailFlag] = useState(false);
   const [availData, setAvailData] = useState({});
+  const [attendDisabled, setAttenddisabled] = useState(true);
+  const [emailDisabled, setEmaildisabled] = useState(true);
+  const [tenantData, setTenantData] = useState([]);
+  const [profilePhoto, setProfilePhoto] = useState({});
   const [days, setDays] = useState({});
   const [editA, setEditA] = useState({});
   const [selectedDays, setSelectedDays] = useState([]);
-
+  const [editPrivileges, setEditPrivileges] = useState(false);
+  const [checkedPrivileges, setCheckedPrivileges] = useState("");
 
   let { id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
+
+
+  const handleEditClick = () => {
+    setEditPrivileges((prev)=> !prev);
+  };
+
+  const handleCancelClick = () => {
+    setEditPrivileges(false);
+  };
 
   const fetchTutorDetails = async (id) => {
     setLoading(true);
@@ -55,6 +80,7 @@ const TutorEditDetails = () => {
       .then((response) => {
         console.log(response.data);
         setTutorFetchData(response.data.data);
+        setCheckedPrivileges(response.data.data.privileges)
         setLoading(false);
       })
       .catch((error) => {
@@ -65,12 +91,11 @@ const TutorEditDetails = () => {
 
   useEffect(() => {
     fetchTutorDetails(id);
+    allAvailabilityData();
   }, [id]);
 
   useEffect(() => {
-    var name = `${tutorFetchData.first_name}${" "}${
-      tutorFetchData.last_name
-    }`;
+    var name = `${tutorFetchData.first_name}${" "}${tutorFetchData.last_name}`;
 
     var parts = name.split(" ");
     var initials = "";
@@ -88,25 +113,146 @@ const TutorEditDetails = () => {
       "-" +
       today.getFullYear();
     setStartDate(date);
+    formData.first_name = tutorFetchData?.first_name;
+    formData.last_name = tutorFetchData?.last_name;
+    formData.email = tutorFetchData?.email;
+    formData.phone = tutorFetchData?.phone;
+    formData.title = tutorFetchData?.business_data?.business_name;
+    tenantData.address = tutorFetchData?.business_data?.address;
+    tenantData.virtual_meeting = tutorFetchData?.business_data?.virtual_meeting;
+    tenantData.subjects = tutorFetchData?.business_data?.subjects;
+    tenantData.overdue_attendence = tutorFetchData?.business_data?.overdue_attendence;
+    tenantData.default_notes_view = tutorFetchData?.business_data?.default_notes_view;
+    tenantData.copy_recent_event = tutorFetchData?.business_data?.copy_recent_event;
+    tenantData.automatically_copy_lesson =
+      tutorFetchData?.business_data?.automatically_copy_lesson;
+    tenantData.student_register_lesson =
+      tutorFetchData?.business_data?.student_register_lesson;
+    tenantData.student_cancel_lesson =
+      tutorFetchData?.business_data?.student_cancel_lesson;
+    tenantData.parent_student_signup =
+      tutorFetchData?.business_data?.parent_student_signup;
+    tenantData.parent_student_disable_email_reminder =
+      tutorFetchData?.business_data?.parent_student_disable_email_reminder;
+    tenantData.allow_student_email_studylog =
+      tutorFetchData?.business_data?.allow_student_email_studylog;
+    tenantData.daily_agenda = userData?.business_data?.daily_agenda;
   }, [tutorFetchData]);
 
-  const handleChange = (e) => {
-    setIsOpen(!isOpen);
-    console.log(e);
-    let today = new Date(e);
-    let date =
-      today.getDate() +
-      "-" +
-      (today.getMonth() + 1) +
-      "-" +
-      today.getFullYear();
-    setTodayDate(date);
-    setStartDate(date);
-    console.log(date);
+  const handleChange = async (e) => {
+    const name = e.target.name;
+    let value = e.target.value;
+    // console.log(name, value);
+    if (
+      name === "title" ||
+      name === "first_name" ||
+      name === "last_name" ||
+      name === "email" ||
+      name === "phone"
+    ) {
+      setFormData({ ...formData, [name]: value });
+    } else {
+      if (
+        name === "overdue_attendence" ||
+        name === "automatically_copy_lesson" ||
+        name === "student_register_lesson" ||
+        name === "student_cancel_lesson" ||
+        name === "parent_student_disable_email_reminder" ||
+        name === "allow_student_email_studylog" ||
+        name === "parent_student_signup"
+      ) {
+        if (e.target.checked) {
+          value = "true";
+        } else {
+          value = null;
+        }
+      }
+      setTenantData({ ...tenantData, [name]: value });
+    }
+
+    if (name === "file") {
+      setProfilePhoto(e.target.files[0]);
+      // console.log(e.target.files[0]);
+      profilePhoto["file"] = e.target.files[0];
+      profilePhoto["user_id"] = userId;
+      const config = {
+        method: "POST",
+        url: `${API_URL}update-dp`,
+        headers: {
+          "content-type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+        data: profilePhoto,
+      };
+      await axios(config)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+          if (error.response.data.success === false) {
+            setError(error.response.data.data);
+          }
+        });
+    }
   };
+
+
   const handleClick = (e) => {
     e.preventDefault();
     setIsOpen(!isOpen);
+  };
+
+  const handleAttendEdit = (e) => {
+    setAttendFlag(!e.target.value);
+    setAttenddisabled(false);
+  };
+
+  const handleEmailEdit = (e) => {
+    setAttendFlag(!e.target.value);
+    setEmaildisabled(false);
+  };
+
+  const handleCancelAttendFlag = (e) => {
+    setAttendFlag(false);
+    setAttenddisabled(true);
+    setEmaildisabled(true);
+  };
+
+  const formSubmit = async (e) => {
+    formData["user_id"] = userId;
+    // if (profilePhoto) {
+    //   formData["photo"] = profilePhoto;
+    // }
+    formData["tenant_data"] = tenantData;
+
+    console.log(formData);
+
+    e.preventDefault();
+    const config = {
+      method: "PATCH",
+      url: `${API_URL}savedata`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: formData,
+    };
+    await axios(config)
+      .then((response) => {
+        // console.log(response);
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        setAttendFlag(false);
+        setAvailFlag(false);
+        setAttenddisabled(true);
+        setEmaildisabled(true);
+        fetchData(token);
+        setIsOpen(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const handleAvailChange = (e) => {
@@ -123,6 +269,33 @@ const TutorEditDetails = () => {
       name === "sat"
     ) {
       setDays({ ...days, [name]: value });
+    } else {
+      setAvailData({ ...availData, [name]: value });
+    }
+  };
+
+  const handleAvailChangePopup = (e) => {
+    const name = e.target.name;
+    let value = e.target.value;
+
+    if (
+      name === "sun" ||
+      name === "mon" ||
+      name === "tue" ||
+      name === "wed" ||
+      name === "thu" ||
+      name === "fri" ||
+      name === "sat"
+    ) {
+      const index = selectedDays.indexOf(value);
+      if (index > -1) {
+        selectedDays.splice(index, 1);
+      } else {
+        selectedDays.push(value);
+      }
+      console.log(selectedDays);
+
+      setDays({ ...selectedDays });
     } else {
       setAvailData({ ...availData, [name]: value });
     }
@@ -209,6 +382,39 @@ const TutorEditDetails = () => {
       });
   };
 
+  const updateAvailability = async (e) => {
+    let arr = Object.values(days);
+    let allday = arr.toString();
+    availData["days"] = allday;
+    availData["id"] = editA.id;
+    e.preventDefault();
+    // console.log(availData);
+    const config = {
+      method: "PATCH",
+      url: `${API_URL}update-availability`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: availData,
+    };
+    await axios(config)
+      .then((response) => {
+        console.log(response.data);
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        //setIsOpen(false);
+        closeModal();
+        allAvailabilityData();
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.response.data.success === false) {
+          setError(error.response.data.data);
+        }
+      });
+  };
+
   // console.log(userData);
   const customStyles = {
     content: {
@@ -242,10 +448,27 @@ const TutorEditDetails = () => {
     },
   };
 
+  const availStyles = {
+    content: {
+      width: "60%",
+      height: "80%",
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+      border: "none",
+    },
+    overlay: {
+      background: "#6c5a5669",
+    },
+  };
+
   // ReactModal.setAppElement("#yourAppElement");
 
-  function openModal() {
-    setIsOpens(true);
+  function openModal(e) {
+    setIsOpens(e);
   }
 
   function afterOpenModal() {
@@ -253,8 +476,8 @@ const TutorEditDetails = () => {
     // subtitle.style.color = "#f00";
   }
 
-  function closeModal() {
-    setIsOpens(false);
+  function closeModal(e) {
+    setIsOpens(e);
   }
 
   console.log(modalIsOpen);
@@ -274,7 +497,7 @@ const TutorEditDetails = () => {
         <TopBar />
 
         <ReactModal
-          isOpen={modalIsOpen}
+          isOpen={modalIsOpen==="profile"}
           onAfterOpen={afterOpenModal}
           onRequestClose={closeModal}
           style={customStyles}
@@ -481,7 +704,6 @@ const TutorEditDetails = () => {
                     <Link className="cancel" onClick={closeModal}>
                       Cancel
                     </Link>
-
                     <button className="formbold-btn">Submit</button>
                   </div>
                 </div>
@@ -489,7 +711,248 @@ const TutorEditDetails = () => {
             </form>
           </div>
         </ReactModal>
+        <ReactModal
+          isOpen={modalIsOpen === "updateAvail"}
+          onAfterOpen={afterOpenModal}
+          onRequestClose={closeModal}
+          style={availStyles}
+          contentLabel="Change Password"
+        >
+          <div className="mypreference-modal">
+            <div className="close-h">
+              <h4>Update Availability</h4>
+              <button className="closeModal" onClick={closeModal}>
+                X
+              </button>
+            </div>
+            <form name="studentProfile">
+              <div className="row d-flex">
+                <div className="col-xl-12 col-xxl-12">
+                  <div className="formbold-form-step-1 active">
+                    <div className="formbold-input-flex diff">
+                      <div>
+                        <div>
+                          <label htmlFor="days" className="formbold-form-label">
+                            Days
+                          </label>
+                        </div>
+                        <small style={{ color: "red" }}>
+                          {error?.days?.length ? error?.days[0] : <></>}
+                        </small>
+                        <div className="studentStatus">
+                          <div>
+                            <input
+                              type="checkbox"
+                              className="status"
+                              name="sun"
+                              value="Sun"
+                              onChange={handleAvailChangePopup}
+                              checked={
+                                selectedDays && selectedDays.includes("Sun")
+                                  ? true
+                                  : false
+                              }
+                            />
+                            Sun
+                          </div>
+                          <div>
+                            <input
+                              type="checkbox"
+                              className="status"
+                              name="mon"
+                              value="Mon"
+                              onChange={handleAvailChangePopup}
+                              checked={
+                                selectedDays && selectedDays.includes("Mon")
+                                  ? true
+                                  : false
+                              }
+                            />
+                            Mon
+                          </div>
+                          <div>
+                            <input
+                              type="checkbox"
+                              className="status"
+                              name="tue"
+                              value="Tue"
+                              onChange={handleAvailChangePopup}
+                              checked={
+                                selectedDays && selectedDays.includes("Tue")
+                                  ? true
+                                  : false
+                              }
+                            />
+                            Tue
+                          </div>
+                          <div>
+                            <input
+                              type="checkbox"
+                              className="status"
+                              name="wed"
+                              value="Wed"
+                              onChange={handleAvailChangePopup}
+                              checked={
+                                selectedDays && selectedDays.includes("Wed")
+                                  ? true
+                                  : false
+                              }
+                            />
+                            Wed
+                          </div>
+                          <div>
+                            <input
+                              type="checkbox"
+                              className="status"
+                              name="thu"
+                              value="Thu"
+                              onChange={handleAvailChangePopup}
+                              checked={
+                                selectedDays && selectedDays.includes("Thu")
+                                  ? true
+                                  : false
+                              }
+                            />
+                            Thu
+                          </div>
+                          <div>
+                            <input
+                              type="checkbox"
+                              className="status"
+                              name="fri"
+                              value="Fri"
+                              onChange={handleAvailChangePopup}
+                              checked={
+                                selectedDays && selectedDays.includes("Fri")
+                                  ? true
+                                  : false
+                              }
+                            />
+                            Fri
+                          </div>
+                          <div>
+                            <input
+                              type="checkbox"
+                              className="status"
+                              name="sat"
+                              value="Sat"
+                              onChange={handleAvailChangePopup}
+                              checked={
+                                selectedDays && selectedDays.includes("Sat")
+                                  ? true
+                                  : false
+                              }
+                            />
+                            Sat
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label
+                          htmlFor="start_date"
+                          className="formbold-form-label"
+                        >
+                          Start Date <span>Optional</span>
+                        </label>
+                        <input
+                          type="date"
+                          name="start_date"
+                          className="form-control"
+                          value={availData.start_date}
+                          onChange={handleAvailChangePopup}
+                        />
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="end_date"
+                          className="formbold-form-label"
+                        >
+                          End Date <span>Optional</span>
+                        </label>
+                        <input
+                          type="date"
+                          name="end_date"
+                          className="form-control"
+                          value={availData.end_date}
+                          onChange={handleAvailChangePopup}
+                        />
+                      </div>
+                    </div>
+                    <small style={{ color: "red" }}>
+                      {error?.end_date?.length ? error?.end_date[0] : <></>}
+                    </small>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label
+                          htmlFor="start_time"
+                          className="formbold-form-label"
+                        >
+                          Start Time
+                        </label>
+                        <input
+                          type="time"
+                          name="start_time"
+                          className="form-control"
+                          value={availData.start_time}
+                          onChange={handleAvailChangePopup}
+                        />
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="end_time"
+                          className="formbold-form-label"
+                        >
+                          End Time
+                        </label>
+                        <input
+                          type="time"
+                          name="end_time"
+                          className="form-control"
+                          value={availData.end_time}
+                          onChange={handleAvailChangePopup}
+                        />
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex diff">
+                      <div>
+                        <label htmlFor="note" className="formbold-form-label">
+                          Note <span>Optional</span>
+                        </label>
+
+                        <textarea
+                          name="note"
+                          className="form-control"
+                          value={availData.note}
+                          onChange={handleAvailChangePopup}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr></hr>
+                <div className="formbold-form-btn-wrapper">
+                  <div className="btn-end">
+                    <Link className="cancel" onClick={closeModal}>
+                      Cancel
+                    </Link>
+
+                    <button
+                      className="formbold-btn"
+                      onClick={updateAvailability}
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </ReactModal>
         <main className="content">
+        {/* <ToastContainer /> */}
           <div className="container-fluid p-0">
             <div className="row d-flex">
               <div className="col-xl-4 col-xxl-4">
@@ -500,13 +963,12 @@ const TutorEditDetails = () => {
                         <h2>{initial && initial.toLocaleUpperCase()}</h2>
                       </div>
                     </div>
-                    <div className="edit-user" onClick={openModal}>
+                    <div className="edit-user" onClick={(e)=>openModal("profile")}>
                       <i className="fa fa-pencil" aria-hidden="true"></i>
                     </div>
 
                     <div className="title-user">
-                      {tutorFetchData?.first_name}{" "}
-                      {tutorFetchData?.last_name}
+                      {tutorFetchData?.first_name} {tutorFetchData?.last_name}
                     </div>
                     {tutorFetchData?.tutor_status && (
                       <>
@@ -521,8 +983,8 @@ const TutorEditDetails = () => {
                     <div className="link-to-family">
                       {/* <Link to={"/"}>View Account</Link> */}
                       <div>
-                      <i class="fa fa-envelope" aria-hidden="true"></i>
-                      <sapn>{" "}{tutorFetchData?.email}</sapn>
+                        <i class="fa fa-envelope" aria-hidden="true"></i>
+                        <span> {tutorFetchData?.email} </span>
                       </div>
                     </div>
                   </div>
@@ -536,8 +998,7 @@ const TutorEditDetails = () => {
                       </div>
                     </div>
                     <span>
-                      Click the edit button to add a private note about this
-                      tutor
+                      Click the edit button to add a private note about this tutor
                     </span>
                   </div>
                 </div>
@@ -1185,6 +1646,31 @@ const TutorEditDetails = () => {
                         data-bs-parent="#accordionFlushExample"
                       >
                         <div className="accordion-body">
+                          <div className="row">
+                            <div className="col-12 col-md-12 col-xxl-12 d-flex order-2 order-xxl-3">
+                              <div className="flex-fill w-100">
+                                <div className="py-3">
+                                  <div className="chart chart-xs payroll-img">
+                                    <img src={attendance} alt="payroll"></img>
+                                  </div>
+                                </div>
+                                <h6 className="text-center">
+                                  <strong>
+                                  This tutor hasn't taken attendance yet
+                                  </strong>
+                                </h6>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {/* <div
+                        id="flush-collapseFive"
+                        className="accordion-collapse collapse"
+                        aria-labelledby="flush-headingFive"
+                        data-bs-parent="#accordionFlushExample"
+                      >
+                        <div className="accordion-body">
                           <div className="student-properties-edit">
                             <h3>Average attendance for last 90 days</h3>
                           </div>
@@ -1220,9 +1706,8 @@ const TutorEditDetails = () => {
                           </div>
                           <div className="calendar-body">
                             <h5>
-                              {tutorFetchData?.first_name}'s attendance
-                              records as of{" "}
-                              <emp>{startDate ? startDate : "no"}</emp>{" "}
+                              {tutorFetchData?.first_name}'s attendance records
+                              as of <emp>{startDate ? startDate : "no"}</emp>{" "}
                               <i
                                 onClick={handleClick}
                                 className="fa fa-caret-down"
@@ -1241,7 +1726,7 @@ const TutorEditDetails = () => {
                             <FetchAttendanceLog />
                           </div>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>
@@ -1270,101 +1755,347 @@ const TutorEditDetails = () => {
                         data-bs-parent="#accordionFlushExample"
                       >
                         <div className="accordion-body">
-                          <div className="col-xl-12 col-xxl-12">
-                            <h5>
-                              <strong>Messages from the </strong>
-                              <select className="mes-history-drop">
-                                <option>Last 3 Months</option>
-                                <option>Last 6 Months</option>
-                                <option>Last Year</option>
-                                <option>Entire History</option>
-                                <option>Scheduled Queue (Upcoming)</option>
-                              </select>
-                            </h5>
+                          <div className="student-properties-edit sec-acc">
+                            <h3>Attendance Preferences</h3>
+                            <div
+                              className="student-edit-user"
+                              onClick={handleAttendEdit}
+                            >
+                              <i
+                                className="fa fa-pencil"
+                                aria-hidden="true"
+                              ></i>
+                            </div>
                           </div>
-                          <div className="col-xl-12 col-xxl-12">
-                            <div className="tab-content" id="myTabContent">
-                              <div
-                                className="tab-pane fade show active"
-                                id="home"
-                                role="tabpanel"
-                                aria-labelledby="home-tab"
+                          <div className="formbold-input-flex">
+                            <div>
+                              <label
+                                htmlFor="overdue_attendence"
+                                className="formbold-form-label"
                               >
-                                <div className="row">
-                                  <div className="col-12 col-md-12 col-xxl-12 d-flex order-2 order-xxl-3">
-                                    <div className="flex-fill w-100">
-                                      <div className="card-body d-flex">
-                                        <div className="align-self-center w-100">
-                                          <div className="py-3">
-                                            <div className="chart chart-xs">
-                                              <img
-                                                src={lending}
-                                                alt="lending"
-                                              ></img>
-                                            </div>
-                                          </div>
-                                          <h5 style={{ textAlign: "center" }}>
-                                            <strong>
-                                              You haven't sent any emails or SMS
-                                              messages during this time
-                                            </strong>
-                                          </h5>
-                                          <div class="position-set">
-                                            <div className="add-message">
-                                              <i
-                                                className="fa fa-plus"
-                                                aria-hidden="true"
-                                              ></i>
-                                              <Link
-                                                className="btn"
-                                                role="button"
-                                              >
-                                                Create New Message
-                                              </Link>
-                                              <i
-                                                class="fa fa-caret-down"
-                                                aria-hidden="true"
-                                              ></i>
-                                            </div>
-                                            {/* {createMessage && (
-                                              <>
-                                                <div
-                                                  className="create-mes dropdown-menu addNewDropdown"
-                                                  aria-labelledby="dropdownMenuLink"
-                                                >
-                                                  <Link
-                                                    className="dropdown-item"
-                                                    to="/students"
-                                                  >
-                                                    <i
-                                                      class="fa fa-envelope"
-                                                      aria-hidden="true"
-                                                    ></i>
-                                                    Email Student
-                                                  </Link>
-                                                  <div className="dropdown-divider"></div>
-                                                  <Link
-                                                    className="dropdown-item"
-                                                    to="/students/message-history"
-                                                  >
-                                                    <i
-                                                      class="fa fa-envelope"
-                                                      aria-hidden="true"
-                                                    ></i>
-                                                    Email All{" "}
-                                                  </Link>
-                                                </div>
-                                              </>
-                                            )} */}
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
+                                Overdue Attendance
+                              </label>
+                              <br></br>
+                              <div
+                                className="preference"
+                                style={{ fontSize: "15px" }}
+                              >
+                                <input
+                                  type="checkbox"
+                                  name="overdue_attendence"
+                                  value="true"
+                                  disabled={attendDisabled}
+                                  onChange={handleChange}
+                                  checked={
+                                    tenantData?.overdue_attendence !== null
+                                      ? true
+                                      : false
+                                  }
+                                />
+                                Show overdue attendance on homepage
                               </div>
                             </div>
                           </div>
+
+                          <div className="formbold-input-flex diff">
+                            <div>
+                              <div>
+                                <label
+                                  htmlFor="default_notes_view"
+                                  className="formbold-form-label"
+                                >
+                                  Default Notes View
+                                </label>
+                              </div>
+                              <div className="input-radio">
+                                <input
+                                  type="radio"
+                                  value="Student"
+                                  name="default_notes_view"
+                                  disabled={attendDisabled}
+                                  onChange={handleChange}
+                                  checked={
+                                    tenantData?.default_notes_view === "Student"
+                                      ? true
+                                      : false
+                                  }
+                                ></input>
+                                Student
+                                <input
+                                  type="radio"
+                                  value="Parent"
+                                  name="default_notes_view"
+                                  disabled={attendDisabled}
+                                  onChange={handleChange}
+                                  checked={
+                                    tenantData?.default_notes_view === "Parent"
+                                      ? true
+                                      : false
+                                  }
+                                ></input>
+                                Parent
+                                <input
+                                  type="radio"
+                                  value="Private"
+                                  name="default_notes_view"
+                                  disabled={attendDisabled}
+                                  onChange={handleChange}
+                                  checked={
+                                    tenantData?.default_notes_view === "Private"
+                                      ? true
+                                      : false
+                                  }
+                                ></input>
+                                Private
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="formbold-input-flex diff mb-0">
+                            <div>
+                              <label
+                                htmlFor="automatically_copy_lesson"
+                                className="formbold-form-label"
+                              >
+                                Lesson Notes
+                              </label>
+                              <br></br>
+                              <div
+                                className="preference"
+                                style={{ fontSize: "15px" }}
+                              >
+                                <input
+                                  type="checkbox"
+                                  name="automatically_copy_lesson"
+                                  value="true"
+                                  disabled={attendDisabled}
+                                  onChange={handleChange}
+                                  checked={
+                                    tenantData?.automatically_copy_lesson !==
+                                    null
+                                      ? true
+                                      : false
+                                  }
+                                />
+                                Automatically copy lesson notes when I take
+                                attendance
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="formbold-input-flex diff">
+                            <div
+                              className="input-radio"
+                              style={{ fontSize: "15px" }}
+                            >
+                              <input
+                                type="radio"
+                                value="Copy from most recent event"
+                                name="copy_recent_event"
+                                disabled={attendDisabled}
+                                onChange={handleChange}
+                                checked={
+                                  tenantData?.copy_recent_event ===
+                                  "Copy from most recent event"
+                                    ? true
+                                    : false
+                                }
+                              ></input>
+                              Copy from most recent event
+                              <input
+                                type="radio"
+                                value="Copy from same category only"
+                                name="copy_recent_event"
+                                disabled={attendDisabled}
+                                onChange={handleChange}
+                                checked={
+                                  tenantData?.copy_recent_event ===
+                                  "Copy from same category only"
+                                    ? true
+                                    : false
+                                }
+                              ></input>
+                              Copy from same category only
+                            </div>
+                          </div>
+                        </div>
+                        <div className="accordion-body pt-0">
+                          <div className="student-properties-edit sec-acc">
+                            <h3>Email Notification Preferences</h3>
+
+                            <div
+                              className="student-edit-user"
+                              onClick={handleEmailEdit}
+                            >
+                              <i
+                                className="fa fa-pencil"
+                                aria-hidden="true"
+                              ></i>
+                            </div>
+                          </div>
+
+                          <small className="small">
+                            Select what you'd like to be notified about via
+                            email and how often
+                          </small>
+                          <div className="make-pad pb-3">
+                            <div className="input-check">
+                              <input
+                                type="checkbox"
+                                name="student_register_lesson"
+                                value="When any student registers for a lesson/event
+                                through the Student Portal"
+                                disabled={emailDisabled}
+                                onChange={handleChange}
+                                checked={
+                                  tenantData?.student_register_lesson !== null
+                                    ? true
+                                    : false
+                                }
+                              ></input>
+                              When any student registers for a lesson/event
+                              through the Student Portal
+                            </div>
+                            <div className="input-check">
+                              <input
+                                type="checkbox"
+                                name="student_cancel_lesson"
+                                value="When any student cancels a lesson/event through
+                                the Student Portal"
+                                disabled={emailDisabled}
+                                onChange={handleChange}
+                                checked={
+                                  tenantData?.student_cancel_lesson !== null
+                                    ? true
+                                    : false
+                                }
+                              ></input>
+                              When any student cancels a lesson/event through
+                              the Student Portal
+                            </div>
+                            <div className="input-check">
+                              <input
+                                type="checkbox"
+                                name="parent_student_signup"
+                                value="When any parent or student completes the sign-up
+                                form"
+                                disabled={emailDisabled}
+                                onChange={handleChange}
+                                checked={
+                                  tenantData?.parent_student_signup !== null
+                                    ? true
+                                    : false
+                                }
+                              ></input>
+                              When any parent or student completes the sign-up
+                              form
+                            </div>
+                            <div className="input-check">
+                              <input
+                                type="checkbox"
+                                name="parent_student_disable_email_reminder"
+                                value="When any parent or student disables email
+                                reminders"
+                                disabled={emailDisabled}
+                                onChange={handleChange}
+                                checked={
+                                  tenantData?.parent_student_disable_email_reminder !==
+                                  null
+                                    ? true
+                                    : false
+                                }
+                              ></input>
+                              When any parent or student disables email
+                              reminders
+                            </div>
+                            <div className="input-check">
+                              <input
+                                type="checkbox"
+                                name="allow_student_email_studylog"
+                                value="Allow students to email me from the Study Log"
+                                disabled={emailDisabled}
+                                onChange={handleChange}
+                                checked={
+                                  tenantData?.allow_student_email_studylog !==
+                                  null
+                                    ? true
+                                    : false
+                                }
+                              ></input>
+                              Allow students to email me from the Study Log
+                            </div>
+                          </div>
+                          <div className="email-pad-top">
+                            <h5>
+                              <strong>Email Daily Agenda</strong>
+                            </h5>
+                            <div className="input-radio">
+                              <input
+                                type="radio"
+                                value="Day Before"
+                                name="daily_agenda"
+                                disabled={emailDisabled}
+                                onChange={handleChange}
+                                checked={
+                                  tenantData?.daily_agenda === "Day Before"
+                                    ? true
+                                    : false
+                                }
+                              ></input>
+                              Day Before
+                              <br />
+                              Between 16:00 and 23:00
+                              <input
+                                type="radio"
+                                value="Same Day"
+                                name="daily_agenda"
+                                disabled={emailDisabled}
+                                onChange={handleChange}
+                                checked={
+                                  tenantData?.daily_agenda === "Same Day"
+                                    ? true
+                                    : false
+                                }
+                              ></input>
+                              Same Day
+                              <br />
+                              Between 0:00 and 15:00
+                              <input
+                                type="radio"
+                                value="Don't Email"
+                                name="daily_agenda"
+                                disabled={emailDisabled}
+                                onChange={handleChange}
+                                checked={
+                                  tenantData?.daily_agenda === "Don't Email"
+                                    ? true
+                                    : false
+                                }
+                              ></input>
+                              Don't Email
+                            </div>
+                          </div>
+                          {attendFlag && (
+                            <>
+                              <div className="formbold-form-btn-wrapper justify-content-end">
+                                <div className="btn-end">
+                                  <Link
+                                    className="cancel"
+                                     onClick={handleCancelAttendFlag}
+                                  >
+                                    Cancel
+                                  </Link>
+
+                                  <button
+                                    className="formbold-btn"
+                                    onClick={formSubmit}
+                                  >
+                                    Save
+                                  </button>
+                                </div>
+                              </div>
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -1395,69 +2126,345 @@ const TutorEditDetails = () => {
                         data-bs-parent="#accordionFlushExample"
                       >
                         <div className="accordion-body">
-                          <div className="access">
+                          <div className="access d-flex flex-col">
                             <h3>User Privileges</h3>
+                            <div className="edit_privileges" onClick={handleEditClick}>
+                           <i className="fa fa-pencil" aria-hidden="true"></i>
                           </div>
+                          </div>
+                          
                           <form className="myForm">
-                          <div className="">
-                          <div className="">
-                          <div>
-                            <input
-                              type="checkbox"
-                              className="administrator"
-                              name="administrator"
-                             // onChange={handlePrivilegesChange}
-                             // checked={privileges.administrator}
-                            />
-                            <label
-                              htmlFor="administrator"
-                              className="form-form-label"
-                            >
-                              {" "}
-                              Administrator (all privileges)
-                            </label>
-                            <br />
-                            <span>
-                              Administrators can access all parts of TutorBird
-                              and create other users.
-                            </span>
-                          </div>
-                        </div>
+                            <div>
+                              <div className="formbold-input-flex diff">
+                                <div>
+                                  <input
+                                    type="checkbox"
+                                    className="administrator"
+                                    name="administrator"
+                                    // onChange={handlePrivilegesChange}
+                                    // checked={privileges.administrator}
+                                  />
+                                  <label
+                                    htmlFor="administrator"
+                                    className="form-form-label"
+                                  >
+                                    {" "}
+                                    Administrator (all privileges)
+                                  </label>
+                                  <br />
+                                  <span>
+                                    Administrators can access all parts of
+                                    TutorBird and create other users.
+                                  </span>
+                                </div>
+                              </div>
+                              <h6 className="formbold-form-label">
+                                Manage Self
+                              </h6>
+                              <div className="formbold-input-flex diff">
+                                <div>
+                                  <input
+                                    type="checkbox"
+                                    className="manage"
+                                    name="manage_self_take_attendance"
+                                    //  onChange={handlePrivilegesChange}
+                                    //  checked={privileges.manage_self_take_attendance}
+                                    disabled={true}
+                                  />
+                                  <label
+                                    htmlFor="manage_self_take_attendance"
+                                    className="form-form-label"
+                                  >
+                                    {" "}
+                                    Take attendance
+                                  </label>
+                                  <br></br>
+                                  <input
+                                    type="checkbox"
+                                    className="manage"
+                                    name="manage_self_record_payments"
+                                    // onChange={handlePrivilegesChange}
+                                    //  checked={privileges.manage_self_record_payments}
+                                  />
+                                  <label
+                                    htmlFor="manage_self_record_payments"
+                                    className="form-form-label"
+                                  >
+                                    {" "}
+                                    Record payments with attendance
+                                  </label>
+
+                                  <br></br>
+                                  <input
+                                    type="checkbox"
+                                    className="manage"
+                                    name="manage_self_edit"
+                                    // onChange={handlePrivilegesChange}
+                                    //  checked={privileges.manage_self_edit}
+                                    disabled={true}
+                                  />
+                                  <label
+                                    htmlFor="manage_self_edit"
+                                    className="form-form-label"
+                                  >
+                                    {" "}
+                                    Edit own lessons/events
+                                  </label>
+
+                                  <br></br>
+                                  <input
+                                    type="checkbox"
+                                    className="manage"
+                                    name="manage_self_payroll"
+                                    // onChange={handlePrivilegesChange}
+                                    // checked={privileges.manage_self_payroll}
+                                  />
+                                  <label
+                                    htmlFor="manage_self_payroll"
+                                    className="form-form-label"
+                                  >
+                                    {" "}
+                                    View own payroll privileges
+                                  </label>
+
+                                  <br></br>
+                                  <input
+                                    type="checkbox"
+                                    className="manage"
+                                    name="manage_self_mileage"
+                                    // onChange={handlePrivilegesChange}
+                                    // checked={privileges.manage_self_mileage}
+                                  />
+                                  <label
+                                    htmlFor="manage_self_mileage"
+                                    className="form-form-label"
+                                  >
+                                    {" "}
+                                    Add/edit mileage
+                                  </label>
+                                </div>
+                              </div>
+
+                              <h6 className="formbold-form-label">
+                                Manage Other Tutors
+                              </h6>
+                              <div className="formbold-input-flex diff">
+                                <div>
+                                  <input
+                                    type="checkbox"
+                                    className="manage"
+                                    name="manage_view_tutor"
+                                    // onChange={handlePrivilegesChange}
+                                    //  checked={privileges.manage_view_tutor}
+                                  />
+                                  <label
+                                    htmlFor="manage_view_tutor"
+                                    className="form-form-label"
+                                  >
+                                    {" "}
+                                    View other tutor and user contact info
+                                  </label>
+                                  <br></br>
+                                  <input
+                                    type="checkbox"
+                                    className="manage"
+                                    name="manage_student_tutor"
+                                    // onChange={handlePrivilegesChange}
+                                    // checked={privileges.manage_student_tutor}
+                                  />
+                                  <label
+                                    htmlFor="manage_student_tutor"
+                                    className="form-form-label"
+                                  >
+                                    {" "}
+                                    Manage students and other tutors'
+                                    lesson/events
+                                  </label>
+
+                                  <br></br>
+                                  <input
+                                    type="checkbox"
+                                    className="manage"
+                                    name="manage_tutor_lesson"
+                                    // onChange={handlePrivilegesChange}
+                                    // checked={privileges.manage_tutor_lesson}
+                                  />
+                                  <label
+                                    htmlFor="manage_tutor_lesson"
+                                    className="form-form-label"
+                                  >
+                                    {" "}
+                                    View other tutors' lesson/events
+                                  </label>
+                                </div>
+                              </div>
+
+                              <h6 className="formbold-form-label">
+                                Manage Student and Parents
+                              </h6>
+                              <div className="formbold-input-flex diff">
+                                <div>
+                                  <input
+                                    type="checkbox"
+                                    className="manage"
+                                    name="manage_student_parent"
+                                    // onChange={handlePrivilegesChange}
+                                    // checked={privileges.manage_student_parent}
+                                  />
+                                  <label
+                                    htmlFor="manage_student_parent"
+                                    className="form-form-label"
+                                  >
+                                    {" "}
+                                    View student/parent addresses and phone
+                                    numbers
+                                  </label>
+                                  <br></br>
+                                  <input
+                                    type="checkbox"
+                                    className="manage"
+                                    name="manage_student_parent_email"
+                                    // onChange={handlePrivilegesChange}
+                                    //  checked={privileges.manage_student_parent_email}
+                                  />
+                                  <label
+                                    htmlFor="manage_student_parent_email"
+                                    className="form-form-label"
+                                  >
+                                    {" "}
+                                    View student/parent email addresses
+                                  </label>
+
+                                  <br></br>
+                                  <input
+                                    type="checkbox"
+                                    className="manage"
+                                    name="download_student_profile"
+                                    // onChange={handlePrivilegesChange}
+                                    // checked={privileges.download_student_profile}
+                                  />
+                                  <label
+                                    htmlFor="download_student_profile"
+                                    className="form-form-label"
+                                  >
+                                    {" "}
+                                    View/download student profile attachments
+                                  </label>
+                                </div>
+                              </div>
+
+                              <h6 className="formbold-form-label">
+                                Other Privileges
+                              </h6>
+                              <div className="formbold-input-flex diff">
+                                <div>
+                                  <input
+                                    type="checkbox"
+                                    className="manage"
+                                    name="add_invoices"
+                                    // onChange={handlePrivilegesChange}
+                                    // checked={privileges.add_invoices}
+                                  />
+                                  <label
+                                    htmlFor="add_invoices"
+                                    className="form-form-label"
+                                  >
+                                    {" "}
+                                    Add/view invoices and accounts
+                                  </label>
+                                  <br></br>
+                                  <input
+                                    type="checkbox"
+                                    className="manage"
+                                    name="add_expenses"
+                                    // onChange={handlePrivilegesChange}
+                                    //  checked={privileges.add_expenses}
+                                  />
+                                  <label
+                                    htmlFor="add_expenses"
+                                    className="form-form-label"
+                                  >
+                                    {" "}
+                                    Add/edit expenses and other revenue
+                                  </label>
+
+                                  <br></br>
+                                  <input
+                                    type="checkbox"
+                                    className="manage"
+                                    name="update_online_resources"
+                                    //  onChange={handlePrivilegesChange}
+                                    // checked={privileges.update_online_resources}
+                                  />
+                                  <label
+                                    htmlFor="update_online_resources"
+                                    className="form-form-label"
+                                  >
+                                    {" "}
+                                    Can add/edit/delete online resources from
+                                    the school space
+                                  </label>
+
+                                  <br></br>
+                                  <input
+                                    type="checkbox"
+                                    className="manage"
+                                    name="edit_website"
+                                    // onChange={handlePrivilegesChange}
+                                    // checked={privileges.edit_website}
+                                  />
+                                  <label
+                                    htmlFor="edit_website"
+                                    className="form-form-label"
+                                  >
+                                    {" "}
+                                    Edit website and post news
+                                  </label>
+
+                                  <br></br>
+                                  <input
+                                    type="checkbox"
+                                    className="manage"
+                                    name="view_reports"
+                                    // onChange={handlePrivilegesChange}
+                                    // checked={privileges.view_reports}
+                                  />
+                                  <label
+                                    htmlFor="view_reports"
+                                    className="form-form-label"
+                                  >
+                                    {" "}
+                                    Create/View reports
+                                  </label>
+                                  <br></br>
+                                  <span>
+                                    Gives access to reports created by other
+                                    tutors/admins in the business (may contain
+                                    sensitive data).
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="formbold-form-btn-wrapper">
+                                {editPrivileges && (
+                                  <>
+                                  
+                                <div className="btn-end">
+                                  <button className="cancel" onClick={handleCancelClick}>
+                                    Cancel
+                                  </button>
+
+                                  <button
+                                    className="formbold-btn"
+                                    // onClick={formSubmit}
+                                  >
+                                    Submit
+                                  </button>
+                                </div>
+                                </>
+                                )}
+                              </div>
                             </div>
                           </form>
-                          <div className="student-access">
-                            <i
-                              class="fa fa-exclamation-triangle"
-                              aria-hidden="true"
-                            ></i>
-
-                            <strong>
-                              If you'd like this student to have their own
-                              access to the Portal, you'll first need to provide
-                              an email address in their profile.
-                            </strong>
-                          </div>
-                          <hr></hr>
-                          <div className="access">
-                            <h3>Parent Access</h3>
-                            <span>Disabled</span>
-                          </div>
-                          <p>
-                            Set up Student Portal access for this student's
-                            parents
-                          </p>
-
-                          <div className="student-access">
-                            <i
-                              class="fa fa-exclamation-triangle"
-                              aria-hidden="true"
-                            ></i>
-
-                            <strong>
-                              Please provide an email address for this parent
-                              first
-                            </strong>
-                          </div>
                         </div>
                       </div>
                     </div>

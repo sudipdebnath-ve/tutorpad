@@ -97,8 +97,8 @@ const MyPreferences = () => {
     // subtitle.style.color = "#f00";
   }
 
-  function closeModal() {
-    setIsOpen(false);
+  function closeModal(e) {
+    setIsOpen(e);
   }
   console.log(selectedDays);
   useEffect(() => {
@@ -441,7 +441,8 @@ const MyPreferences = () => {
         toast.success(response.data.message, {
           position: toast.POSITION.TOP_CENTER,
         });
-        setIsOpen(false);
+       // setIsOpen(false);
+        closeModal();
         allAvailabilityData();
       })
       .catch((error) => {
