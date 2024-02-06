@@ -30,10 +30,13 @@ const Calendars = () => {
   const [eventStartTime, setEventStartTime] = useState("");
   const [eventEndTime, setEventEndTime] = useState("");
   const [eventDate, setEventDate] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [addEvent, setAddEvent] = useState({});
   const [eventRepeats, setEventRepeats] = useState(false);
   const [repeatsIndefinitely, setRepeatsIndefinitely] = useState(true);
   const [error, setError] = useState({});
+
 
   const navigate = useNavigate();
 
@@ -48,6 +51,13 @@ const Calendars = () => {
         fetchData(token);
       }, 2000);
       getTutor();
+      // Calculate start and end dates for the current month
+      // const currentDate = new Date();
+      // const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+      // const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+      // console.log(firstDayOfMonth);
+      // console.log(lastDayOfMonth);
+
       fetchEvent();
     }
   }, []);
@@ -139,6 +149,7 @@ const Calendars = () => {
       background: "#6c5a5669",
     },
   };
+  
   function openModal(e) {
     setIsOpen(e);
   }
@@ -148,8 +159,8 @@ const Calendars = () => {
     // subtitle.style.color = "#f00";
   }
 
-  function closeModal() {
-    setIsOpen(false);
+  function closeModal(e) {
+    setIsOpen(e);
   }
 
   const handleChange = (e) => {
@@ -163,11 +174,17 @@ const Calendars = () => {
         setEventRepeats(false);
       }
     }
-    if (name === "start_date" || name === "end_date") {
+    if (name === "start_date") {
       // Use the selected date if it's different from the default eventDate
-      const selectedDate = formatDate(eventDate);
+      const selectedDate = formatDate(startDate);
   
-      setEventDate(value !== selectedDate ? value : formatDate(eventDate));
+      setStartDate(value !== selectedDate ? value : formatDate(startDate));
+    }
+    if (name === "end_date") {
+      // Use the selected date if it's different from the default eventDate
+      const selectedDate = formatDate(endDate);
+  
+      setEndDate(value !== selectedDate ? value : formatDate(endDate));
     }
     if (name === "repeats_indefinitely") {
       if (e.target.checked) {
@@ -190,11 +207,11 @@ const Calendars = () => {
 
     // Check if addEvent includes start_date and end_date properties
   if (!addEvent.hasOwnProperty("start_date")) {
-    addEvent["start_date"] = formatDate(eventDate);
+    addEvent["start_date"] = formatDate(startDate);
   }
 
   if (!addEvent.hasOwnProperty("end_date")) {
-    addEvent["end_date"] = formatDate(eventDate);
+    addEvent["end_date"] = formatDate(endDate);
   }
 
     if (!addEvent.hasOwnProperty("quick_add_visibility")) {
@@ -243,6 +260,8 @@ const Calendars = () => {
     openModal("addEvent");
     console.log(e.start.toDateString());
     setEventDate(e.start.toDateString());
+    setStartDate(e.start.toDateString());
+    setEndDate(e.start.toDateString());
   };
   const openQuickAddLessonModal = (e) => {
     openModal("quickAddLesson");
@@ -469,7 +488,7 @@ const Calendars = () => {
                           type="date"
                           name="start_date"
                           className="form-control"
-                          value={formatDate(eventDate)}
+                          value={formatDate(startDate)}
                           onChange={handleChange}
                         />
                         <div className="pt-2">
@@ -487,7 +506,7 @@ const Calendars = () => {
                             type="date"
                             name="end_date"
                             className="form-control"
-                            value={formatDate(eventDate)}
+                            value={formatDate(endDate)}
                             onChange={handleChange}
                           />
                           <div className="pt-2">
