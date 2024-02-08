@@ -49,7 +49,7 @@ const TutorEditDetails = () => {
   const [editA, setEditA] = useState({});
   const [selectedDays, setSelectedDays] = useState([]);
   const [editPrivileges, setEditPrivileges] = useState(false);
-  const [checkedPrivileges, setCheckedPrivileges] = useState("");
+  const [checkedPrivileges, setCheckedPrivileges] = useState([]);
 
   let { id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -80,8 +80,11 @@ const TutorEditDetails = () => {
       .then((response) => {
         console.log(response.data);
         setTutorFetchData(response.data.data);
-        setCheckedPrivileges(response.data.data.privileges)
+        // Parse the privileges string to convert it into an array
+        const privilegesArray = JSON.parse(response.data.data.privileges);
+        setCheckedPrivileges(privilegesArray);
         setLoading(false);
+        console.log(privilegesArray);
       })
       .catch((error) => {
         console.log(error);
@@ -196,6 +199,19 @@ const TutorEditDetails = () => {
         });
     }
   };
+
+  const handleCheckboxChange = (event) => {
+    const { name, checked } = event.target;
+    if (editPrivileges) {
+      const updatedPrivileges = checkedPrivileges || []; // Initialize as empty array if null or undefined
+      if (checked) {
+        setCheckedPrivileges([...updatedPrivileges, name]);
+      } else {
+        setCheckedPrivileges(updatedPrivileges.filter(privilege => privilege !== name));
+      }
+    }
+  };
+  
 
 
   const handleClick = (e) => {
@@ -2141,8 +2157,9 @@ const TutorEditDetails = () => {
                                     type="checkbox"
                                     className="administrator"
                                     name="administrator"
-                                    // onChange={handlePrivilegesChange}
-                                    // checked={privileges.administrator}
+                                    disabled={!editPrivileges}
+                                    onChange={handleCheckboxChange}
+                                    checked={checkedPrivileges?.includes("administrator") ? true : false}
                                   />
                                   <label
                                     htmlFor="administrator"
@@ -2167,9 +2184,9 @@ const TutorEditDetails = () => {
                                     type="checkbox"
                                     className="manage"
                                     name="manage_self_take_attendance"
-                                    //  onChange={handlePrivilegesChange}
-                                    //  checked={privileges.manage_self_take_attendance}
                                     disabled={true}
+                                    onChange={handleCheckboxChange}
+                                    checked={checkedPrivileges?.includes("manage_self_take_attendance") ? true : true}
                                   />
                                   <label
                                     htmlFor="manage_self_take_attendance"
@@ -2183,8 +2200,9 @@ const TutorEditDetails = () => {
                                     type="checkbox"
                                     className="manage"
                                     name="manage_self_record_payments"
-                                    // onChange={handlePrivilegesChange}
-                                    //  checked={privileges.manage_self_record_payments}
+                                    disabled={!editPrivileges}
+                                    onChange={handleCheckboxChange}
+                                    checked={checkedPrivileges?.includes("manage_self_record_payments") ? true : false}
                                   />
                                   <label
                                     htmlFor="manage_self_record_payments"
@@ -2199,8 +2217,9 @@ const TutorEditDetails = () => {
                                     type="checkbox"
                                     className="manage"
                                     name="manage_self_edit"
-                                    // onChange={handlePrivilegesChange}
+                                    onChange={handleCheckboxChange}
                                     //  checked={privileges.manage_self_edit}
+                                    checked={checkedPrivileges?.includes("manage_self_edit") ? true : true}
                                     disabled={true}
                                   />
                                   <label
@@ -2216,8 +2235,9 @@ const TutorEditDetails = () => {
                                     type="checkbox"
                                     className="manage"
                                     name="manage_self_payroll"
-                                    // onChange={handlePrivilegesChange}
-                                    // checked={privileges.manage_self_payroll}
+                                    disabled={!editPrivileges}
+                                    onChange={handleCheckboxChange}
+                                    checked={checkedPrivileges?.includes("manage_self_payroll") ? true : false}
                                   />
                                   <label
                                     htmlFor="manage_self_payroll"
@@ -2232,8 +2252,10 @@ const TutorEditDetails = () => {
                                     type="checkbox"
                                     className="manage"
                                     name="manage_self_mileage"
-                                    // onChange={handlePrivilegesChange}
+                                    disabled={!editPrivileges}
+                                    onChange={handleCheckboxChange}
                                     // checked={privileges.manage_self_mileage}
+                                    checked={checkedPrivileges?.includes("manage_self_mileage") ? true : false}
                                   />
                                   <label
                                     htmlFor="manage_self_mileage"
@@ -2254,8 +2276,10 @@ const TutorEditDetails = () => {
                                     type="checkbox"
                                     className="manage"
                                     name="manage_view_tutor"
-                                    // onChange={handlePrivilegesChange}
+                                    disabled={!editPrivileges}
+                                    onChange={handleCheckboxChange}
                                     //  checked={privileges.manage_view_tutor}
+                                    checked={checkedPrivileges?.includes("manage_view_tutor") ? true : false}
                                   />
                                   <label
                                     htmlFor="manage_view_tutor"
@@ -2269,8 +2293,10 @@ const TutorEditDetails = () => {
                                     type="checkbox"
                                     className="manage"
                                     name="manage_student_tutor"
-                                    // onChange={handlePrivilegesChange}
+                                    disabled={!editPrivileges}
+                                    onChange={handleCheckboxChange}
                                     // checked={privileges.manage_student_tutor}
+                                    checked={checkedPrivileges?.includes("manage_student_tutor") ? true : false}
                                   />
                                   <label
                                     htmlFor="manage_student_tutor"
@@ -2286,8 +2312,10 @@ const TutorEditDetails = () => {
                                     type="checkbox"
                                     className="manage"
                                     name="manage_tutor_lesson"
-                                    // onChange={handlePrivilegesChange}
+                                    disabled={!editPrivileges}
+                                    onChange={handleCheckboxChange}
                                     // checked={privileges.manage_tutor_lesson}
+                                    checked={checkedPrivileges?.includes("manage_tutor_lesson") ? true : false}
                                   />
                                   <label
                                     htmlFor="manage_tutor_lesson"
@@ -2308,8 +2336,10 @@ const TutorEditDetails = () => {
                                     type="checkbox"
                                     className="manage"
                                     name="manage_student_parent"
-                                    // onChange={handlePrivilegesChange}
+                                    disabled={!editPrivileges}
+                                    onChange={handleCheckboxChange}
                                     // checked={privileges.manage_student_parent}
+                                    checked={checkedPrivileges?.includes("manage_student_parent") ? true : false}
                                   />
                                   <label
                                     htmlFor="manage_student_parent"
@@ -2324,8 +2354,10 @@ const TutorEditDetails = () => {
                                     type="checkbox"
                                     className="manage"
                                     name="manage_student_parent_email"
-                                    // onChange={handlePrivilegesChange}
+                                    disabled={!editPrivileges}
+                                    onChange={handleCheckboxChange}
                                     //  checked={privileges.manage_student_parent_email}
+                                    checked={checkedPrivileges?.includes("manage_student_parent_email") ? true : false}
                                   />
                                   <label
                                     htmlFor="manage_student_parent_email"
@@ -2340,8 +2372,10 @@ const TutorEditDetails = () => {
                                     type="checkbox"
                                     className="manage"
                                     name="download_student_profile"
-                                    // onChange={handlePrivilegesChange}
+                                    disabled={!editPrivileges}
+                                    onChange={handleCheckboxChange}
                                     // checked={privileges.download_student_profile}
+                                    checked={checkedPrivileges?.includes("download_student_profile") ? true : false}
                                   />
                                   <label
                                     htmlFor="download_student_profile"
@@ -2362,8 +2396,10 @@ const TutorEditDetails = () => {
                                     type="checkbox"
                                     className="manage"
                                     name="add_invoices"
-                                    // onChange={handlePrivilegesChange}
+                                    disabled={!editPrivileges}
+                                    onChange={handleCheckboxChange}
                                     // checked={privileges.add_invoices}
+                                    checked={checkedPrivileges?.includes("add_invoices") ? true : false}
                                   />
                                   <label
                                     htmlFor="add_invoices"
@@ -2377,8 +2413,10 @@ const TutorEditDetails = () => {
                                     type="checkbox"
                                     className="manage"
                                     name="add_expenses"
-                                    // onChange={handlePrivilegesChange}
+                                    disabled={!editPrivileges}
+                                    onChange={handleCheckboxChange}
                                     //  checked={privileges.add_expenses}
+                                    checked={checkedPrivileges?.includes("add_expenses") ? true : false}
                                   />
                                   <label
                                     htmlFor="add_expenses"
@@ -2393,8 +2431,10 @@ const TutorEditDetails = () => {
                                     type="checkbox"
                                     className="manage"
                                     name="update_online_resources"
-                                    //  onChange={handlePrivilegesChange}
+                                    disabled={!editPrivileges}
+                                    onChange={handleCheckboxChange}
                                     // checked={privileges.update_online_resources}
+                                    checked={checkedPrivileges?.includes("add_expenses") ? true : false}
                                   />
                                   <label
                                     htmlFor="update_online_resources"
@@ -2410,8 +2450,10 @@ const TutorEditDetails = () => {
                                     type="checkbox"
                                     className="manage"
                                     name="edit_website"
-                                    // onChange={handlePrivilegesChange}
+                                    disabled={!editPrivileges}
+                                    onChange={handleCheckboxChange}
                                     // checked={privileges.edit_website}
+                                    checked={checkedPrivileges?.includes("edit_website") ? true : false}
                                   />
                                   <label
                                     htmlFor="edit_website"
@@ -2426,8 +2468,10 @@ const TutorEditDetails = () => {
                                     type="checkbox"
                                     className="manage"
                                     name="view_reports"
-                                    // onChange={handlePrivilegesChange}
+                                    disabled={!editPrivileges}
+                                    onChange={handleCheckboxChange}
                                     // checked={privileges.view_reports}
+                                    checked={checkedPrivileges?.includes("view_reports") ? true : false}
                                   />
                                   <label
                                     htmlFor="view_reports"
