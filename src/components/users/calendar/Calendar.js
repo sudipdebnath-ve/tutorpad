@@ -4,10 +4,11 @@ import Sidebar from "../../sidebar/Sidebar.js";
 import TopBar from "../../sidebar/TopBar.js";
 import { useNavigate } from "react-router-dom";
 import { useUserDataContext } from "../../../contextApi/userDataContext.js";
-import { Calendar, momentLocalizer } from "react-big-calendar";
+import { Calendar, momentLocalizer} from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+
 import ReactModal from "react-modal";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -24,6 +25,7 @@ const Calendars = () => {
     allTutors,
     fetchEvent,
     allEvents,
+    studentData
   } = useUserDataContext();
   const [modalIsOpen, setIsOpen] = useState(false);
   const [eventDesc, setEventDesc] = useState({});
@@ -36,6 +38,10 @@ const Calendars = () => {
   const [eventRepeats, setEventRepeats] = useState(false);
   const [repeatsIndefinitely, setRepeatsIndefinitely] = useState(true);
   const [error, setError] = useState({});
+  const [visibleRange, setVisibleRange] = useState({
+    start: new Date(),
+    end: new Date(),
+  });
 
 
   const navigate = useNavigate();
@@ -58,9 +64,24 @@ const Calendars = () => {
       // console.log(firstDayOfMonth);
       // console.log(lastDayOfMonth);
 
-      fetchEvent();
+      //fetchEvent();
+      // Fetch events when the component mounts
+      fetchEventsForVisibleRange(visibleRange);
     }
   }, []);
+
+  // Fetch events for the given date range
+  const fetchEventsForVisibleRange = async (range) => {
+    const startDate = moment(range.start).startOf("month").format("YYYY-MM-DD");
+    const endDate = moment(range.end).endOf("month").format("YYYY-MM-DD");
+
+    fetchEvent(startDate,endDate);
+  };
+
+  const handleRangeChange = (range) => {
+    setVisibleRange(range);
+    fetchEventsForVisibleRange(range);
+  };
 
   // const eventArr = [
   //   {
@@ -91,12 +112,12 @@ const Calendars = () => {
   if (allEvents) {
     allEvents?.forEach((element) => {
       let myObject = {
-        title: element.event_name,
-        start: element.start_date,
-        end: element.end_date,
-        start_time: element.start_time,
-        end_time: element.end_time,
-        desc: element.event_public_desc,
+        title: element.event.event_name,
+        start: new Date(element.occurrence_start_date),
+        end: new Date(element.occurrence_end_date),
+        start_time: element.occurrence_start_time,
+        end_time: element.occurrence_end_time,
+        desc: element.event.event_public_desc || "",
       };
 
       eventArr.push(myObject);
@@ -196,6 +217,107 @@ const Calendars = () => {
     setAddEvent({ ...addEvent, [name]: value });
   };
 
+  const handleNewEventChange = (e) => {
+    const name = e.target.name;
+    let value = e.target.value;
+
+    if (name === "event_repeats") {
+      if (e.target.checked) {
+        setEventRepeats(true);
+      } else {
+        setEventRepeats(false);
+      }
+    }
+    if (name === "start_date") {
+      // Use the selected date if it's different from the default eventDate
+      const selectedDate = formatDate(startDate);
+  
+      setStartDate(value !== selectedDate ? value : formatDate(startDate));
+    }
+    if (name === "event_repeats") {
+      if (e.target.checked) {
+        setEventRepeats(true);
+      } else {
+        setEventRepeats(false);
+      }
+    }
+
+    setAddEvent({ ...addEvent, [name]: value });
+};
+
+const saveNewCalenderEvent = async (e) => {
+  e.preventDefault();
+  let selectedTutor = document.getElementById("tutor");
+  let substitute_tutor=document.getElementById("substitute_tutor")
+  let attendees=document.getElementById("attendees")
+
+  // addEvent["date"] = formatDate(eventDate);
+  addEvent["event_type"] = "quickAddLesson";
+  addEvent["tutor"] = selectedTutor?.value;
+  addEvent["substitute_tutor"] = substitute_tutor?.value;
+  addEvent["attendees"] = attendees?.value;
+
+
+  // Combine start date and time to create a single Date object
+let duration = parseInt(document.getElementsByName("duration")[0].value);
+
+// Parse the time input to extract hours and minutes
+let [hours, minutes] = addEvent.time.split(':').map(Number); // Convert strings to numbers
+
+// Create a new Date object with the start date and time components
+let startDateTime = new Date(addEvent.start_date);
+startDateTime.setHours(hours);
+startDateTime.setMinutes(minutes);
+
+// Calculate the end date by adding the duration to the start date and time
+let endDate = new Date(startDateTime.getTime() + duration * 60000); // Convert duration to milliseconds and add to start date
+
+
+  // Update addEvent object with calculated end_date
+  addEvent["end_date"] = endDate.toLocaleDateString();
+
+  // Check if addEvent includes start_date and end_date properties
+if (!addEvent.hasOwnProperty("start_date")) {
+  addEvent["start_date"] = formatDate(startDate);
+}
+
+// if (!addEvent.hasOwnProperty("end_date")) {
+//   addEvent["end_date"] = formatDate(endDate);
+// }
+
+  if (!addEvent.hasOwnProperty("quick_add_visibility")) {
+    addEvent["quick_add_visibility"] =
+      "Public - Visible on the Student Portal calendar to all students";
+  }
+  console.log(addEvent);
+  const config = {
+    method: "POST",
+    url: `${API_URL}create-event`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    data: addEvent,
+  };
+  await axios(config)
+    .then((response) => {
+      console.log(response);
+      toast.success(response.data.message, {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      getTutor();
+
+      setIsOpen(false);
+    })
+    .catch((error) => {
+      console.log(error);
+      if (error.response.data.success === false) {
+        setError(error.response.data.data);
+      }
+    });
+    fetchEventsForVisibleRange(visibleRange);
+};
+
+
   const saveEvent = async (e) => {
     e.preventDefault();
     let selectedTutor = document.getElementById("tutor");
@@ -243,6 +365,7 @@ const Calendars = () => {
           setError(error.response.data.data);
         }
       });
+      fetchEventsForVisibleRange(visibleRange);
   };
 
   const handleSelectedEvent = (e) => {
@@ -252,9 +375,12 @@ const Calendars = () => {
     let newTimeString = `${hours}:${minutes}`;
     let [endhours, endminutes] = e.end_time.split(":");
     let endTimeString = `${endhours}:${endminutes}`;
+    // Convert start and end dates to string format
+    const startDateString = e.start.toLocaleString();
+    const endDateString = e.end.toLocaleString();
     setEventStartTime(newTimeString);
     setEventEndTime(endTimeString);
-    setEventDesc(e);
+    setEventDesc({ ...e, start: startDateString, end: endDateString });
   };
   const openNewAppointmentModal = (e) => {
     openModal("addEvent");
@@ -784,9 +910,15 @@ const Calendars = () => {
                           <select
                             name="tutor"
                             className="form-control"
-                            // onChange={handleChange}
+                            onChange={handleNewEventChange}
+                            id="tutor"
                           >
                             <option>No Tutor - Entire School</option>
+                            {allTutors.map((item) => {
+                              return (
+                                <option value={item.id}>{item.name}</option>
+                              );
+                            })}
                           </select>
                         </div>
                       </div>
@@ -812,13 +944,20 @@ const Calendars = () => {
                         >
                           Substitute Tutor
                         </label>
-                        <input
-                          type="text"
-                          name="substitute_tutor"
-                          className="form-control"
-                          // value={formData.email}
-                          // onChange={handleChange}
-                        />
+                        <div>
+                        <select
+                            name="substitute_tutor"
+                            className="form-control"
+                            onChange={handleNewEventChange}
+                            id="substitute_tutor"
+                          >
+                            {allTutors.map((item) => {
+                              return (
+                                <option value={item.id}>{item.name}</option>
+                              );
+                            })}
+                          </select>
+                          </div>
                       </div>
                     </div>
                     <div className="formbold-input-flex diff">
@@ -876,25 +1015,32 @@ const Calendars = () => {
                         >
                           Attendees
                         </label>
-                        <input
-                          type="text"
-                          name="attendees"
-                          className="form-control"
-                          // value={formData.email}
-                          // onChange={handleChange}
-                        />
+                        <div>
+                        <select
+                            name="attendees"
+                            className="form-control"
+                            onChange={handleNewEventChange}
+                            id="attendees"
+                          >
+                            {allTutors.map((item) => {
+                              return (
+                                <option value={item.id}>{item.name}</option>
+                              );
+                            })}
+                          </select>
+                          </div>
                       </div>
                       <div>
                         <div>
-                          <label htmlFor="date" className="formbold-form-label">
+                          <label htmlFor="start_date" className="formbold-form-label">
                             Date
                           </label>
                           <input
                             type="date"
-                            name="date"
+                            name="start_date"
                             className="form-control"
-                            value={formatDate(eventDate)}
-                            // onChange={handleChange}
+                            value={formatDate(startDate)}
+                            onChange={handleNewEventChange}
                           />
                         </div>
                       </div>
@@ -914,7 +1060,7 @@ const Calendars = () => {
                           name="time"
                           className="form-control"
                           // value={tenantData.address}
-                          // onChange={handleChange}
+                          onChange={handleNewEventChange}
                         />
                       </div>
                       <div>
@@ -932,7 +1078,7 @@ const Calendars = () => {
                           className="form-control"
                           placeholder="30 min"
                           // value={tenantData.address}
-                          // onChange={handleChange}
+                          onChange={handleNewEventChange}
                         />
                       </div>
                     </div>
@@ -1073,7 +1219,7 @@ const Calendars = () => {
                       Cancel
                     </Link>
 
-                    <button className="formbold-btn">Save</button>
+                    <button className="formbold-btn" onClick={saveNewCalenderEvent}>Save</button>
                   </div>
                 </div>
               </div>
@@ -1285,6 +1431,7 @@ const Calendars = () => {
                     selectable={true}
                     onSelectSlot={(e) => openNewAppointmentModal(e)}
                     onSelectEvent={(e) => handleSelectedEvent(e)}
+                    onRangeChange={handleRangeChange}
                   />
                 </div>
               </div>

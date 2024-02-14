@@ -213,10 +213,28 @@ const AppContext = ({ children }) => {
 
   // Calendar Events Start
 
-  const fetchEvent = async () => {
+  // const fetchEvent = async () => {
+  //   const config = {
+  //     method: "GET",
+  //     url: `${API_URL}events`,
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   };
+  //   await axios(config)
+  //     .then((response) => {
+  //       console.log(response.data.data);
+  //       setAllEvents(response.data.data);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
+
+  const fetchEvent = async (startDate,endDate) => {
     const config = {
       method: "GET",
-      url: `${API_URL}events`,
+      url: `${API_URL}events?start_date=${startDate}&end_date=${endDate}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
