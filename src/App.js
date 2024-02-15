@@ -18,9 +18,10 @@ import StudentMessageHistory from "./components/users/students/StudentMessageHis
 import OnlineResources from "./components/users/OnlineResources";
 import BussinessSettings from "./components/users/BussinessSettings";
 import Tutor from "./components/users/Tutor";
-import TutorAdd from "./components/users/tutors/TutorAdd"
+import TutorAdd from "./components/users/tutors/TutorAdd";
 import StaffAdd from "./components/users/tutors/StaffAdd";
 import TutorEditDetails from "./components/users/tutors/details/TutorEditDetails";
+import FamilyInvoices from "./components/users/family-invoives/FamilyInvoices";
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
       <Route path="/calendar" element={<Calendar />} />
       <Route path="/online-resources" element={<OnlineResources />} />
       <Route path="/bussiness-settings" element={<BussinessSettings />} />
+      <Route path="/familiies-and-invoices" element={<FamilyInvoices />} />
     </Routes>
   );
 }

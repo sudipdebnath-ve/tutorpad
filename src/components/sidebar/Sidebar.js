@@ -84,7 +84,7 @@ const Sidebar = () => {
               splitLocation[1] === "familiies-and-invoices" ? "active" : ""
             }`}
           >
-            <Link className="sidebar-link" to="#">
+            <Link className="sidebar-link" to="/familiies-and-invoices">
               <i className="fa fa-credit-card-alt" aria-hidden="true"></i>
               <span className="align-middle">Families & Invoices</span>
             </Link>
