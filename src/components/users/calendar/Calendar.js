@@ -14,6 +14,8 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { API_URL } from "../../../utils/config.js";
+import Select from 'react-select';
+
 
 const Calendars = () => {
   const {
@@ -25,7 +27,8 @@ const Calendars = () => {
     allTutors,
     fetchEvent,
     allEvents,
-    studentData
+    studentData,
+    fetchStudentData
   } = useUserDataContext();
   const [modalIsOpen, setIsOpen] = useState(false);
   const [eventDesc, setEventDesc] = useState({});
@@ -38,6 +41,8 @@ const Calendars = () => {
   const [eventRepeats, setEventRepeats] = useState(false);
   const [repeatsIndefinitely, setRepeatsIndefinitely] = useState(true);
   const [error, setError] = useState({});
+  const [selectedOption, setSelectedOption] = useState("Daily");
+  const [selectedAttendees, setSelectedAttendees] = useState([]);
   const [visibleRange, setVisibleRange] = useState({
     start: new Date(),
     end: new Date(),
@@ -55,20 +60,20 @@ const Calendars = () => {
     } else {
       setTimeout(() => {
         fetchData(token);
+        fetchStudentData();
       }, 2000);
       getTutor();
-      // Calculate start and end dates for the current month
-      // const currentDate = new Date();
-      // const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-      // const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-      // console.log(firstDayOfMonth);
-      // console.log(lastDayOfMonth);
 
       //fetchEvent();
       // Fetch events when the component mounts
       fetchEventsForVisibleRange(visibleRange);
+      console.log(studentData);
     }
   }, []);
+
+  const handleAttendeesChange = (selectedOptions) => {
+    setSelectedAttendees(selectedOptions);
+  };
 
   // Fetch events for the given date range
   const fetchEventsForVisibleRange = async (range) => {
@@ -214,6 +219,9 @@ const Calendars = () => {
         setRepeatsIndefinitely(false);
       }
     }
+    if(name === "frequency"){
+      setSelectedOption(e.target.value);
+    }
     setAddEvent({ ...addEvent, [name]: value });
   };
 
@@ -234,35 +242,60 @@ const Calendars = () => {
   
       setStartDate(value !== selectedDate ? value : formatDate(startDate));
     }
-    if (name === "event_repeats") {
+
+    if (name === "repeats_indefinitely") {
       if (e.target.checked) {
-        setEventRepeats(true);
+        setRepeatsIndefinitely(true);
       } else {
-        setEventRepeats(false);
+        setRepeatsIndefinitely(false);
       }
     }
+    if(name === "frequency"){
+      setSelectedOption(e.target.value);
+    }
 
-    setAddEvent({ ...addEvent, [name]: value });
+    if(name === "time"){
+      addEvent["start_time"] = e.target.value;
+    }
+
+    // if (name === "attendees") {
+    //   // const options = e.target.options;
+    //   // value = [];
+    //   // for (let i = 0; i < options.length; i++) {
+    //   //   if (options[i].selected) {
+    //   //     value.push(options[i].value);
+    //   //   }
+    //   // }
+    //   addEvent["attendees"] = selectedAttendees;
+    // }
+    else {
+      setAddEvent({ ...addEvent, [name]: value });
+    }
 };
 
 const saveNewCalenderEvent = async (e) => {
   e.preventDefault();
   let selectedTutor = document.getElementById("tutor");
   let substitute_tutor=document.getElementById("substitute_tutor")
-  let attendees=document.getElementById("attendees")
+//  let attendees=document.getElementById("attendees")
+ // let time= document.getElementById("time")
+  let category= document.getElementById("category")
 
   // addEvent["date"] = formatDate(eventDate);
-  addEvent["event_type"] = "quickAddLesson";
+  addEvent["event_type"] = "newCalendarEvent";
   addEvent["tutor"] = selectedTutor?.value;
   addEvent["substitute_tutor"] = substitute_tutor?.value;
-  addEvent["attendees"] = attendees?.value;
+  addEvent["attendees"] = selectedAttendees.map((option)=>option.value);
+//  addEvent["start_time"] = time?.value;
+  addEvent["start_date"] = formatDate(startDate);
+  addEvent["category"] = category?.value;
 
 
-  // Combine start date and time to create a single Date object
-let duration = parseInt(document.getElementsByName("duration")[0].value);
+// Calculate duration in milliseconds
+let durationMs = parseInt(document.getElementsByName("duration")[0].value) * 60000;
 
 // Parse the time input to extract hours and minutes
-let [hours, minutes] = addEvent.time.split(':').map(Number); // Convert strings to numbers
+let [hours, minutes] = addEvent.start_time.split(':').map(Number); // Convert strings to numbers
 
 // Create a new Date object with the start date and time components
 let startDateTime = new Date(addEvent.start_date);
@@ -270,25 +303,23 @@ startDateTime.setHours(hours);
 startDateTime.setMinutes(minutes);
 
 // Calculate the end date by adding the duration to the start date and time
-let endDate = new Date(startDateTime.getTime() + duration * 60000); // Convert duration to milliseconds and add to start date
-
+let endDate = new Date(startDateTime.getTime() + durationMs); // Convert duration to milliseconds and add to start date
+//console.log(endDate);
 
   // Update addEvent object with calculated end_date
-  addEvent["end_date"] = endDate.toLocaleDateString();
+  // Update addEvent object with calculated end_date in a localized format
+addEvent["end_date"] = `${endDate.getFullYear()}-${(endDate.getMonth() + 1).toString().padStart(2, '0')}-${endDate.getDate().toString().padStart(2, '0')}`;
+addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`
 
   // Check if addEvent includes start_date and end_date properties
-if (!addEvent.hasOwnProperty("start_date")) {
+  if (!addEvent.hasOwnProperty("start_date")) {
   addEvent["start_date"] = formatDate(startDate);
-}
-
-// if (!addEvent.hasOwnProperty("end_date")) {
-//   addEvent["end_date"] = formatDate(endDate);
-// }
-
-  if (!addEvent.hasOwnProperty("quick_add_visibility")) {
-    addEvent["quick_add_visibility"] =
-      "Public - Visible on the Student Portal calendar to all students";
   }
+
+  if (!addEvent.hasOwnProperty("frequency")) {
+    addEvent["frequency"] = selectedOption;
+  }
+
   console.log(addEvent);
   const config = {
     method: "POST",
@@ -334,6 +365,10 @@ if (!addEvent.hasOwnProperty("start_date")) {
 
   if (!addEvent.hasOwnProperty("end_date")) {
     addEvent["end_date"] = formatDate(endDate);
+  }
+
+  if (!addEvent.hasOwnProperty("frequency")) {
+    addEvent["frequency"] = selectedOption;
   }
 
     if (!addEvent.hasOwnProperty("quick_add_visibility")) {
@@ -729,6 +764,7 @@ if (!addEvent.hasOwnProperty("start_date")) {
                                   value="Daily"
                                   name="frequency"
                                   onChange={handleChange}
+                                  checked={selectedOption === "Daily"}
                                 ></input>
                                 Daily
                                 <input
@@ -736,6 +772,7 @@ if (!addEvent.hasOwnProperty("start_date")) {
                                   value="Weekly"
                                   name="frequency"
                                   onChange={handleChange}
+                                  checked={selectedOption === "Weekly"}
                                 ></input>
                                 Weekly
                                 <input
@@ -743,13 +780,15 @@ if (!addEvent.hasOwnProperty("start_date")) {
                                   value="Monthly"
                                   name="frequency"
                                   onChange={handleChange}
+                                  checked={selectedOption === "Monthly"}
                                 ></input>
                                 Monthly
                                 <input
                                   type="radio"
-                                  value="yearly"
+                                  value="Yearly"
                                   name="frequency"
                                   onChange={handleChange}
+                                  checked={selectedOption === "Yearly"}
                                 ></input>
                                 Yearly
                               </div>
@@ -901,6 +940,26 @@ if (!addEvent.hasOwnProperty("start_date")) {
               <div className="row d-flex">
                 <div className="col-xl-12 col-xxl-12">
                   <div className="formbold-form-step-1 active">
+                  <div className="formbold-input-flex diff">
+                      <div>
+                        <label htmlFor="tutor" className="formbold-form-label">
+                          Title
+                        </label>
+                        <div>
+                          <input
+                            type="text"
+                            name="event_name"
+                            className="form-control"
+                            onChange={handleNewEventChange}
+                          />
+                          <div className="pt-2">
+                        <small style={{ color: "red" }}>
+                          {error?.event_name?.length ? error.event_name[0] : <></>}
+                        </small>
+                       </div>
+                        </div>
+                      </div>
+                    </div>
                     <div className="formbold-input-flex align-items-end">
                       <div>
                         <label htmlFor="tutor" className="formbold-form-label">
@@ -914,7 +973,7 @@ if (!addEvent.hasOwnProperty("start_date")) {
                             id="tutor"
                           >
                             <option>No Tutor - Entire School</option>
-                            {allTutors.map((item) => {
+                            {allTutors && allTutors.map((item) => {
                               return (
                                 <option value={item.id}>{item.name}</option>
                               );
@@ -951,7 +1010,7 @@ if (!addEvent.hasOwnProperty("start_date")) {
                             onChange={handleNewEventChange}
                             id="substitute_tutor"
                           >
-                            {allTutors.map((item) => {
+                            {allTutors && allTutors.map((item) => {
                               return (
                                 <option value={item.id}>{item.name}</option>
                               );
@@ -975,6 +1034,7 @@ if (!addEvent.hasOwnProperty("start_date")) {
                             type="radio"
                             value="Public - Visible on the Student Portal calendar to all students"
                             name="new_event_visibility"
+                            onChange={handleNewEventChange}
                           ></input>
                           Public - Visible on the Student Portal calendar to all
                           students
@@ -984,6 +1044,7 @@ if (!addEvent.hasOwnProperty("start_date")) {
                             type="radio"
                             value="Private - Visible on the Student Portal calendar to current attendees only"
                             name="new_event_visibility"
+                            onChange={handleNewEventChange}
                           ></input>
                           Private - Visible on the Student Portal calendar to
                           current attendees only
@@ -995,6 +1056,7 @@ if (!addEvent.hasOwnProperty("start_date")) {
                         type="checkbox"
                         name="student_makeup_credit"
                         value="This event requires a make-up credit"
+                        onChange={handleNewEventChange}
                       />
                       This event requires a make-up credit
                     </div>
@@ -1003,31 +1065,40 @@ if (!addEvent.hasOwnProperty("start_date")) {
                         type="checkbox"
                         name="student_register_lesson"
                         value="Allow students to register through the Student Portal"
+                        onChange={handleNewEventChange}
                       />
                       Allow students to register through the Student Portal
                     </div>
                     <hr></hr>
                     <div className="formbold-input-flex">
-                      <div>
+                      <div >
                         <label
-                          htmlFor="location"
+                          htmlFor="attendees"
                           className="formbold-form-label"
                         >
                           Attendees
                         </label>
                         <div>
-                        <select
+                        {/* <select
                             name="attendees"
                             className="form-control"
                             onChange={handleNewEventChange}
                             id="attendees"
+                            multiple
                           >
-                            {allTutors.map((item) => {
+                            {studentData && studentData.map((item) => {
                               return (
                                 <option value={item.id}>{item.name}</option>
                               );
                             })}
-                          </select>
+                          </select> */}
+                          <Select
+                           name="attendees"
+                           options={studentData && studentData.map((item) => ({ value: item.id, label: item.name }))}
+                           isMulti
+                           onChange={handleAttendeesChange}
+                           value={selectedAttendees}
+                          />
                           </div>
                       </div>
                       <div>
@@ -1058,6 +1129,7 @@ if (!addEvent.hasOwnProperty("start_date")) {
                         <input
                           type="time"
                           name="time"
+                          id="time"
                           className="form-control"
                           // value={tenantData.address}
                           onChange={handleNewEventChange}
@@ -1093,6 +1165,7 @@ if (!addEvent.hasOwnProperty("start_date")) {
                             type="checkbox"
                             name="event_repeats"
                             value="This event repeats"
+                            onChange={handleNewEventChange}
                           />
                           All Day
                         </div>
@@ -1108,10 +1181,13 @@ if (!addEvent.hasOwnProperty("start_date")) {
                         </label>
                         <br></br>
 
-                        <select name="category" className="form-control">
-                          <option>Lesson</option>
-                          <option>Group Lesson</option>
-                          <option>Vacation</option>
+                        <select name="category" 
+                        className="form-control" 
+                        onChange={handleNewEventChange}
+                        id="category">
+                          <option value="Lesson">Lesson</option>
+                          <option value="Group Lesson">Group Lesson</option>
+                          <option value="Vacation">Vacation</option>
                         </select>
                       </div>
                       <div>
@@ -1126,6 +1202,7 @@ if (!addEvent.hasOwnProperty("start_date")) {
                         <select
                           className="form-control"
                           name="location"
+                          onChange={handleNewEventChange}
                         ></select>
                       </div>
                     </div>
@@ -1139,11 +1216,124 @@ if (!addEvent.hasOwnProperty("start_date")) {
                             type="checkbox"
                             name="event_repeats"
                             value="This event repeats"
+                            onChange={handleNewEventChange}
                           />
                           This event repeats
                         </div>
                       </div>
                     </div>
+                    {eventRepeats && (
+                      <>
+                        <div className="recurring">
+                          <div className="recurring-head">
+                            <i class="fa fa-undo" aria-hidden="true"></i>{" "}
+                            <strong>Recurring Event</strong>
+                          </div>
+
+                          <div className="formbold-input-flex diff">
+                            <div>
+                              <div>
+                                <label
+                                  htmlFor="frequency"
+                                  className="formbold-form-label"
+                                >
+                                  Frequency
+                                </label>
+                              </div>
+                              <div className="input-radio">
+                                <input
+                                  type="radio"
+                                  value="Daily"
+                                  name="frequency"
+                                  onChange={handleNewEventChange}
+                                  checked={selectedOption === "Daily"}
+                                ></input>
+                                Daily
+                                <input
+                                  type="radio"
+                                  value="Weekly"
+                                  name="frequency"
+                                  onChange={handleNewEventChange}
+                                  checked={selectedOption === "Weekly"}
+                                ></input>
+                                Weekly
+                                <input
+                                  type="radio"
+                                  value="Monthly"
+                                  name="frequency"
+                                  onChange={handleNewEventChange}
+                                  checked={selectedOption === "Monthly"}
+                                ></input>
+                                Monthly
+                                <input
+                                  type="radio"
+                                  value="Yearly"
+                                  name="frequency"
+                                  onChange={handleNewEventChange}
+                                  checked={selectedOption === "Yearly"}
+                                ></input>
+                                Yearly
+                              </div>
+                            </div>
+                          </div>
+                          <div className="formbold-input-flex align-items-end">
+                            <div>
+                              <label
+                                htmlFor="time"
+                                className="formbold-form-label"
+                              >
+                                Every
+                              </label>
+                              <br></br>
+                              <input
+                                type="text"
+                                name="every"
+                                className="form-control"
+                                placeholder="1"
+                                // value={tenantData.address}
+                                onChange={handleNewEventChange}
+                              />{" "}
+                            </div>
+                            <span>Weeks</span>
+                            {!repeatsIndefinitely && (
+                              <div>
+                                <label
+                                  htmlFor="time"
+                                  className="formbold-form-label"
+                                >
+                                  Repeat Until
+                                </label>
+                                <br></br>
+                                <input
+                                  type="date"
+                                  name="repeat_until"
+                                  className="form-control"
+                                  // value={tenantData.address}
+                                  onChange={handleNewEventChange}
+                                />{" "}
+                              </div>
+                            )}
+                          </div>
+                          <div className="formbold-input-flex">
+                            <div>
+                              <div
+                                className="preference"
+                                style={{ fontSize: "15px" }}
+                              >
+                                <input
+                                  type="checkbox"
+                                  name="repeats_indefinitely"
+                                  value="This event repeats"
+                                  onChange={handleNewEventChange}
+                                  checked={repeatsIndefinitely}
+                                />
+                                Repeat indefinitely
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    )}
                     <div className="formbold-input-flex diff">
                       <div>
                         <div>
@@ -1159,6 +1349,7 @@ if (!addEvent.hasOwnProperty("start_date")) {
                             type="radio"
                             value="Student Default"
                             name="student_pricing"
+                            onChange={handleNewEventChange}
                           ></input>
                           Student Default
                         </div>
@@ -1167,6 +1358,7 @@ if (!addEvent.hasOwnProperty("start_date")) {
                             type="radio"
                             value="No charge (₹ 0.00)"
                             name="student_pricing"
+                            onChange={handleNewEventChange}
                           ></input>
                           No charge (₹ 0.00)
                         </div>
@@ -1175,6 +1367,7 @@ if (!addEvent.hasOwnProperty("start_date")) {
                             type="radio"
                             value="No charge (₹ 0.00)"
                             name="student_pricing"
+                            onChange={handleNewEventChange}
                           ></input>
                           Specify price per student
                         </div>
@@ -1189,7 +1382,7 @@ if (!addEvent.hasOwnProperty("start_date")) {
                           Public Description <span>Optional</span>
                         </label>
 
-                        <textarea name="public_desc" className="form-control" />
+                        <textarea name="public_desc" className="form-control" onChange={handleNewEventChange} />
                       </div>
                     </div>
                     <div className="formbold-input-flex diff">
@@ -1207,6 +1400,7 @@ if (!addEvent.hasOwnProperty("start_date")) {
                         <textarea
                           name="private_desc"
                           className="form-control"
+                          onChange={handleNewEventChange}
                         />
                       </div>
                     </div>
