@@ -4,7 +4,7 @@ import Sidebar from "../../sidebar/Sidebar.js";
 import TopBar from "../../sidebar/TopBar.js";
 import { useNavigate } from "react-router-dom";
 import { useUserDataContext } from "../../../contextApi/userDataContext.js";
-import { Calendar, momentLocalizer} from "react-big-calendar";
+import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -14,8 +14,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { API_URL } from "../../../utils/config.js";
-import Select from 'react-select';
-
+import Select from "react-select";
 
 const Calendars = () => {
   const {
@@ -28,7 +27,7 @@ const Calendars = () => {
     fetchEvent,
     allEvents,
     studentData,
-    fetchStudentData
+    fetchStudentData,
   } = useUserDataContext();
   const [modalIsOpen, setIsOpen] = useState(false);
   const [eventDesc, setEventDesc] = useState({});
@@ -41,13 +40,16 @@ const Calendars = () => {
   const [eventRepeats, setEventRepeats] = useState(false);
   const [repeatsIndefinitely, setRepeatsIndefinitely] = useState(true);
   const [error, setError] = useState({});
+  const [allDay, setAllDay] = useState(false);
+  const [disableTimeDuration, setDisableTimeDuration] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Daily");
+  const [showSubstituteTutor, setShowSubstituteTutor] = useState(false);
   const [selectedAttendees, setSelectedAttendees] = useState([]);
+  const [everyWeeks, setEveryWeeks] = useState(1);
   const [visibleRange, setVisibleRange] = useState({
     start: new Date(),
     end: new Date(),
   });
-
 
   const navigate = useNavigate();
 
@@ -80,7 +82,7 @@ const Calendars = () => {
     const startDate = moment(range.start).startOf("month").format("YYYY-MM-DD");
     const endDate = moment(range.end).endOf("month").format("YYYY-MM-DD");
 
-    fetchEvent(startDate,endDate);
+    fetchEvent(startDate, endDate);
   };
 
   const handleRangeChange = (range) => {
@@ -175,7 +177,7 @@ const Calendars = () => {
       background: "#6c5a5669",
     },
   };
-  
+
   function openModal(e) {
     setIsOpen(e);
   }
@@ -203,13 +205,13 @@ const Calendars = () => {
     if (name === "start_date") {
       // Use the selected date if it's different from the default eventDate
       const selectedDate = formatDate(startDate);
-  
+
       setStartDate(value !== selectedDate ? value : formatDate(startDate));
     }
     if (name === "end_date") {
       // Use the selected date if it's different from the default eventDate
       const selectedDate = formatDate(endDate);
-  
+
       setEndDate(value !== selectedDate ? value : formatDate(endDate));
     }
     if (name === "repeats_indefinitely") {
@@ -219,7 +221,7 @@ const Calendars = () => {
         setRepeatsIndefinitely(false);
       }
     }
-    if(name === "frequency"){
+    if (name === "frequency") {
       setSelectedOption(e.target.value);
     }
     setAddEvent({ ...addEvent, [name]: value });
@@ -239,7 +241,7 @@ const Calendars = () => {
     if (name === "start_date") {
       // Use the selected date if it's different from the default eventDate
       const selectedDate = formatDate(startDate);
-  
+
       setStartDate(value !== selectedDate ? value : formatDate(startDate));
     }
 
@@ -250,104 +252,131 @@ const Calendars = () => {
         setRepeatsIndefinitely(false);
       }
     }
-    if(name === "frequency"){
+    if (name === "frequency") {
       setSelectedOption(e.target.value);
     }
 
-    if(name === "time"){
+    if (name === "time") {
       addEvent["start_time"] = e.target.value;
     }
 
-    // if (name === "attendees") {
-    //   // const options = e.target.options;
-    //   // value = [];
-    //   // for (let i = 0; i < options.length; i++) {
-    //   //   if (options[i].selected) {
-    //   //     value.push(options[i].value);
-    //   //   }
-    //   // }
-    //   addEvent["attendees"] = selectedAttendees;
-    // }
+    if (name === "all_day") {
+      setAllDay((prev) => !prev);
+      setDisableTimeDuration((prev) => !prev); // Disable date and time fields when "All Day" is checked
+      let end_time = "23:59"; // Default end time for "All Day" events
+      addEvent["end_time"] = end_time;
+    }
+    if (name === "add_substitute_tutor") {
+      setShowSubstituteTutor((prev) => !prev);
+    }
+
+    if (name === "every") {
+      const parsedValue = parseInt(value); // Ensure the value is parsed as an integer
+    setEveryWeeks(parsedValue); // Update everyWeeks state
+    setAddEvent((prev) => ({ ...prev, [name]: parsedValue })); // Update addEvent state
+    } 
     else {
       setAddEvent({ ...addEvent, [name]: value });
     }
-};
-
-const saveNewCalenderEvent = async (e) => {
-  e.preventDefault();
-  let selectedTutor = document.getElementById("tutor");
-  let substitute_tutor=document.getElementById("substitute_tutor")
-//  let attendees=document.getElementById("attendees")
- // let time= document.getElementById("time")
-  let category= document.getElementById("category")
-
-  // addEvent["date"] = formatDate(eventDate);
-  addEvent["event_type"] = "newCalendarEvent";
-  addEvent["tutor"] = selectedTutor?.value;
-  addEvent["substitute_tutor"] = substitute_tutor?.value;
-  addEvent["attendees"] = selectedAttendees.map((option)=>option.value);
-//  addEvent["start_time"] = time?.value;
-  addEvent["start_date"] = formatDate(startDate);
-  addEvent["category"] = category?.value;
-
-
-// Calculate duration in milliseconds
-let durationMs = parseInt(document.getElementsByName("duration")[0].value) * 60000;
-
-// Parse the time input to extract hours and minutes
-let [hours, minutes] = addEvent.start_time.split(':').map(Number); // Convert strings to numbers
-
-// Create a new Date object with the start date and time components
-let startDateTime = new Date(addEvent.start_date);
-startDateTime.setHours(hours);
-startDateTime.setMinutes(minutes);
-
-// Calculate the end date by adding the duration to the start date and time
-let endDate = new Date(startDateTime.getTime() + durationMs); // Convert duration to milliseconds and add to start date
-//console.log(endDate);
-
-  // Update addEvent object with calculated end_date
-  // Update addEvent object with calculated end_date in a localized format
-addEvent["end_date"] = `${endDate.getFullYear()}-${(endDate.getMonth() + 1).toString().padStart(2, '0')}-${endDate.getDate().toString().padStart(2, '0')}`;
-addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`
-
-  // Check if addEvent includes start_date and end_date properties
-  if (!addEvent.hasOwnProperty("start_date")) {
-  addEvent["start_date"] = formatDate(startDate);
-  }
-
-  if (!addEvent.hasOwnProperty("frequency")) {
-    addEvent["frequency"] = selectedOption;
-  }
-
-  console.log(addEvent);
-  const config = {
-    method: "POST",
-    url: `${API_URL}create-event`,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    data: addEvent,
   };
-  await axios(config)
-    .then((response) => {
-      console.log(response);
-      toast.success(response.data.message, {
-        position: toast.POSITION.TOP_CENTER,
-      });
-      getTutor();
 
-      setIsOpen(false);
-    })
-    .catch((error) => {
-      console.log(error);
-      if (error.response.data.success === false) {
-        setError(error.response.data.data);
+  const saveNewCalenderEvent = async (e) => {
+    e.preventDefault();
+    let selectedTutor = document.getElementById("tutor");
+    let substitute_tutor = document.getElementById("substitute_tutor");
+    //  let attendees=document.getElementById("attendees")
+    // let time= document.getElementById("time")
+    let category = document.getElementById("category");
+
+    // if (allDay) {
+    //   // If not an all-day event, retrieve start and end times from inputs
+    //   addEvent[start_time] = start_time;
+    //   addEvent[end_time] = end_time;
+    // }
+
+    // addEvent["date"] = formatDate(eventDate);
+    addEvent["event_type"] = "newCalendarEvent";
+    addEvent["tutor"] = selectedTutor?.value;
+    addEvent["substitute_tutor"] = substitute_tutor?.value;
+    addEvent["attendees"] = selectedAttendees.map((option) => option.value);
+    //  addEvent["start_time"] = time?.value;
+    addEvent["start_date"] = formatDate(startDate);
+    addEvent["category"] = category?.value;
+
+    if (!allDay) {
+      // Calculate duration in milliseconds
+      let durationMs =
+        parseInt(document.getElementsByName("duration")[0].value) * 60000;
+
+      // Parse the time input to extract hours and minutes
+      let hours = 0;
+      let minutes = 0;
+      if (addEvent.start_time) {
+        [hours, minutes] = addEvent.start_time.split(":").map(Number);
       }
-    });
-    fetchEventsForVisibleRange(visibleRange);
-};
 
+      // Create a new Date object with the start date and time components
+      let startDateTime = new Date(addEvent.start_date);
+      startDateTime.setHours(hours);
+      startDateTime.setMinutes(minutes);
+
+      // Calculate the end date by adding the duration to the start date and time
+      let endDate = new Date(startDateTime.getTime() + durationMs); // Convert duration to milliseconds and add to start date
+      //console.log(endDate);
+
+      // Update addEvent object with calculated end_date
+      // Update addEvent object with calculated end_date in a localized format
+      addEvent["end_date"] = `${endDate.getFullYear()}-${(
+        endDate.getMonth() + 1
+      )
+        .toString()
+        .padStart(2, "0")}-${endDate.getDate().toString().padStart(2, "0")}`;
+      addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`;
+    }
+    // Check if addEvent includes start_date and end_date properties
+    if (!addEvent.hasOwnProperty("start_date")) {
+      addEvent["start_date"] = formatDate(startDate);
+    }
+
+    if (!addEvent.hasOwnProperty("end_date")) {
+      addEvent["end_date"] = formatDate(startDate);
+    }
+
+    if (!addEvent.hasOwnProperty("every")) {
+      addEvent["every"] = everyWeeks;
+    }
+
+    if (!addEvent.hasOwnProperty("frequency") && eventRepeats === true) {
+      addEvent["frequency"] = selectedOption;
+    }
+
+    console.log(addEvent);
+    const config = {
+      method: "POST",
+      url: `${API_URL}create-event`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: addEvent,
+    };
+    await axios(config)
+      .then((response) => {
+        console.log(response);
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        getTutor();
+
+        setIsOpen(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.response.data.success === false) {
+          setError(error.response.data.data);
+        }
+      });
+    fetchEventsForVisibleRange(visibleRange);
+  };
 
   const saveEvent = async (e) => {
     e.preventDefault();
@@ -359,17 +388,17 @@ addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`
     addEvent["tutor"] = selectedTutor?.value;
 
     // Check if addEvent includes start_date and end_date properties
-  if (!addEvent.hasOwnProperty("start_date")) {
-    addEvent["start_date"] = formatDate(startDate);
-  }
+    if (!addEvent.hasOwnProperty("start_date")) {
+      addEvent["start_date"] = formatDate(startDate);
+    }
 
-  if (!addEvent.hasOwnProperty("end_date")) {
-    addEvent["end_date"] = formatDate(endDate);
-  }
+    if (!addEvent.hasOwnProperty("end_date")) {
+      addEvent["end_date"] = formatDate(endDate);
+    }
 
-  if (!addEvent.hasOwnProperty("frequency")) {
-    addEvent["frequency"] = selectedOption;
-  }
+    if (!addEvent.hasOwnProperty("frequency")) {
+      addEvent["frequency"] = selectedOption;
+    }
 
     if (!addEvent.hasOwnProperty("quick_add_visibility")) {
       addEvent["quick_add_visibility"] =
@@ -400,7 +429,7 @@ addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`
           setError(error.response.data.data);
         }
       });
-      fetchEventsForVisibleRange(visibleRange);
+    fetchEventsForVisibleRange(visibleRange);
   };
 
   const handleSelectedEvent = (e) => {
@@ -573,10 +602,14 @@ addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`
                             onChange={handleChange}
                           />
                           <div className="pt-2">
-                        <small style={{ color: "red" }}>
-                          {error?.event_name?.length ? error.event_name[0] : <></>}
-                        </small>
-                       </div>
+                            <small style={{ color: "red" }}>
+                              {error?.event_name?.length ? (
+                                error.event_name[0]
+                              ) : (
+                                <></>
+                              )}
+                            </small>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -653,10 +686,14 @@ addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`
                           onChange={handleChange}
                         />
                         <div className="pt-2">
-                        <small style={{ color: "red" }}>
-                          {error?.start_date?.length ? error.start_date[0] : <></>}
-                        </small>
-                       </div>
+                          <small style={{ color: "red" }}>
+                            {error?.start_date?.length ? (
+                              error.start_date[0]
+                            ) : (
+                              <></>
+                            )}
+                          </small>
+                        </div>
                       </div>
                       <div>
                         <div>
@@ -671,10 +708,14 @@ addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`
                             onChange={handleChange}
                           />
                           <div className="pt-2">
-                        <small style={{ color: "red" }}>
-                          {error?.end_date?.length ? error.end_date[0] : <></>}
-                        </small>
-                       </div>
+                            <small style={{ color: "red" }}>
+                              {error?.end_date?.length ? (
+                                error.end_date[0]
+                              ) : (
+                                <></>
+                              )}
+                            </small>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -696,10 +737,14 @@ addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`
                           onChange={handleChange}
                         />
                         <div className="pt-2">
-                        <small style={{ color: "red" }}>
-                          {error?.start_time?.length ? error.start_time[0] : <></>}
-                        </small>
-                       </div>
+                          <small style={{ color: "red" }}>
+                            {error?.start_time?.length ? (
+                              error.start_time[0]
+                            ) : (
+                              <></>
+                            )}
+                          </small>
+                        </div>
                       </div>
                       <div>
                         <label
@@ -718,10 +763,14 @@ addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`
                           onChange={handleChange}
                         />
                         <div className="pt-2">
-                        <small style={{ color: "red" }}>
-                          {error?.end_time?.length ? error.end_time[0] : <></>}
-                        </small>
-                       </div>
+                          <small style={{ color: "red" }}>
+                            {error?.end_time?.length ? (
+                              error.end_time[0]
+                            ) : (
+                              <></>
+                            )}
+                          </small>
+                        </div>
                       </div>
                     </div>
                     <div className="formbold-input-flex">
@@ -940,7 +989,7 @@ addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`
               <div className="row d-flex">
                 <div className="col-xl-12 col-xxl-12">
                   <div className="formbold-form-step-1 active">
-                  <div className="formbold-input-flex diff">
+                    <div className="formbold-input-flex diff">
                       <div>
                         <label htmlFor="tutor" className="formbold-form-label">
                           Title
@@ -953,10 +1002,14 @@ addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`
                             onChange={handleNewEventChange}
                           />
                           <div className="pt-2">
-                        <small style={{ color: "red" }}>
-                          {error?.event_name?.length ? error.event_name[0] : <></>}
-                        </small>
-                       </div>
+                            <small style={{ color: "red" }}>
+                              {error?.event_name?.length ? (
+                                error.event_name[0]
+                              ) : (
+                                <></>
+                              )}
+                            </small>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -972,12 +1025,15 @@ addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`
                             onChange={handleNewEventChange}
                             id="tutor"
                           >
-                            <option>No Tutor - Entire School</option>
-                            {allTutors && allTutors.map((item) => {
-                              return (
-                                <option value={item.id}>{item.name}</option>
-                              );
-                            })}
+                            {allTutors && allTutors.length > 0 ? (
+                              allTutors.map((item) => (
+                                <option key={item.id} value={item.id}>
+                                  {item.name}
+                                </option>
+                              ))
+                            ) : (
+                              <option value="">No tutor available</option>
+                            )}
                           </select>
                         </div>
                       </div>
@@ -990,35 +1046,40 @@ addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`
                             type="checkbox"
                             name="add_substitute_tutor"
                             value="Add substitute tutor"
+                            onChange={handleNewEventChange}
+                            checked={showSubstituteTutor}
                           />
                           Add substitute tutor
                         </div>
                       </div>
                     </div>
-                    <div className="formbold-input-flex">
-                      <div>
-                        <label
-                          htmlFor="Substitute Tutor"
-                          className="formbold-form-label"
-                        >
-                          Substitute Tutor
-                        </label>
+                    {showSubstituteTutor && (
+                      <div className="formbold-input-flex">
                         <div>
-                        <select
-                            name="substitute_tutor"
-                            className="form-control"
-                            onChange={handleNewEventChange}
-                            id="substitute_tutor"
+                          <label
+                            htmlFor="Substitute Tutor"
+                            className="formbold-form-label"
                           >
-                            {allTutors && allTutors.map((item) => {
-                              return (
-                                <option value={item.id}>{item.name}</option>
-                              );
-                            })}
-                          </select>
+                            Substitute Tutor
+                          </label>
+                          <div>
+                            <select
+                              name="substitute_tutor"
+                              className="form-control"
+                              onChange={handleNewEventChange}
+                              id="substitute_tutor"
+                            >
+                              {allTutors &&
+                                allTutors.map((item) => {
+                                  return (
+                                    <option value={item.id}>{item.name}</option>
+                                  );
+                                })}
+                            </select>
                           </div>
+                        </div>
                       </div>
-                    </div>
+                    )}
                     <div className="formbold-input-flex diff">
                       <div>
                         <div>
@@ -1071,7 +1132,7 @@ addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`
                     </div>
                     <hr></hr>
                     <div className="formbold-input-flex">
-                      <div >
+                      <div>
                         <label
                           htmlFor="attendees"
                           className="formbold-form-label"
@@ -1079,7 +1140,7 @@ addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`
                           Attendees
                         </label>
                         <div>
-                        {/* <select
+                          {/* <select
                             name="attendees"
                             className="form-control"
                             onChange={handleNewEventChange}
@@ -1093,17 +1154,26 @@ addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`
                             })}
                           </select> */}
                           <Select
-                           name="attendees"
-                           options={studentData && studentData.map((item) => ({ value: item.id, label: item.name }))}
-                           isMulti
-                           onChange={handleAttendeesChange}
-                           value={selectedAttendees}
+                            name="attendees"
+                            options={
+                              studentData &&
+                              studentData.map((item) => ({
+                                value: item.id,
+                                label: item.name,
+                              }))
+                            }
+                            isMulti
+                            onChange={handleAttendeesChange}
+                            value={selectedAttendees}
                           />
-                          </div>
+                        </div>
                       </div>
                       <div>
                         <div>
-                          <label htmlFor="start_date" className="formbold-form-label">
+                          <label
+                            htmlFor="start_date"
+                            className="formbold-form-label"
+                          >
                             Date
                           </label>
                           <input
@@ -1133,6 +1203,8 @@ addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`
                           className="form-control"
                           // value={tenantData.address}
                           onChange={handleNewEventChange}
+                          // disabled={disableTimeDuration}
+                          required
                         />
                       </div>
                       <div>
@@ -1151,6 +1223,8 @@ addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`
                           placeholder="30 min"
                           // value={tenantData.address}
                           onChange={handleNewEventChange}
+                          disabled={disableTimeDuration}
+                          required
                         />
                       </div>
                     </div>
@@ -1163,8 +1237,9 @@ addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`
                         >
                           <input
                             type="checkbox"
-                            name="event_repeats"
-                            value="This event repeats"
+                            name="all_day"
+                            value="All day"
+                            checked={allDay}
                             onChange={handleNewEventChange}
                           />
                           All Day
@@ -1181,10 +1256,12 @@ addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`
                         </label>
                         <br></br>
 
-                        <select name="category" 
-                        className="form-control" 
-                        onChange={handleNewEventChange}
-                        id="category">
+                        <select
+                          name="category"
+                          className="form-control"
+                          onChange={handleNewEventChange}
+                          id="category"
+                        >
                           <option value="Lesson">Lesson</option>
                           <option value="Group Lesson">Group Lesson</option>
                           <option value="Vacation">Vacation</option>
@@ -1285,16 +1362,32 @@ addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`
                                 Every
                               </label>
                               <br></br>
-                              <input
-                                type="text"
-                                name="every"
-                                className="form-control"
-                                placeholder="1"
-                                // value={tenantData.address}
-                                onChange={handleNewEventChange}
-                              />{" "}
+                              <div style={{ position: "relative" }}>
+                                <input
+                                  type="number"
+                                  name="every"
+                                  className="form-control"
+                                  style={{
+                                    paddingLeft: "25px",
+                                    paddingRight: "70px",
+                                  }}
+                                  value={everyWeeks}
+                                  min={1}
+                                  max={100}
+                                  onChange={handleNewEventChange}
+                                />
+                                <span
+                                  style={{
+                                    position: "absolute",
+                                    right: "10px",
+                                    top: "50%",
+                                    transform: "translateY(-50%)",
+                                  }}
+                                >
+                                  Weeks
+                                </span>
+                              </div>
                             </div>
-                            <span>Weeks</span>
                             {!repeatsIndefinitely && (
                               <div>
                                 <label
@@ -1382,7 +1475,11 @@ addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`
                           Public Description <span>Optional</span>
                         </label>
 
-                        <textarea name="public_desc" className="form-control" onChange={handleNewEventChange} />
+                        <textarea
+                          name="public_desc"
+                          className="form-control"
+                          onChange={handleNewEventChange}
+                        />
                       </div>
                     </div>
                     <div className="formbold-input-flex diff">
@@ -1413,7 +1510,12 @@ addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`
                       Cancel
                     </Link>
 
-                    <button className="formbold-btn" onClick={saveNewCalenderEvent}>Save</button>
+                    <button
+                      className="formbold-btn"
+                      onClick={saveNewCalenderEvent}
+                    >
+                      Save
+                    </button>
                   </div>
                 </div>
               </div>

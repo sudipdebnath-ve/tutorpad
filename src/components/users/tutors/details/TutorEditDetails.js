@@ -18,7 +18,8 @@ import lending from "../assets/images/lending.svg";
 import ReactModal from "react-modal";
 import { ToastContainer, toast } from "react-toastify";
 import payroll from "../../assets/images/payroll.svg";
-import attendance from "../assets/images/attendance.svg"
+import attendance from "../assets/images/attendance.svg";
+import Select from "react-select";
 
 const TutorEditDetails = () => {
   const {
@@ -30,6 +31,8 @@ const TutorEditDetails = () => {
     fetchData,
     getAvailabilityData,
     allAvailabilityData,
+    studentData,
+    fetchStudentData,
   } = useUserDataContext();
   const [initial, setInitial] = useState("");
   const [todayDate, setTodayDate] = useState(new Date());
@@ -50,13 +53,17 @@ const TutorEditDetails = () => {
   const [selectedDays, setSelectedDays] = useState([]);
   const [editPrivileges, setEditPrivileges] = useState(false);
   const [checkedPrivileges, setCheckedPrivileges] = useState([]);
+  const [selectedStudents, setSelectedStudents] = useState([]);
 
   let { id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
 
+  const handleStudentsChange = (selectedOptions) => {
+    setSelectedStudents(selectedOptions);
+  };
 
   const handleEditClick = () => {
-    setEditPrivileges((prev)=> !prev);
+    setEditPrivileges((prev) => !prev);
   };
 
   const handleCancelClick = () => {
@@ -95,6 +102,7 @@ const TutorEditDetails = () => {
   useEffect(() => {
     fetchTutorDetails(id);
     allAvailabilityData();
+    fetchStudentData();
   }, [id]);
 
   useEffect(() => {
@@ -124,9 +132,12 @@ const TutorEditDetails = () => {
     tenantData.address = tutorFetchData?.business_data?.address;
     tenantData.virtual_meeting = tutorFetchData?.business_data?.virtual_meeting;
     tenantData.subjects = tutorFetchData?.business_data?.subjects;
-    tenantData.overdue_attendence = tutorFetchData?.business_data?.overdue_attendence;
-    tenantData.default_notes_view = tutorFetchData?.business_data?.default_notes_view;
-    tenantData.copy_recent_event = tutorFetchData?.business_data?.copy_recent_event;
+    tenantData.overdue_attendence =
+      tutorFetchData?.business_data?.overdue_attendence;
+    tenantData.default_notes_view =
+      tutorFetchData?.business_data?.default_notes_view;
+    tenantData.copy_recent_event =
+      tutorFetchData?.business_data?.copy_recent_event;
     tenantData.automatically_copy_lesson =
       tutorFetchData?.business_data?.automatically_copy_lesson;
     tenantData.student_register_lesson =
@@ -207,12 +218,12 @@ const TutorEditDetails = () => {
       if (checked) {
         setCheckedPrivileges([...updatedPrivileges, name]);
       } else {
-        setCheckedPrivileges(updatedPrivileges.filter(privilege => privilege !== name));
+        setCheckedPrivileges(
+          updatedPrivileges.filter((privilege) => privilege !== name)
+        );
       }
     }
   };
-  
-
 
   const handleClick = (e) => {
     e.preventDefault();
@@ -513,7 +524,7 @@ const TutorEditDetails = () => {
         <TopBar />
 
         <ReactModal
-          isOpen={modalIsOpen==="profile"}
+          isOpen={modalIsOpen === "profile"}
           onAfterOpen={afterOpenModal}
           onRequestClose={closeModal}
           style={customStyles}
@@ -710,6 +721,250 @@ const TutorEditDetails = () => {
                         >
                           <option>First Available Location</option>
                         </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr></hr>
+                <div className="formbold-form-btn-wrapper">
+                  <div className="btn-end">
+                    <Link className="cancel" onClick={closeModal}>
+                      Cancel
+                    </Link>
+                    <button className="formbold-btn">Submit</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </ReactModal>
+        <ReactModal
+          isOpen={modalIsOpen === "assignStudent"}
+          onAfterOpen={afterOpenModal}
+          onRequestClose={closeModal}
+          style={customStyles}
+          contentLabel="Example Modal"
+        >
+          <div className="mypreference-modal">
+            <div className="close-h">
+              <h4>Assign Student</h4>
+              <button className="closeModal" onClick={closeModal}>
+                X
+              </button>
+            </div>
+            <form name="studentProfile">
+              <div className="row d-flex">
+                <div className="col-xl-12 col-xxl-12">
+                  <div className="formbold-form-step-1 active">
+                    <div className="formbold-input-flex diff">
+                      <div>
+                        <label
+                          htmlFor="students"
+                          className="formbold-form-label"
+                        >
+                          Student
+                        </label>
+                        <div>
+                          <Select
+                            name="students"
+                            options={
+                              studentData &&
+                              studentData.map((item) => ({
+                                value: item.id,
+                                label: item.name,
+                              }))
+                            }
+                            isMulti
+                            onChange={handleStudentsChange}
+                            value={selectedStudents}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label
+                          htmlFor="default_lesson_category"
+                          className="formbold-form-label"
+                        >
+                          Default Lesson Category
+                        </label>
+                        <br></br>
+
+                        <select
+                          name="default_lesson_category"
+                          className="form-control"
+                          onChange={handleChange}
+                          id="default_lesson_category"
+                        >
+                          <option value="Lesson">Lesson</option>
+                          <option value="Group Lesson">Group Lesson</option>
+                          <option value="Vacation">Vacation</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="default_lesson_length"
+                          className="formbold-form-label"
+                          id="default_lesson_length"
+                        >
+                          Default Lesson Length
+                        </label>
+                        <div style={{ position: "relative" }}>
+                          <input
+                            type="text"
+                            name="default_lesson_length"
+                            className="form-control"
+                            onChange={handleChange}
+                            value="30"
+                            required
+                          />
+                          <span
+                            style={{
+                              position: "absolute",
+                              right: "10px",
+                              top: "50%",
+                              transform: "translateY(-50%)",
+                            }}
+                          >
+                            minutes
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="formbold-input-flex diff">
+                      <div>
+                        <div>
+                          <label
+                            htmlFor="default_biling"
+                            className="formbold-form-label"
+                          >
+                            Default Billing
+                          </label>
+                        </div>
+                        <div className="input-radio">
+                          <input
+                            type="radio"
+                            value="Don't automatically create any calendar-generated charges"
+                            name="default_biling"
+                            // onChange={handleNewEventChange}
+                          ></input>
+                          Don't automatically create any calendar-generated
+                          charges
+                        </div>
+                        <div className="input-radio">
+                          <input
+                            type="radio"
+                            value="Student pays based on the number of lessons taken"
+                            name="default_biling"
+                            // onChange={handleNewEventChange}
+                          ></input>
+                          Student pays based on the number of lessons taken
+                        </div>
+                        <div className="input-radio">
+                          <input
+                            type="radio"
+                            value="Student pays the same amount each month regardless of number of lessons"
+                            name="default_biling"
+                            // onChange={handleNewEventChange}
+                          ></input>
+                          Student pays the same amount each month regardless of
+                          number of lessons
+                        </div>
+                        <div className="input-radio">
+                          <input
+                            type="radio"
+                            value="Student pays an hourly rate"
+                            name="default_biling"
+                            // onChange={handleNewEventChange}
+                          ></input>
+                          Student pays an hourly rate
+                        </div>
+                        <span>
+                          Charges will automatically adjust to lesson length
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label
+                          htmlFor="price"
+                          className="formbold-form-label"
+                          id="price"
+                        >
+                          Price
+                        </label>
+                        <div style={{ position: "relative" }}>
+                          <span
+                            style={{
+                              position: "absolute",
+                              left: "10px",
+                              top: "50%",
+                              transform: "translateY(-50%)",
+                            }}
+                          >
+                            <i className="fa fa-inr" aria-hidden="true"></i>
+                          </span>
+                          <input
+                            type="text"
+                            name="price"
+                            className="form-control"
+                            style={{ paddingLeft: '25px', paddingRight: '70px' }}
+                            onChange={handleChange}
+                            value="30.00"
+                            required
+                          />
+                           <span style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)' }}>Per Hour</span>
+ 
+                        </div>
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="make_up_credits"
+                          className="formbold-form-label"
+                          id="make_up_credits"
+                        >
+                          Make-Up Credits
+                        </label>
+                        <div style={{ position: "relative" }}>
+                        <input
+                          type="text"
+                          name="make_up_credits"
+                          className="form-control"
+                          onChange={handleChange}
+                          value="0"
+                          required
+                        />
+                        <span
+                            style={{
+                              position: "absolute",
+                              right: "10px",
+                              top: "50%",
+                              transform: "translateY(-50%)",
+                            }}
+                          >
+                            Credits
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      className="formbold-input-flex diff bg-gradient p-2 rounded-2"
+                      style={{
+                        backgroundColor: "#8de1f2",
+                        border: "1px solid #63dff7",
+                      }}
+                    >
+                      <div className="info-sign d-flex">
+                        <i class="fa fa-info-circle p-2" aria-hidden="true"></i>
+                        <p>
+                          Make-up credits are automatically adjusted when
+                          make-up lessons are taught. Only change this value if
+                          you want to override the number of credits assigned to
+                          this student.
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -968,7 +1223,7 @@ const TutorEditDetails = () => {
           </div>
         </ReactModal>
         <main className="content">
-        {/* <ToastContainer /> */}
+          {/* <ToastContainer /> */}
           <div className="container-fluid p-0">
             <div className="row d-flex">
               <div className="col-xl-4 col-xxl-4">
@@ -979,7 +1234,10 @@ const TutorEditDetails = () => {
                         <h2>{initial && initial.toLocaleUpperCase()}</h2>
                       </div>
                     </div>
-                    <div className="edit-user" onClick={(e)=>openModal("profile")}>
+                    <div
+                      className="edit-user"
+                      onClick={(e) => openModal("profile")}
+                    >
                       <i className="fa fa-pencil" aria-hidden="true"></i>
                     </div>
 
@@ -1014,7 +1272,8 @@ const TutorEditDetails = () => {
                       </div>
                     </div>
                     <span>
-                      Click the edit button to add a private note about this tutor
+                      Click the edit button to add a private note about this
+                      tutor
                     </span>
                   </div>
                 </div>
@@ -1237,7 +1496,12 @@ const TutorEditDetails = () => {
                                 <hr></hr>
                                 <div className="formbold-form-btn-wrapper">
                                   <div className="btn-end">
-                                    <button className="formbold-btn">
+                                    <button
+                                      className="formbold-btn"
+                                      onClick={(e) =>
+                                        openModal("assignStudent")
+                                      }
+                                    >
                                       <i
                                         style={{ color: "#ffffff" }}
                                         className="fa fa-plus"
@@ -1672,7 +1936,7 @@ const TutorEditDetails = () => {
                                 </div>
                                 <h6 className="text-center">
                                   <strong>
-                                  This tutor hasn't taken attendance yet
+                                    This tutor hasn't taken attendance yet
                                   </strong>
                                 </h6>
                               </div>
@@ -2097,7 +2361,7 @@ const TutorEditDetails = () => {
                                 <div className="btn-end">
                                   <Link
                                     className="cancel"
-                                     onClick={handleCancelAttendFlag}
+                                    onClick={handleCancelAttendFlag}
                                   >
                                     Cancel
                                   </Link>
@@ -2144,11 +2408,17 @@ const TutorEditDetails = () => {
                         <div className="accordion-body">
                           <div className="access d-flex flex-col">
                             <h3>User Privileges</h3>
-                            <div className="edit_privileges" onClick={handleEditClick}>
-                           <i className="fa fa-pencil" aria-hidden="true"></i>
+                            <div
+                              className="edit_privileges"
+                              onClick={handleEditClick}
+                            >
+                              <i
+                                className="fa fa-pencil"
+                                aria-hidden="true"
+                              ></i>
+                            </div>
                           </div>
-                          </div>
-                          
+
                           <form className="myForm">
                             <div>
                               <div className="formbold-input-flex diff">
@@ -2159,7 +2429,13 @@ const TutorEditDetails = () => {
                                     name="administrator"
                                     disabled={!editPrivileges}
                                     onChange={handleCheckboxChange}
-                                    checked={checkedPrivileges?.includes("administrator") ? true : false}
+                                    checked={
+                                      checkedPrivileges?.includes(
+                                        "administrator"
+                                      )
+                                        ? true
+                                        : false
+                                    }
                                   />
                                   <label
                                     htmlFor="administrator"
@@ -2186,7 +2462,13 @@ const TutorEditDetails = () => {
                                     name="manage_self_take_attendance"
                                     disabled={true}
                                     onChange={handleCheckboxChange}
-                                    checked={checkedPrivileges?.includes("manage_self_take_attendance") ? true : true}
+                                    checked={
+                                      checkedPrivileges?.includes(
+                                        "manage_self_take_attendance"
+                                      )
+                                        ? true
+                                        : true
+                                    }
                                   />
                                   <label
                                     htmlFor="manage_self_take_attendance"
@@ -2202,7 +2484,13 @@ const TutorEditDetails = () => {
                                     name="manage_self_record_payments"
                                     disabled={!editPrivileges}
                                     onChange={handleCheckboxChange}
-                                    checked={checkedPrivileges?.includes("manage_self_record_payments") ? true : false}
+                                    checked={
+                                      checkedPrivileges?.includes(
+                                        "manage_self_record_payments"
+                                      )
+                                        ? true
+                                        : false
+                                    }
                                   />
                                   <label
                                     htmlFor="manage_self_record_payments"
@@ -2219,7 +2507,13 @@ const TutorEditDetails = () => {
                                     name="manage_self_edit"
                                     onChange={handleCheckboxChange}
                                     //  checked={privileges.manage_self_edit}
-                                    checked={checkedPrivileges?.includes("manage_self_edit") ? true : true}
+                                    checked={
+                                      checkedPrivileges?.includes(
+                                        "manage_self_edit"
+                                      )
+                                        ? true
+                                        : true
+                                    }
                                     disabled={true}
                                   />
                                   <label
@@ -2237,7 +2531,13 @@ const TutorEditDetails = () => {
                                     name="manage_self_payroll"
                                     disabled={!editPrivileges}
                                     onChange={handleCheckboxChange}
-                                    checked={checkedPrivileges?.includes("manage_self_payroll") ? true : false}
+                                    checked={
+                                      checkedPrivileges?.includes(
+                                        "manage_self_payroll"
+                                      )
+                                        ? true
+                                        : false
+                                    }
                                   />
                                   <label
                                     htmlFor="manage_self_payroll"
@@ -2255,7 +2555,13 @@ const TutorEditDetails = () => {
                                     disabled={!editPrivileges}
                                     onChange={handleCheckboxChange}
                                     // checked={privileges.manage_self_mileage}
-                                    checked={checkedPrivileges?.includes("manage_self_mileage") ? true : false}
+                                    checked={
+                                      checkedPrivileges?.includes(
+                                        "manage_self_mileage"
+                                      )
+                                        ? true
+                                        : false
+                                    }
                                   />
                                   <label
                                     htmlFor="manage_self_mileage"
@@ -2279,7 +2585,13 @@ const TutorEditDetails = () => {
                                     disabled={!editPrivileges}
                                     onChange={handleCheckboxChange}
                                     //  checked={privileges.manage_view_tutor}
-                                    checked={checkedPrivileges?.includes("manage_view_tutor") ? true : false}
+                                    checked={
+                                      checkedPrivileges?.includes(
+                                        "manage_view_tutor"
+                                      )
+                                        ? true
+                                        : false
+                                    }
                                   />
                                   <label
                                     htmlFor="manage_view_tutor"
@@ -2296,7 +2608,13 @@ const TutorEditDetails = () => {
                                     disabled={!editPrivileges}
                                     onChange={handleCheckboxChange}
                                     // checked={privileges.manage_student_tutor}
-                                    checked={checkedPrivileges?.includes("manage_student_tutor") ? true : false}
+                                    checked={
+                                      checkedPrivileges?.includes(
+                                        "manage_student_tutor"
+                                      )
+                                        ? true
+                                        : false
+                                    }
                                   />
                                   <label
                                     htmlFor="manage_student_tutor"
@@ -2315,7 +2633,13 @@ const TutorEditDetails = () => {
                                     disabled={!editPrivileges}
                                     onChange={handleCheckboxChange}
                                     // checked={privileges.manage_tutor_lesson}
-                                    checked={checkedPrivileges?.includes("manage_tutor_lesson") ? true : false}
+                                    checked={
+                                      checkedPrivileges?.includes(
+                                        "manage_tutor_lesson"
+                                      )
+                                        ? true
+                                        : false
+                                    }
                                   />
                                   <label
                                     htmlFor="manage_tutor_lesson"
@@ -2339,7 +2663,13 @@ const TutorEditDetails = () => {
                                     disabled={!editPrivileges}
                                     onChange={handleCheckboxChange}
                                     // checked={privileges.manage_student_parent}
-                                    checked={checkedPrivileges?.includes("manage_student_parent") ? true : false}
+                                    checked={
+                                      checkedPrivileges?.includes(
+                                        "manage_student_parent"
+                                      )
+                                        ? true
+                                        : false
+                                    }
                                   />
                                   <label
                                     htmlFor="manage_student_parent"
@@ -2357,7 +2687,13 @@ const TutorEditDetails = () => {
                                     disabled={!editPrivileges}
                                     onChange={handleCheckboxChange}
                                     //  checked={privileges.manage_student_parent_email}
-                                    checked={checkedPrivileges?.includes("manage_student_parent_email") ? true : false}
+                                    checked={
+                                      checkedPrivileges?.includes(
+                                        "manage_student_parent_email"
+                                      )
+                                        ? true
+                                        : false
+                                    }
                                   />
                                   <label
                                     htmlFor="manage_student_parent_email"
@@ -2375,7 +2711,13 @@ const TutorEditDetails = () => {
                                     disabled={!editPrivileges}
                                     onChange={handleCheckboxChange}
                                     // checked={privileges.download_student_profile}
-                                    checked={checkedPrivileges?.includes("download_student_profile") ? true : false}
+                                    checked={
+                                      checkedPrivileges?.includes(
+                                        "download_student_profile"
+                                      )
+                                        ? true
+                                        : false
+                                    }
                                   />
                                   <label
                                     htmlFor="download_student_profile"
@@ -2399,7 +2741,13 @@ const TutorEditDetails = () => {
                                     disabled={!editPrivileges}
                                     onChange={handleCheckboxChange}
                                     // checked={privileges.add_invoices}
-                                    checked={checkedPrivileges?.includes("add_invoices") ? true : false}
+                                    checked={
+                                      checkedPrivileges?.includes(
+                                        "add_invoices"
+                                      )
+                                        ? true
+                                        : false
+                                    }
                                   />
                                   <label
                                     htmlFor="add_invoices"
@@ -2416,7 +2764,13 @@ const TutorEditDetails = () => {
                                     disabled={!editPrivileges}
                                     onChange={handleCheckboxChange}
                                     //  checked={privileges.add_expenses}
-                                    checked={checkedPrivileges?.includes("add_expenses") ? true : false}
+                                    checked={
+                                      checkedPrivileges?.includes(
+                                        "add_expenses"
+                                      )
+                                        ? true
+                                        : false
+                                    }
                                   />
                                   <label
                                     htmlFor="add_expenses"
@@ -2434,7 +2788,13 @@ const TutorEditDetails = () => {
                                     disabled={!editPrivileges}
                                     onChange={handleCheckboxChange}
                                     // checked={privileges.update_online_resources}
-                                    checked={checkedPrivileges?.includes("add_expenses") ? true : false}
+                                    checked={
+                                      checkedPrivileges?.includes(
+                                        "add_expenses"
+                                      )
+                                        ? true
+                                        : false
+                                    }
                                   />
                                   <label
                                     htmlFor="update_online_resources"
@@ -2453,7 +2813,13 @@ const TutorEditDetails = () => {
                                     disabled={!editPrivileges}
                                     onChange={handleCheckboxChange}
                                     // checked={privileges.edit_website}
-                                    checked={checkedPrivileges?.includes("edit_website") ? true : false}
+                                    checked={
+                                      checkedPrivileges?.includes(
+                                        "edit_website"
+                                      )
+                                        ? true
+                                        : false
+                                    }
                                   />
                                   <label
                                     htmlFor="edit_website"
@@ -2471,7 +2837,13 @@ const TutorEditDetails = () => {
                                     disabled={!editPrivileges}
                                     onChange={handleCheckboxChange}
                                     // checked={privileges.view_reports}
-                                    checked={checkedPrivileges?.includes("view_reports") ? true : false}
+                                    checked={
+                                      checkedPrivileges?.includes(
+                                        "view_reports"
+                                      )
+                                        ? true
+                                        : false
+                                    }
                                   />
                                   <label
                                     htmlFor="view_reports"
@@ -2491,20 +2863,22 @@ const TutorEditDetails = () => {
                               <div className="formbold-form-btn-wrapper">
                                 {editPrivileges && (
                                   <>
-                                  
-                                <div className="btn-end">
-                                  <button className="cancel" onClick={handleCancelClick}>
-                                    Cancel
-                                  </button>
+                                    <div className="btn-end">
+                                      <button
+                                        className="cancel"
+                                        onClick={handleCancelClick}
+                                      >
+                                        Cancel
+                                      </button>
 
-                                  <button
-                                    className="formbold-btn"
-                                    // onClick={formSubmit}
-                                  >
-                                    Submit
-                                  </button>
-                                </div>
-                                </>
+                                      <button
+                                        className="formbold-btn"
+                                        // onClick={formSubmit}
+                                      >
+                                        Submit
+                                      </button>
+                                    </div>
+                                  </>
                                 )}
                               </div>
                             </div>
