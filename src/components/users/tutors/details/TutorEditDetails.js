@@ -33,6 +33,8 @@ const TutorEditDetails = () => {
     allAvailabilityData,
     studentData,
     fetchStudentData,
+    fetchCategory,
+    allCategory,
   } = useUserDataContext();
   const [initial, setInitial] = useState("");
   const [todayDate, setTodayDate] = useState(new Date());
@@ -54,6 +56,11 @@ const TutorEditDetails = () => {
   const [editPrivileges, setEditPrivileges] = useState(false);
   const [checkedPrivileges, setCheckedPrivileges] = useState([]);
   const [selectedStudents, setSelectedStudents] = useState([]);
+  const [defaultLessonCat, setDefaultLessonCat] = useState("");
+  const [defaultLessonLength, setDefaultLessonLength] = useState("30");
+  const [price, setPrice] = useState("30.00");
+  const [makeUpCredits, setMakeUpCredits] = useState("0");
+  const [assignStudent, setAssignStudent] = useState({});
 
   let { id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -103,6 +110,7 @@ const TutorEditDetails = () => {
     fetchTutorDetails(id);
     allAvailabilityData();
     fetchStudentData();
+    fetchCategory();
   }, [id]);
 
   useEffect(() => {
@@ -328,6 +336,78 @@ const TutorEditDetails = () => {
     }
   };
 
+  const handleAssignStudent = (e) => {
+    const name = e.target.name;
+    let value = e.target.value;
+
+    if (name === "default_lesson_cat") {
+      setDefaultLessonCat(value);
+    }
+
+    if (name === "default_lesson_length") {
+      setDefaultLessonLength(value);
+    }
+
+    if (name === "price") {
+      setPrice(value);
+    }
+
+    if (name === "make_up_credits") {
+      setMakeUpCredits(value);
+    }
+
+    setAssignStudent({ ...assignStudent, [name]: value });
+  };
+
+  const saveAssignStudent = async (e) => {
+    e.preventDefault();
+
+    let selectedStudent = document.getElementById("students");
+
+    assignStudent["tutor_id"] = id;
+    assignStudent["student_id"] = selectedStudent?.value;
+
+    if (!assignStudent.hasOwnProperty("price")) {
+      assignStudent["price"] = price;
+    }
+
+    if (!assignStudent.hasOwnProperty("default_lesson_cat")) {
+      assignStudent["default_lesson_cat"] = defaultLessonCat;
+    }
+
+    if (!assignStudent.hasOwnProperty("make_up_credits")) {
+      assignStudent["make_up_credits"] = makeUpCredits;
+    }
+
+    if (!assignStudent.hasOwnProperty("default_lesson_length")) {
+      assignStudent["default_lesson_length"] = defaultLessonLength;
+    }
+
+    const config = {
+      method: "POST",
+      url: `${API_URL}map-tutor-student`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: assignStudent,
+    };
+    await axios(config)
+      .then((response) => {
+        console.log(response);
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+
+        setIsOpen(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.response.data.success === false) {
+          setError(error.response.data.data);
+        }
+      });
+  };
+
   const formAvailSubmit = async () => {
     availData["user_id"] = userData.id;
     let arr = Object.values(days);
@@ -430,7 +510,7 @@ const TutorEditDetails = () => {
         toast.success(response.data.message, {
           position: toast.POSITION.TOP_CENTER,
         });
-        //setIsOpen(false);
+        setIsOpen(false);
         closeModal();
         allAvailabilityData();
       })
@@ -441,6 +521,7 @@ const TutorEditDetails = () => {
         }
       });
   };
+  console.log(allCategory);
 
   // console.log(userData);
   const customStyles = {
@@ -765,7 +846,7 @@ const TutorEditDetails = () => {
                           Student
                         </label>
                         <div>
-                          <Select
+                          {/* <Select
                             name="students"
                             options={
                               studentData &&
@@ -777,14 +858,30 @@ const TutorEditDetails = () => {
                             isMulti
                             onChange={handleStudentsChange}
                             value={selectedStudents}
-                          />
+                          /> */}
+
+                          <select
+                            name="students"
+                            className="form-control"
+                            onChange={handleAssignStudent}
+                            id="students"
+                          >
+                            {studentData &&
+                              studentData.map((stu) => {
+                                return (
+                                  <option key={stu.id} value={stu.id}>
+                                    {stu.name}
+                                  </option>
+                                );
+                              })}
+                          </select>
                         </div>
                       </div>
                     </div>
                     <div className="formbold-input-flex">
                       <div>
                         <label
-                          htmlFor="default_lesson_category"
+                          htmlFor="default_lesson_cat"
                           className="formbold-form-label"
                         >
                           Default Lesson Category
@@ -792,14 +889,20 @@ const TutorEditDetails = () => {
                         <br></br>
 
                         <select
-                          name="default_lesson_category"
+                          name="default_lesson_cat"
                           className="form-control"
-                          onChange={handleChange}
-                          id="default_lesson_category"
+                          onChange={handleAssignStudent}
+                          id="default_lesson_cat"
+                          value={defaultLessonCat}
                         >
-                          <option value="Lesson">Lesson</option>
-                          <option value="Group Lesson">Group Lesson</option>
-                          <option value="Vacation">Vacation</option>
+                          {allCategory &&
+                            allCategory.map((cat) => {
+                              return (
+                                <option key={cat.id} value={cat.id}>
+                                  {cat.eventcat_name}
+                                </option>
+                              );
+                            })}
                         </select>
                       </div>
                       <div>
@@ -815,8 +918,8 @@ const TutorEditDetails = () => {
                             type="text"
                             name="default_lesson_length"
                             className="form-control"
-                            onChange={handleChange}
-                            value="30"
+                            onChange={handleAssignStudent}
+                            value={defaultLessonLength}
                             required
                           />
                           <span
@@ -848,7 +951,7 @@ const TutorEditDetails = () => {
                             type="radio"
                             value="Don't automatically create any calendar-generated charges"
                             name="default_biling"
-                            // onChange={handleNewEventChange}
+                            onChange={handleAssignStudent}
                           ></input>
                           Don't automatically create any calendar-generated
                           charges
@@ -858,7 +961,7 @@ const TutorEditDetails = () => {
                             type="radio"
                             value="Student pays based on the number of lessons taken"
                             name="default_biling"
-                            // onChange={handleNewEventChange}
+                            onChange={handleAssignStudent}
                           ></input>
                           Student pays based on the number of lessons taken
                         </div>
@@ -867,7 +970,7 @@ const TutorEditDetails = () => {
                             type="radio"
                             value="Student pays the same amount each month regardless of number of lessons"
                             name="default_biling"
-                            // onChange={handleNewEventChange}
+                            onChange={handleAssignStudent}
                           ></input>
                           Student pays the same amount each month regardless of
                           number of lessons
@@ -877,7 +980,7 @@ const TutorEditDetails = () => {
                             type="radio"
                             value="Student pays an hourly rate"
                             name="default_biling"
-                            // onChange={handleNewEventChange}
+                            onChange={handleAssignStudent}
                           ></input>
                           Student pays an hourly rate
                         </div>
@@ -911,13 +1014,24 @@ const TutorEditDetails = () => {
                             type="text"
                             name="price"
                             className="form-control"
-                            style={{ paddingLeft: '25px', paddingRight: '70px' }}
-                            onChange={handleChange}
-                            value="30.00"
+                            style={{
+                              paddingLeft: "25px",
+                              paddingRight: "70px",
+                            }}
+                            onChange={handleAssignStudent}
+                            value={price}
                             required
                           />
-                           <span style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)' }}>Per Hour</span>
- 
+                          <span
+                            style={{
+                              position: "absolute",
+                              right: "10px",
+                              top: "50%",
+                              transform: "translateY(-50%)",
+                            }}
+                          >
+                            Per Hour
+                          </span>
                         </div>
                       </div>
                       <div>
@@ -929,15 +1043,15 @@ const TutorEditDetails = () => {
                           Make-Up Credits
                         </label>
                         <div style={{ position: "relative" }}>
-                        <input
-                          type="text"
-                          name="make_up_credits"
-                          className="form-control"
-                          onChange={handleChange}
-                          value="0"
-                          required
-                        />
-                        <span
+                          <input
+                            type="text"
+                            name="make_up_credits"
+                            className="form-control"
+                            onChange={handleAssignStudent}
+                            value={makeUpCredits}
+                            required
+                          />
+                          <span
                             style={{
                               position: "absolute",
                               right: "10px",
@@ -975,7 +1089,12 @@ const TutorEditDetails = () => {
                     <Link className="cancel" onClick={closeModal}>
                       Cancel
                     </Link>
-                    <button className="formbold-btn">Submit</button>
+                    <button
+                      className="formbold-btn"
+                      onClick={saveAssignStudent}
+                    >
+                      Assign
+                    </button>
                   </div>
                 </div>
               </div>

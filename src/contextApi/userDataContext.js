@@ -19,6 +19,7 @@ const AppContext = ({ children }) => {
   const [allTutors, setAllTutors] = useState([]);
   const [getAvailabilityData, setGetAvailabilityData] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
+  const [allCategory, setAllCategory] = useState([]);
   const [emailData, setEmailData] = useState({
     template_title: "",
     template_content: "",
@@ -251,6 +252,26 @@ const AppContext = ({ children }) => {
 
   // Calendar Events End
 
+  // Event Category
+
+  const fetchCategory = async () => {
+    const config = {
+      method: "GET",
+      url: `${API_URL}eventcats`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(config)
+      .then((response) => {
+        console.log(response.data.data);
+        setAllCategory(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   return (
     <userDataContext.Provider
       value={{
@@ -278,7 +299,9 @@ const AppContext = ({ children }) => {
         getTutor,
         fetchEvent,
         allEvents,
-        fetchTutorData
+        fetchTutorData,
+        fetchCategory,
+        allCategory
       }}
     >
       {children}
