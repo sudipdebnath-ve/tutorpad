@@ -19,7 +19,6 @@ import ReactModal from "react-modal";
 import { ToastContainer, toast } from "react-toastify";
 import payroll from "../../assets/images/payroll.svg";
 import attendance from "../assets/images/attendance.svg";
-import Select from "react-select";
 
 const TutorEditDetails = () => {
   const {
@@ -61,6 +60,7 @@ const TutorEditDetails = () => {
   const [price, setPrice] = useState("30.00");
   const [makeUpCredits, setMakeUpCredits] = useState("0");
   const [assignStudent, setAssignStudent] = useState({});
+  const [students, setStudents] = useState([]);
 
   let { id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -106,11 +106,37 @@ const TutorEditDetails = () => {
       });
   };
 
+  const fetchAssignStudents = async (id) => {
+    setLoading(true);
+    console.log(id);
+    const validateconfig = {
+      method: "GET",
+      url: `${API_URL}assigned-students/${id}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: {
+        user_id: id,
+      },
+    };
+    await axios(validateconfig)
+      .then((response) => {
+        console.log(response.data);
+        setStudents(response.data.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(true);
+      });
+  };
+
   useEffect(() => {
     fetchTutorDetails(id);
     allAvailabilityData();
     fetchStudentData();
     fetchCategory();
+    fetchAssignStudents(id);
   }, [id]);
 
   useEffect(() => {
@@ -252,6 +278,10 @@ const TutorEditDetails = () => {
     setAttendFlag(false);
     setAttenddisabled(true);
     setEmaildisabled(true);
+  };
+
+  const getStudentById = (studentId) => {
+    return studentData.find((student) => student.id === studentId);
   };
 
   const formSubmit = async (e) => {
@@ -397,8 +427,9 @@ const TutorEditDetails = () => {
         toast.success(response.data.message, {
           position: toast.POSITION.TOP_CENTER,
         });
-
         setIsOpen(false);
+        closeModal();
+        fetchAssignStudents();
       })
       .catch((error) => {
         console.log(error);
@@ -846,20 +877,6 @@ const TutorEditDetails = () => {
                           Student
                         </label>
                         <div>
-                          {/* <Select
-                            name="students"
-                            options={
-                              studentData &&
-                              studentData.map((item) => ({
-                                value: item.id,
-                                label: item.name,
-                              }))
-                            }
-                            isMulti
-                            onChange={handleStudentsChange}
-                            value={selectedStudents}
-                          /> */}
-
                           <select
                             name="students"
                             className="form-control"
@@ -895,6 +912,7 @@ const TutorEditDetails = () => {
                           id="default_lesson_cat"
                           value={defaultLessonCat}
                         >
+                          <option value="">Select a category</option> 
                           {allCategory &&
                             allCategory.map((cat) => {
                               return (
@@ -949,7 +967,7 @@ const TutorEditDetails = () => {
                         <div className="input-radio">
                           <input
                             type="radio"
-                            value="Don't automatically create any calendar-generated charges"
+                            value="no_automatic_charge"
                             name="default_biling"
                             onChange={handleAssignStudent}
                           ></input>
@@ -959,7 +977,7 @@ const TutorEditDetails = () => {
                         <div className="input-radio">
                           <input
                             type="radio"
-                            value="Student pays based on the number of lessons taken"
+                            value="per_lesson_charge"
                             name="default_biling"
                             onChange={handleAssignStudent}
                           ></input>
@@ -968,7 +986,7 @@ const TutorEditDetails = () => {
                         <div className="input-radio">
                           <input
                             type="radio"
-                            value="Student pays the same amount each month regardless of number of lessons"
+                            value="per_month_charge"
                             name="default_biling"
                             onChange={handleAssignStudent}
                           ></input>
@@ -978,7 +996,7 @@ const TutorEditDetails = () => {
                         <div className="input-radio">
                           <input
                             type="radio"
-                            value="Student pays an hourly rate"
+                            value="per_hour_charge"
                             name="default_biling"
                             onChange={handleAssignStudent}
                           ></input>
@@ -1408,169 +1426,7 @@ const TutorEditDetails = () => {
                 </div>
               </div>
               <div className="col-xl-8 col-xxl-8">
-                {/* <div className="card">
-                  <div
-                    className="accordion accordion-flush"
-                    id="accordionFlushExample"
-                  >
-                    <div className="accordion-item">
-                      <h2 className="accordion-header" id="flush-headingOne">
-                        <button
-                          className="accordion-button collapsed"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#flush-collapseOne"
-                          aria-expanded="false"
-                          aria-controls="flush-collapseOne"
-                        >
-                          <strong>Tutor Overview</strong>
-                        </button>
-                      </h2>
-                      <div
-                        id="flush-collapseOne"
-                        className="accordion-collapse collapse"
-                        aria-labelledby="flush-headingOne"
-                        data-bs-parent="#accordionFlushExample"
-                      >
-                        <div className="accordion-body">
-                          <div className="student-properties-edit">
-                            <h3>Tutor Overview</h3>
-                            <div className="student-edit-user">
-                              <i
-                                className="fa fa-pencil"
-                                aria-hidden="true"
-                              ></i>
-                            </div>
-                          </div>
-                          <div className="formbold-input-flex">
-                            <div>
-                              <label
-                                htmlFor="preferences"
-                                className="formbold-form-label"
-                              >
-                                Preferences
-                              </label>
-                              <br></br>
-                              <div className="preference">
-                                <input type="checkbox" name="emailpreference" />
-                                Send email lesson reminders
-                              </div>
-                              <div className="preference">
-                                <input type="checkbox" name="smspreference" />
-                                Send SMS lesson reminders
-                              </div>
-                              <span style={{ paddingLeft: "23px" }}>
-                                Will only be sent if SMS messaging is allowed
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div> */}
-                {/* <div className="card">
-                  <div
-                    className="accordion accordion-flush"
-                    id="accordionFlushExample"
-                  >
-                    <div className="accordion-item">
-                      <h2 className="accordion-header" id="flush-headingTwo">
-                        <button
-                          className="accordion-button collapsed"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#flush-collapseTwo"
-                          aria-expanded="false"
-                          aria-controls="flush-collapseTwo"
-                        >
-                          <strong>Tutor Contacts</strong>
-                        </button>
-                      </h2>
-                      <div
-                        id="flush-collapseTwo"
-                        className="accordion-collapse collapse"
-                        aria-labelledby="flush-headingTwo"
-                        data-bs-parent="#accordionFlushExample"
-                      >
-                        <div className="accordion-body">
-                          <div className="student-properties-edit">
-                            {tutorFetchData?.parentfirstname !== null &&
-                            tutorFetchData?.parentlastname !== null ? (
-                              <>
-                                <h3>
-                                  {`${tutorFetchData?.parentfirstname}, ${tutorFetchData?.parentlastname}`}
-                                </h3>
-                              </>
-                            ) : (
-                              <>
-                                <strong>Parents Name not submitted</strong>
-                              </>
-                            )}
-
-                            <div className="student-edit-user">
-                              <i
-                                className="fa fa-pencil"
-                                aria-hidden="true"
-                              ></i>
-                            </div>
-                          </div>
-                          <div className="formbold-input-flex">
-                            <div>
-                              <label
-                                htmlFor="preferences"
-                                className="formbold-form-label"
-                              >
-                                Preferences
-                              </label>
-                              <br></br>
-                              <div className="preference">
-                                <input type="checkbox" name="emailpreference" />
-                                Set as the preferred invoice recipient
-                              </div>
-                              <div className="preference">
-                                <input type="checkbox" name="smspreference" />
-                                Show in Student Portal contacts
-                              </div>
-                              <div className="preference">
-                                <input type="checkbox" name="emailpreference" />
-                                Send email lesson reminders
-                              </div>
-                              <div className="preference">
-                                <input type="checkbox" name="smspreference" />
-                                Send SMS lesson reminders
-                              </div>
-                              <span style={{ paddingLeft: "23px" }}>
-                                Will only be sent if SMS messaging is allowed
-                              </span>
-                            </div>
-                          </div>
-                          <hr></hr>
-                          <div className="formbold-form-btn-wrapper">
-                            <div className="btn-end">
-                              <Link className="cancel" to="/students">
-                                <i
-                                  className="fa fa-exchange"
-                                  aria-hidden="true"
-                                ></i>
-                                Change Family
-                              </Link>
-
-                              <button className="formbold-btn">
-                                <i
-                                  style={{ color: "#ffffff" }}
-                                  className="fa fa-plus"
-                                  aria-hidden="true"
-                                ></i>
-                                Add Another Contact
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div> */}
+                
                 <div className="card">
                   <div
                     className="accordion accordion-flush"
@@ -1597,7 +1453,112 @@ const TutorEditDetails = () => {
                       >
                         <div className="accordion-body">
                           <h3>Assigned Students</h3>
+                          {students.length > 0 ? (
+                            <table className="table">
+                              <thead>
+                                <tr>
+                                  <th>Name</th>
+                                  <th>Default Price</th>
+                                  <th>Default Lesson Length</th>
+                                  <th>Default Lesson Category</th>
+                                  <th>Make-Up Credits</th>
+                                  <th></th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {students.map((student) => (
+                                  <tr key={student.student_id}>
+                                    <td>
+                                      <Link
+                                        to={`/students/details/${student.student_id}`}
+                                      >
+                                        {
+                                          getStudentById(student.student_id)
+                                            .name
+                                        }
+                                      </Link>
+                                    </td>
+                                    <td>
+                                      <i
+                                        className="fa fa-inr"
+                                        aria-hidden="true"
+                                      ></i>{" "}
+                                      {student.per_lesson_charge}
+                                      /lesson
+                                    </td>
+                                    <td>{student.default_lesson_length}</td>
+                                    <td>
+                                      {
+                                        allCategory.find(
+                                          (cat) =>
+                                            cat.id ===
+                                            student.default_lesson_cat
+                                        ).eventcat_name
+                                      }
+                                    </td>
+                                    <td>
+                                      Total: {student.makeup_credits} <br />
+                                      Booked: {student.makeup_credits} <br />
+                                      Available: {student.makeup_credits} <br />
+                                    </td>
+                                    <td>
+                                      {/* Edit icon */}
+                                      <div className="d-flex gap-2">
+                                      <i
+                                        className="fa fa-pencil"
+                                        aria-hidden="true"
+                                      ></i>
+                                      {/* Delete icon */}
+                                      <i
+                                        className="fa fa-trash"
+                                        aria-hidden="true"
+                                      ></i>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          ) : (
+                            <div className="row">
+                              <div className="col-12 col-md-12 col-xxl-12 d-flex order-2 order-xxl-3">
+                                <div className="flex-fill w-100">
+                                  <div className="py-3">
+                                    <div className="chart chart-xs">
+                                      <img
+                                        src={students}
+                                        alt="No students assigned"
+                                      />
+                                    </div>
+                                  </div>
+                                  <h5>
+                                    <strong>
+                                      There aren't any student assigned to this
+                                      tutor
+                                    </strong>
+                                  </h5>
+                                  <hr />
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          <div className="formbold-form-btn-wrapper">
+                            <div className="btn-end">
+                              <button
+                                className="formbold-btn"
+                                onClick={(e) => openModal("assignStudent")}
+                              >
+                                <i
+                                  style={{ color: "#ffffff" }}
+                                  className="fa fa-plus"
+                                  aria-hidden="true"
+                                ></i>
+                                Assign Student
+                              </button>
+                            </div>
+                          </div>
 
+                          {/* 
                           <div className="row">
                             <div className="col-12 col-md-12 col-xxl-12 d-flex order-2 order-xxl-3">
                               <div className="flex-fill w-100">
@@ -1632,7 +1593,7 @@ const TutorEditDetails = () => {
                                 </div>
                               </div>
                             </div>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                     </div>
@@ -2063,69 +2024,6 @@ const TutorEditDetails = () => {
                           </div>
                         </div>
                       </div>
-                      {/* <div
-                        id="flush-collapseFive"
-                        className="accordion-collapse collapse"
-                        aria-labelledby="flush-headingFive"
-                        data-bs-parent="#accordionFlushExample"
-                      >
-                        <div className="accordion-body">
-                          <div className="student-properties-edit">
-                            <h3>Average attendance for last 90 days</h3>
-                          </div>
-                          <div className="avg-attend">
-                            <div className="avg-data">
-                              <span>0</span>
-                              <span>Present</span>
-                            </div>
-                            <div className="avg-data">
-                              <span>0</span>
-                              <span>Unrecorded</span>
-                            </div>
-                            <div className="avg-data">
-                              <span>0</span>
-                              <span>Student Absences</span>
-                            </div>
-                            <div className="avg-data">
-                              <span>0</span>
-                              <span>Total Events</span>
-                            </div>
-                          </div>
-                          <div className="formbold-form-btn-wrapper">
-                            <div className="btn-end">
-                              <button className="formbold-btn">
-                                <i
-                                  style={{ color: "#ffffff" }}
-                                  className="fa fa-plus"
-                                  aria-hidden="true"
-                                ></i>
-                                Create Report
-                              </button>
-                            </div>
-                          </div>
-                          <div className="calendar-body">
-                            <h5>
-                              {tutorFetchData?.first_name}'s attendance records
-                              as of <emp>{startDate ? startDate : "no"}</emp>{" "}
-                              <i
-                                onClick={handleClick}
-                                className="fa fa-caret-down"
-                                aria-hidden="true"
-                              >
-                                {isOpen && (
-                                  <DatePicker
-                                    selected={todayDate}
-                                    onChange={handleChange}
-                                    inline
-                                  />
-                                )}
-                              </i>
-                            </h5>
-
-                            <FetchAttendanceLog />
-                          </div>
-                        </div>
-                      </div> */}
                     </div>
                   </div>
                 </div>
