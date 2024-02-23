@@ -1,0 +1,6 @@
+.input-outer-box{
+    display: flex;
+    height: 45px;
+    align-items: center;
+    gap: 5;
+}
