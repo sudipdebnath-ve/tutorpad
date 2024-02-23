@@ -1,0 +1,12 @@
+.rowbox{
+    display: flex;
+    flex:1;
+    align-items: center;
+}
+.checkBoxtitle{
+    margin-left: 5px;
+}
+.description{
+    color: lightgray;
+    font-size: 13px!important;
+}

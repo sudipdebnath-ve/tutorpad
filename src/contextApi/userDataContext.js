@@ -20,6 +20,7 @@ const AppContext = ({ children }) => {
   const [getAvailabilityData, setGetAvailabilityData] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
   const [allCategory, setAllCategory] = useState([]);
+  const [allLocation, setAllLocation] = useState([]);
   const [emailData, setEmailData] = useState({
     template_title: "",
     template_content: "",
@@ -250,6 +251,7 @@ const AppContext = ({ children }) => {
       });
   };
 
+
   // Calendar Events End
 
   // Event Category
@@ -266,6 +268,24 @@ const AppContext = ({ children }) => {
       .then((response) => {
         console.log(response.data.data);
         setAllCategory(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  const fetchLocation = async () => {
+    const config = {
+      method: "GET",
+      url: `${API_URL}eventlocs`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(config)
+      .then((response) => {
+        console.log(response.data.data);
+        setAllLocation(response.data.data);
       })
       .catch((error) => {
         console.log(error);
@@ -301,7 +321,9 @@ const AppContext = ({ children }) => {
         allEvents,
         fetchTutorData,
         fetchCategory,
-        allCategory
+        allCategory,
+        fetchLocation,
+        allLocation
       }}
     >
       {children}

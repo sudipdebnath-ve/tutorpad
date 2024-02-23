@@ -1,0 +1,26 @@
+.optionBox{
+    height: 100px;
+    width: 300px;
+    background-color:white;
+    position: absolute;
+    overflow-y: scroll;
+    padding-top: 30px;
+  }
+  .optionBox ul{
+   padding: 0;
+  }
+  .optionBox ul li{
+    list-style-type: none;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  .form-control{
+    height: 48px;
+    display: flex;
+    align-items: center;
+  }
+  

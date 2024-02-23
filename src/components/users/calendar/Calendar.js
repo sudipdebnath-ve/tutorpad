@@ -15,7 +15,8 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { API_URL } from "../../../utils/config.js";
 import Select from "react-select";
-
+import OptionBox from "../../form/option-box/OptionBox.js";
+import {settings} from 'react-icons-kit/feather/settings';
 const Calendars = () => {
   const {
     sidebarToggle,
@@ -2020,6 +2021,16 @@ useEffect(() => {
             <div className="row d-flex">
               <div className="col-xl-12 col-xxl-12">
                 <div style={{ zIndex: "1" }}>
+                <div className="card flex-fill w-100">
+                <div className="card-header">
+                  <div className="row">
+                    <div className="col-md-4">
+                      <OptionBox icon={settings} options={[{label:'Categories & Locations',route:'/calendar/categories'}]} label={"Options"} />
+                    </div>
+                  </div>
+                </div>
+               
+                </div>
                   <Calendar
                     localizer={localizer}
                     events={eventArr}

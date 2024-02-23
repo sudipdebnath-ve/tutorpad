@@ -22,7 +22,11 @@ import TutorAdd from "./components/users/tutors/TutorAdd";
 import StaffAdd from "./components/users/tutors/StaffAdd";
 import TutorEditDetails from "./components/users/tutors/details/TutorEditDetails";
 import FamilyInvoices from "./components/users/family-invoives/FamilyInvoices";
-
+import CategoriesLocations from "./components/categories-locations/CategoriesLocations";
+import AddCategories from "./components/categories-locations/categories/add/AddCategories";
+import EditCategories from "./components/categories-locations/categories/edit/EditCategories";
+import AddLocations from "./components/categories-locations/locations/add/AddLocations";
+import EditLocations from "./components/categories-locations/locations/edit/EditLocations";
 function App() {
   return (
     <Routes>
@@ -48,6 +52,12 @@ function App() {
       <Route path="/lending-library" element={<LendingLibrary />} />
       <Route path="/lending-library/details" element={<Details />} />
       <Route path="/calendar" element={<Calendar />} />
+      <Route path="/calendar/categories" element={<CategoriesLocations />} />
+      <Route path="/calendar/categories/add" element={<AddCategories />} />
+      <Route path="/calendar/categories/edit/:id" element={<EditCategories/>} />
+      <Route path="/calendar/locations/add" element={<AddLocations />} />
+      <Route path="/calendar/locations/edit/:id" element={<EditLocations />} />
+      
       <Route path="/online-resources" element={<OnlineResources />} />
       <Route path="/bussiness-settings" element={<BussinessSettings />} />
       <Route path="/familiies-and-invoices" element={<FamilyInvoices />} />
