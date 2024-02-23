@@ -39,6 +39,7 @@ const StudentEditDetails = () => {
   const [assignTutor, setAssignTutor] = useState({});
   const [error, setError] = useState({});
   const [tutors,setTutors] =useState([]);
+  const [defaultBilling, setDefaultBilling] = useState('per_lesson_charge');
 
   let { id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -155,6 +156,10 @@ const StudentEditDetails = () => {
       setDefaultLessonCat(value);
     }
 
+    if(name === "default_billing"){
+      setDefaultBilling(value);
+    }
+
     if (name === "default_lesson_length") {
       setDefaultLessonLength(value);
     }
@@ -173,14 +178,23 @@ const StudentEditDetails = () => {
   const saveAssignTutor = async (e) => {
     e.preventDefault();
 
-    let selectedTutor= document.getElementById("tutor");
+    let selectedTutor= document.getElementById("tutor_id");
 
     assignTutor["student_id"] = id;
     assignTutor["tutor_id"] = selectedTutor?.value;
 
-    if (!assignTutor.hasOwnProperty("price")) {
-      assignTutor["price"] = price;
+    if(defaultBilling==="per_lesson_charge"){
+      assignTutor["per_lesson_charge"]=price;
     }
+
+    if(defaultBilling==="per_month_charge"){
+      assignTutor["per_month_charge"]=price;
+    }
+
+    if(defaultBilling==="per_hour_charge"){
+      assignTutor["per_hour_charge"]=price;
+    }
+
 
     if (!assignTutor.hasOwnProperty("default_lesson_cat")) {
       assignTutor["default_lesson_cat"] = defaultLessonCat;
@@ -211,12 +225,15 @@ const StudentEditDetails = () => {
 
         setIsOpen(false);
         closeModal();
+        fetchAssignTutors(id);
+        setAssignTutor({});
       })
       .catch((error) => {
         console.log(error);
         if (error.response.data.success === false) {
           setError(error.response.data.data);
         }
+        setAssignTutor({});
       });
   };
 
@@ -521,27 +538,36 @@ const StudentEditDetails = () => {
                     <div className="formbold-input-flex diff">
                       <div>
                         <label
-                          htmlFor="tutor"
+                          htmlFor="tutor_id"
                           className="formbold-form-label"
                         >
                           Tutor
                         </label>
                         <div>
                           <select
-                            name="tutor"
+                            name="tutor_id"
                             className="form-control"
                             onChange={handleAssignTutor}
-                            id="tutor"
+                            id="tutor_id"
                           >
                             {allTutors &&
                               allTutors.map((tutor) => {
                                 return (
                                   <option key={tutor.id} value={tutor.id}>
-                                    {tutor.name}
+                                    {tutor.name? tutor.name : ""}
                                   </option>
                                 );
                               })}
                           </select>
+                          <div className="pt-2">
+                            <small style={{ color: "red" }}>
+                              {error?.error?.length ? (
+                                error.error
+                              ) : (
+                                <></>
+                              )}
+                            </small>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -567,11 +593,20 @@ const StudentEditDetails = () => {
                             allCategory.map((cat) => {
                               return (
                                 <option key={cat.id} value={cat.id}>
-                                  {cat.eventcat_name}
+                                  {cat.eventcat_name ? cat.eventcat_name : 'Unknown Category'}
                                 </option>
                               );
                             })}
                         </select>
+                        <div className="pt-2">
+                            <small style={{ color: "red" }}>
+                              {error?.default_lesson_cat?.length ? (
+                                error.default_lesson_cat[0]
+                              ) : (
+                                <></>
+                              )}
+                            </small>
+                          </div>
                       </div>
                       <div>
                         <label
@@ -608,7 +643,7 @@ const StudentEditDetails = () => {
                       <div>
                         <div>
                           <label
-                            htmlFor="default_biling"
+                            htmlFor="default_billing"
                             className="formbold-form-label"
                           >
                             Default Billing
@@ -618,8 +653,9 @@ const StudentEditDetails = () => {
                           <input
                             type="radio"
                             value="no_automatic_charge"
-                            name="default_biling"
+                            name="default_billing"
                             onChange={handleAssignTutor}
+                            checked={defaultBilling === "no_automatic_charge"}
                           ></input>
                           Don't automatically create any calendar-generated
                           charges
@@ -628,8 +664,9 @@ const StudentEditDetails = () => {
                           <input
                             type="radio"
                             value="per_lesson_charge"
-                            name="default_biling"
+                            name="default_billing"
                             onChange={handleAssignTutor}
+                            checked={defaultBilling === "per_lesson_charge"}
                           ></input>
                           Student pays based on the number of lessons taken
                         </div>
@@ -637,8 +674,9 @@ const StudentEditDetails = () => {
                           <input
                             type="radio"
                             value="per_month_charge"
-                            name="default_biling"
+                            name="default_billing"
                             onChange={handleAssignTutor}
+                            checked={defaultBilling === "per_month_charge"}
                           ></input>
                           Student pays the same amount each month regardless of
                           number of lessons
@@ -647,8 +685,9 @@ const StudentEditDetails = () => {
                           <input
                             type="radio"
                             value="per_hour_charge"
-                            name="default_biling"
+                            name="default_billing"
                             onChange={handleAssignTutor}
+                            checked={defaultBilling === "per_hour_charge"}
                           ></input>
                           Student pays an hourly rate
                         </div>
@@ -659,6 +698,8 @@ const StudentEditDetails = () => {
                     </div>
 
                     <div className="formbold-input-flex">
+                    {defaultBilling !== 'no_automatic_charge' && (
+                      <div>
                       <div>
                         <label
                           htmlFor="price"
@@ -698,11 +739,16 @@ const StudentEditDetails = () => {
                               transform: "translateY(-50%)",
                             }}
                           >
-                            Per Hour
+                             {defaultBilling === 'per_lesson_charge' && "Per Lesson"}
+                             {defaultBilling === 'per_month_charge' && "Per Month"}
+                             {defaultBilling === 'per_hour_charge' && "Per Hour"}
                           </span>
                         </div>
                       </div>
-                      <div>
+                      </div>
+                    )}
+                      <div className="formbold-input-flex diff">
+                        <div>
                         <label
                           htmlFor="make_up_credits"
                           className="formbold-form-label"
@@ -731,6 +777,7 @@ const StudentEditDetails = () => {
                           </span>
                         </div>
                       </div>
+                      </div>
                     </div>
                    
                   </div>
@@ -754,6 +801,7 @@ const StudentEditDetails = () => {
           </div>
         </ReactModal>
         <main className="content">
+        <ToastContainer />
           <div className="container-fluid p-0">
             <div className="row d-flex">
               <div className="col-xl-4 col-xxl-4">
@@ -1030,12 +1078,45 @@ const StudentEditDetails = () => {
                                       </Link>
                                     </td>
                                     <td>
-                                      <i
-                                        className="fa fa-inr"
-                                        aria-hidden="true"
-                                      ></i>{" "}
-                                      {tutor.per_lesson_charge}
-                                      /lesson
+                                    {tutor.default_billing ===
+                                        "per_month_charge" && (
+                                        <>
+                                          <i
+                                            className="fa fa-inr"
+                                            aria-hidden="true"
+                                          ></i>{" "}
+                                          {tutor.per_month_charge}/month
+                                        </>
+                                      )}
+
+                                      {tutor.default_billing ===
+                                        "per_lesson_charge" && (
+                                        <>
+                                          <i
+                                            className="fa fa-inr"
+                                            aria-hidden="true"
+                                          ></i>{" "}
+                                          {tutor.per_lesson_charge}/lesson
+                                        </>
+                                      )}
+
+                                      {tutor.default_billing === "per_hour_charge" && (
+                                        <>
+                                          <i
+                                            className="fa fa-inr"
+                                            aria-hidden="true"
+                                          ></i>{" "}
+                                          {tutor.per_hour_charge}/hour
+                                        </>
+                                      )}
+
+                                      {tutor.default_billing !== "per_month_charge" &&
+                                        tutor.default_billing !==
+                                          "per_lesson_charge" &&
+                                          tutor.default_billing !==
+                                          "per_hour_charge" && (
+                                          <p>Default price not specified</p>
+                                        )}
                                     </td>
                                     <td>{tutor.default_lesson_length}</td>
                                     <td>
@@ -1044,7 +1125,7 @@ const StudentEditDetails = () => {
                                           (cat) =>
                                             cat.id ===
                                             tutor.default_lesson_cat
-                                        ).eventcat_name
+                                        )?.eventcat_name
                                       }
                                     </td>
                                     <td>

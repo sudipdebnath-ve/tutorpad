@@ -9,7 +9,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../../../../utils/config.js";
 import instructors from "../../assets/images/Instructors.svg";
-import students from "../../assets/images/students.svg";
+import studentImg from "../../assets/images/students.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import FetchStudyLog from "../FetchStudyLog.js";
@@ -54,20 +54,22 @@ const TutorEditDetails = () => {
   const [selectedDays, setSelectedDays] = useState([]);
   const [editPrivileges, setEditPrivileges] = useState(false);
   const [checkedPrivileges, setCheckedPrivileges] = useState([]);
-  const [selectedStudents, setSelectedStudents] = useState([]);
+  // const [selectedStudents, setSelectedStudents] = useState([]);
   const [defaultLessonCat, setDefaultLessonCat] = useState("");
   const [defaultLessonLength, setDefaultLessonLength] = useState("30");
   const [price, setPrice] = useState("30.00");
+  const [defaultBilling, setDefaultBilling] = useState("per_lesson_charge");
   const [makeUpCredits, setMakeUpCredits] = useState("0");
   const [assignStudent, setAssignStudent] = useState({});
   const [students, setStudents] = useState([]);
+  const [updateTutor, setUpdateTutor] = useState({});
 
   let { id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleStudentsChange = (selectedOptions) => {
-    setSelectedStudents(selectedOptions);
-  };
+  // const handleStudentsChange = (selectedOptions) => {
+  //   setSelectedStudents(selectedOptions);
+  // };
 
   const handleEditClick = () => {
     setEditPrivileges((prev) => !prev);
@@ -257,7 +259,38 @@ const TutorEditDetails = () => {
         );
       }
     }
+    setUpdateTutor({...updateTutor, ["privileges"]:checkedPrivileges})
   };
+
+  const updatePrivileges = async (e) => {
+     e.preventDefault();
+     
+     updateTutor["tutor_id"]=id;
+
+     const config = {
+      method: "PATCH",
+      url: `${API_URL}update-tutor`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: updateTutor,
+    };
+    await axios(config)
+      .then((response) => {
+        console.log(response);
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        setEditPrivileges(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.response.data.success === false) {
+          setError(error.response.data.data);
+        }
+      });
+
+  }
 
   const handleClick = (e) => {
     e.preventDefault();
@@ -281,7 +314,7 @@ const TutorEditDetails = () => {
   };
 
   const getStudentById = (studentId) => {
-    return studentData.find((student) => student.id === studentId);
+    return studentData?.find((student) => student.id === studentId);
   };
 
   const formSubmit = async (e) => {
@@ -377,6 +410,10 @@ const TutorEditDetails = () => {
     if (name === "default_lesson_length") {
       setDefaultLessonLength(value);
     }
+    if (name === "default_billing") {
+      setDefaultBilling(e.target.value);
+      console.log(defaultBilling);
+    }
 
     if (name === "price") {
       setPrice(value);
@@ -392,13 +429,21 @@ const TutorEditDetails = () => {
   const saveAssignStudent = async (e) => {
     e.preventDefault();
 
-    let selectedStudent = document.getElementById("students");
+    let selectedStudent = document.getElementById("student_id");
 
     assignStudent["tutor_id"] = id;
     assignStudent["student_id"] = selectedStudent?.value;
 
-    if (!assignStudent.hasOwnProperty("price")) {
-      assignStudent["price"] = price;
+    if (defaultBilling === "per_lesson_charge") {
+      assignStudent["per_lesson_charge"] = price;
+    }
+
+    if (defaultBilling === "per_month_charge") {
+      assignStudent["per_month_charge"] = price;
+    }
+
+    if (defaultBilling === "per_hour_charge") {
+      assignStudent["per_hour_charge"] = price;
     }
 
     if (!assignStudent.hasOwnProperty("default_lesson_cat")) {
@@ -429,13 +474,14 @@ const TutorEditDetails = () => {
         });
         setIsOpen(false);
         closeModal();
-        fetchAssignStudents();
+        fetchAssignStudents(id);
       })
       .catch((error) => {
         console.log(error);
         if (error.response.data.success === false) {
           setError(error.response.data.data);
         }
+        setAssignStudent({});
       });
   };
 
@@ -619,7 +665,6 @@ const TutorEditDetails = () => {
     setIsOpens(e);
   }
 
-  console.log(modalIsOpen);
   return (
     <div className="wrapper student-details">
       {sidebarToggle ? (
@@ -871,17 +916,17 @@ const TutorEditDetails = () => {
                     <div className="formbold-input-flex diff">
                       <div>
                         <label
-                          htmlFor="students"
+                          htmlFor="student_id"
                           className="formbold-form-label"
                         >
                           Student
                         </label>
                         <div>
                           <select
-                            name="students"
+                            name="student_id"
                             className="form-control"
                             onChange={handleAssignStudent}
-                            id="students"
+                            id="student_id"
                           >
                             {studentData &&
                               studentData.map((stu) => {
@@ -892,6 +937,11 @@ const TutorEditDetails = () => {
                                 );
                               })}
                           </select>
+                          <div className="pt-2">
+                            <small style={{ color: "red" }}>
+                              {error?.error?.length ? error.error : <></>}
+                            </small>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -912,16 +962,25 @@ const TutorEditDetails = () => {
                           id="default_lesson_cat"
                           value={defaultLessonCat}
                         >
-                          <option value="">Select a category</option> 
+                          <option value="">Select a category</option>
                           {allCategory &&
                             allCategory.map((cat) => {
                               return (
                                 <option key={cat.id} value={cat.id}>
-                                  {cat.eventcat_name}
+                                   {cat.eventcat_name ? cat.eventcat_name : 'Unknown Category'}
                                 </option>
                               );
                             })}
                         </select>
+                        <div className="pt-2">
+                          <small style={{ color: "red" }}>
+                            {error?.default_lesson_cat?.length ? (
+                              error.default_lesson_cat[0]
+                            ) : (
+                              <></>
+                            )}
+                          </small>
+                        </div>
                       </div>
                       <div>
                         <label
@@ -958,7 +1017,7 @@ const TutorEditDetails = () => {
                       <div>
                         <div>
                           <label
-                            htmlFor="default_biling"
+                            htmlFor="default_billing"
                             className="formbold-form-label"
                           >
                             Default Billing
@@ -968,8 +1027,9 @@ const TutorEditDetails = () => {
                           <input
                             type="radio"
                             value="no_automatic_charge"
-                            name="default_biling"
+                            name="default_billing"
                             onChange={handleAssignStudent}
+                            checked={defaultBilling === "no_automatic_charge"}
                           ></input>
                           Don't automatically create any calendar-generated
                           charges
@@ -978,8 +1038,9 @@ const TutorEditDetails = () => {
                           <input
                             type="radio"
                             value="per_lesson_charge"
-                            name="default_biling"
+                            name="default_billing"
                             onChange={handleAssignStudent}
+                            checked={defaultBilling === "per_lesson_charge"}
                           ></input>
                           Student pays based on the number of lessons taken
                         </div>
@@ -987,8 +1048,9 @@ const TutorEditDetails = () => {
                           <input
                             type="radio"
                             value="per_month_charge"
-                            name="default_biling"
+                            name="default_billing"
                             onChange={handleAssignStudent}
+                            checked={defaultBilling === "per_month_charge"}
                           ></input>
                           Student pays the same amount each month regardless of
                           number of lessons
@@ -997,8 +1059,9 @@ const TutorEditDetails = () => {
                           <input
                             type="radio"
                             value="per_hour_charge"
-                            name="default_biling"
+                            name="default_billing"
                             onChange={handleAssignStudent}
+                            checked={defaultBilling === "per_hour_charge"}
                           ></input>
                           Student pays an hourly rate
                         </div>
@@ -1009,76 +1072,87 @@ const TutorEditDetails = () => {
                     </div>
 
                     <div className="formbold-input-flex">
-                      <div>
-                        <label
-                          htmlFor="price"
-                          className="formbold-form-label"
-                          id="price"
-                        >
-                          Price
-                        </label>
-                        <div style={{ position: "relative" }}>
-                          <span
-                            style={{
-                              position: "absolute",
-                              left: "10px",
-                              top: "50%",
-                              transform: "translateY(-50%)",
-                            }}
-                          >
-                            <i className="fa fa-inr" aria-hidden="true"></i>
-                          </span>
-                          <input
-                            type="text"
-                            name="price"
-                            className="form-control"
-                            style={{
-                              paddingLeft: "25px",
-                              paddingRight: "70px",
-                            }}
-                            onChange={handleAssignStudent}
-                            value={price}
-                            required
-                          />
-                          <span
-                            style={{
-                              position: "absolute",
-                              right: "10px",
-                              top: "50%",
-                              transform: "translateY(-50%)",
-                            }}
-                          >
-                            Per Hour
-                          </span>
+                      {defaultBilling !== "no_automatic_charge" && (
+                        <div>
+                          <div>
+                            <label
+                              htmlFor="price"
+                              className="formbold-form-label"
+                              id="price"
+                            >
+                              Price
+                            </label>
+                            <div style={{ position: "relative" }}>
+                              <span
+                                style={{
+                                  position: "absolute",
+                                  left: "10px",
+                                  top: "50%",
+                                  transform: "translateY(-50%)",
+                                }}
+                              >
+                                <i className="fa fa-inr" aria-hidden="true"></i>
+                              </span>
+                              <input
+                                type="text"
+                                name="price"
+                                className="form-control"
+                                style={{
+                                  paddingLeft: "25px",
+                                  paddingRight: "70px",
+                                }}
+                                onChange={handleAssignStudent}
+                                value={price}
+                                required
+                              />
+                              <span
+                                style={{
+                                  position: "absolute",
+                                  right: "10px",
+                                  top: "50%",
+                                  transform: "translateY(-50%)",
+                                }}
+                              >
+                                {defaultBilling === "per_lesson_charge" &&
+                                  "Per Lesson"}
+                                {defaultBilling === "per_month_charge" &&
+                                  "Per Month"}
+                                {defaultBilling === "per_hour_charge" &&
+                                  "Per Hour"}
+                              </span>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="make_up_credits"
-                          className="formbold-form-label"
-                          id="make_up_credits"
-                        >
-                          Make-Up Credits
-                        </label>
-                        <div style={{ position: "relative" }}>
-                          <input
-                            type="text"
-                            name="make_up_credits"
-                            className="form-control"
-                            onChange={handleAssignStudent}
-                            value={makeUpCredits}
-                            required
-                          />
-                          <span
-                            style={{
-                              position: "absolute",
-                              right: "10px",
-                              top: "50%",
-                              transform: "translateY(-50%)",
-                            }}
+                      )}
+                      <div className="formbold-input-flex diff">
+                        <div>
+                          <label
+                            htmlFor="make_up_credits"
+                            className="formbold-form-label"
+                            id="make_up_credits"
                           >
-                            Credits
-                          </span>
+                            Make-Up Credits
+                          </label>
+                          <div style={{ position: "relative" }}>
+                            <input
+                              type="text"
+                              name="make_up_credits"
+                              className="form-control"
+                              onChange={handleAssignStudent}
+                              value={makeUpCredits}
+                              required
+                            />
+                            <span
+                              style={{
+                                position: "absolute",
+                                right: "10px",
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                              }}
+                            >
+                              Credits
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1360,7 +1434,7 @@ const TutorEditDetails = () => {
           </div>
         </ReactModal>
         <main className="content">
-          {/* <ToastContainer /> */}
+          <ToastContainer />
           <div className="container-fluid p-0">
             <div className="row d-flex">
               <div className="col-xl-4 col-xxl-4">
@@ -1426,7 +1500,6 @@ const TutorEditDetails = () => {
                 </div>
               </div>
               <div className="col-xl-8 col-xxl-8">
-                
                 <div className="card">
                   <div
                     className="accordion accordion-flush"
@@ -1479,12 +1552,45 @@ const TutorEditDetails = () => {
                                       </Link>
                                     </td>
                                     <td>
-                                      <i
-                                        className="fa fa-inr"
-                                        aria-hidden="true"
-                                      ></i>{" "}
-                                      {student.per_lesson_charge}
-                                      /lesson
+                                      {student.default_billing ===
+                                        "per_month_charge" && (
+                                        <>
+                                          <i
+                                            className="fa fa-inr"
+                                            aria-hidden="true"
+                                          ></i>{" "}
+                                          {student.per_month_charge}/month
+                                        </>
+                                      )}
+
+                                      {student.default_billing ===
+                                        "per_lesson_charge" && (
+                                        <>
+                                          <i
+                                            className="fa fa-inr"
+                                            aria-hidden="true"
+                                          ></i>{" "}
+                                          {student.per_lesson_charge}/lesson
+                                        </>
+                                      )}
+
+                                      {student.default_billing === "per_hour_charge" && (
+                                        <>
+                                          <i
+                                            className="fa fa-inr"
+                                            aria-hidden="true"
+                                          ></i>{" "}
+                                          {student.per_hour_charge}/hour
+                                        </>
+                                      )}
+
+                                      {student.default_billing !== "per_month_charge" &&
+                                        student.default_billing !==
+                                          "per_lesson_charge" &&
+                                          student.default_billing !==
+                                          "per_hour_charge" && (
+                                          <p>Default price not specified</p>
+                                        )}
                                     </td>
                                     <td>{student.default_lesson_length}</td>
                                     <td>
@@ -1493,7 +1599,7 @@ const TutorEditDetails = () => {
                                           (cat) =>
                                             cat.id ===
                                             student.default_lesson_cat
-                                        ).eventcat_name
+                                        )?.eventcat_name || 'Unknown Category'
                                       }
                                     </td>
                                     <td>
@@ -1504,15 +1610,15 @@ const TutorEditDetails = () => {
                                     <td>
                                       {/* Edit icon */}
                                       <div className="d-flex gap-2">
-                                      <i
-                                        className="fa fa-pencil"
-                                        aria-hidden="true"
-                                      ></i>
-                                      {/* Delete icon */}
-                                      <i
-                                        className="fa fa-trash"
-                                        aria-hidden="true"
-                                      ></i>
+                                        <i
+                                          className="fa fa-pencil"
+                                          aria-hidden="true"
+                                        ></i>
+                                        {/* Delete icon */}
+                                        <i
+                                          className="fa fa-trash"
+                                          aria-hidden="true"
+                                        ></i>
                                       </div>
                                     </td>
                                   </tr>
@@ -1526,7 +1632,7 @@ const TutorEditDetails = () => {
                                   <div className="py-3">
                                     <div className="chart chart-xs">
                                       <img
-                                        src={students}
+                                        src={studentImg}
                                         alt="No students assigned"
                                       />
                                     </div>
@@ -2529,7 +2635,7 @@ const TutorEditDetails = () => {
                                         "manage_self_edit"
                                       )
                                         ? true
-                                        : true
+                                        : false
                                     }
                                     disabled={true}
                                   />
@@ -2890,7 +2996,7 @@ const TutorEditDetails = () => {
 
                                       <button
                                         className="formbold-btn"
-                                        // onClick={formSubmit}
+                                        onClick={updatePrivileges}
                                       >
                                         Submit
                                       </button>
