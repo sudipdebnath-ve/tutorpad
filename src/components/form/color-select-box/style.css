@@ -1,0 +1,46 @@
+.colorOptionBox{
+    height: 100px;
+    width: 300px;
+    background-color:white;
+    position: absolute;
+    overflow-y: scroll;
+  }
+  .colorOptionBox ul{
+   padding: 0;
+  }
+  .colorOptionBox ul li{
+    list-style-type: none;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    cursor: pointer;
+  }
+  .colorDotBox{
+    min-width: 100px;
+    height: 30px;
+    border-radius: 5px;
+    border:1px solid gray;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 10px;
+  }
+  .colorDot{
+    width: 15px;
+    height: 15px;
+    border-radius: 25px;
+    border:1px solid black;
+    opacity: 1;
+    margin: 0;
+    margin-right: 5px;
+  }
+  .colorDotBoxShow{
+    display: flex;
+    align-items: center;
+    gap: 5;
+  }
+  .colorDotX{
+    margin-left: 10px;
+    cursor: pointer;
+  }

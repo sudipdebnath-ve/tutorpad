@@ -15,63 +15,17 @@ import FetchStudyLog from "../FetchStudyLog.js";
 import FetchAttendanceLog from "../FetchAttendanceLog.js";
 import lending from "../assets/images/lending.svg";
 import ReactModal from "react-modal";
-import { ToastContainer, toast } from "react-toastify";
 
 const StudentEditDetails = () => {
-  const { sidebarToggle, 
-    token, 
-    setLoading,
-    getTutor,
-    allTutors,
-    fetchCategory,
-    allCategory
-  
-  } = useUserDataContext();
+  const { sidebarToggle, token, setLoading } = useUserDataContext();
   const [initial, setInitial] = useState("");
   const [todayDate, setTodayDate] = useState(new Date());
   const [startDate, setStartDate] = useState(null);
   const [studentFetchData, setStudentFetchData] = useState({});
   const [modalIsOpen, setIsOpens] = useState(false);
-  const [defaultLessonCat, setDefaultLessonCat] = useState("");
-  const [defaultLessonLength, setDefaultLessonLength] = useState("30");
-  const [price, setPrice] = useState("30.00");
-  const [makeUpCredits, setMakeUpCredits] = useState("0");
-  const [assignTutor, setAssignTutor] = useState({});
-  const [error, setError] = useState({});
-  const [tutors,setTutors] =useState([]);
-  const [defaultBilling, setDefaultBilling] = useState('per_lesson_charge');
 
   let { id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
-
-  const getTutorById = (id) => {
-     return allTutors.find((tutor)=> tutor.id===id)
-  }
-
-  const fetchAssignTutors = async (id) => {
-    setLoading(true);
-    console.log(id);
-    const validateconfig = {
-      method: "GET",
-      url: `${API_URL}assigned-tutors/${id}`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      data: {
-        user_id: id,
-      },
-    };
-    await axios(validateconfig)
-      .then((response) => {
-        console.log(response.data);
-        setTutors(response.data.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoading(true);
-      });
-  };
 
   const fetchStudentDetails = async (id) => {
     setLoading(true);
@@ -99,10 +53,7 @@ const StudentEditDetails = () => {
   };
 
   useEffect(() => {
-    fetchCategory();
-    getTutor();
     fetchStudentDetails(id);
-    fetchAssignTutors(id);
   }, [id]);
 
   useEffect(() => {
@@ -147,96 +98,6 @@ const StudentEditDetails = () => {
     setIsOpen(!isOpen);
   };
 
-
-  const handleAssignTutor = (e) => {
-    const name = e.target.name;
-    let value = e.target.value;
-
-    if (name === "default_lesson_cat") {
-      setDefaultLessonCat(value);
-    }
-
-    if(name === "default_billing"){
-      setDefaultBilling(value);
-    }
-
-    if (name === "default_lesson_length") {
-      setDefaultLessonLength(value);
-    }
-
-    if (name === "price") {
-      setPrice(value);
-    }
-
-    if (name === "make_up_credits") {
-      setMakeUpCredits(value);
-    }
-
-    setAssignTutor({ ...assignTutor, [name]: value });
-  };
-
-  const saveAssignTutor = async (e) => {
-    e.preventDefault();
-
-    let selectedTutor= document.getElementById("tutor_id");
-
-    assignTutor["student_id"] = id;
-    assignTutor["tutor_id"] = selectedTutor?.value;
-
-    if(defaultBilling==="per_lesson_charge"){
-      assignTutor["per_lesson_charge"]=price;
-    }
-
-    if(defaultBilling==="per_month_charge"){
-      assignTutor["per_month_charge"]=price;
-    }
-
-    if(defaultBilling==="per_hour_charge"){
-      assignTutor["per_hour_charge"]=price;
-    }
-
-
-    if (!assignTutor.hasOwnProperty("default_lesson_cat")) {
-      assignTutor["default_lesson_cat"] = defaultLessonCat;
-    }
-
-    if (!assignTutor.hasOwnProperty("make_up_credits")) {
-      assignTutor["make_up_credits"] = makeUpCredits;
-    }
-
-    if (!assignTutor.hasOwnProperty("default_lesson_length")) {
-      assignTutor["default_lesson_length"] = defaultLessonLength;
-    }
-
-    const config = {
-      method: "POST",
-      url: `${API_URL}map-tutor-student`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      data: assignTutor,
-    };
-    await axios(config)
-      .then((response) => {
-        console.log(response);
-        toast.success(response.data.message, {
-          position: toast.POSITION.TOP_CENTER,
-        });
-
-        setIsOpen(false);
-        closeModal();
-        fetchAssignTutors(id);
-        setAssignTutor({});
-      })
-      .catch((error) => {
-        console.log(error);
-        if (error.response.data.success === false) {
-          setError(error.response.data.data);
-        }
-        setAssignTutor({});
-      });
-  };
-
   // console.log(userData);
   const customStyles = {
     content: {
@@ -272,8 +133,8 @@ const StudentEditDetails = () => {
 
   // ReactModal.setAppElement("#yourAppElement");
 
-  function openModal(e) {
-    setIsOpens(e);
+  function openModal() {
+    setIsOpens(true);
   }
 
   function afterOpenModal() {
@@ -281,8 +142,8 @@ const StudentEditDetails = () => {
     // subtitle.style.color = "#f00";
   }
 
-  function closeModal(e) {
-    setIsOpens(e);
+  function closeModal() {
+    setIsOpens(false);
   }
 
   console.log(modalIsOpen);
@@ -302,7 +163,7 @@ const StudentEditDetails = () => {
         <TopBar />
 
         <ReactModal
-          isOpen={modalIsOpen === "profile"}
+          isOpen={modalIsOpen}
           onAfterOpen={afterOpenModal}
           onRequestClose={closeModal}
           style={customStyles}
@@ -517,291 +378,7 @@ const StudentEditDetails = () => {
             </form>
           </div>
         </ReactModal>
-        <ReactModal
-          isOpen={modalIsOpen === "assignTutor"}
-          onAfterOpen={afterOpenModal}
-          onRequestClose={closeModal}
-          style={customStyles}
-          contentLabel="Example Modal"
-        >
-          <div className="mypreference-modal">
-            <div className="close-h">
-              <h4>Assign Tutor</h4>
-              <button className="closeModal" onClick={closeModal}>
-                X
-              </button>
-            </div>
-            <form name="studentProfile">
-              <div className="row d-flex">
-                <div className="col-xl-12 col-xxl-12">
-                  <div className="formbold-form-step-1 active">
-                    <div className="formbold-input-flex diff">
-                      <div>
-                        <label
-                          htmlFor="tutor_id"
-                          className="formbold-form-label"
-                        >
-                          Tutor
-                        </label>
-                        <div>
-                          <select
-                            name="tutor_id"
-                            className="form-control"
-                            onChange={handleAssignTutor}
-                            id="tutor_id"
-                          >
-                            {allTutors &&
-                              allTutors.map((tutor) => {
-                                return (
-                                  <option key={tutor.id} value={tutor.id}>
-                                    {tutor.name? tutor.name : ""}
-                                  </option>
-                                );
-                              })}
-                          </select>
-                          <div className="pt-2">
-                            <small style={{ color: "red" }}>
-                              {error?.error?.length ? (
-                                error.error
-                              ) : (
-                                <></>
-                              )}
-                            </small>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="formbold-input-flex">
-                      <div>
-                        <label
-                          htmlFor="default_lesson_cat"
-                          className="formbold-form-label"
-                        >
-                          Default Lesson Category
-                        </label>
-                        <br></br>
-
-                        <select
-                          name="default_lesson_cat"
-                          className="form-control"
-                          onChange={handleAssignTutor}
-                          id="default_lesson_cat"
-                          value={defaultLessonCat}
-                        >
-                           <option value="">Select a category</option> 
-                          {allCategory &&
-                            allCategory.map((cat) => {
-                              return (
-                                <option key={cat.id} value={cat.id}>
-                                  {cat.eventcat_name ? cat.eventcat_name : 'Unknown Category'}
-                                </option>
-                              );
-                            })}
-                        </select>
-                        <div className="pt-2">
-                            <small style={{ color: "red" }}>
-                              {error?.default_lesson_cat?.length ? (
-                                error.default_lesson_cat[0]
-                              ) : (
-                                <></>
-                              )}
-                            </small>
-                          </div>
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="default_lesson_length"
-                          className="formbold-form-label"
-                          id="default_lesson_length"
-                        >
-                          Default Lesson Length
-                        </label>
-                        <div style={{ position: "relative" }}>
-                          <input
-                            type="text"
-                            name="default_lesson_length"
-                            className="form-control"
-                            onChange={handleAssignTutor}
-                            value={defaultLessonLength}
-                            required
-                          />
-                          <span
-                            style={{
-                              position: "absolute",
-                              right: "10px",
-                              top: "50%",
-                              transform: "translateY(-50%)",
-                            }}
-                          >
-                            minutes
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="formbold-input-flex diff">
-                      <div>
-                        <div>
-                          <label
-                            htmlFor="default_billing"
-                            className="formbold-form-label"
-                          >
-                            Default Billing
-                          </label>
-                        </div>
-                        <div className="input-radio">
-                          <input
-                            type="radio"
-                            value="no_automatic_charge"
-                            name="default_billing"
-                            onChange={handleAssignTutor}
-                            checked={defaultBilling === "no_automatic_charge"}
-                          ></input>
-                          Don't automatically create any calendar-generated
-                          charges
-                        </div>
-                        <div className="input-radio">
-                          <input
-                            type="radio"
-                            value="per_lesson_charge"
-                            name="default_billing"
-                            onChange={handleAssignTutor}
-                            checked={defaultBilling === "per_lesson_charge"}
-                          ></input>
-                          Student pays based on the number of lessons taken
-                        </div>
-                        <div className="input-radio">
-                          <input
-                            type="radio"
-                            value="per_month_charge"
-                            name="default_billing"
-                            onChange={handleAssignTutor}
-                            checked={defaultBilling === "per_month_charge"}
-                          ></input>
-                          Student pays the same amount each month regardless of
-                          number of lessons
-                        </div>
-                        <div className="input-radio">
-                          <input
-                            type="radio"
-                            value="per_hour_charge"
-                            name="default_billing"
-                            onChange={handleAssignTutor}
-                            checked={defaultBilling === "per_hour_charge"}
-                          ></input>
-                          Student pays an hourly rate
-                        </div>
-                        <span>
-                          Charges will automatically adjust to lesson length
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="formbold-input-flex">
-                    {defaultBilling !== 'no_automatic_charge' && (
-                      <div>
-                      <div>
-                        <label
-                          htmlFor="price"
-                          className="formbold-form-label"
-                          id="price"
-                        >
-                          Price
-                        </label>
-                        <div style={{ position: "relative" }}>
-                          <span
-                            style={{
-                              position: "absolute",
-                              left: "10px",
-                              top: "50%",
-                              transform: "translateY(-50%)",
-                            }}
-                          >
-                            <i className="fa fa-inr" aria-hidden="true"></i>
-                          </span>
-                          <input
-                            type="text"
-                            name="price"
-                            className="form-control"
-                            style={{
-                              paddingLeft: "25px",
-                              paddingRight: "70px",
-                            }}
-                            onChange={handleAssignTutor}
-                            value={price}
-                            required
-                          />
-                          <span
-                            style={{
-                              position: "absolute",
-                              right: "10px",
-                              top: "50%",
-                              transform: "translateY(-50%)",
-                            }}
-                          >
-                             {defaultBilling === 'per_lesson_charge' && "Per Lesson"}
-                             {defaultBilling === 'per_month_charge' && "Per Month"}
-                             {defaultBilling === 'per_hour_charge' && "Per Hour"}
-                          </span>
-                        </div>
-                      </div>
-                      </div>
-                    )}
-                      <div className="formbold-input-flex diff">
-                        <div>
-                        <label
-                          htmlFor="make_up_credits"
-                          className="formbold-form-label"
-                          id="make_up_credits"
-                        >
-                          Make-Up Credits
-                        </label>
-                        <div style={{ position: "relative" }}>
-                          <input
-                            type="text"
-                            name="make_up_credits"
-                            className="form-control"
-                            onChange={handleAssignTutor}
-                            value={makeUpCredits}
-                            required
-                          />
-                          <span
-                            style={{
-                              position: "absolute",
-                              right: "10px",
-                              top: "50%",
-                              transform: "translateY(-50%)",
-                            }}
-                          >
-                            Credits
-                          </span>
-                        </div>
-                      </div>
-                      </div>
-                    </div>
-                   
-                  </div>
-                </div>
-                <hr></hr>
-                <div className="formbold-form-btn-wrapper">
-                  <div className="btn-end">
-                    <Link className="cancel" onClick={closeModal}>
-                      Cancel
-                    </Link>
-                    <button
-                      className="formbold-btn"
-                      onClick={saveAssignTutor}
-                    >
-                      Assign
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-        </ReactModal>
         <main className="content">
-        <ToastContainer />
           <div className="container-fluid p-0">
             <div className="row d-flex">
               <div className="col-xl-4 col-xxl-4">
@@ -812,9 +389,7 @@ const StudentEditDetails = () => {
                         <h2>{initial && initial.toLocaleUpperCase()}</h2>
                       </div>
                     </div>
-                    <div className="edit-user"  
-                    onClick={(e) =>
-                         openModal("profile") }>
+                    <div className="edit-user" onClick={openModal}>
                       <i className="fa fa-pencil" aria-hidden="true"></i>
                     </div>
 
@@ -1052,106 +627,7 @@ const StudentEditDetails = () => {
                       >
                         <div className="accordion-body">
                           <h3>Assigned Tutors</h3>
-                          {tutors.length > 0 ? (
-                            <table className="table">
-                              <thead>
-                                <tr>
-                                  <th>Name</th>
-                                  <th>Default Price</th>
-                                  <th>Default Lesson Length</th>
-                                  <th>Default Lesson Category</th>
-                                  <th>Make-Up Credits</th>
-                                  <th></th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {tutors.map((tutor) => (
-                                  <tr key={tutor.tutor_id}>
-                                    <td>
-                                      <Link
-                                        to={`/tutors/details/${tutor.tutor_id}`}
-                                      >
-                                        {
-                                          getTutorById(tutor.tutor_id)
-                                            .name
-                                        }
-                                      </Link>
-                                    </td>
-                                    <td>
-                                    {tutor.default_billing ===
-                                        "per_month_charge" && (
-                                        <>
-                                          <i
-                                            className="fa fa-inr"
-                                            aria-hidden="true"
-                                          ></i>{" "}
-                                          {tutor.per_month_charge}/month
-                                        </>
-                                      )}
 
-                                      {tutor.default_billing ===
-                                        "per_lesson_charge" && (
-                                        <>
-                                          <i
-                                            className="fa fa-inr"
-                                            aria-hidden="true"
-                                          ></i>{" "}
-                                          {tutor.per_lesson_charge}/lesson
-                                        </>
-                                      )}
-
-                                      {tutor.default_billing === "per_hour_charge" && (
-                                        <>
-                                          <i
-                                            className="fa fa-inr"
-                                            aria-hidden="true"
-                                          ></i>{" "}
-                                          {tutor.per_hour_charge}/hour
-                                        </>
-                                      )}
-
-                                      {tutor.default_billing !== "per_month_charge" &&
-                                        tutor.default_billing !==
-                                          "per_lesson_charge" &&
-                                          tutor.default_billing !==
-                                          "per_hour_charge" && (
-                                          <p>Default price not specified</p>
-                                        )}
-                                    </td>
-                                    <td>{tutor.default_lesson_length}</td>
-                                    <td>
-                                      {
-                                        allCategory.find(
-                                          (cat) =>
-                                            cat.id ===
-                                            tutor.default_lesson_cat
-                                        )?.eventcat_name
-                                      }
-                                    </td>
-                                    <td>
-                                      Total: {tutor.makeup_credits} <br />
-                                      Booked: {tutor.makeup_credits} <br />
-                                      Available: {tutor.makeup_credits} <br />
-                                    </td>
-                                    <td>
-                                      {/* Edit icon */}
-                                      <div className="d-flex gap-2">
-                                      <i
-                                        className="fa fa-pencil"
-                                        aria-hidden="true"
-                                      ></i>
-                                      {/* Delete icon */}
-                                      <i
-                                        className="fa fa-trash"
-                                        aria-hidden="true"
-                                      ></i>
-                                      </div>
-                                    </td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          ) : (
                           <div className="row">
                             <div className="col-12 col-md-12 col-xxl-12 d-flex order-2 order-xxl-3">
                               <div className="flex-fill w-100">
@@ -1166,19 +642,10 @@ const StudentEditDetails = () => {
                                     student
                                   </strong>
                                 </h5>
-                               
                                 <hr></hr>
-                              </div>
-                            </div>
-                          </div>
-                          )}
-                          <div className="formbold-form-btn-wrapper">
+                                <div className="formbold-form-btn-wrapper">
                                   <div className="btn-end">
-                                    <button className="formbold-btn"
-                                     onClick={(e) =>
-                                      openModal("assignTutor")
-                                    }
-                                    >
+                                    <button className="formbold-btn">
                                       <i
                                         style={{ color: "#ffffff" }}
                                         className="fa fa-plus"
@@ -1188,6 +655,9 @@ const StudentEditDetails = () => {
                                     </button>
                                   </div>
                                 </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
