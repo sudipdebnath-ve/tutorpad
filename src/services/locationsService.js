@@ -51,3 +51,12 @@ export const getLocationsDetails = async (id) => {
         console.log(error);
       });
 };
+
+export const getLocations = async () => {
+  return locationsApi.get('eventloc').then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};

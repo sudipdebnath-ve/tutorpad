@@ -20,6 +20,7 @@ import {settings} from 'react-icons-kit/feather/settings';
 const Calendars = () => {
   const {
     sidebarToggle,
+    userId,
     userData,
     fetchData,
     token,
@@ -29,6 +30,8 @@ const Calendars = () => {
     allEvents,
     studentData,
     fetchStudentData,
+    fetchLocation,
+    allLocation
   } = useUserDataContext();
   const [modalIsOpen, setIsOpen] = useState(false);
   const [eventDesc, setEventDesc] = useState({});
@@ -52,6 +55,8 @@ const Calendars = () => {
     start: new Date(),
     end: new Date(),
   });
+
+
 
   const navigate = useNavigate();
 
@@ -582,6 +587,19 @@ useEffect(() => {
     openModal("quickAddLesson");
     console.log(e);
   };
+
+
+// Edit 
+  const openQuickAddLessonEditModal = (e) => {
+    openModal("quickAddLessonEdit");
+    console.log(e);
+  };
+  useEffect(()=>{
+    fetchLocation();
+    console.log("Locations",allLocation);
+  },[userId])
+
+
   function formatDate(date) {
     var d = new Date(date),
       month = "" + (d.getMonth() + 1),
@@ -626,7 +644,7 @@ useEffect(() => {
           <div className="calendar-modal">
             <div className="close-h">
               <div className="popup-icons">
-                <i class="fa fa-pencil" aria-hidden="true"></i>
+                <i onClick={openQuickAddLessonEditModal} class="fa fa-pencil" aria-hidden="true"></i>
                 <i class="fa fa-envelope" aria-hidden="true"></i>
                 <i class="fa fa-commenting" aria-hidden="true"></i>
                 <i class="fa fa-clone" aria-hidden="true"></i>
@@ -693,8 +711,425 @@ useEffect(() => {
             </div>
           </div>
         </ReactModal>
+
         <ReactModal
           isOpen={modalIsOpen === "quickAddLesson"}
+          onAfterOpen={afterOpenModal}
+          onRequestClose={closeModal}
+          style={quickAddLessonStyles}
+          contentLabel="Example Modal"
+        >
+          <div className="calendar-modal">
+            <div className="close-h add">
+              <h4>
+                <strong>Quick Add Lesson</strong>
+              </h4>
+              <button className="closeModal" onClick={closeModal}>
+                X
+              </button>
+            </div>
+            <br></br>
+            <form name="studentProfile">
+              <div className="row d-flex">
+                <div className="col-xl-12 col-xxl-12">
+                  <div className="formbold-form-step-1 active">
+                    <div className="formbold-input-flex diff">
+                      <div>
+                        <label htmlFor="tutor" className="formbold-form-label">
+                          Title
+                        </label>
+                        <div>
+                          <input
+                            type="text"
+                            name="event_name"
+                            className="form-control"
+                            onChange={handleChange}
+                          />
+                          <div className="pt-2">
+                            <small style={{ color: "red" }}>
+                              {error?.event_name?.length ? (
+                                error.event_name[0]
+                              ) : (
+                                <></>
+                              )}
+                            </small>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label htmlFor="tutor" className="formbold-form-label">
+                          Tutor
+                        </label>
+                        <div>
+                          <select
+                            name="tutor"
+                            className="form-control"
+                            onChange={handleChange}
+                            id="tutor"
+                          >
+                            <option>Select Tutor</option>
+                            {allTutors.map((item) => {
+                              return (
+                                <option value={item.id}>{item.name}</option>
+                              );
+                            })}
+                          </select>
+                        </div>
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="student"
+                          className="formbold-form-label"
+                        >
+                          Student
+                        </label>
+                        <div>
+                          <select
+                            name="student"
+                            className="form-control"
+                            onChange={handleChange}
+                          >
+                            <option>Open Lesson Slot</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label
+                          htmlFor="location"
+                          className="formbold-form-label"
+                        >
+                          Location
+                        </label>
+                        <select className="form-control" name="location">
+                            {
+                              allLocation.map((e)=>{
+                                return <option value={e.id}>{e.eventloc_name}</option>
+                              })
+                            }
+                        </select>
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label
+                          htmlFor="start_date"
+                          className="formbold-form-label"
+                        >
+                          Start Date
+                        </label>
+                        <input
+                          type="date"
+                          name="start_date"
+                          className="form-control"
+                          value={formatDate(startDate)}
+                          onChange={handleChange}
+                        />
+                        <div className="pt-2">
+                          <small style={{ color: "red" }}>
+                            {error?.start_date?.length ? (
+                              error.start_date[0]
+                            ) : (
+                              <></>
+                            )}
+                          </small>
+                        </div>
+                      </div>
+                      <div>
+                        <div>
+                          <label htmlFor="date" className="formbold-form-label">
+                            End Date
+                          </label>
+                          <input
+                            type="date"
+                            name="end_date"
+                            className="form-control"
+                            value={formatDate(endDate)}
+                            onChange={handleChange}
+                          />
+                          <div className="pt-2">
+                            <small style={{ color: "red" }}>
+                              {error?.end_date?.length ? (
+                                error.end_date[0]
+                              ) : (
+                                <></>
+                              )}
+                            </small>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label
+                          htmlFor="start_time"
+                          className="formbold-form-label"
+                        >
+                          Start Time
+                        </label>
+                        <br></br>
+
+                        <input
+                          type="time"
+                          name="start_time"
+                          className="form-control"
+                          // value={tenantData.address}
+                          onChange={handleChange}
+                        />
+                        <div className="pt-2">
+                          <small style={{ color: "red" }}>
+                            {error?.start_time?.length ? (
+                              error.start_time[0]
+                            ) : (
+                              <></>
+                            )}
+                          </small>
+                        </div>
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="end_time"
+                          className="formbold-form-label"
+                        >
+                          End Time
+                        </label>
+                        <br></br>
+
+                        <input
+                          type="time"
+                          name="end_time"
+                          className="form-control"
+                          // value={tenantData.address}
+                          onChange={handleChange}
+                        />
+                        <div className="pt-2">
+                          <small style={{ color: "red" }}>
+                            {error?.end_time?.length ? (
+                              error.end_time[0]
+                            ) : (
+                              <></>
+                            )}
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <div
+                          className="preference"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="event_repeats"
+                            value="This event repeats"
+                            onChange={handleChange}
+                          />
+                          This event repeats
+                        </div>
+                      </div>
+                    </div>
+                    {eventRepeats && (
+                      <>
+                        <div className="recurring">
+                          <div className="recurring-head">
+                            <i class="fa fa-undo" aria-hidden="true"></i>{" "}
+                            <strong>Recurring Event</strong>
+                          </div>
+
+                          <div className="formbold-input-flex diff">
+                            <div>
+                              <div>
+                                <label
+                                  htmlFor="frequency"
+                                  className="formbold-form-label"
+                                >
+                                  Frequency
+                                </label>
+                              </div>
+                              <div className="input-radio">
+                                <input
+                                  type="radio"
+                                  value="Daily"
+                                  name="frequency"
+                                  onChange={handleChange}
+                                  checked={selectedOption === "Daily"}
+                                ></input>
+                                Daily
+                                <input
+                                  type="radio"
+                                  value="Weekly"
+                                  name="frequency"
+                                  onChange={handleChange}
+                                  checked={selectedOption === "Weekly"}
+                                ></input>
+                                Weekly
+                                <input
+                                  type="radio"
+                                  value="Monthly"
+                                  name="frequency"
+                                  onChange={handleChange}
+                                  checked={selectedOption === "Monthly"}
+                                ></input>
+                                Monthly
+                                <input
+                                  type="radio"
+                                  value="Yearly"
+                                  name="frequency"
+                                  onChange={handleChange}
+                                  checked={selectedOption === "Yearly"}
+                                ></input>
+                                Yearly
+                              </div>
+                            </div>
+                          </div>
+                          <div className="formbold-input-flex align-items-end">
+                            <div>
+                              <label
+                                htmlFor="time"
+                                className="formbold-form-label"
+                              >
+                                Every
+                              </label>
+                              <br></br>
+                              <div style={{position:"relative"}}>
+                              <input
+                                type="text"
+                                name="every"
+                                className="form-control"
+                                style={{
+                                  paddingLeft: "25px",
+                                  paddingRight: "70px",
+                                }}
+                                value={everyWeeks}
+                                min={1}
+                                max={100}
+                                onChange={handleChange}
+                              />
+                              <span
+                                  style={{
+                                    position: "absolute",
+                                    right: "10px",
+                                    top: "50%",
+                                    transform: "translateY(-50%)",
+                                  }}
+                                >
+                                  {selectedOption === "Daily" || selectedOption === "Weekly" ? "Weeks" : selectedOption}
+                                </span>
+                              </div>
+                            </div>
+                            {!repeatsIndefinitely && (
+                              <div>
+                                <label
+                                  htmlFor="time"
+                                  className="formbold-form-label"
+                                >
+                                  Repeat Until
+                                </label>
+                                <br></br>
+                                <input
+                                  type="date"
+                                  name="repeat_until"
+                                  className="form-control"
+                                  // value={tenantData.address}
+                                  onChange={handleChange}
+                                />{" "}
+                              </div>
+                            )}
+                          </div>
+                          <div className="formbold-input-flex">
+                            <div>
+                              <div
+                                className="preference"
+                                style={{ fontSize: "15px" }}
+                              >
+                                <input
+                                  type="checkbox"
+                                  name="repeats_indefinitely"
+                                  value="This event repeats"
+                                  onChange={handleChange}
+                                  checked={repeatsIndefinitely}
+                                />
+                                Repeat indefinitely
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                    <div className="formbold-input-flex diff">
+                      <div>
+                        <div>
+                          <label
+                            htmlFor="visibility"
+                            className="formbold-form-label"
+                          >
+                            Visibility
+                          </label>
+                        </div>
+                        <div className="input-radio">
+                          <input
+                            type="radio"
+                            value="Public - Visible on the Student Portal calendar to all students"
+                            name="quick_add_visibility"
+                            onChange={handleChange}
+                            checked
+                          ></input>
+                          Public - Visible on the Student Portal calendar to all
+                          students
+                        </div>
+                        <div className="input-radio">
+                          <input
+                            type="radio"
+                            value="Private - Visible on the Student Portal calendar to current attendees only"
+                            name="quick_add_visibility"
+                            onChange={handleChange}
+                          ></input>
+                          Private - Visible on the Student Portal calendar to
+                          current attendees only
+                        </div>
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <div
+                          className="preference"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="quickadd_event_credit"
+                            value="This event requires a make-up credit"
+                            onChange={handleChange}
+                          />
+                          This event requires a make-up credit
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr></hr>
+                <div className="formbold-form-btn-wrapper">
+                  <div className="btn-end">
+                    <Link className="cancel" onClick={closeModal}>
+                      Cancel
+                    </Link>
+
+                    <button className="formbold-btn" onClick={saveEvent}>
+                      Save
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </ReactModal>
+        
+        <ReactModal
+          isOpen={modalIsOpen === "quickAddLessonEdit"}
           onAfterOpen={afterOpenModal}
           onRequestClose={closeModal}
           style={quickAddLessonStyles}
@@ -1109,6 +1544,7 @@ useEffect(() => {
             </form>
           </div>
         </ReactModal>
+
         <ReactModal
           isOpen={modalIsOpen === "newEvent"}
           onAfterOpen={afterOpenModal}
@@ -2015,6 +2451,7 @@ useEffect(() => {
             </form>
           </div>
         </ReactModal>
+
         <main className="content">
           <ToastContainer />
           <div className="container-fluid p-0">
