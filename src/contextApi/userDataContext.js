@@ -243,7 +243,6 @@ const AppContext = ({ children }) => {
     };
     await axios(config)
       .then((response) => {
-        console.log(response.data.data);
         setAllEvents(response.data.data);
       })
       .catch((error) => {
@@ -266,7 +265,6 @@ const AppContext = ({ children }) => {
     };
     await axios(config)
       .then((response) => {
-        console.log(response.data.data);
         setAllCategory(response.data.data);
       })
       .catch((error) => {
@@ -284,7 +282,6 @@ const AppContext = ({ children }) => {
     };
     await axios(config)
       .then((response) => {
-        console.log(response.data.data);
         setAllLocation(response.data.data);
       })
       .catch((error) => {

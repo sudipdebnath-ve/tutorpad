@@ -8,7 +8,6 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-
 import ReactModal from "react-modal";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -17,7 +16,56 @@ import { API_URL } from "../../../utils/config.js";
 import Select from "react-select";
 import OptionBox from "../../form/option-box/OptionBox.js";
 import {settings} from 'react-icons-kit/feather/settings';
+import DayTabInput from "../../form/day-tab-input/DayTabInput.js";
+import { createEvents,getStudentsByTutorId,getEventDetailsById,updateEvents,deleteEvents } from "../../../services/calenderService.js";
+import { getCategories } from "../../../services/categoriesService.js";
+const customStyles = {
+  content: {
+    width: "25%",
+    height: "35%",
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+  },
+  overlay: {
+    background: "#6c5a5669",
+  },
+};
+const addEventStyles = {
+  content: {
+    width: "25%",
+    height: "auto",
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+  },
+  overlay: {
+    background: "#6c5a5669",
+  },
+};
+const quickAddLessonStyles = {
+  content: {
+    width: "45%",
+    height: "90%",
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+  },
+  overlay: {
+    background: "#6c5a5669",
+  },
+};
 const Calendars = () => {
+  
   const {
     sidebarToggle,
     userId,
@@ -33,13 +81,12 @@ const Calendars = () => {
     fetchLocation,
     allLocation
   } = useUserDataContext();
+
   const [modalIsOpen, setIsOpen] = useState(false);
   const [eventDesc, setEventDesc] = useState({});
   const [eventStartTime, setEventStartTime] = useState("");
   const [eventEndTime, setEventEndTime] = useState("");
   const [eventDate, setEventDate] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [addEvent, setAddEvent] = useState({});
   const [eventRepeats, setEventRepeats] = useState(false);
   const [repeatsIndefinitely, setRepeatsIndefinitely] = useState(true);
@@ -56,7 +103,231 @@ const Calendars = () => {
     end: new Date(),
   });
 
+  const [studentsList,setStudentsList] = useState([]);
+  const [startDate,setStartDate] = useState(formatDate(new Date()));
 
+
+  /**
+   * Field State
+   */
+    const [isEditForm,setIsEditForm] = useState(false);
+    const [selectedEventId,setSelectedEventId] = useState("");
+    const [event_attendees,set_event_attendees] = useState([]);
+    const [location_id,set_location_id] = useState("");
+    const [is_public,set_is_public] = useState("1");
+    const [event_recurring,set_event_recurring] = useState(false);
+    const [event_frequency,set_event_frequency] = useState("Daily");
+    const [event_repeat_on,set_event_repeat_on] = useState(["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]);
+    const [event_frequency_val,set_event_frequency_val] = useState("");
+    const [event_repeat_indefinitely,set_event_repeat_indefinitely] = useState(true);
+    const [event_repeat_until,set_event_repeat_until] = useState("");
+    const [require_makeup_credits,set_require_makeup_credits] = useState(false);
+    const [event_public_desc,set_event_public_desc] = useState("");
+    const [pubdesc_on_calendar,set_pubdesc_on_calendar] = useState(false);   
+    const [event_private_desc,set_event_private_desc] = useState("");  
+    const [allow_registration,set_allow_registration] = useState(false); 
+    const [registration_max,set_registration_max] = useState(0); 
+    const [student_pricing,set_student_pricing] = useState('default'); 
+    const [student_pricing_val,set_student_pricing_val] = useState(0);
+    const [event_all_day,set_event_all_day] = useState(false);
+    const [eventtype_id,set_eventtype_id] = useState("1");
+    const [eventcat_id,set_eventcat_id] = useState("");
+    const [event_subtutor,set_event_subtutor] = useState("");
+    const [event_name,set_event_name] = useState("");
+    const [event_tutor,set_event_tutor] = useState("");
+    const [start_date,set_start_date] = useState("");
+    const [start_time,set_start_time] = useState("");
+    const [end_date,set_end_date] = useState("");
+    const [end_time,set_end_time] = useState("");
+    const [categoriesList,setCategoriesList] = useState([]);
+    const [duration,setDuration] = useState(0);
+    const [event_attendees_value,set_event_attendees_value] = useState([]);
+    const [update_all,set_update_all] = useState(false);
+
+
+    const [email_students,set_email_students] = useState(false);
+    const [email_parents,set_email_parents] = useState(false);
+    const [email_tutors,set_email_tutors] = useState(false);
+    const [sms_students,set_sms_students] = useState(false);
+    const [sms_parents,set_sms_parents] = useState(false);
+    const [sms_tutors,set_sms_tutors] = useState(false);
+    const [notes,set_notes] = useState("");
+    const [delete_all,set_delete_all] = useState(false);
+
+
+
+    const resetForm = () =>{
+      set_event_attendees([]);
+      set_location_id("");
+      set_is_public("1");
+      set_event_recurring(false);
+      set_event_frequency("Daily");
+      set_event_repeat_on(["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]);
+      set_event_frequency_val("");
+      set_event_repeat_indefinitely(true);
+      set_event_repeat_until("");
+      set_require_makeup_credits(false);
+      set_event_public_desc("");
+      set_pubdesc_on_calendar(false);
+      set_event_private_desc("");
+      set_allow_registration(false);
+      set_registration_max(0);
+      set_student_pricing('default');
+      set_student_pricing_val(0);
+      set_event_all_day(false);
+      set_eventcat_id("");
+      set_event_subtutor("");
+      set_event_name("");
+      set_event_tutor("");
+      set_start_date(formatDate(new Date()));
+      set_start_time("");
+      set_end_date(formatDate(new Date()));
+      set_end_time("");
+    }
+
+    const getFrequency = (freq)=>{
+      if(freq=='Daily')
+      {
+        return 1;
+      }else if(freq=='Weekly')
+      {
+        return 2;
+      }else if(freq=='Monthly')
+      {
+        return 3;
+      }else if(freq=='Yearly')
+      {
+        return 4;
+      }
+    }
+
+    const getFrequencyString = (freq)=>{
+      if(freq==1)
+      {
+        return 'Daily';
+      }else if(freq==2)
+      {
+        return 'Weekly';
+      }else if(freq==3)
+      {
+        return 'Monthly';
+      }else if(freq==4)
+      {
+        return 'Yearly';
+      }
+    }
+
+
+    const calculateEndDateTimeByDuration = (duration)=>{
+      
+       let durationMs = parseInt(duration) * 60000;
+        let hours = 0;
+        let minutes = 0;
+        if (start_time) {
+          [hours, minutes] = start_time.split(":").map(Number);
+        }
+        let startDateTime = new Date(start_date);
+        startDateTime.setHours(hours);
+        startDateTime.setMinutes(minutes);
+        let endDate = new Date(startDateTime.getTime() + durationMs); // Convert duration to milliseconds and add to start date
+          let end_date_str = `${endDate.getFullYear()}-${(
+          endDate.getMonth() + 1
+        )
+          .toString()
+          .padStart(2, "0")}-${endDate.getDate().toString().padStart(2, "0")}`;
+        set_end_date(end_date_str);
+        set_end_time(`${endDate.getHours()}:${endDate.getMinutes()}`);
+    }
+    const getCategoriesHandler = async ()=>{
+      const result = await getCategories();
+      setCategoriesList(result.data);
+    }
+
+    const getEventDetailsByIdHandler= async (id) => {
+      resetForm();
+      const result = await getEventDetailsById(id);
+      console.log(result);
+      const attendees_ids = JSON.parse(result?.data?.event_attendees);
+      await getStudentsByTutorIdHandler(result.data.event_tutor);
+      set_event_attendees_value([...studentsList.filter((e)=>{
+        console.log(e);
+        let verify = attendees_ids.find((f)=>f==e.value);
+        return verify!=undefined;
+      })]);
+      set_event_attendees(JSON.parse(result?.data?.event_attendees));
+      set_location_id(result.data.location_id);
+      set_is_public(result.data.is_public);
+      set_event_recurring(result.data.event_recurring);
+      set_event_frequency(getFrequencyString(result.data.event_frequency));
+      set_event_repeat_on(JSON.parse(result.data.event_repeat_on));
+      set_event_frequency_val(result.data.event_frequency_val);
+      set_event_repeat_indefinitely(result.data.event_repeat_indefinitely);
+      set_event_repeat_until(result.data.event_repeat_until);
+      set_require_makeup_credits(result.data.require_makeup_credits);
+      set_event_public_desc(result.data.event_public_desc);
+      set_pubdesc_on_calendar(result.data.pubdesc_on_calendar);
+      set_event_private_desc(result.data.event_private_desc);
+      set_allow_registration(result.data.allow_registration);
+      set_registration_max(result.data.registration_max);
+      set_student_pricing(result.data.student_pricing);
+      set_student_pricing_val(result.data.student_pricing_val);
+      set_event_all_day(result.data.event_all_day);
+      set_eventcat_id(result.data.eventcat_id);
+      set_event_subtutor(result.data.event_subtutor);
+      set_event_name(result.data.event_name);
+      set_event_tutor(result.data.event_tutor);
+      set_start_date(result.data.start_date);
+      set_start_time(result.data.start_time);
+      set_end_date(formatDate(result.data.end_date));
+      set_end_time(result.data.end_time);
+      set_eventtype_id(result.data.eventtype_id);
+      setDuration(result.data.event_duration);
+      setShowSubstituteTutor(result.data.event_subtutor!==null?true:false);
+      set_update_all(result.data.update_all);
+      setIsEditForm(true);
+      if(result.data.eventtype_id==1)
+      {
+        openModal("quickAddLesson");
+      }else if(result.data.eventtype_id==2)
+      {
+        openModal("newEvent");
+      }else if(result.data.eventtype_id==3)
+      {
+        openModal("newNonTutoringEvent");
+      }
+      
+      
+
+    }
+
+    const deleteEventsHandler = async (e)=>{
+      e.preventDefault();
+      const data = {
+        email_students:email_students,
+        email_parents:email_parents,
+        email_tutors:email_tutors,
+        sms_students:sms_students,
+        sms_parents:sms_parents,
+        sms_tutors:sms_tutors,
+        notes:notes,
+        delete_all:delete_all
+      };
+      const response = await deleteEvents(data,selectedEventId);
+      console.log(response);
+      if(response.success)
+      {
+        toast.success(response.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        fetchEventsForVisibleRange(visibleRange);
+        setIsOpen(false);
+      }else{
+        toast.error(response.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      }
+
+    }
 
   const navigate = useNavigate();
 
@@ -81,17 +352,21 @@ useEffect(() => {
         fetchStudentData();
       }, 2000);
       getTutor();
-
-      //fetchEvent();
-      // Fetch events when the component mounts
       fetchEventsForVisibleRange(visibleRange);
-      console.log(studentData);
     }
   }, []);
 
-  const handleAttendeesChange = (selectedOptions) => {
-    setSelectedAttendees(selectedOptions);
-  };
+
+
+  const getStudentsByTutorIdHandler = async (id)=>{
+    set_event_tutor(id);
+   const result =  await getStudentsByTutorId(id);
+   const studentss = result?.data?.map((e)=>{ 
+    return { value: e.student.id, label:e.student.name }
+   }) || [];
+   setStudentsList(studentss);
+  }
+
 
   // Fetch events for the given date range
   const fetchEventsForVisibleRange = async (range) => {
@@ -106,93 +381,23 @@ useEffect(() => {
     fetchEventsForVisibleRange(range);
   };
 
-  // const eventArr = [
-  //   {
-  //     title: "DTS STARTS",
-  //     start: new Date(2024, 0, 13, 0, 0, 0),
-  //     end: new Date(2024, 0, 13, 0, 0, 0),
-  //   },
-
-  //   {
-  //     title: "DTS ENDS",
-  //     start: new Date(2024, 0, 9, 0, 0, 0),
-  //     end: new Date(2024, 0, 9, 0, 0, 0),
-  //   },
-
-  //   {
-  //     title: "Meeting",
-  //     start: new Date(2023, 3, 12, 10, 30, 0, 0),
-  //     end: new Date(2023, 3, 12, 12, 30, 0, 0),
-  //     desc: "Pre-meeting meeting, to prepare for the meeting",
-  //   },
-  //   {
-  //     title: "Multi-day Event",
-  //     start: new Date(2023, 10, 20, 19, 30, 0),
-  //     end: new Date(2023, 10, 22, 2, 0, 0),
-  //   },
-  // ];
   let eventArr = [];
   if (allEvents) {
     allEvents?.forEach((element) => {
       let myObject = {
-        title: element.event.event_name,
-        start: new Date(element.occurrence_start_date),
-        end: new Date(element.occurrence_end_date),
-        start_time: element.occurrence_start_time,
-        end_time: element.occurrence_end_time,
-        desc: element.event.event_public_desc || "",
+        id:element?.id,
+        title: element?.event_name,
+        start: new Date(element?.start_date),
+        end: new Date(element?.end_date),
+        start_time: element?.start_time,
+        end_time: element?.end_time,
+        desc: element?.event?.event_public_desc || "",
       };
 
       eventArr.push(myObject);
     });
   }
 
-  console.log(allEvents);
-  const customStyles = {
-    content: {
-      width: "25%",
-      height: "35%",
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
-    },
-    overlay: {
-      background: "#6c5a5669",
-    },
-  };
-  const addEventStyles = {
-    content: {
-      width: "25%",
-      height: "auto",
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
-    },
-    overlay: {
-      background: "#6c5a5669",
-    },
-  };
-  const quickAddLessonStyles = {
-    content: {
-      width: "45%",
-      height: "90%",
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
-    },
-    overlay: {
-      background: "#6c5a5669",
-    },
-  };
 
   function openModal(e) {
     setIsOpen(e);
@@ -207,46 +412,6 @@ useEffect(() => {
     setIsOpen(e);
   }
 
-  const handleChange = (e) => {
-    const name = e.target.name;
-    let value = e.target.value;
-
-    if (name === "event_repeats") {
-      if (e.target.checked) {
-        setEventRepeats(true);
-      } else {
-        setEventRepeats(false);
-      }
-    }
-    if (name === "start_date") {
-      // Use the selected date if it's different from the default eventDate
-      const selectedDate = formatDate(startDate);
-
-      setStartDate(value !== selectedDate ? value : formatDate(startDate));
-    }
-    if (name === "end_date") {
-      // Use the selected date if it's different from the default eventDate
-      const selectedDate = formatDate(endDate);
-
-      setEndDate(value !== selectedDate ? value : formatDate(endDate));
-    }
-    if (name === "repeats_indefinitely") {
-      if (e.target.checked) {
-        setRepeatsIndefinitely(true);
-      } else {
-        setRepeatsIndefinitely(false);
-      }
-    }
-    if (name === "frequency") {
-      setSelectedOption(e.target.value);
-    }
-    if (name === "every") {
-      const parsedValue = parseInt(value); // Ensure the value is parsed as an integer
-    setEveryWeeks(parsedValue); // Update everyWeeks state
-    setAddEvent((prev) => ({ ...prev, [name]: parsedValue })); // Update addEvent state
-    } 
-    setAddEvent({ ...addEvent, [name]: value });
-  };
 
   const handleNewEventChange = (e) => {
     const name = e.target.name;
@@ -295,7 +460,6 @@ useEffect(() => {
     if(name === "tutor"){
       setSelectedTutor(e.target.value);
        // Filter out the selected tutor from the list of all tutors
-  console.log(selectedTutor);
     }
 
     if (name === "every" && eventRepeats===true) {
@@ -309,268 +473,90 @@ useEffect(() => {
   };
 
   const filteredTutors = allTutors.filter((tutor) => tutor.id !== parseInt(selectedTutor));
-  console.log(filteredTutors);
-
-
-  const saveNewCalenderEvent = async (e) => {
-    e.preventDefault();
-    let selectedTutor = document.getElementById("tutor");
-    let substitute_tutor = document.getElementById("substitute_tutor");
-    //  let attendees=document.getElementById("attendees")
-    // let time= document.getElementById("time")
-    let category = document.getElementById("category");
-
-    // if (allDay) {
-    //   // If not an all-day event, retrieve start and end times from inputs
-    //   addEvent[start_time] = start_time;
-    //   addEvent[end_time] = end_time;
-    // }
-
-    // addEvent["date"] = formatDate(eventDate);
-    addEvent["event_type"] = "newCalendarEvent";
-    addEvent["tutor"] = selectedTutor?.value;
-    addEvent["substitute_tutor"] = substitute_tutor?.value;
-    addEvent["attendees"] = selectedAttendees.map((option) => option.value);
-    //  addEvent["start_time"] = time?.value;
-    addEvent["start_date"] = formatDate(startDate);
-    addEvent["category"] = category?.value;
-
-    if (!allDay) {
-      // Calculate duration in milliseconds
-      let durationMs =
-        parseInt(document.getElementsByName("duration")[0].value) * 60000;
-
-      // Parse the time input to extract hours and minutes
-      let hours = 0;
-      let minutes = 0;
-      if (addEvent.start_time) {
-        [hours, minutes] = addEvent.start_time.split(":").map(Number);
-      }
-
-      // Create a new Date object with the start date and time components
-      let startDateTime = new Date(addEvent.start_date);
-      startDateTime.setHours(hours);
-      startDateTime.setMinutes(minutes);
-
-      // Calculate the end date by adding the duration to the start date and time
-      let endDate = new Date(startDateTime.getTime() + durationMs); // Convert duration to milliseconds and add to start date
-      //console.log(endDate);
-
-      // Update addEvent object with calculated end_date
-      // Update addEvent object with calculated end_date in a localized format
-      addEvent["end_date"] = `${endDate.getFullYear()}-${(
-        endDate.getMonth() + 1
-      )
-        .toString()
-        .padStart(2, "0")}-${endDate.getDate().toString().padStart(2, "0")}`;
-      addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`;
-    }
-    // Check if addEvent includes start_date and end_date properties
-    if (!addEvent.hasOwnProperty("start_date")) {
-      addEvent["start_date"] = formatDate(startDate);
-    }
-
-    if (!addEvent.hasOwnProperty("end_date")) {
-      addEvent["end_date"] = formatDate(startDate);
-    }
-
-    if (!addEvent.hasOwnProperty("every")) {
-      addEvent["every"] = everyWeeks;
-    }
-
-    if (!addEvent.hasOwnProperty("frequency") && eventRepeats === true) {
-      addEvent["frequency"] = selectedOption;
-    }
-
-    if (!addEvent.hasOwnProperty("quick_add_visibility")) {
-      addEvent["quick_add_visibility"] =
-        "Public - Visible on the Student Portal calendar to all students";
-    }
-
-    console.log(addEvent);
-    const config = {
-      method: "POST",
-      url: `${API_URL}create-event`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      data: addEvent,
-    };
-    await axios(config)
-      .then((response) => {
-        console.log(response);
-        toast.success(response.data.message, {
-          position: toast.POSITION.TOP_CENTER,
-        });
-        getTutor();
-
-        setIsOpen(false);
-        setEventRepeats(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        if (error.response.data.success === false) {
-          setError(error.response.data.data);
-        }
-      });
-    fetchEventsForVisibleRange(visibleRange);
-  };
-
-  const saveNonTutoringEvent = async (e) => {
-    e.preventDefault();
-    let selectedTutor = document.getElementById("tutor");
-    let category = document.getElementById("category");
-
-    addEvent["event_type"] = "Non Tutoring Event";
-    addEvent["tutor"] = selectedTutor?.value;
-    
-    addEvent["start_date"] = formatDate(startDate);
-    addEvent["category"] = category?.value;
-
-    if (!allDay) {
-      // Calculate duration in milliseconds
-      let durationMs =
-        parseInt(document.getElementsByName("duration")[0].value) * 60000;
-
-      // Parse the time input to extract hours and minutes
-      let hours = 0;
-      let minutes = 0;
-      if (addEvent.start_time) {
-        [hours, minutes] = addEvent.start_time.split(":").map(Number);
-      }
-
-      // Create a new Date object with the start date and time components
-      let startDateTime = new Date(addEvent.start_date);
-      startDateTime.setHours(hours);
-      startDateTime.setMinutes(minutes);
-
-      // Calculate the end date by adding the duration to the start date and time
-      let endDate = new Date(startDateTime.getTime() + durationMs); // Convert duration to milliseconds and add to start date
-      //console.log(endDate);
-
-      // Update addEvent object with calculated end_date
-      // Update addEvent object with calculated end_date in a localized format
-      addEvent["end_date"] = `${endDate.getFullYear()}-${(
-        endDate.getMonth() + 1
-      )
-        .toString()
-        .padStart(2, "0")}-${endDate.getDate().toString().padStart(2, "0")}`;
-      addEvent["end_time"] = `${endDate.getHours()}:${endDate.getMinutes()}`;
-    }
-    // Check if addEvent includes start_date and end_date properties
-    if (!addEvent.hasOwnProperty("start_date")) {
-      addEvent["start_date"] = formatDate(startDate);
-    }
-
-    if (!addEvent.hasOwnProperty("end_date")) {
-      addEvent["end_date"] = formatDate(startDate);
-    }
-
-    if (!addEvent.hasOwnProperty("every") && eventRepeats === true) {
-      addEvent["every"] = everyWeeks;
-    }
-
-    if (!addEvent.hasOwnProperty("frequency") && eventRepeats === true) {
-      addEvent["frequency"] = selectedOption;
-    }
-
-    if (!addEvent.hasOwnProperty("quick_add_visibility")) {
-      addEvent["quick_add_visibility"] =
-        "Public - Visible on the Student Portal calendar to all students";
-    }
-
-    console.log(addEvent);
-    const config = {
-      method: "POST",
-      url: `${API_URL}create-event`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      data: addEvent,
-    };
-    await axios(config)
-      .then((response) => {
-        console.log(response);
-        toast.success(response.data.message, {
-          position: toast.POSITION.TOP_CENTER,
-        });
-        getTutor();
-
-        setIsOpen(false);
-        setEventRepeats(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        if (error.response.data.success === false) {
-          setError(error.response.data.data);
-        }
-      });
-    fetchEventsForVisibleRange(visibleRange);
-  };
 
   const saveEvent = async (e) => {
     e.preventDefault();
-    let selectedTutor = document.getElementById("tutor");
-    // var value = selectedTutor.value;
-
-    // addEvent["date"] = formatDate(eventDate);
-    addEvent["event_type"] = "quickAddLesson";
-    addEvent["tutor"] = selectedTutor?.value;
-
-    // Check if addEvent includes start_date and end_date properties
-    if (!addEvent.hasOwnProperty("start_date")) {
-      addEvent["start_date"] = formatDate(startDate);
+    const formData = {
+      event_all_day:event_all_day?1:0,
+      eventtype_id:eventtype_id,
+      eventcat_id:eventcat_id,
+      event_subtutor:event_subtutor,
+      event_name:event_name,
+      event_tutor:event_tutor,
+      start_date:start_date,
+      start_time:start_time,
+      end_date:end_date,
+      end_time:end_time,
+      event_attendees:JSON.stringify(event_attendees || []),
+      location_id:location_id,
+      is_public:is_public,
+      event_recurring:event_recurring?1:0,
+      event_frequency:getFrequency(event_frequency),
+      event_repeat_on:JSON.stringify(event_repeat_on?.filter((f)=>f.isActive==true)?.map((e)=>e.label)||[]),
+      event_frequency_val:event_frequency_val,
+      event_repeat_indefinitely:event_repeat_indefinitely?1:0,
+      event_repeat_until:event_repeat_until,
+      require_makeup_credits:require_makeup_credits,
+      event_public_desc:event_public_desc,
+      pubdesc_on_calendar:pubdesc_on_calendar?1:0,
+      event_private_desc:event_private_desc,
+      allow_registration:allow_registration?1:0,
+      registration_max:registration_max,
+      student_pricing:student_pricing,
+      student_pricing_val:student_pricing_val,
+      update_all:update_all,
     }
-
-    if (!addEvent.hasOwnProperty("end_date")) {
-      addEvent["end_date"] = formatDate(endDate);
-    }
-
-    if (!addEvent.hasOwnProperty("frequency")) {
-      addEvent["frequency"] = selectedOption;
-    }
-
-    if (!addEvent.hasOwnProperty("quick_add_visibility")) {
-      addEvent["quick_add_visibility"] =
-        "Public - Visible on the Student Portal calendar to all students";
-    }
-    console.log(addEvent);
-    const config = {
-      method: "POST",
-      url: `${API_URL}create-event`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      data: addEvent,
-    };
-    await axios(config)
-      .then((response) => {
-        console.log(response);
-        toast.success(response.data.message, {
-          position: toast.POSITION.TOP_CENTER,
-        });
-        getTutor();
-
-        setIsOpen(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        if (error.response.data.success === false) {
-          setError(error.response.data.data);
-        }
+  console.log("Test=>",formData);
+  if(isEditForm)
+  {
+    // Edit Form
+    const response = await updateEvents(formData,selectedEventId);
+    console.log("Response=>",response);
+    if(response.success)
+    {
+      toast.success(response.message, {
+        position: toast.POSITION.TOP_CENTER,
       });
-    fetchEventsForVisibleRange(visibleRange);
+      fetchEventsForVisibleRange(visibleRange);
+      setIsOpen(false);
+    }else{
+      toast.error(response.message, {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
+
+  }else{
+    // Add Form
+    const response = await createEvents(formData);
+    console.log("Response=>",response);
+    if(response.success)
+    {
+      toast.success(response.message, {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      fetchEventsForVisibleRange(visibleRange);
+      setIsOpen(false);
+    }else{
+      toast.error(response.message, {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
+
+  }
+    
+
+    
   };
 
   const handleSelectedEvent = (e) => {
-    console.log(e);
+    setSelectedEventId(e.id);
     openModal("event");
     let [hours, minutes] = e.start_time.split(":");
     let newTimeString = `${hours}:${minutes}`;
     let [endhours, endminutes] = e.end_time.split(":");
     let endTimeString = `${endhours}:${endminutes}`;
     // Convert start and end dates to string format
-    const startDateString = e.start.toLocaleString();
+    const startDateString = formatDate(e.start);
     const endDateString = e.end.toLocaleString();
     setEventStartTime(newTimeString);
     setEventEndTime(endTimeString);
@@ -578,27 +564,17 @@ useEffect(() => {
   };
   const openNewAppointmentModal = (e) => {
     openModal("addEvent");
-    console.log(e.start.toDateString());
-    setEventDate(e.start.toDateString());
-    setStartDate(e.start.toDateString());
-    setEndDate(e.start.toDateString());
   };
   const openQuickAddLessonModal = (e) => {
+    resetForm();
+    set_eventtype_id(1);
+    setIsEditForm(false);
     openModal("quickAddLesson");
-    console.log(e);
-  };
-
-
-// Edit 
-  const openQuickAddLessonEditModal = (e) => {
-    openModal("quickAddLessonEdit");
-    console.log(e);
   };
   useEffect(()=>{
     fetchLocation();
-    console.log("Locations",allLocation);
+    getCategoriesHandler();
   },[userId])
-
 
   function formatDate(date) {
     var d = new Date(date),
@@ -612,12 +588,16 @@ useEffect(() => {
     return [year, month, day].join("-");
   }
   const openNewEventModal = (e) => {
+    resetForm();
+    set_eventtype_id(2);
+    setIsEditForm(false);
     openModal("newEvent");
-    console.log(e);
   };
   const openNewNonTutoringEventModal = (e) => {
+    resetForm();
+    set_eventtype_id(3);
+    setIsEditForm(false);
     openModal("newNonTutoringEvent");
-    console.log(e);
   };
 
   return (
@@ -644,11 +624,11 @@ useEffect(() => {
           <div className="calendar-modal">
             <div className="close-h">
               <div className="popup-icons">
-                <i onClick={openQuickAddLessonEditModal} class="fa fa-pencil" aria-hidden="true"></i>
+                <i onClick={()=>getEventDetailsByIdHandler(selectedEventId)} class="fa fa-pencil" aria-hidden="true"></i>
                 <i class="fa fa-envelope" aria-hidden="true"></i>
                 <i class="fa fa-commenting" aria-hidden="true"></i>
                 <i class="fa fa-clone" aria-hidden="true"></i>
-                <i class="fa fa-trash" aria-hidden="true"></i>
+                <i onClick={()=>openModal("deleteEvent")} class="fa fa-trash" aria-hidden="true"></i>
               </div>
               <button className="closeModal" onClick={closeModal}>
                 X
@@ -722,7 +702,7 @@ useEffect(() => {
           <div className="calendar-modal">
             <div className="close-h add">
               <h4>
-                <strong>Quick Add Lesson</strong>
+                <strong>{isEditForm?"Edit Calendar Event":"Quick Add Lesson"}</strong>
               </h4>
               <button className="closeModal" onClick={closeModal}>
                 X
@@ -733,6 +713,18 @@ useEffect(() => {
               <div className="row d-flex">
                 <div className="col-xl-12 col-xxl-12">
                   <div className="formbold-form-step-1 active">
+                    {
+                      isEditForm && event_recurring && <div className="formbold-input-flex diff">
+                                              <div>
+                                                <input
+                                                  type="checkbox"
+                                                  checked={update_all}
+                                                  onChange={(e)=>set_update_all(e.target.checked)}
+                                                />
+                                                <label className="formbold-form-label" style={{marginLeft:5}}>Update all ?</label>
+                                              </div>
+                                          </div>
+                    }
                     <div className="formbold-input-flex diff">
                       <div>
                         <label htmlFor="tutor" className="formbold-form-label">
@@ -743,17 +735,9 @@ useEffect(() => {
                             type="text"
                             name="event_name"
                             className="form-control"
-                            onChange={handleChange}
+                            value={event_name}
+                            onChange={(e)=>set_event_name(e.target.value)}
                           />
-                          <div className="pt-2">
-                            <small style={{ color: "red" }}>
-                              {error?.event_name?.length ? (
-                                error.event_name[0]
-                              ) : (
-                                <></>
-                              )}
-                            </small>
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -766,8 +750,8 @@ useEffect(() => {
                           <select
                             name="tutor"
                             className="form-control"
-                            onChange={handleChange}
-                            id="tutor"
+                            onChange={(e)=>getStudentsByTutorIdHandler(e.target.value)}
+                            value={event_tutor}
                           >
                             <option>Select Tutor</option>
                             {allTutors.map((item) => {
@@ -786,13 +770,7 @@ useEffect(() => {
                           Student
                         </label>
                         <div>
-                          <select
-                            name="student"
-                            className="form-control"
-                            onChange={handleChange}
-                          >
-                            <option>Open Lesson Slot</option>
-                          </select>
+                          <Select defaultValue={event_attendees_value}  onChange={(e)=>set_event_attendees(e.value)} isMulti={true} options={studentsList} />
                         </div>
                       </div>
                     </div>
@@ -804,7 +782,8 @@ useEffect(() => {
                         >
                           Location
                         </label>
-                        <select className="form-control" name="location">
+                        <select onChange={(e)=>set_location_id(e.target.value)} value={location_id} className="form-control" name="location">
+                            <option value={""}>Choose</option>
                             {
                               allLocation.map((e)=>{
                                 return <option value={e.id}>{e.eventloc_name}</option>
@@ -825,18 +804,9 @@ useEffect(() => {
                           type="date"
                           name="start_date"
                           className="form-control"
-                          value={formatDate(startDate)}
-                          onChange={handleChange}
+                          value={formatDate(start_date)}
+                          onChange={(e)=>set_start_date(e.target.value)}
                         />
-                        <div className="pt-2">
-                          <small style={{ color: "red" }}>
-                            {error?.start_date?.length ? (
-                              error.start_date[0]
-                            ) : (
-                              <></>
-                            )}
-                          </small>
-                        </div>
                       </div>
                       <div>
                         <div>
@@ -847,18 +817,9 @@ useEffect(() => {
                             type="date"
                             name="end_date"
                             className="form-control"
-                            value={formatDate(endDate)}
-                            onChange={handleChange}
+                            value={formatDate(end_date)}
+                            onChange={(e)=>set_end_date(e.target.value)}
                           />
-                          <div className="pt-2">
-                            <small style={{ color: "red" }}>
-                              {error?.end_date?.length ? (
-                                error.end_date[0]
-                              ) : (
-                                <></>
-                              )}
-                            </small>
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -876,18 +837,9 @@ useEffect(() => {
                           type="time"
                           name="start_time"
                           className="form-control"
-                          // value={tenantData.address}
-                          onChange={handleChange}
+                          value={start_time}
+                          onChange={(e)=>set_start_time(e.target.value)}
                         />
-                        <div className="pt-2">
-                          <small style={{ color: "red" }}>
-                            {error?.start_time?.length ? (
-                              error.start_time[0]
-                            ) : (
-                              <></>
-                            )}
-                          </small>
-                        </div>
                       </div>
                       <div>
                         <label
@@ -902,18 +854,9 @@ useEffect(() => {
                           type="time"
                           name="end_time"
                           className="form-control"
-                          // value={tenantData.address}
-                          onChange={handleChange}
+                          value={end_time}
+                          onChange={(e)=>set_end_time(e.target.value)}
                         />
-                        <div className="pt-2">
-                          <small style={{ color: "red" }}>
-                            {error?.end_time?.length ? (
-                              error.end_time[0]
-                            ) : (
-                              <></>
-                            )}
-                          </small>
-                        </div>
                       </div>
                     </div>
                     <div className="formbold-input-flex">
@@ -925,14 +868,15 @@ useEffect(() => {
                           <input
                             type="checkbox"
                             name="event_repeats"
-                            value="This event repeats"
-                            onChange={handleChange}
+                            value={event_recurring}
+                            checked={event_recurring}
+                            onChange={(e)=>set_event_recurring(e.target.checked)}
                           />
                           This event repeats
                         </div>
                       </div>
                     </div>
-                    {eventRepeats && (
+                    {event_recurring && (
                       <>
                         <div className="recurring">
                           <div className="recurring-head">
@@ -955,91 +899,98 @@ useEffect(() => {
                                   type="radio"
                                   value="Daily"
                                   name="frequency"
-                                  onChange={handleChange}
-                                  checked={selectedOption === "Daily"}
+                                  onChange={(e)=>set_event_frequency(e.target.value)}
+                                  checked={event_frequency === "Daily"}
                                 ></input>
                                 Daily
                                 <input
                                   type="radio"
                                   value="Weekly"
                                   name="frequency"
-                                  onChange={handleChange}
-                                  checked={selectedOption === "Weekly"}
+                                  onChange={(e)=>set_event_frequency(e.target.value)}
+                                  checked={event_frequency === "Weekly"}
                                 ></input>
                                 Weekly
                                 <input
                                   type="radio"
                                   value="Monthly"
                                   name="frequency"
-                                  onChange={handleChange}
-                                  checked={selectedOption === "Monthly"}
+                                  onChange={(e)=>set_event_frequency(e.target.value)}
+                                  checked={event_frequency === "Monthly"}
                                 ></input>
                                 Monthly
                                 <input
                                   type="radio"
                                   value="Yearly"
                                   name="frequency"
-                                  onChange={handleChange}
-                                  checked={selectedOption === "Yearly"}
+                                  onChange={(e)=>set_event_frequency(e.target.value)}
+                                  checked={event_frequency === "Yearly"}
                                 ></input>
                                 Yearly
                               </div>
+                              {
+                                event_frequency=="Daily" && <DayTabInput values={event_repeat_on} setDaysValue={set_event_repeat_on}/>
+                              }
+                               
                             </div>
                           </div>
-                          <div className="formbold-input-flex align-items-end">
-                            <div>
-                              <label
-                                htmlFor="time"
-                                className="formbold-form-label"
-                              >
-                                Every
-                              </label>
-                              <br></br>
-                              <div style={{position:"relative"}}>
-                              <input
-                                type="text"
-                                name="every"
-                                className="form-control"
-                                style={{
-                                  paddingLeft: "25px",
-                                  paddingRight: "70px",
-                                }}
-                                value={everyWeeks}
-                                min={1}
-                                max={100}
-                                onChange={handleChange}
-                              />
-                              <span
-                                  style={{
-                                    position: "absolute",
-                                    right: "10px",
-                                    top: "50%",
-                                    transform: "translateY(-50%)",
-                                  }}
-                                >
-                                  {selectedOption === "Daily" || selectedOption === "Weekly" ? "Weeks" : selectedOption}
-                                </span>
-                              </div>
-                            </div>
-                            {!repeatsIndefinitely && (
-                              <div>
-                                <label
-                                  htmlFor="time"
-                                  className="formbold-form-label"
-                                >
-                                  Repeat Until
-                                </label>
-                                <br></br>
-                                <input
-                                  type="date"
-                                  name="repeat_until"
-                                  className="form-control"
-                                  // value={tenantData.address}
-                                  onChange={handleChange}
-                                />{" "}
-                              </div>
-                            )}
-                          </div>
+                          {
+                            event_frequency!="Daily" &&  <div className="formbold-input-flex align-items-end">
+                                                            <div>
+                                                              <label
+                                                                htmlFor="time"
+                                                                className="formbold-form-label"
+                                                              >
+                                                                Every
+                                                              </label>
+                                                              <br></br>
+                                                              <div style={{position:"relative"}}>
+                                                              <input
+                                                                type="text"
+                                                                name="every"
+                                                                className="form-control"
+                                                                style={{
+                                                                  paddingLeft: "25px",
+                                                                  paddingRight: "70px",
+                                                                }}
+                                                                value={event_frequency_val}
+                                                                min={1}
+                                                                max={100}
+                                                                onChange={(e)=>set_event_frequency_val(e.target.value)}
+                                                              />
+                                                              <span
+                                                                  style={{
+                                                                    position: "absolute",
+                                                                    right: "10px",
+                                                                    top: "50%",
+                                                                    transform: "translateY(-50%)",
+                                                                  }}
+                                                                >
+                                                                  {event_frequency === "Daily" || event_frequency === "Weekly" ? "Weeks" : event_frequency}
+                                                                </span>
+                                                              </div>
+                                                            </div>
+                                                        </div>
+                          }
+                           {!event_repeat_indefinitely && (
+                                                      <div>
+                                                        <label
+                                                          htmlFor="time"
+                                                          className="formbold-form-label"
+                                                        >
+                                                          Repeat Until
+                                                        </label>
+                                                        <br></br>
+                                                        <input
+                                                          type="date"
+                                                          name="repeat_until"
+                                                          className="form-control"
+                                                          value={event_repeat_until}
+                                                          onChange={(e)=>set_event_repeat_until(formatDate(e.target.value))}
+                                                        />{" "}
+                                                      </div>
+                                                    )}
+                          
                           <div className="formbold-input-flex">
                             <div>
                               <div
@@ -1049,9 +1000,9 @@ useEffect(() => {
                                 <input
                                   type="checkbox"
                                   name="repeats_indefinitely"
-                                  value="This event repeats"
-                                  onChange={handleChange}
-                                  checked={repeatsIndefinitely}
+                                  value=""
+                                  onChange={(e)=>set_event_repeat_indefinitely(e.target.checked)}
+                                  checked={event_repeat_indefinitely}
                                 />
                                 Repeat indefinitely
                               </div>
@@ -1073,10 +1024,10 @@ useEffect(() => {
                         <div className="input-radio">
                           <input
                             type="radio"
-                            value="Public - Visible on the Student Portal calendar to all students"
+                            value="1"
                             name="quick_add_visibility"
-                            onChange={handleChange}
-                            checked
+                            onChange={(e)=>set_is_public(e.target.value)}
+                            checked={is_public=="1"?true:false}
                           ></input>
                           Public - Visible on the Student Portal calendar to all
                           students
@@ -1084,9 +1035,10 @@ useEffect(() => {
                         <div className="input-radio">
                           <input
                             type="radio"
-                            value="Private - Visible on the Student Portal calendar to current attendees only"
+                            value="0"
                             name="quick_add_visibility"
-                            onChange={handleChange}
+                            checked={is_public=="0"?true:false}
+                            onChange={(e)=>set_is_public(e.target.value)}
                           ></input>
                           Private - Visible on the Student Portal calendar to
                           current attendees only
@@ -1102,425 +1054,9 @@ useEffect(() => {
                           <input
                             type="checkbox"
                             name="quickadd_event_credit"
-                            value="This event requires a make-up credit"
-                            onChange={handleChange}
-                          />
-                          This event requires a make-up credit
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <hr></hr>
-                <div className="formbold-form-btn-wrapper">
-                  <div className="btn-end">
-                    <Link className="cancel" onClick={closeModal}>
-                      Cancel
-                    </Link>
-
-                    <button className="formbold-btn" onClick={saveEvent}>
-                      Save
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-        </ReactModal>
-        
-        <ReactModal
-          isOpen={modalIsOpen === "quickAddLessonEdit"}
-          onAfterOpen={afterOpenModal}
-          onRequestClose={closeModal}
-          style={quickAddLessonStyles}
-          contentLabel="Example Modal"
-        >
-          <div className="calendar-modal">
-            <div className="close-h add">
-              <h4>
-                <strong>Quick Add Lesson</strong>
-              </h4>
-              <button className="closeModal" onClick={closeModal}>
-                X
-              </button>
-            </div>
-            <br></br>
-            <form name="studentProfile">
-              <div className="row d-flex">
-                <div className="col-xl-12 col-xxl-12">
-                  <div className="formbold-form-step-1 active">
-                    <div className="formbold-input-flex diff">
-                      <div>
-                        <label htmlFor="tutor" className="formbold-form-label">
-                          Title
-                        </label>
-                        <div>
-                          <input
-                            type="text"
-                            name="event_name"
-                            className="form-control"
-                            onChange={handleChange}
-                          />
-                          <div className="pt-2">
-                            <small style={{ color: "red" }}>
-                              {error?.event_name?.length ? (
-                                error.event_name[0]
-                              ) : (
-                                <></>
-                              )}
-                            </small>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="formbold-input-flex">
-                      <div>
-                        <label htmlFor="tutor" className="formbold-form-label">
-                          Tutor
-                        </label>
-                        <div>
-                          <select
-                            name="tutor"
-                            className="form-control"
-                            onChange={handleChange}
-                            id="tutor"
-                          >
-                            <option>Select Tutor</option>
-                            {allTutors.map((item) => {
-                              return (
-                                <option value={item.id}>{item.name}</option>
-                              );
-                            })}
-                          </select>
-                        </div>
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="student"
-                          className="formbold-form-label"
-                        >
-                          Student
-                        </label>
-                        <div>
-                          <select
-                            name="student"
-                            className="form-control"
-                            onChange={handleChange}
-                          >
-                            <option>Open Lesson Slot</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="formbold-input-flex">
-                      <div>
-                        <label
-                          htmlFor="location"
-                          className="formbold-form-label"
-                        >
-                          Location
-                        </label>
-                        <input
-                          type="text"
-                          name="location"
-                          className="form-control"
-                          // value={formData.email}
-                          onChange={handleChange}
-                          disabled
-                        />
-                      </div>
-                    </div>
-                    <div className="formbold-input-flex">
-                      <div>
-                        <label
-                          htmlFor="start_date"
-                          className="formbold-form-label"
-                        >
-                          Start Date
-                        </label>
-                        <input
-                          type="date"
-                          name="start_date"
-                          className="form-control"
-                          value={formatDate(startDate)}
-                          onChange={handleChange}
-                        />
-                        <div className="pt-2">
-                          <small style={{ color: "red" }}>
-                            {error?.start_date?.length ? (
-                              error.start_date[0]
-                            ) : (
-                              <></>
-                            )}
-                          </small>
-                        </div>
-                      </div>
-                      <div>
-                        <div>
-                          <label htmlFor="date" className="formbold-form-label">
-                            End Date
-                          </label>
-                          <input
-                            type="date"
-                            name="end_date"
-                            className="form-control"
-                            value={formatDate(endDate)}
-                            onChange={handleChange}
-                          />
-                          <div className="pt-2">
-                            <small style={{ color: "red" }}>
-                              {error?.end_date?.length ? (
-                                error.end_date[0]
-                              ) : (
-                                <></>
-                              )}
-                            </small>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="formbold-input-flex">
-                      <div>
-                        <label
-                          htmlFor="start_time"
-                          className="formbold-form-label"
-                        >
-                          Start Time
-                        </label>
-                        <br></br>
-
-                        <input
-                          type="time"
-                          name="start_time"
-                          className="form-control"
-                          // value={tenantData.address}
-                          onChange={handleChange}
-                        />
-                        <div className="pt-2">
-                          <small style={{ color: "red" }}>
-                            {error?.start_time?.length ? (
-                              error.start_time[0]
-                            ) : (
-                              <></>
-                            )}
-                          </small>
-                        </div>
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="end_time"
-                          className="formbold-form-label"
-                        >
-                          End Time
-                        </label>
-                        <br></br>
-
-                        <input
-                          type="time"
-                          name="end_time"
-                          className="form-control"
-                          // value={tenantData.address}
-                          onChange={handleChange}
-                        />
-                        <div className="pt-2">
-                          <small style={{ color: "red" }}>
-                            {error?.end_time?.length ? (
-                              error.end_time[0]
-                            ) : (
-                              <></>
-                            )}
-                          </small>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="formbold-input-flex">
-                      <div>
-                        <div
-                          className="preference"
-                          style={{ fontSize: "15px" }}
-                        >
-                          <input
-                            type="checkbox"
-                            name="event_repeats"
-                            value="This event repeats"
-                            onChange={handleChange}
-                          />
-                          This event repeats
-                        </div>
-                      </div>
-                    </div>
-                    {eventRepeats && (
-                      <>
-                        <div className="recurring">
-                          <div className="recurring-head">
-                            <i class="fa fa-undo" aria-hidden="true"></i>{" "}
-                            <strong>Recurring Event</strong>
-                          </div>
-
-                          <div className="formbold-input-flex diff">
-                            <div>
-                              <div>
-                                <label
-                                  htmlFor="frequency"
-                                  className="formbold-form-label"
-                                >
-                                  Frequency
-                                </label>
-                              </div>
-                              <div className="input-radio">
-                                <input
-                                  type="radio"
-                                  value="Daily"
-                                  name="frequency"
-                                  onChange={handleChange}
-                                  checked={selectedOption === "Daily"}
-                                ></input>
-                                Daily
-                                <input
-                                  type="radio"
-                                  value="Weekly"
-                                  name="frequency"
-                                  onChange={handleChange}
-                                  checked={selectedOption === "Weekly"}
-                                ></input>
-                                Weekly
-                                <input
-                                  type="radio"
-                                  value="Monthly"
-                                  name="frequency"
-                                  onChange={handleChange}
-                                  checked={selectedOption === "Monthly"}
-                                ></input>
-                                Monthly
-                                <input
-                                  type="radio"
-                                  value="Yearly"
-                                  name="frequency"
-                                  onChange={handleChange}
-                                  checked={selectedOption === "Yearly"}
-                                ></input>
-                                Yearly
-                              </div>
-                            </div>
-                          </div>
-                          <div className="formbold-input-flex align-items-end">
-                            <div>
-                              <label
-                                htmlFor="time"
-                                className="formbold-form-label"
-                              >
-                                Every
-                              </label>
-                              <br></br>
-                              <div style={{position:"relative"}}>
-                              <input
-                                type="text"
-                                name="every"
-                                className="form-control"
-                                style={{
-                                  paddingLeft: "25px",
-                                  paddingRight: "70px",
-                                }}
-                                value={everyWeeks}
-                                min={1}
-                                max={100}
-                                onChange={handleChange}
-                              />
-                              <span
-                                  style={{
-                                    position: "absolute",
-                                    right: "10px",
-                                    top: "50%",
-                                    transform: "translateY(-50%)",
-                                  }}
-                                >
-                                  {selectedOption === "Daily" || selectedOption === "Weekly" ? "Weeks" : selectedOption}
-                                </span>
-                              </div>
-                            </div>
-                            {!repeatsIndefinitely && (
-                              <div>
-                                <label
-                                  htmlFor="time"
-                                  className="formbold-form-label"
-                                >
-                                  Repeat Until
-                                </label>
-                                <br></br>
-                                <input
-                                  type="date"
-                                  name="repeat_until"
-                                  className="form-control"
-                                  // value={tenantData.address}
-                                  onChange={handleChange}
-                                />{" "}
-                              </div>
-                            )}
-                          </div>
-                          <div className="formbold-input-flex">
-                            <div>
-                              <div
-                                className="preference"
-                                style={{ fontSize: "15px" }}
-                              >
-                                <input
-                                  type="checkbox"
-                                  name="repeats_indefinitely"
-                                  value="This event repeats"
-                                  onChange={handleChange}
-                                  checked={repeatsIndefinitely}
-                                />
-                                Repeat indefinitely
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                    <div className="formbold-input-flex diff">
-                      <div>
-                        <div>
-                          <label
-                            htmlFor="visibility"
-                            className="formbold-form-label"
-                          >
-                            Visibility
-                          </label>
-                        </div>
-                        <div className="input-radio">
-                          <input
-                            type="radio"
-                            value="Public - Visible on the Student Portal calendar to all students"
-                            name="quick_add_visibility"
-                            onChange={handleChange}
-                            checked
-                          ></input>
-                          Public - Visible on the Student Portal calendar to all
-                          students
-                        </div>
-                        <div className="input-radio">
-                          <input
-                            type="radio"
-                            value="Private - Visible on the Student Portal calendar to current attendees only"
-                            name="quick_add_visibility"
-                            onChange={handleChange}
-                          ></input>
-                          Private - Visible on the Student Portal calendar to
-                          current attendees only
-                        </div>
-                      </div>
-                    </div>
-                    <div className="formbold-input-flex">
-                      <div>
-                        <div
-                          className="preference"
-                          style={{ fontSize: "15px" }}
-                        >
-                          <input
-                            type="checkbox"
-                            name="quickadd_event_credit"
-                            value="This event requires a make-up credit"
-                            onChange={handleChange}
+                            value={require_makeup_credits}
+                            checked={require_makeup_credits}
+                            onChange={(e)=>set_require_makeup_credits(e.target.checked)}
                           />
                           This event requires a make-up credit
                         </div>
@@ -1555,7 +1091,7 @@ useEffect(() => {
           <div className="calendar-modal">
             <div className="close-h add">
               <h4>
-                <strong>New Calendar Event</strong>
+                <strong>{isEditForm?"Edit Calendar Event":"New Calendar Event"}</strong>
               </h4>
               <button className="closeModal" onClick={closeModal}>
                 X
@@ -1566,6 +1102,18 @@ useEffect(() => {
               <div className="row d-flex">
                 <div className="col-xl-12 col-xxl-12">
                   <div className="formbold-form-step-1 active">
+                  {
+                      isEditForm && event_recurring && <div className="formbold-input-flex diff">
+                                              <div>
+                                                <input
+                                                  type="checkbox"
+                                                  checked={update_all}
+                                                  onChange={(e)=>set_update_all(e.target.checked)}
+                                                />
+                                                <label className="formbold-form-label" style={{marginLeft:5}}>Update all ?</label>
+                                              </div>
+                                          </div>
+                    }
                     <div className="formbold-input-flex diff">
                       <div>
                         <label htmlFor="tutor" className="formbold-form-label">
@@ -1576,17 +1124,9 @@ useEffect(() => {
                             type="text"
                             name="event_name"
                             className="form-control"
-                            onChange={handleNewEventChange}
+                            value={event_name}
+                            onChange={(e)=>set_event_name(e.target.value)}
                           />
-                          <div className="pt-2">
-                            <small style={{ color: "red" }}>
-                              {error?.event_name?.length ? (
-                                error.event_name[0]
-                              ) : (
-                                <></>
-                              )}
-                            </small>
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -1599,9 +1139,8 @@ useEffect(() => {
                           <select
                             name="tutor"
                             className="form-control"
-                            onChange={handleNewEventChange}
+                            onChange={(e)=>getStudentsByTutorIdHandler(e.target.value)}
                             id="tutor"
-                            value={selectedTutor} // Set the value attribute to control the selected value
                           >
 
                             {allTutors && allTutors.length > 0 ? (
@@ -1625,7 +1164,7 @@ useEffect(() => {
                             type="checkbox"
                             name="add_substitute_tutor"
                             value="Add substitute tutor"
-                            onChange={handleNewEventChange}
+                            onChange={(e)=>setShowSubstituteTutor(e.target.checked)}
                             checked={showSubstituteTutor}
                           />
                           Add substitute tutor
@@ -1645,7 +1184,8 @@ useEffect(() => {
                             <select
                               name="substitute_tutor"
                               className="form-control"
-                              onChange={handleNewEventChange}
+                              onChange={(e)=>set_event_subtutor(e.target.value)}
+                              value={event_subtutor}
                               id="substitute_tutor"
                             >
                               {filteredTutors &&
@@ -1672,9 +1212,10 @@ useEffect(() => {
                         <div className="input-radio">
                           <input
                             type="radio"
-                            value="Public - Visible on the Student Portal calendar to all students"
                             name="quick_add_visibility"
-                            onChange={handleNewEventChange}
+                            value={"1"}
+                            onChange={(e)=>set_is_public(e.target.value)}
+                            checked={is_public=="1"?true:false}
                           ></input>
                           Public - Visible on the Student Portal calendar to all
                           students
@@ -1682,9 +1223,10 @@ useEffect(() => {
                         <div className="input-radio">
                           <input
                             type="radio"
-                            value="Private - Visible on the Student Portal calendar to current attendees only"
+                            value="0"
                             name="quick_add_visibility"
-                            onChange={handleNewEventChange}
+                            checked={is_public=="0"?true:false}
+                            onChange={(e)=>set_is_public(e.target.value)}
                           ></input>
                           Private - Visible on the Student Portal calendar to
                           current attendees only
@@ -1695,8 +1237,8 @@ useEffect(() => {
                       <input
                         type="checkbox"
                         name="student_makeup_credit"
-                        value="This event requires a make-up credit"
-                        onChange={handleNewEventChange}
+                        checked={require_makeup_credits}
+                        onChange={(e)=>set_require_makeup_credits(e.target.checked)}
                       />
                       This event requires a make-up credit
                     </div>
@@ -1704,8 +1246,8 @@ useEffect(() => {
                       <input
                         type="checkbox"
                         name="student_register_lesson"
-                        value="Allow students to register through the Student Portal"
-                        onChange={handleNewEventChange}
+                        checked={allow_registration}
+                        onChange={(e)=>set_allow_registration(e.target.checked)}
                       />
                       Allow students to register through the Student Portal
                     </div>
@@ -1719,19 +1261,7 @@ useEffect(() => {
                           Attendees
                         </label>
                         <div>
-                          <Select
-                            name="attendees"
-                            options={
-                              studentData &&
-                              studentData.map((item) => ({
-                                value: item.id,
-                                label: item.name,
-                              }))
-                            }
-                            isMulti
-                            onChange={handleAttendeesChange}
-                            value={selectedAttendees}
-                          />
+                          <Select defaultValue={event_attendees_value} onChange={(e)=>set_event_attendees(e.value)} isMulti={true} options={studentsList} />
                         </div>
                       </div>
                       <div>
@@ -1746,8 +1276,8 @@ useEffect(() => {
                             type="date"
                             name="start_date"
                             className="form-control"
-                            value={formatDate(startDate)}
-                            onChange={handleNewEventChange}
+                            value={formatDate(start_date)}
+                            onChange={(e)=>set_start_date(formatDate(e.target.value))}
                           />
                         </div>
                       </div>
@@ -1767,8 +1297,8 @@ useEffect(() => {
                           name="time"
                           id="time"
                           className="form-control"
-                          // value={tenantData.address}
-                          onChange={handleNewEventChange}
+                          value={start_time}
+                          onChange={(e)=>set_start_time(e.target.value)}
                           required
                         />
                       </div>
@@ -1786,10 +1316,11 @@ useEffect(() => {
                           name="duration"
                           className="form-control"
                           placeholder="30 min"
-                          // value={tenantData.address}
-                          onChange={handleNewEventChange}
-                          disabled={disableTimeDuration}
-                          required
+                          value={duration}
+                          onChange={(e)=>{
+                            calculateEndDateTimeByDuration(e.target.value!=""?e.target.value:0);
+                            setDuration(e.target.value);
+                          }}
                         />
                       </div>
                     </div>
@@ -1804,8 +1335,8 @@ useEffect(() => {
                             type="checkbox"
                             name="all_day"
                             value="All day"
-                            checked={allDay}
-                            onChange={handleNewEventChange}
+                            checked={event_all_day}
+                            onChange={(e)=>set_event_all_day(e.target.checked)}
                           />
                           All Day
                         </div>
@@ -1824,12 +1355,16 @@ useEffect(() => {
                         <select
                           name="category"
                           className="form-control"
-                          onChange={handleNewEventChange}
+                          value={eventcat_id}
+                          onChange={(e)=>set_eventcat_id(e.target.value)}
                           id="category"
                         >
-                          <option value="Lesson">Lesson</option>
-                          <option value="Group Lesson">Group Lesson</option>
-                          <option value="Vacation">Vacation</option>
+                          <option value={""}>Choose</option>
+                          {
+                            categoriesList?.map((e)=>{
+                              return <option value={e?.id}>{e?.eventcat_name}</option>
+                            })
+                          }
                         </select>
                       </div>
                       <div>
@@ -1844,8 +1379,17 @@ useEffect(() => {
                         <select
                           className="form-control"
                           name="location"
-                          onChange={handleNewEventChange}
-                        ></select>
+                          value={location_id}
+                          onChange={(e)=>set_location_id(e.target.value)}
+                        >
+                          <option value={""}>Choose</option>
+                          {
+                            allLocation?.map((e)=>{
+                              return <option value={e?.id}>{e?.eventloc_name}</option>
+                            })
+                          }
+
+                        </select>
                       </div>
                     </div>
                     <div className="formbold-input-flex">
@@ -1858,13 +1402,14 @@ useEffect(() => {
                             type="checkbox"
                             name="event_repeats"
                             value="This event repeats"
-                            onChange={handleNewEventChange}
+                            checked={event_recurring}
+                            onChange={(e)=>set_event_recurring(e.target.checked)}
                           />
                           This event repeats
                         </div>
                       </div>
                     </div>
-                    {eventRepeats && (
+                    {event_recurring && (
                       <>
                         <div className="recurring">
                           <div className="recurring-head">
@@ -1887,91 +1432,98 @@ useEffect(() => {
                                   type="radio"
                                   value="Daily"
                                   name="frequency"
-                                  onChange={handleNewEventChange}
-                                  checked={selectedOption === "Daily"}
+                                  onChange={(e)=>set_event_frequency(e.target.value)}
+                                  checked={event_frequency === "Daily"}
                                 ></input>
                                 Daily
                                 <input
                                   type="radio"
                                   value="Weekly"
                                   name="frequency"
-                                  onChange={handleNewEventChange}
-                                  checked={selectedOption === "Weekly"}
+                                  onChange={(e)=>set_event_frequency(e.target.value)}
+                                  checked={event_frequency === "Weekly"}
                                 ></input>
                                 Weekly
                                 <input
                                   type="radio"
                                   value="Monthly"
                                   name="frequency"
-                                  onChange={handleNewEventChange}
-                                  checked={selectedOption === "Monthly"}
+                                  onChange={(e)=>set_event_frequency(e.target.value)}
+                                  checked={event_frequency === "Monthly"}
                                 ></input>
                                 Monthly
                                 <input
                                   type="radio"
                                   value="Yearly"
                                   name="frequency"
-                                  onChange={handleNewEventChange}
-                                  checked={selectedOption === "Yearly"}
+                                  onChange={(e)=>set_event_frequency(e.target.value)}
+                                  checked={event_frequency === "Yearly"}
                                 ></input>
                                 Yearly
                               </div>
+                              {
+                                event_frequency=="Daily" && <DayTabInput values={event_repeat_on} setDaysValue={set_event_repeat_on}/>
+                              }
+                               
                             </div>
                           </div>
-                          <div className="formbold-input-flex align-items-end">
-                            <div>
-                              <label
-                                htmlFor="every"
-                                className="formbold-form-label"
-                              >
-                                Every
-                              </label>
-                              <br></br>
-                              <div style={{ position: "relative" }}>
-                                <input
-                                  type="number"
-                                  name="every"
-                                  className="form-control"
-                                  style={{
-                                    paddingLeft: "25px",
-                                    paddingRight: "70px",
-                                  }}
-                                  value={everyWeeks}
-                                  min={1}
-                                  max={100}
-                                  onChange={handleNewEventChange}
-                                />
-                                <span
-                                  style={{
-                                    position: "absolute",
-                                    right: "10px",
-                                    top: "50%",
-                                    transform: "translateY(-50%)",
-                                  }}
-                                >
-                                  {selectedOption === "Daily" || selectedOption === "Weekly" ? "Weeks" : selectedOption}
-                                </span>
-                              </div>
-                            </div>
-                            {!repeatsIndefinitely && (
-                              <div>
-                                <label
-                                  htmlFor="time"
-                                  className="formbold-form-label"
-                                >
-                                  Repeat Until
-                                </label>
-                                <br></br>
-                                <input
-                                  type="date"
-                                  name="repeat_until"
-                                  className="form-control"
-                                  // value={tenantData.address}
-                                  onChange={handleNewEventChange}
-                                />{" "}
-                              </div>
-                            )}
-                          </div>
+                          {
+                            event_frequency!="Daily" &&  <div className="formbold-input-flex align-items-end">
+                                                            <div>
+                                                              <label
+                                                                htmlFor="time"
+                                                                className="formbold-form-label"
+                                                              >
+                                                                Every
+                                                              </label>
+                                                              <br></br>
+                                                              <div style={{position:"relative"}}>
+                                                              <input
+                                                                type="text"
+                                                                name="every"
+                                                                className="form-control"
+                                                                style={{
+                                                                  paddingLeft: "25px",
+                                                                  paddingRight: "70px",
+                                                                }}
+                                                                value={event_frequency_val}
+                                                                min={1}
+                                                                max={100}
+                                                                onChange={(e)=>set_event_frequency_val(e.target.value)}
+                                                              />
+                                                              <span
+                                                                  style={{
+                                                                    position: "absolute",
+                                                                    right: "10px",
+                                                                    top: "50%",
+                                                                    transform: "translateY(-50%)",
+                                                                  }}
+                                                                >
+                                                                  {event_frequency === "Daily" || event_frequency === "Weekly" ? "Weeks" : event_frequency}
+                                                                </span>
+                                                              </div>
+                                                            </div>
+                                                        </div>
+                          }
+                           {!event_repeat_indefinitely && (
+                                                      <div>
+                                                        <label
+                                                          htmlFor="time"
+                                                          className="formbold-form-label"
+                                                        >
+                                                          Repeat Until
+                                                        </label>
+                                                        <br></br>
+                                                        <input
+                                                          type="date"
+                                                          name="repeat_until"
+                                                          className="form-control"
+                                                          value={event_repeat_until}
+                                                          onChange={(e)=>set_event_repeat_until(formatDate(e.target.value))}
+                                                        />{" "}
+                                                      </div>
+                                                    )}
+                          
                           <div className="formbold-input-flex">
                             <div>
                               <div
@@ -1981,9 +1533,9 @@ useEffect(() => {
                                 <input
                                   type="checkbox"
                                   name="repeats_indefinitely"
-                                  value="This event repeats"
-                                  onChange={handleNewEventChange}
-                                  checked={repeatsIndefinitely}
+                                  value=""
+                                  onChange={(e)=>set_event_repeat_indefinitely(e.target.checked)}
+                                  checked={event_repeat_indefinitely}
                                 />
                                 Repeat indefinitely
                               </div>
@@ -2005,32 +1557,60 @@ useEffect(() => {
                         <div className="input-radio">
                           <input
                             type="radio"
-                            value="Student Default"
+                            value="default"
                             name="student_pricing"
-                            onChange={handleNewEventChange}
+                            checked={student_pricing=="default"?true:false}
+                            onChange={(e)=>set_student_pricing(e.target.value)}
                           ></input>
                           Student Default
                         </div>
                         <div className="input-radio">
                           <input
                             type="radio"
-                            value="No charge (₹ 0.00)"
+                            value="no_charge"
                             name="student_pricing"
-                            onChange={handleNewEventChange}
+                            checked={student_pricing=="no_charge"?true:false}
+                            onChange={(e)=>set_student_pricing(e.target.value)}
                           ></input>
                           No charge (₹ 0.00)
                         </div>
                         <div className="input-radio">
                           <input
                             type="radio"
-                            value="No charge (₹ 0.00)"
+                            value="specific"
                             name="student_pricing"
-                            onChange={handleNewEventChange}
+                            checked={student_pricing=="specific"?true:false}
+                            onChange={(e)=>set_student_pricing(e.target.value)}
                           ></input>
                           Specify price per student
                         </div>
                       </div>
                     </div>
+                    {
+                      student_pricing=="specific" &&  
+                        <div className="formbold-input-flex diff">
+                          <div>
+                            <div>
+                              <label
+                                htmlFor="student_pricing"
+                                className="formbold-form-label"
+                              >
+                                Pricing
+                              </label>
+                            </div>
+                            <div className="input-radio">
+                              <input
+                                type="text"
+                                className="form-control"
+                                value={student_pricing_val}
+                                name="student_pricing_val"
+                                onChange={(e)=>set_student_pricing_val(e.target.value)}
+                                />
+                            </div>
+                          </div>
+                        </div>
+                    }
+                    
                     <div className="formbold-input-flex diff">
                       <div>
                         <label
@@ -2043,7 +1623,8 @@ useEffect(() => {
                         <textarea
                           name="public_desc"
                           className="form-control"
-                          onChange={handleNewEventChange}
+                          value={event_public_desc}
+                          onChange={(e)=>set_event_public_desc(e.target.value)}
                         />
                       </div>
                     </div>
@@ -2062,7 +1643,8 @@ useEffect(() => {
                         <textarea
                           name="private_desc"
                           className="form-control"
-                          onChange={handleNewEventChange}
+                          value={event_private_desc}
+                          onChange={(e)=>set_event_private_desc(e.target.value)}
                         />
                       </div>
                     </div>
@@ -2077,7 +1659,7 @@ useEffect(() => {
 
                     <button
                       className="formbold-btn"
-                      onClick={saveNewCalenderEvent}
+                      onClick={saveEvent}
                     >
                       Save
                     </button>
@@ -2087,6 +1669,7 @@ useEffect(() => {
             </form>
           </div>
         </ReactModal>
+       
         <ReactModal
           isOpen={modalIsOpen === "newNonTutoringEvent"}
           onAfterOpen={afterOpenModal}
@@ -2097,7 +1680,7 @@ useEffect(() => {
           <div className="calendar-modal">
             <div className="close-h add">
               <h4>
-                <strong>New Non-Tutoring Event</strong>
+                <strong>{isEditForm?"Edit Calendar Event":"New Non-Tutoring Event"}</strong>
               </h4>
               <button className="closeModal" onClick={closeModal}>
                 X
@@ -2108,6 +1691,18 @@ useEffect(() => {
               <div className="row d-flex">
                 <div className="col-xl-12 col-xxl-12">
                   <div className="formbold-form-step-1 active">
+                  {
+                      isEditForm && event_recurring && <div className="formbold-input-flex diff">
+                                              <div>
+                                                <input
+                                                  type="checkbox"
+                                                  checked={update_all}
+                                                  onChange={(e)=>set_update_all(e.target.checked)}
+                                                />
+                                                <label className="formbold-form-label" style={{marginLeft:5}}>Update all ?</label>
+                                              </div>
+                                          </div>
+                    }
                   <div className="formbold-input-flex diff">
                       <div>
                         <label htmlFor="tutor" className="formbold-form-label">
@@ -2118,17 +1713,9 @@ useEffect(() => {
                             type="text"
                             name="event_name"
                             className="form-control"
-                            onChange={handleNewEventChange}
+                            value={event_name}
+                            onChange={(e)=>set_event_name(e.target.value)}
                           />
-                          <div className="pt-2">
-                            <small style={{ color: "red" }}>
-                              {error?.event_name?.length ? (
-                                error.event_name[0]
-                              ) : (
-                                <></>
-                              )}
-                            </small>
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -2141,9 +1728,11 @@ useEffect(() => {
                           <select
                             name="tutor"
                             className="form-control"
-                            onChange={handleNewEventChange}
+                            value={event_tutor}
+                            onChange={(e)=>set_event_tutor(e.target.value)}
                             id="tutor"
                           >
+                            <option value="">Choose</option>
                             {allTutors && allTutors.length > 0 ? (
                               allTutors.map((item) => (
                                 <option key={item.id} value={item.id}>
@@ -2168,12 +1757,16 @@ useEffect(() => {
                         <select
                           name="category"
                           className="form-control"
-                          onChange={handleNewEventChange}
+                          value={eventcat_id}
+                          onChange={(e)=>set_eventcat_id(e.target.value)}
                           id="category"
                         >
-                          <option value="Lesson">Lesson</option>
-                          <option value="Group Lesson">Group Lesson</option>
-                          <option value="Vacation">Vacation</option>
+                          <option value={""}>Choose</option>
+                          {
+                            categoriesList?.map((e)=>{
+                              return <option value={e?.id}>{e?.eventcat_name}</option>
+                            })
+                          }
                         </select>
                       </div>
                     </div>
@@ -2190,8 +1783,15 @@ useEffect(() => {
                         <select
                           name="location"
                           className="form-control"
+                          value={location_id}
+                          onChange={(e)=>set_location_id(e.target.value)}
                         >
-                          <option>No option</option>
+                          <option value={""}>Choose</option>
+                          {
+                            allLocation?.map((e)=>{
+                              return <option value={e?.id}>{e?.eventloc_name}</option>
+                            })
+                          }
                         </select>
                       </div>
                       <div>
@@ -2202,7 +1802,7 @@ useEffect(() => {
                           <input
                             type="date"
                             name="start_date"
-                            value={formatDate(startDate)}
+                            value={formatDate(start_date)}
                             className="form-control"
                             // value={formData.phone}
                             onChange={handleNewEventChange}
@@ -2221,8 +1821,8 @@ useEffect(() => {
                           type="time"
                           name="time"
                           className="form-control"
-                          // value={tenantData.address}
-                          onChange={handleNewEventChange}
+                          value={start_time}
+                          onChange={(e)=>set_start_time(e.target.value)}
                         />
                       </div>
                       <div>
@@ -2239,8 +1839,11 @@ useEffect(() => {
                           name="duration"
                           className="form-control"
                           placeholder="30 min"
-                          // value={tenantData.address}
-                          onChange={handleNewEventChange}
+                          value={duration}
+                          onChange={(e)=>{
+                            setDuration(e.target.value);
+                            calculateEndDateTimeByDuration(e.target.value!=""?e.target.value:0);
+                          }}
                           disabled={disableTimeDuration}
                         />
                       </div>
@@ -2256,8 +1859,8 @@ useEffect(() => {
                             type="checkbox"
                             name="all_day"
                             value="All Day"
-                            checked={allDay}
-                            onChange={handleNewEventChange}
+                            checked={event_all_day}
+                            onChange={(e)=>set_event_all_day(e.target.checked)}
                           />
                           All Day
                         </div>
@@ -2273,13 +1876,14 @@ useEffect(() => {
                             type="checkbox"
                             name="event_repeats"
                             value="This event repeats"
-                            onChange={handleNewEventChange}
+                            checked={event_recurring}
+                            onChange={(e)=>set_event_recurring(e.target.checked)}
                           />
                           This event repeats
                         </div>
                       </div>
                     </div>
-                    {eventRepeats && (
+                    {event_recurring && (
                       <>
                         <div className="recurring">
                           <div className="recurring-head">
@@ -2302,91 +1906,98 @@ useEffect(() => {
                                   type="radio"
                                   value="Daily"
                                   name="frequency"
-                                  onChange={handleNewEventChange}
-                                  checked={selectedOption === "Daily"}
+                                  onChange={(e)=>set_event_frequency(e.target.value)}
+                                  checked={event_frequency === "Daily"}
                                 ></input>
                                 Daily
                                 <input
                                   type="radio"
                                   value="Weekly"
                                   name="frequency"
-                                  onChange={handleNewEventChange}
-                                  checked={selectedOption === "Weekly"}
+                                  onChange={(e)=>set_event_frequency(e.target.value)}
+                                  checked={event_frequency === "Weekly"}
                                 ></input>
                                 Weekly
                                 <input
                                   type="radio"
                                   value="Monthly"
                                   name="frequency"
-                                  onChange={handleNewEventChange}
-                                  checked={selectedOption === "Monthly"}
+                                  onChange={(e)=>set_event_frequency(e.target.value)}
+                                  checked={event_frequency === "Monthly"}
                                 ></input>
                                 Monthly
                                 <input
                                   type="radio"
                                   value="Yearly"
                                   name="frequency"
-                                  onChange={handleNewEventChange}
-                                  checked={selectedOption === "Yearly"}
+                                  onChange={(e)=>set_event_frequency(e.target.value)}
+                                  checked={event_frequency === "Yearly"}
                                 ></input>
                                 Yearly
                               </div>
+                              {
+                                event_frequency=="Daily" && <DayTabInput values={event_repeat_on} setDaysValue={set_event_repeat_on}/>
+                              }
+                               
                             </div>
                           </div>
-                          <div className="formbold-input-flex align-items-end">
-                            <div>
-                              <label
-                                htmlFor="every"
-                                className="formbold-form-label"
-                              >
-                                Every
-                              </label>
-                              <br></br>
-                              <div style={{ position: "relative" }}>
-                                <input
-                                  type="number"
-                                  name="every"
-                                  className="form-control"
-                                  style={{
-                                    paddingLeft: "25px",
-                                    paddingRight: "70px",
-                                  }}
-                                  value={everyWeeks}
-                                  min={1}
-                                  max={100}
-                                  onChange={handleNewEventChange}
-                                />
-                                <span
-                                  style={{
-                                    position: "absolute",
-                                    right: "10px",
-                                    top: "50%",
-                                    transform: "translateY(-50%)",
-                                  }}
-                                >
-                                  {selectedOption === "Daily" || selectedOption === "Weekly" ? "Weeks" : selectedOption}
-                                </span>
-                              </div>
-                            </div>
-                            {!repeatsIndefinitely && (
-                              <div>
-                                <label
-                                  htmlFor="time"
-                                  className="formbold-form-label"
-                                >
-                                  Repeat Until
-                                </label>
-                                <br></br>
-                                <input
-                                  type="date"
-                                  name="repeat_until"
-                                  className="form-control"
-                                  // value={tenantData.address}
-                                  onChange={handleNewEventChange}
-                                />{" "}
-                              </div>
-                            )}
-                          </div>
+                          {
+                            event_frequency!="Daily" &&  <div className="formbold-input-flex align-items-end">
+                                                            <div>
+                                                              <label
+                                                                htmlFor="time"
+                                                                className="formbold-form-label"
+                                                              >
+                                                                Every
+                                                              </label>
+                                                              <br></br>
+                                                              <div style={{position:"relative"}}>
+                                                              <input
+                                                                type="text"
+                                                                name="every"
+                                                                className="form-control"
+                                                                style={{
+                                                                  paddingLeft: "25px",
+                                                                  paddingRight: "70px",
+                                                                }}
+                                                                value={event_frequency_val}
+                                                                min={1}
+                                                                max={100}
+                                                                onChange={(e)=>set_event_frequency_val(e.target.value)}
+                                                              />
+                                                              <span
+                                                                  style={{
+                                                                    position: "absolute",
+                                                                    right: "10px",
+                                                                    top: "50%",
+                                                                    transform: "translateY(-50%)",
+                                                                  }}
+                                                                >
+                                                                  {event_frequency === "Daily" || event_frequency === "Weekly" ? "Weeks" : event_frequency}
+                                                                </span>
+                                                              </div>
+                                                            </div>
+                                                        </div>
+                          }
+                           {!event_repeat_indefinitely && (
+                                                      <div>
+                                                        <label
+                                                          htmlFor="time"
+                                                          className="formbold-form-label"
+                                                        >
+                                                          Repeat Until
+                                                        </label>
+                                                        <br></br>
+                                                        <input
+                                                          type="date"
+                                                          name="repeat_until"
+                                                          className="form-control"
+                                                          value={event_repeat_until}
+                                                          onChange={(e)=>set_event_repeat_until(formatDate(e.target.value))}
+                                                        />{" "}
+                                                      </div>
+                                                    )}
+                          
                           <div className="formbold-input-flex">
                             <div>
                               <div
@@ -2396,9 +2007,9 @@ useEffect(() => {
                                 <input
                                   type="checkbox"
                                   name="repeats_indefinitely"
-                                  value="This event repeats"
-                                  onChange={handleNewEventChange}
-                                  checked={repeatsIndefinitely}
+                                  value=""
+                                  onChange={(e)=>set_event_repeat_indefinitely(e.target.checked)}
+                                  checked={event_repeat_indefinitely}
                                 />
                                 Repeat indefinitely
                               </div>
@@ -2416,7 +2027,7 @@ useEffect(() => {
                           Public Description <span>Optional</span>
                         </label>
 
-                        <textarea name="public_desc" onChange={handleNewEventChange} className="form-control" />
+                        <textarea name="public_desc" value={event_public_desc} onChange={(e)=>set_event_public_desc(e.target.value)} className="form-control" />
                       </div>
                     </div>
                     <div className="formbold-input-flex diff">
@@ -2429,7 +2040,8 @@ useEffect(() => {
                             type="checkbox"
                             name="public_desc_on_calendar"
                             value="This event repeats"
-                            onChange={handleNewEventChange}
+                            checked={pubdesc_on_calendar}
+                            onChange={(e)=>set_pubdesc_on_calendar(e.target.checked)}
                           /> {" "}
                           Show public description directly on calendar
                         </div>
@@ -2444,7 +2056,177 @@ useEffect(() => {
                       Cancel
                     </Link>
 
-                    <button className="formbold-btn" onClick={saveNonTutoringEvent} >Save</button>
+                    <button className="formbold-btn" onClick={saveEvent} >Save</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </ReactModal>
+
+        <ReactModal
+          isOpen={modalIsOpen === "deleteEvent"}
+          onAfterOpen={afterOpenModal}
+          onRequestClose={closeModal}
+          style={quickAddLessonStyles}
+          contentLabel="Example Modal"
+        >
+          <div className="calendar-modal">
+            <div className="close-h add">
+              <h4>
+                <strong>Are You Sure To Delete ?</strong>
+              </h4>
+              <button className="closeModal" onClick={closeModal}>
+                X
+              </button>
+            </div>
+            <br></br>
+            <form name="studentProfile">
+              <div className="row d-flex">
+                <hr></hr>
+                  <div className="formbold-input-flex diff">
+                      <div>
+                        <div
+                          className="public_desc_on_calendar"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="email_students"
+                            value="1"
+                            checked={email_students}
+                            onChange={(e)=>set_email_students(e.target.checked)}
+                          /> {" "}
+                          Email Students
+                        </div>
+                      </div>
+                  </div>
+                  <div className="formbold-input-flex diff">
+                      <div>
+                        <div
+                          className="public_desc_on_calendar"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="email_parents"
+                            value="1"
+                            checked={email_parents}
+                            onChange={(e)=>set_email_parents(e.target.checked)}
+                          /> {" "}
+                          Email Parents
+                        </div>
+                      </div>
+                  </div>
+                  <div className="formbold-input-flex diff">
+                      <div>
+                        <div
+                          className="public_desc_on_calendar"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="email_tutors"
+                            value="1"
+                            checked={email_tutors}
+                            onChange={(e)=>set_email_tutors(e.target.checked)}
+                          /> {" "}
+                          Email Tutors
+                        </div>
+                      </div>
+                  </div>
+                  <div className="formbold-input-flex diff">
+                      <div>
+                        <div
+                          className="public_desc_on_calendar"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="sms_students"
+                            value="1"
+                            checked={sms_students}
+                            onChange={(e)=>set_sms_students(e.target.checked)}
+                          /> {" "}
+                          SMS Students
+                        </div>
+                      </div>
+                  </div>
+                  <div className="formbold-input-flex diff">
+                      <div>
+                        <div
+                          className="public_desc_on_calendar"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="sms_parents"
+                            value="1"
+                            checked={sms_parents}
+                            onChange={(e)=>set_sms_parents(e.target.checked)}
+                          /> {" "}
+                          SMS Parents
+                        </div>
+                      </div>
+                  </div>
+                  <div className="formbold-input-flex diff">
+                      <div>
+                        <div
+                          className="public_desc_on_calendar"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="sms_tutors"
+                            value="1"
+                            checked={sms_tutors}
+                            onChange={(e)=>set_sms_tutors(e.target.checked)}
+                          /> {" "}
+                          SMS Tutors
+                        </div>
+                      </div>
+                  </div>
+                  <div className="formbold-input-flex diff">
+                      <div>
+                        <div
+                          className="public_desc_on_calendar"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <label className="formbold-form-label">Notes</label>
+                          <textarea
+                            name="notes"
+                            value={notes}
+                            className="form-control"
+                            onChange={(e)=>set_notes(e.target.value)}
+                          /> {" "}
+                        </div>
+                      </div>
+                  </div>
+                  <div className="formbold-input-flex diff">
+                      <div>
+                        <div
+                          className="public_desc_on_calendar"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="delete_all"
+                            value="1"
+                            checked={delete_all}
+                            onChange={(e)=>set_delete_all(e.target.checked)}
+                          /> {" "}
+                          Delete All Future Events ?
+                        </div>
+                      </div>
+                  </div>
+                <div className="formbold-form-btn-wrapper">
+                  <div className="btn-end">
+                    <Link className="cancel" onClick={closeModal}>
+                      Cancel
+                    </Link>
+                    <button className="formbold-btn" onClick={deleteEventsHandler}>
+                      Confirm
+                    </button>
                   </div>
                 </div>
               </div>

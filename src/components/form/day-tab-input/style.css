@@ -1,0 +1,19 @@
+.input-outer-card{
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+}
+.days-box{
+    flex: 1;
+    box-shadow: 2px 2px 2px 2px lightgray;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 5px;
+}
+.active-days{
+    background-color: aqua;
+}
