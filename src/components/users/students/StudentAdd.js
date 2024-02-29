@@ -12,8 +12,11 @@ import { useNavigate } from "react-router-dom";
 
 const StudentAdd = () => {
   const { fetchData, sidebarToggle, token, userId } = useUserDataContext();
+  const [studentType, setStudentType] = useState("Child");
+  const [showParentDetails, setShowParentDetails] = useState(true);
   const [additionalDetails, setAdditionalDetails] = useState(false);
   const navigate = useNavigate();
+  const [selectedStatus, setSelectedStatus] = useState("active");
   const [error, setError] = useState({});
   const [formData, setFormData] = useState({
     first_name: "",
@@ -29,8 +32,8 @@ const StudentAdd = () => {
     referrer: "",
     subjects: "",
     skill: "",
-    student_status: "",
-    studentType: "",
+    student_status: "active",
+    studentType: "Child",
     studentFamily: "",
     parentfirstname: "",
     parentlastname: "",
@@ -147,25 +150,33 @@ const StudentAdd = () => {
   const handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
-    if (name === "phone") {
-      formData["phone"] = value;
-    } else if (name === "student_status") {
-      formData["student_status"] = value;
-    } else if (name === "studentType") {
-      formData["studentType"] = value;
-    } else if (name === "billing") {
-      formData["billing"] = value;
-    } else if (name === "dob") {
-      formData["dob"] = value;
-      console.log(value);
+
+    if (name === "student_status") {
+      setSelectedStatus(value);
+    } 
+    if (name === "studentType") {
+      setStudentType(value);
+      if (value === 'Adult') {
+        setShowParentDetails(false);
+      } else {
+        setShowParentDetails(true);
+      }
     }
+
     setFormData({ ...formData, [name]: value });
     // console.log(formData);
   };
   const formSubmit = async (e) => {
-    console.log(userId);
-    formData["user_id"] = userId;
     e.preventDefault();
+    console.log(userId);
+
+    if(!formData.hasOwnProperty("student_status")){
+      formData["student_status"] = selectedStatus;
+    }
+    if(!formData.hasOwnProperty("studentType")){
+      formData["studentType"] = studentType;
+    }
+    formData["user_id"] = userId;
     const config = {
       method: "POST",
       url: `${API_URL}create-student`,
@@ -509,7 +520,7 @@ const StudentAdd = () => {
                           <div>
                             <div>
                               <label
-                                htmlFor="status"
+                                htmlFor="student_status"
                                 className="formbold-form-label"
                               >
                                 Student Status
@@ -523,6 +534,7 @@ const StudentAdd = () => {
                                   name="student_status"
                                   onChange={handleChange}
                                   value="active"
+                                  checked={selectedStatus==="active"}
                                 />
                                 <span
                                   className="bg-design"
@@ -542,6 +554,7 @@ const StudentAdd = () => {
                                   name="student_status"
                                   onChange={handleChange}
                                   value="trial"
+                                  checked={selectedStatus==="trial"}
                                 />
                                 <span
                                   className="bg-design"
@@ -561,6 +574,7 @@ const StudentAdd = () => {
                                   name="student_status"
                                   onChange={handleChange}
                                   value="Waiting"
+                                  checked={selectedStatus==="Waiting"}
                                 />
                                 <span
                                   className="bg-design"
@@ -580,6 +594,7 @@ const StudentAdd = () => {
                                   name="student_status"
                                   onChange={handleChange}
                                   value="Lead"
+                                  checked={selectedStatus==="Lead"}
                                 />
                                 <span
                                   className="bg-design"
@@ -599,6 +614,7 @@ const StudentAdd = () => {
                                   name="student_status"
                                   onChange={handleChange}
                                   value="Inactive"
+                                  checked={selectedStatus==="Inactive"}
                                 />
                                 <span
                                   className="bg-design"
@@ -633,6 +649,7 @@ const StudentAdd = () => {
                                   name="studentType"
                                   onChange={handleChange}
                                   value="Adult"
+                                  checked={studentType === 'Adult'}
                                 />
                                 Adult
                               </div>
@@ -643,6 +660,7 @@ const StudentAdd = () => {
                                   name="studentType"
                                   onChange={handleChange}
                                   value="Child"
+                                  checked={studentType === 'Child'}
                                 />
                                 Child
                               </div>
@@ -686,6 +704,8 @@ const StudentAdd = () => {
                             </small>
                           </div>
                         </div>
+                        {showParentDetails && (
+                          <>
                         <div className="formbold-input-flex">
                           <div>
                             <label
@@ -750,6 +770,8 @@ const StudentAdd = () => {
                             SMS Capable
                           </div>
                         </div>
+                        </>
+                        )}
                         <div className="formbold-input-flex diff">
                           <div>
                             <label
