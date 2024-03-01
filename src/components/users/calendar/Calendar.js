@@ -22,7 +22,7 @@ import { getCategories } from "../../../services/categoriesService.js";
 const customStyles = {
   content: {
     width: "25%",
-    height: "35%",
+    minHeight: "35%",
     top: "50%",
     left: "50%",
     right: "auto",
@@ -673,6 +673,14 @@ useEffect(() => {
                 <i class="fa fa-clock" aria-hidden="true"></i>
                 {eventStartTime} - {eventEndTime}
               </div>
+              <div style={{display:'flex',flexDirection:'column'}}>
+                <label> 1 Attendees</label>
+                <p>Amit sing,Rahul Kumar,...</p>
+              </div>
+              <button className="cancel">
+                <i onClick={()=>getEventDetailsByIdHandler(selectedEventId)} class="fa fa-pencil" aria-hidden="true"></i>
+                Edit Attendance
+              </button>
             </div>
           </div>
         </ReactModal>
