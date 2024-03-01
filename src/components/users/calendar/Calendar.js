@@ -17,7 +17,7 @@ import Select from "react-select";
 import OptionBox from "../../form/option-box/OptionBox.js";
 import {settings} from 'react-icons-kit/feather/settings';
 import DayTabInput from "../../form/day-tab-input/DayTabInput.js";
-import { createEvents,getStudentsByTutorId,getEventDetailsById,updateEvents,deleteEvents } from "../../../services/calenderService.js";
+import { createEvents,getStudentsByTutorId,getEventDetailsById,updateEvents,deleteEvents,cloneEvents } from "../../../services/calenderService.js";
 import { getCategories } from "../../../services/categoriesService.js";
 const customStyles = {
   content: {
@@ -314,6 +314,12 @@ const Calendars = () => {
     const createCloneHandler= async (id) => {
       resetForm();
       const result = await getEventDetailsById(id);
+      set_start_date(formatDate(result.data.start_date));
+      set_start_time(result.data.start_time);
+      set_end_date(formatDate(result.data.end_date));
+      set_end_time(result.data.end_time);
+      set_event_name(result.data.event_name);
+      openModal("cloneEvent");
       console.log("CLONE=>",result?.data);  
     }
 
@@ -570,6 +576,30 @@ useEffect(() => {
 
   const saveOneEvents = async (e)=>{
     saveEvent(e,false);
+  }
+
+  const cloneEventsHandler = async(e)=>{
+    e.preventDefault();
+    const data = {
+      start_date:start_date,
+      start_time:start_time,
+      end_date:end_date,
+      end_time:end_time,
+      id:selectedEventId,
+    };
+    const response = await cloneEvents(data);
+    if(response.success)
+    {
+      toast.success(response.message, {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      fetchEventsForVisibleRange(visibleRange);
+      setIsOpen(false);
+    }else{
+      toast.error(response.message, {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
   }
 
   const handleSelectedEvent = (e) => {
@@ -2252,7 +2282,7 @@ useEffect(() => {
           <div className="calendar-modal">
             <div className="close-h add">
               <h4>
-                <strong>Are You Sure To Delete ?</strong>
+                <strong>Are You Sure To Clone ?</strong>
               </h4>
               <button className="closeModal" onClick={closeModal}>
                 X
@@ -2261,148 +2291,82 @@ useEffect(() => {
             <br></br>
             <form name="studentProfile">
               <div className="row d-flex">
+                
                 <hr></hr>
-                  <div className="formbold-input-flex diff">
+                <p><span className="formbold-form-label">Event Name : </span>{event_name}</p>
+                <div className="formbold-input-flex">
                       <div>
-                        <div
-                          className="public_desc_on_calendar"
-                          style={{ fontSize: "15px" }}
+                        <label
+                          htmlFor="start_date"
+                          className="formbold-form-label"
                         >
-                          <input
-                            type="checkbox"
-                            name="email_students"
-                            value="1"
-                            checked={email_students}
-                            onChange={(e)=>set_email_students(e.target.checked)}
-                          /> {" "}
-                          Email Students
-                        </div>
+                          Start Date
+                        </label>
+                        <input
+                          type="date"
+                          name="start_date"
+                          className="form-control"
+                          value={formatDate(start_date)}
+                          onChange={(e)=>set_start_date(e.target.value)}
+                        />
                       </div>
-                  </div>
-                  <div className="formbold-input-flex diff">
                       <div>
-                        <div
-                          className="public_desc_on_calendar"
-                          style={{ fontSize: "15px" }}
-                        >
+                        <div>
+                          <label htmlFor="date" className="formbold-form-label">
+                            End Date
+                          </label>
                           <input
-                            type="checkbox"
-                            name="email_parents"
-                            value="1"
-                            checked={email_parents}
-                            onChange={(e)=>set_email_parents(e.target.checked)}
-                          /> {" "}
-                          Email Parents
-                        </div>
-                      </div>
-                  </div>
-                  <div className="formbold-input-flex diff">
-                      <div>
-                        <div
-                          className="public_desc_on_calendar"
-                          style={{ fontSize: "15px" }}
-                        >
-                          <input
-                            type="checkbox"
-                            name="email_tutors"
-                            value="1"
-                            checked={email_tutors}
-                            onChange={(e)=>set_email_tutors(e.target.checked)}
-                          /> {" "}
-                          Email Tutors
-                        </div>
-                      </div>
-                  </div>
-                  <div className="formbold-input-flex diff">
-                      <div>
-                        <div
-                          className="public_desc_on_calendar"
-                          style={{ fontSize: "15px" }}
-                        >
-                          <input
-                            type="checkbox"
-                            name="sms_students"
-                            value="1"
-                            checked={sms_students}
-                            onChange={(e)=>set_sms_students(e.target.checked)}
-                          /> {" "}
-                          SMS Students
-                        </div>
-                      </div>
-                  </div>
-                  <div className="formbold-input-flex diff">
-                      <div>
-                        <div
-                          className="public_desc_on_calendar"
-                          style={{ fontSize: "15px" }}
-                        >
-                          <input
-                            type="checkbox"
-                            name="sms_parents"
-                            value="1"
-                            checked={sms_parents}
-                            onChange={(e)=>set_sms_parents(e.target.checked)}
-                          /> {" "}
-                          SMS Parents
-                        </div>
-                      </div>
-                  </div>
-                  <div className="formbold-input-flex diff">
-                      <div>
-                        <div
-                          className="public_desc_on_calendar"
-                          style={{ fontSize: "15px" }}
-                        >
-                          <input
-                            type="checkbox"
-                            name="sms_tutors"
-                            value="1"
-                            checked={sms_tutors}
-                            onChange={(e)=>set_sms_tutors(e.target.checked)}
-                          /> {" "}
-                          SMS Tutors
-                        </div>
-                      </div>
-                  </div>
-                  <div className="formbold-input-flex diff">
-                      <div>
-                        <div
-                          className="public_desc_on_calendar"
-                          style={{ fontSize: "15px" }}
-                        >
-                          <label className="formbold-form-label">Notes</label>
-                          <textarea
-                            name="notes"
-                            value={notes}
+                            type="date"
+                            name="end_date"
                             className="form-control"
-                            onChange={(e)=>set_notes(e.target.value)}
-                          /> {" "}
+                            value={formatDate(end_date)}
+                            onChange={(e)=>set_end_date(e.target.value)}
+                          />
                         </div>
                       </div>
+                </div>
+                <div className="formbold-input-flex">
+                  <div>
+                    <label
+                      htmlFor="start_time"
+                      className="formbold-form-label"
+                    >
+                      Start Time
+                    </label>
+                    <br></br>
+
+                    <input
+                      type="time"
+                      name="start_time"
+                      className="form-control"
+                      value={start_time}
+                      onChange={(e)=>set_start_time(e.target.value)}
+                    />
                   </div>
-                  <div className="formbold-input-flex diff">
-                      <div>
-                        <div
-                          className="public_desc_on_calendar"
-                          style={{ fontSize: "15px" }}
-                        >
-                          <input
-                            type="checkbox"
-                            name="delete_all"
-                            value="1"
-                            checked={delete_all}
-                            onChange={(e)=>set_delete_all(e.target.checked)}
-                          /> {" "}
-                          Delete All Future Events ?
-                        </div>
-                      </div>
+                  <div>
+                    <label
+                      htmlFor="end_time"
+                      className="formbold-form-label"
+                    >
+                      End Time
+                    </label>
+                    <br></br>
+
+                    <input
+                      type="time"
+                      name="end_time"
+                      className="form-control"
+                      value={end_time}
+                      onChange={(e)=>set_end_time(e.target.value)}
+                    />
                   </div>
+                </div>
                 <div className="formbold-form-btn-wrapper">
                   <div className="btn-end">
                     <Link className="cancel" onClick={closeModal}>
                       Cancel
                     </Link>
-                    <button className="formbold-btn" onClick={deleteEventsHandler}>
+                    <button className="formbold-btn" onClick={cloneEventsHandler}>
                       Confirm
                     </button>
                   </div>

@@ -26,6 +26,15 @@ export const updateEvents = async (data,id) => {
     });
 };
 
+export const cloneEvents = async (data) => {
+  return calenderApi.post('clone-event',data).then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      return error;
+    });
+};
+
 export const deleteEvents = async (data,id) => {
   return calenderApi.patch('delete-event/'+id,data).then((response) => {
       return response.data;
