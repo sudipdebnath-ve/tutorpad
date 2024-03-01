@@ -158,6 +158,7 @@ const Calendars = () => {
 
     const resetForm = () =>{
       set_event_attendees([]);
+      set_event_attendees_value([]);
       set_location_id("");
       set_is_public("1");
       set_event_recurring(false);
@@ -179,10 +180,19 @@ const Calendars = () => {
       set_event_subtutor("");
       set_event_name("");
       set_event_tutor("");
-      set_start_date(formatDate(new Date()));
+      // set_start_date(formatDate(new Date()));
       set_start_time("");
-      set_end_date(formatDate(new Date()));
+      // set_end_date(formatDate(new Date()));
       set_end_time("");
+    }
+    const resetDeleteForm  = ()=>{
+        set_email_students(false);
+        set_email_parents(false);
+        set_email_tutors(false);
+        set_sms_students(false);
+        set_sms_parents(false);
+        set_sms_tutors(false);
+        set_notes("");
     }
 
     const getFrequency = (freq)=>{
@@ -238,6 +248,7 @@ const Calendars = () => {
         set_end_date(end_date_str);
         set_end_time(`${endDate.getHours()}:${endDate.getMinutes()}`);
     }
+
     const getCategoriesHandler = async ()=>{
       const result = await getCategories();
       setCategoriesList(result.data);
@@ -246,15 +257,15 @@ const Calendars = () => {
     const getEventDetailsByIdHandler= async (id) => {
       resetForm();
       const result = await getEventDetailsById(id);
-      console.log(result);
       const attendees_ids = JSON.parse(result?.data?.event_attendees);
+      console.log("DATA=>",result);
       await getStudentsByTutorIdHandler(result.data.event_tutor);
       set_event_attendees_value([...studentsList.filter((e)=>{
         console.log(e);
         let verify = attendees_ids.find((f)=>f==e.value);
         return verify!=undefined;
       })]);
-      set_event_attendees(JSON.parse(result?.data?.event_attendees));
+      set_event_attendees(event_attendees_value);
       set_location_id(result.data.location_id);
       set_is_public(result.data.is_public);
       set_event_recurring(result.data.event_recurring);
@@ -283,7 +294,7 @@ const Calendars = () => {
       set_eventtype_id(result.data.eventtype_id);
       setDuration(result.data.event_duration);
       setShowSubstituteTutor(result.data.event_subtutor!==null?true:false);
-      set_update_all(result.data.update_all);
+      set_update_all(false);
       setIsEditForm(true);
       if(result.data.eventtype_id==1)
       {
@@ -299,8 +310,14 @@ const Calendars = () => {
       
 
     }
+    
+    const createCloneHandler= async (id) => {
+      resetForm();
+      const result = await getEventDetailsById(id);
+      console.log("CLONE=>",result?.data);  
+    }
 
-    const deleteEventsHandler = async (e)=>{
+    const deleteEventsHandler = async (e,delete_all_status)=>{
       e.preventDefault();
       const data = {
         email_students:email_students,
@@ -310,10 +327,9 @@ const Calendars = () => {
         sms_parents:sms_parents,
         sms_tutors:sms_tutors,
         notes:notes,
-        delete_all:delete_all
+        delete_all:delete_all_status
       };
       const response = await deleteEvents(data,selectedEventId);
-      console.log(response);
       if(response.success)
       {
         toast.success(response.message, {
@@ -357,7 +373,6 @@ useEffect(() => {
   }, []);
 
 
-
   const getStudentsByTutorIdHandler = async (id)=>{
     set_event_tutor(id);
    const result =  await getStudentsByTutorId(id);
@@ -372,7 +387,6 @@ useEffect(() => {
   const fetchEventsForVisibleRange = async (range) => {
     const startDate = moment(range.start).startOf("month").format("YYYY-MM-DD");
     const endDate = moment(range.end).endOf("month").format("YYYY-MM-DD");
-
     fetchEvent(startDate, endDate);
   };
 
@@ -474,7 +488,7 @@ useEffect(() => {
 
   const filteredTutors = allTutors.filter((tutor) => tutor.id !== parseInt(selectedTutor));
 
-  const saveEvent = async (e) => {
+  const saveEvent = async (e,update_all_status) => {
     e.preventDefault();
     const formData = {
       event_all_day:event_all_day?1:0,
@@ -487,7 +501,7 @@ useEffect(() => {
       start_time:start_time,
       end_date:end_date,
       end_time:end_time,
-      event_attendees:JSON.stringify(event_attendees || []),
+      event_attendees:JSON.stringify(event_attendees.map((e)=>e.value) || []),
       location_id:location_id,
       is_public:is_public,
       event_recurring:event_recurring?1:0,
@@ -504,9 +518,11 @@ useEffect(() => {
       registration_max:registration_max,
       student_pricing:student_pricing,
       student_pricing_val:student_pricing_val,
-      update_all:update_all,
+      update_all:update_all_status,
     }
+  console.log("update_all=>",update_all_status);
   console.log("Test=>",formData);
+  // return ;
   if(isEditForm)
   {
     // Edit Form
@@ -548,6 +564,14 @@ useEffect(() => {
     
   };
 
+  const saveAllEvents = async (e)=>{
+    saveEvent(e,true);
+  }
+
+  const saveOneEvents = async (e)=>{
+    saveEvent(e,false);
+  }
+
   const handleSelectedEvent = (e) => {
     setSelectedEventId(e.id);
     openModal("event");
@@ -558,11 +582,16 @@ useEffect(() => {
     // Convert start and end dates to string format
     const startDateString = formatDate(e.start);
     const endDateString = e.end.toLocaleString();
+    set_start_date(formatDate(e.start));
+    set_end_date(formatDate(e.end));
     setEventStartTime(newTimeString);
     setEventEndTime(endTimeString);
     setEventDesc({ ...e, start: startDateString, end: endDateString });
   };
   const openNewAppointmentModal = (e) => {
+    // Convert start and end dates to string format
+    set_start_date(formatDate(e.start));
+    set_end_date(formatDate(e.start));
     openModal("addEvent");
   };
   const openQuickAddLessonModal = (e) => {
@@ -627,8 +656,8 @@ useEffect(() => {
                 <i onClick={()=>getEventDetailsByIdHandler(selectedEventId)} class="fa fa-pencil" aria-hidden="true"></i>
                 <i class="fa fa-envelope" aria-hidden="true"></i>
                 <i class="fa fa-commenting" aria-hidden="true"></i>
-                <i class="fa fa-clone" aria-hidden="true"></i>
-                <i onClick={()=>openModal("deleteEvent")} class="fa fa-trash" aria-hidden="true"></i>
+                <i onClick={()=>createCloneHandler(selectedEventId)} class="fa fa-clone" aria-hidden="true"></i>
+                <i onClick={()=>{resetDeleteForm();openModal("deleteEvent")}} class="fa fa-trash" aria-hidden="true"></i>
               </div>
               <button className="closeModal" onClick={closeModal}>
                 X
@@ -713,18 +742,6 @@ useEffect(() => {
               <div className="row d-flex">
                 <div className="col-xl-12 col-xxl-12">
                   <div className="formbold-form-step-1 active">
-                    {
-                      isEditForm && event_recurring && <div className="formbold-input-flex diff">
-                                              <div>
-                                                <input
-                                                  type="checkbox"
-                                                  checked={update_all}
-                                                  onChange={(e)=>set_update_all(e.target.checked)}
-                                                />
-                                                <label className="formbold-form-label" style={{marginLeft:5}}>Update all ?</label>
-                                              </div>
-                                          </div>
-                    }
                     <div className="formbold-input-flex diff">
                       <div>
                         <label htmlFor="tutor" className="formbold-form-label">
@@ -770,7 +787,7 @@ useEffect(() => {
                           Student
                         </label>
                         <div>
-                          <Select defaultValue={event_attendees_value}  onChange={(e)=>set_event_attendees(e.value)} isMulti={true} options={studentsList} />
+                          <Select defaultValue={event_attendees_value}  onChange={(e)=>set_event_attendees(e)} isMulti={true} options={studentsList} />
                         </div>
                       </div>
                     </div>
@@ -1070,8 +1087,15 @@ useEffect(() => {
                     <Link className="cancel" onClick={closeModal}>
                       Cancel
                     </Link>
-
-                    <button className="formbold-btn" onClick={saveEvent}>
+                    {
+                       isEditForm && event_recurring && <button
+                                            className="cancel"
+                                            onClick={(e)=>saveAllEvents(e)}
+                                          >
+                                            Save This & Future Events
+                                          </button>
+                    }
+                    <button className="formbold-btn" onClick={(e)=>saveOneEvents(e)}>
                       Save
                     </button>
                   </div>
@@ -1102,18 +1126,6 @@ useEffect(() => {
               <div className="row d-flex">
                 <div className="col-xl-12 col-xxl-12">
                   <div className="formbold-form-step-1 active">
-                  {
-                      isEditForm && event_recurring && <div className="formbold-input-flex diff">
-                                              <div>
-                                                <input
-                                                  type="checkbox"
-                                                  checked={update_all}
-                                                  onChange={(e)=>set_update_all(e.target.checked)}
-                                                />
-                                                <label className="formbold-form-label" style={{marginLeft:5}}>Update all ?</label>
-                                              </div>
-                                          </div>
-                    }
                     <div className="formbold-input-flex diff">
                       <div>
                         <label htmlFor="tutor" className="formbold-form-label">
@@ -1261,7 +1273,7 @@ useEffect(() => {
                           Attendees
                         </label>
                         <div>
-                          <Select defaultValue={event_attendees_value} onChange={(e)=>set_event_attendees(e.value)} isMulti={true} options={studentsList} />
+                          <Select defaultValue={event_attendees_value} onChange={(e)=>set_event_attendees(e)} isMulti={true} options={studentsList} />
                         </div>
                       </div>
                       <div>
@@ -1656,11 +1668,15 @@ useEffect(() => {
                     <Link className="cancel" onClick={closeModal}>
                       Cancel
                     </Link>
-
-                    <button
-                      className="formbold-btn"
-                      onClick={saveEvent}
-                    >
+                    {
+                       isEditForm && event_recurring && <button
+                                            className="cancel"
+                                            onClick={(e)=>saveAllEvents(e)}
+                                          >
+                                            Save This & Future Events
+                                          </button>
+                    }
+                    <button className="formbold-btn" onClick={(e)=>saveOneEvents(e)}>
                       Save
                     </button>
                   </div>
@@ -1691,18 +1707,6 @@ useEffect(() => {
               <div className="row d-flex">
                 <div className="col-xl-12 col-xxl-12">
                   <div className="formbold-form-step-1 active">
-                  {
-                      isEditForm && event_recurring && <div className="formbold-input-flex diff">
-                                              <div>
-                                                <input
-                                                  type="checkbox"
-                                                  checked={update_all}
-                                                  onChange={(e)=>set_update_all(e.target.checked)}
-                                                />
-                                                <label className="formbold-form-label" style={{marginLeft:5}}>Update all ?</label>
-                                              </div>
-                                          </div>
-                    }
                   <div className="formbold-input-flex diff">
                       <div>
                         <label htmlFor="tutor" className="formbold-form-label">
@@ -2055,8 +2059,17 @@ useEffect(() => {
                     <Link className="cancel" onClick={closeModal}>
                       Cancel
                     </Link>
-
-                    <button className="formbold-btn" onClick={saveEvent} >Save</button>
+                    {
+                       isEditForm && event_recurring && <button
+                                            className="cancel"
+                                            onClick={(e)=>saveAllEvents(e)}
+                                          >
+                                            Save This & Future Events
+                                          </button>
+                    }
+                    <button className="formbold-btn" onClick={(e)=>saveOneEvents(e)}>
+                      Save
+                    </button>
                   </div>
                 </div>
               </div>
@@ -2066,6 +2079,163 @@ useEffect(() => {
 
         <ReactModal
           isOpen={modalIsOpen === "deleteEvent"}
+          onAfterOpen={afterOpenModal}
+          onRequestClose={closeModal}
+          style={quickAddLessonStyles}
+          contentLabel="Example Modal"
+        >
+          <div className="calendar-modal">
+            <div className="close-h add">
+              <h4>
+                <strong>Are You Sure To Delete ?</strong>
+              </h4>
+              <button className="closeModal" onClick={closeModal}>
+                X
+              </button>
+            </div>
+            <br></br>
+            <form name="studentProfile">
+              <div className="row d-flex">
+                <hr></hr>
+                  <div className="formbold-input-flex diff">
+                      <div>
+                        <div
+                          className="public_desc_on_calendar"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="email_students"
+                            value="1"
+                            checked={email_students}
+                            onChange={(e)=>set_email_students(e.target.checked)}
+                          /> {" "}
+                          Email Students
+                        </div>
+                      </div>
+                  </div>
+                  <div className="formbold-input-flex diff">
+                      <div>
+                        <div
+                          className="public_desc_on_calendar"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="email_parents"
+                            value="1"
+                            checked={email_parents}
+                            onChange={(e)=>set_email_parents(e.target.checked)}
+                          /> {" "}
+                          Email Parents
+                        </div>
+                      </div>
+                  </div>
+                  <div className="formbold-input-flex diff">
+                      <div>
+                        <div
+                          className="public_desc_on_calendar"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="email_tutors"
+                            value="1"
+                            checked={email_tutors}
+                            onChange={(e)=>set_email_tutors(e.target.checked)}
+                          /> {" "}
+                          Email Tutors
+                        </div>
+                      </div>
+                  </div>
+                  <div className="formbold-input-flex diff">
+                      <div>
+                        <div
+                          className="public_desc_on_calendar"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="sms_students"
+                            value="1"
+                            checked={sms_students}
+                            onChange={(e)=>set_sms_students(e.target.checked)}
+                          /> {" "}
+                          SMS Students
+                        </div>
+                      </div>
+                  </div>
+                  <div className="formbold-input-flex diff">
+                      <div>
+                        <div
+                          className="public_desc_on_calendar"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="sms_parents"
+                            value="1"
+                            checked={sms_parents}
+                            onChange={(e)=>set_sms_parents(e.target.checked)}
+                          /> {" "}
+                          SMS Parents
+                        </div>
+                      </div>
+                  </div>
+                  <div className="formbold-input-flex diff">
+                      <div>
+                        <div
+                          className="public_desc_on_calendar"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="sms_tutors"
+                            value="1"
+                            checked={sms_tutors}
+                            onChange={(e)=>set_sms_tutors(e.target.checked)}
+                          /> {" "}
+                          SMS Tutors
+                        </div>
+                      </div>
+                  </div>
+                  <div className="formbold-input-flex diff">
+                      <div>
+                        <div
+                          className="public_desc_on_calendar"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <label className="formbold-form-label">Notes</label>
+                          <textarea
+                            name="notes"
+                            value={notes}
+                            className="form-control"
+                            onChange={(e)=>set_notes(e.target.value)}
+                          /> {" "}
+                        </div>
+                      </div>
+                  </div>
+                  
+                <div className="formbold-form-btn-wrapper">
+                  <div className="btn-end">
+                    <Link className="cancel" onClick={closeModal}>
+                      Cancel
+                    </Link>
+                    <button className="cancel" style={{color:'orange'}} onClick={(e)=>deleteEventsHandler(e,true)}>
+                      Delete This & Future Events
+                    </button>
+                    <button className="formbold-btn" onClick={(e)=>deleteEventsHandler(e,false)}>
+                      Confirm
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </ReactModal>
+
+        <ReactModal
+          isOpen={modalIsOpen === "cloneEvent"}
           onAfterOpen={afterOpenModal}
           onRequestClose={closeModal}
           style={quickAddLessonStyles}
