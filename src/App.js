@@ -27,6 +27,7 @@ import AddCategories from "./components/categories-locations/categories/add/AddC
 import EditCategories from "./components/categories-locations/categories/edit/EditCategories";
 import AddLocations from "./components/categories-locations/locations/add/AddLocations";
 import EditLocations from "./components/categories-locations/locations/edit/EditLocations";
+import Attendance from "./components/attendance/Attendance";
 function App() {
   return (
     <Routes>
@@ -52,6 +53,7 @@ function App() {
       <Route path="/lending-library" element={<LendingLibrary />} />
       <Route path="/lending-library/details" element={<Details />} />
       <Route path="/calendar" element={<Calendar />} />
+      <Route path="/calendar/attendance" element={<Attendance />} />
       <Route path="/calendar/categories" element={<CategoriesLocations />} />
       <Route path="/calendar/categories/add" element={<AddCategories />} />
       <Route path="/calendar/categories/edit/:id" element={<EditCategories/>} />

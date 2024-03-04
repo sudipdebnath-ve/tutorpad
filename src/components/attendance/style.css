@@ -1,0 +1,125 @@
+.bg-color-white{
+    background-color: white;
+    height: 100vh;
+}
+.header-info-section{
+    height: 120px;
+    width: 100%;
+    /* background-color: red; */
+    display: flex;
+    flex-direction: column;
+    padding-left: 15px;
+    padding-top: 15px;
+}
+.header-group-section{
+    height: 80px;
+    width: 100%;
+    /* background-color: yellow; */
+    padding-left: 15px;
+    padding-top: 15px;
+}
+.header-attendees-section{
+    min-height: 300px;
+    max-height: 100%;
+    width: 100%;
+    /* background-color: green; */
+    display: flex;
+    flex-direction: column;
+    padding-left: 15px;
+    padding-top: 15px;
+}
+.lesson-label{
+    font-size:20px;
+    font-weight: bold;
+}
+.text-label{
+    font-size:16px;
+}
+.text-makup-credit{
+    padding: 5px 5px;
+    border-radius: 10px;
+    width: max-content;
+    background-color: aqua;
+    margin-bottom: 5px;
+}
+
+.text-group-notes{
+    padding: 5px 5px;
+    border-radius: 10px;
+    width: max-content;
+    background-color: rgb(165, 250, 165);
+    margin-bottom: 5px;
+}
+.text-group-notes-btn{
+    padding: 5px 10px;
+    border-radius: 10px;
+    width: max-content;
+    margin-bottom: 5px;
+    background-color: white;
+    border: 1px solid lightgray;
+}
+
+.ml-4{
+    margin-left: 4px;
+}
+.mt-5{
+    margin-top: 5px;
+}
+.title{
+    font-weight: bold;
+}
+.group-notes-btn-area{
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}
+
+.attendees-list-box{
+    height: calc( 100vh - 300px);
+    width: 100%;
+    overflow-y: scroll;
+}
+.addendees-box{
+    display: flex;
+    flex-direction: row;
+}
+.addendees-box-left{
+    flex: 5;
+}
+.addendees-box-right{
+    flex: 1;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+html {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.formbold-form-btn-wrapper{
+    /* background-color: red; */
+}
+.main-content-area{
+    display: flex;
+    flex-direction: column;
+}
+.upper-box-area{
+    flex: 5;
+    overflow-y: scroll;
+    padding: 20px;
+    height: fit-content;
+}
+.lower-box-area{
+    flex: 1;
+    padding: 20px;
+}
+
+.attendance-box{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+.attendance-box span{
+    margin-left: 5px;
+}
