@@ -62,3 +62,13 @@ export const getEventDetailsById = async (id) => {
       return error;
     });
 };
+
+
+export const getAttendanceTypes = async () => {
+  return calenderApi.get('astypes').then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      return error;
+    });
+};

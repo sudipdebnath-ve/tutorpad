@@ -123,3 +123,8 @@ html {
 .attendance-box span{
     margin-left: 5px;
 }
+.email-outer-box{
+    display: flex;
+    flex-direction: column;
+    padding-top: 10px;
+}

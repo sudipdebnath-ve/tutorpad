@@ -310,6 +310,10 @@ const Calendars = () => {
       
 
     }
+
+    const takeAttendanceHandler= async (id) => {
+      navigate('/calendar/attendance/'+id);
+    }
     
     const createCloneHandler= async (id) => {
       resetForm();
@@ -708,7 +712,7 @@ useEffect(() => {
                 <p>Amit sing,Rahul Kumar,...</p>
               </div>
               <button className="cancel">
-                <i onClick={()=>getEventDetailsByIdHandler(selectedEventId)} class="fa fa-pencil" aria-hidden="true"></i>
+                <i onClick={()=>takeAttendanceHandler(selectedEventId)} class="fa fa-pencil" aria-hidden="true"></i>
                 Edit Attendance
               </button>
             </div>

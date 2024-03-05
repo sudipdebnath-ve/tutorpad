@@ -53,7 +53,7 @@ function App() {
       <Route path="/lending-library" element={<LendingLibrary />} />
       <Route path="/lending-library/details" element={<Details />} />
       <Route path="/calendar" element={<Calendar />} />
-      <Route path="/calendar/attendance" element={<Attendance />} />
+      <Route path="/calendar/attendance/:id" element={<Attendance />} />
       <Route path="/calendar/categories" element={<CategoriesLocations />} />
       <Route path="/calendar/categories/add" element={<AddCategories />} />
       <Route path="/calendar/categories/edit/:id" element={<EditCategories/>} />
