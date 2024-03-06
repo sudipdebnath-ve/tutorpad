@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './style.css';
-const SideSelectionBox = ({attendees_info, start_date,start_time,end_time,require_makeup_credits,attendees_ids,set_attendees_ids})=>{
+const SideSelectionBox = ({attendees_info, start_date,start_time,end_time,require_makeup_credits,attendees_ids,set_attendees_ids,event_name})=>{
     const studentCheckedhandler = (checked,id)=>{
         if(checked)
         {
@@ -15,7 +15,7 @@ const SideSelectionBox = ({attendees_info, start_date,start_time,end_time,requir
     return <div className="container-fluid p-0 bg-color-white">
                 <div className="header-info-section">
                     <div className="calendar-date-time">
-                        <h4>Lesson with Nitai Koiri</h4>
+                        <h4>{event_name}</h4>
                         <div className="current-date">
                             <i class="fa fa-calendar" aria-hidden="true"></i>
                             <span className="ml-5">{start_date}</span>
@@ -72,10 +72,22 @@ const SideSelectionBox = ({attendees_info, start_date,start_time,end_time,requir
                                                     </div>
                                                     <div className="addendees-box-right">
                                                         {
-                                                            e.attendance_taken && e.attendance_status==2 && <i class="fa fa-check-circle" style={{color:'green'}} aria-hidden="true"></i>
+                                                            e.attendance_taken && e.attendance_status==2 && <i  class="fa fa-check-circle" style={{color:'green'}} aria-hidden="true"></i>
                                                         }
                                                         {
-                                                            e.attendance_taken && e.attendance_status!=2 && <i class="fa fa-times-circle" style={{color:'green'}} aria-hidden="true"></i>
+                                                            e.attendance_taken && e.attendance_status!=2 && <i class="fa fa-times-circle" style={{color:'red'}} aria-hidden="true"></i>
+                                                        }
+                                                        {
+                                                             e.attendance_status==1 && "(U)"
+                                                        }
+                                                        {
+                                                             e.attendance_status==2 && "(P)"
+                                                        }
+                                                        {
+                                                             e.attendance_status==3 && "(A)"
+                                                        }
+                                                        {
+                                                             e.attendance_status==4 && "(TC)"
                                                         }
                                                     </div>
                                                 </div>

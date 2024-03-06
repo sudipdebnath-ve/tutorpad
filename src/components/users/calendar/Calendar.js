@@ -153,6 +153,7 @@ const Calendars = () => {
     const [sms_tutors,set_sms_tutors] = useState(false);
     const [notes,set_notes] = useState("");
     const [delete_all,set_delete_all] = useState(false);
+    const [attendees_info, set_attendees_info] = useState([]);
 
 
 
@@ -410,6 +411,7 @@ useEffect(() => {
     allEvents?.forEach((element) => {
       let myObject = {
         id:element?.id,
+        attendees_info:element?.attendees_info,
         title: element?.event_name,
         start: new Date(element?.start_date),
         end: new Date(element?.end_date),
@@ -609,6 +611,7 @@ useEffect(() => {
   const handleSelectedEvent = (e) => {
     setSelectedEventId(e.id);
     openModal("event");
+    set_attendees_info(e.attendees_info)
     let [hours, minutes] = e.start_time.split(":");
     let newTimeString = `${hours}:${minutes}`;
     let [endhours, endminutes] = e.end_time.split(":");
@@ -708,11 +711,35 @@ useEffect(() => {
                 {eventStartTime} - {eventEndTime}
               </div>
               <div style={{display:'flex',flexDirection:'column'}}>
-                <label> 1 Attendees</label>
-                <p>Amit sing,Rahul Kumar,...</p>
+                <label> {attendees_info.length||0} Attendees</label>
+                {
+                    attendees_info?.map((e)=>{
+                        return <p>
+                                  {
+                                        e.attendance_status==1 && "(U)"
+                                  }
+                                  {
+                                        e.attendance_status==2 && "(P)"
+                                  }
+                                  {
+                                        e.attendance_status==3 && "(A)"
+                                  }
+                                  {
+                                        e.attendance_status==4 && "(TC)"
+                                  }
+                                  {
+                                      e.attendance_taken && e.attendance_status==2 && <i  class="fa fa-check-circle" style={{color:'green'}} aria-hidden="true"></i>
+                                  }
+                                  {
+                                      e.attendance_taken && e.attendance_status!=2 && <i class="fa fa-times-circle" style={{color:'red'}} aria-hidden="true"></i>
+                                  }
+                                  {e.name}
+                                </p>
+                    })
+                }
               </div>
-              <button className="cancel">
-                <i onClick={()=>takeAttendanceHandler(selectedEventId)} class="fa fa-pencil" aria-hidden="true"></i>
+              <button onClick={()=>takeAttendanceHandler(selectedEventId)} className="cancel">
+                <i  class="fa fa-pencil" aria-hidden="true"></i>
                 Edit Attendance
               </button>
             </div>

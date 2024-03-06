@@ -3,15 +3,14 @@ import MiniSidebar from "../sidebar/MiniSidebar.js";
 import Sidebar from "../sidebar/Sidebar.js";
 import TopBar from "../sidebar/TopBar.js";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer ,toast} from "react-toastify";
 import './style.css';
 import SideSelectionBox from "./SideSelectionBox.js";
 import { Editor } from '@tinymce/tinymce-react';
 import { Link } from "react-router-dom";
 import { apiKey } from "./GroupNote.js";
-import { getEventDetailsById,getAttendanceTypes } from "../../services/calenderService.js";
+import { getEventDetailsById,getAttendanceTypes,updateTakeAttendanceEvents } from "../../services/calenderService.js";
 import { useParams } from "react-router-dom";
-
 const Attendance = ()=>{
     const param = useParams();
     const editorRef = useRef(null);
@@ -32,6 +31,7 @@ const Attendance = ()=>{
     const [email_tutor,set_email_tutor] = useState(false);
     const [email_student,set_email_student] = useState(false);
     const [is_paid_at_lesson,set_is_paid_at_lesson] = useState(false);
+    const [event_name,set_event_name] = useState("");
     
     
     const {
@@ -46,18 +46,19 @@ const Attendance = ()=>{
         const result = await getEventDetailsById(param.id);
         const attendees_info = result?.data?.attendees_info;
         console.log("DATA=>",result?.data);
+        set_event_name(result?.data?.event_name);
         set_attendees_info(attendees_info);
         set_start_date(result?.data?.start_date);
         set_start_time(result?.data?.start_time);
         set_end_time(result?.data?.end_time);
         set_require_makeup_credits(result?.data?.require_makeup_credits);
       }
-    const attendanceSubmitHandler = ()=>{
+    const attendanceSubmitHandler = async ()=>{
         
         if(attendees_ids.length>0)
         {
             let dataObj = {
-                student_id:attendees_ids,
+                student_ids:JSON.stringify(attendees_ids),
                 occurrence_id:param.id,
                 attendance_status:attendance_status,
                 is_late:is_late?1:0,
@@ -107,7 +108,18 @@ const Attendance = ()=>{
                 dataObj.lesson_is_billable = 0;
                 dataObj.used_makeup_credits = 0;
             }
-        
+           const response = await updateTakeAttendanceEvents(dataObj);
+           if(response.success)
+            {
+                toast.success(response.message, {
+                position: toast.POSITION.TOP_CENTER,
+                });
+                takeAttendanceHandler();
+            }else{
+                toast.error(response.message, {
+                position: toast.POSITION.TOP_CENTER,
+                });
+            }
         }else{
             alert("please select student")
         }   
@@ -165,7 +177,7 @@ const Attendance = ()=>{
                     <div className="container-fluid p-0">
                         <div className="row">
                             <div className="col-md-4">
-                               <SideSelectionBox attendees_info={attendees_info} start_date={start_date} start_time={start_time} end_time={end_time} require_makeup_credits={require_makeup_credits} attendees_ids={attendees_ids} set_attendees_ids={set_attendees_ids} />
+                               <SideSelectionBox attendees_info={attendees_info} start_date={start_date} start_time={start_time} end_time={end_time} require_makeup_credits={require_makeup_credits} attendees_ids={attendees_ids} set_attendees_ids={set_attendees_ids} event_name={event_name} />
                             </div>
                             <div className="col-md-8">
                                 {/* <GroupNote/> */}
@@ -285,7 +297,7 @@ const Attendance = ()=>{
                                     <div className="lower-box-area">
                                         <div className="formbold-form-btn-wrapper">
                                             <div className="btn-end">
-                                                <Link className="cancel">
+                                                <Link to={"/calendar"} className="cancel">
                                                 Cancel
                                                 </Link>
                                                 <button onClick={()=>attendanceSubmitHandler()} className="formbold-btn">
