@@ -16,6 +16,7 @@ const AppContext = ({ children }) => {
   const [emailOnchange, setEmailOnchange] = useState(false);
   const [studentData, setStudentData] = useState(false);
   const [tutorData, setTutorData] =useState(false);
+  const [allChargeCategory, setAllChargeCategory] = useState([]);
   const [allTutors, setAllTutors] = useState([]);
   const [getAvailabilityData, setGetAvailabilityData] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
@@ -159,6 +160,30 @@ const AppContext = ({ children }) => {
         if (response.data.success === true) {
           setLoading(false);
           setTutorData(response.data.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+  };
+
+
+  const fetchChargeCategory = async () => {
+    setLoading(true);
+    const validateconfig = {
+      method: "GET",
+      url: `${API_URL}chargecats`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(validateconfig)
+      .then((response) => {
+        // console.log(response.data);
+        if (response.data.success === true) {
+          setLoading(false);
+          setAllChargeCategory(response.data.data);
         }
       })
       .catch((error) => {
@@ -320,7 +345,9 @@ const AppContext = ({ children }) => {
         fetchCategory,
         allCategory,
         fetchLocation,
-        allLocation
+        allLocation,
+        fetchChargeCategory,
+        allChargeCategory
       }}
     >
       {children}

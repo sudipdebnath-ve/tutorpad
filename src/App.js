@@ -28,6 +28,7 @@ import EditCategories from "./components/categories-locations/categories/edit/Ed
 import AddLocations from "./components/categories-locations/locations/add/AddLocations";
 import EditLocations from "./components/categories-locations/locations/edit/EditLocations";
 import Attendance from "./components/attendance/Attendance";
+import ChargeCategory from "./components/charge-category/ChargeCategory";
 function App() {
   return (
     <Routes>
@@ -36,6 +37,7 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/students" element={<Student />} />
       <Route path="/tutors" element={<Tutor />} />
+      <Route path="/charge/category" element={<ChargeCategory />} />
       <Route path="/tutors/add" element={<TutorAdd />} />
       <Route path="/tutors/details/:id" element={<TutorEditDetails />} />
       <Route path="/tutors/addStaff" element={<StaffAdd />} />
