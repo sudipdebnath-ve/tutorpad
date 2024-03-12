@@ -11,14 +11,14 @@ import {trash2} from 'react-icons-kit/feather/trash2';
 import { useNavigate } from "react-router-dom";
 import DeleteModel from "../form/delete-model/DeleteModel.js";
 import { ToastContainer, toast } from "react-toastify";
-import { deleteCategories } from "../../services/categoriesService.js";
-const FetchChargeCategoryDatatable = () => {
+import { deleteChargeCategories } from "../../services/categoriesService.js";
+const FetchChargeCategoryDatatable = ({setSelectedId,set_chargecat_name,setModalIsOpen,setIsEdit}) => {
   
   const [val, setVal] = useState(false);
   const { fetchChargeCategory, userId, setLoading, loading, allChargeCategory } =
     useUserDataContext();
   const [deleteId,setDeleteId] = useState(null);
-  const [modalIsOpen,setModalIsOpen] = useState(false);
+  const [deleteModalIsOpen,setDeleteModalIsOpen] = useState(false);
   const [isDeleteLoading,setIsDeleteLoading] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
@@ -51,7 +51,7 @@ const FetchChargeCategoryDatatable = () => {
       width: 150,
       renderCell: (params) => (
        <div style={{display:'flex',gap:5}}>
-          <Icon onClick={()=>navigate("/calendar/categories/edit/"+params.row.id)} icon={edit2} />
+          <Icon onClick={()=>{setSelectedId(params.row.id);set_chargecat_name(params.row.chargecat_name);setModalIsOpen(true);setIsEdit(true);}} icon={edit2} />
           <Icon onClick={()=>onDeleteModelHandler(params.row.id)} icon={trash2} />
        </div>
       ),
@@ -60,21 +60,21 @@ const FetchChargeCategoryDatatable = () => {
 
   const onDeleteModelHandler = (id)=>{
     setDeleteId(id);
-    setModalIsOpen(true);
+    setDeleteModalIsOpen(true);
   }
 
   const onDeleteHandler = async (id)=>{
     setIsDeleteLoading(true);
-    const response = await deleteCategories(id);
+    const response = await deleteChargeCategories(id);
     if (response.success == true) {
       fetchChargeCategory();
       toast.success(response.message, {
         position: toast.POSITION.TOP_CENTER,
       });
-      setModalIsOpen(false);
+      setDeleteModalIsOpen(false);
       setIsDeleteLoading(false);
     }else{
-      setModalIsOpen(false);
+      setDeleteModalIsOpen(false);
       setIsDeleteLoading(false);
       toast.error(JSON.stringify(response.response.data.data), {
         position: toast.POSITION.TOP_CENTER,
@@ -97,7 +97,7 @@ const FetchChargeCategoryDatatable = () => {
   }
   return (
     <div>
-      <DeleteModel isLoading = {isDeleteLoading} setIsLoading={setIsDeleteLoading} modalIsOpen={modalIsOpen} id={deleteId} setIsOpen={setModalIsOpen} onOk={onDeleteHandler}  />
+      <DeleteModel isLoading = {isDeleteLoading} setIsLoading={setIsDeleteLoading} modalIsOpen={deleteModalIsOpen} id={deleteId} setIsOpen={setDeleteModalIsOpen} onOk={onDeleteHandler}  />
       <>
         {rows && allChargeCategory.length > 0 ? (
           loading ? (

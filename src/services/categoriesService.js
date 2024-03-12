@@ -68,3 +68,29 @@ export const getCategoriesDetails = async (id) => {
         console.log(error);
       });
 };
+
+
+export const createChargeCategories = async (data) => {
+  return categoriesApi.post('create-chargecat',data).then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      return error;
+    });
+};
+export const updateChargeCategories = async (data,id) => {
+  return categoriesApi.patch('update-chargecat/'+id,data).then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      return error;
+    });
+};
+export const deleteChargeCategories = async (id) => {
+  return categoriesApi.delete('delete-chargecat/'+id).then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      return error;
+    });
+};
