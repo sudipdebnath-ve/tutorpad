@@ -9,12 +9,13 @@ import { API_URL } from "../../../utils/config.js";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
+import { getParentDetailsList } from "../../../services/calenderService.js";
 const StudentAdd = () => {
   const { fetchData, sidebarToggle, token, userId } = useUserDataContext();
   const [studentType, setStudentType] = useState("Child");
   const [showParentDetails, setShowParentDetails] = useState(true);
   const [additionalDetails, setAdditionalDetails] = useState(false);
+  const [parentList, setParentList] = useState([]);
   const navigate = useNavigate();
   const [selectedStatus, setSelectedStatus] = useState("active");
   const [error, setError] = useState({});
@@ -49,6 +50,7 @@ const StudentAdd = () => {
     price: "",
     note: "",
     invoicing: "",
+    family_account_id:null,
   });
 
   useEffect(() => {
@@ -60,8 +62,18 @@ const StudentAdd = () => {
     }
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    const name = `${formData.parentfirstname} ${formData.parentlastname}`;
+    
+    if(formData.studentType=="Child")
+    {
+      
+      const parentInfo = await getParentDetailsList(name);
+      setParentList(parentInfo.data)
+      console.log("DATA=>",formData);
+    }
     const stepMenuOne = document.querySelector(".formbold-step-menu1");
     const stepMenuTwo = document.querySelector(".formbold-step-menu2");
 
@@ -979,6 +991,25 @@ const StudentAdd = () => {
                       </div>
                       
                       <div className="formbold-form-step-2">
+                        {
+                          parentList?.length>0 && <div className="alert alert-md alert-warning">
+                                                  <p><strong>This Parent Already Exist</strong></p>
+                                                  <p>You already have an parent under name,email or phone number.</p>
+                                                  <p>Choose an existing family below or ignore duplicates.</p>
+                                                  {
+                                                    parentList.map((e)=>{
+                                                      return <p>
+                                                                <input type="radio" onChange={handleChange} name="family_account_id" value={e.id} />
+                                                                <span> {`${e.name}`}</span>
+                                                              </p>
+                                                    })
+                                                  }
+                                                  <p>
+                                                    <input onChange={handleChange} checked type="radio" name="family_account_id" value={null} />
+                                                      <span> {`Ignore duplicate and continue`}</span>
+                                                  </p>
+                                                </div>
+                        }
                         <h5>Set Up Automatic Invoicing</h5>
                         <p className="py-3">
                           You can set up automatic invoicing now, or you can set

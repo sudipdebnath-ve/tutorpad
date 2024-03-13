@@ -17,6 +17,7 @@ const AppContext = ({ children }) => {
   const [studentData, setStudentData] = useState(false);
   const [tutorData, setTutorData] =useState(false);
   const [allChargeCategory, setAllChargeCategory] = useState([]);
+  const [allFamilies, setAllFamilies] = useState([]);
   const [allTutors, setAllTutors] = useState([]);
   const [getAvailabilityData, setGetAvailabilityData] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
@@ -192,6 +193,29 @@ const AppContext = ({ children }) => {
       });
   };
 
+  const fetchFamilies = async () => {
+    setLoading(true);
+    const validateconfig = {
+      method: "GET",
+      url: `${API_URL}family-accounts`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(validateconfig)
+      .then((response) => {
+        // console.log(response.data);
+        if (response.data.success === true) {
+          setLoading(false);
+          setAllFamilies(response.data.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+  };
+
   //Availability start
 
   const allAvailabilityData = async () => {
@@ -347,7 +371,10 @@ const AppContext = ({ children }) => {
         fetchLocation,
         allLocation,
         fetchChargeCategory,
-        allChargeCategory
+        allChargeCategory,
+        allFamilies, 
+        setAllFamilies,
+        fetchFamilies
       }}
     >
       {children}

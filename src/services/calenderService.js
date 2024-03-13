@@ -83,6 +83,15 @@ export const updateTakeAttendanceEvents = async (data) => {
     });
 };
 
+export const getParentDetailsList = async (name) => {
+  return calenderApi.get('family-accounts/'+name).then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      return error;
+    });
+};
+
 // let data = new FormData();
 // data.append('student_ids', '[2]');
 // data.append('occurrence_id', 'b3d9ba7b-d800-11ee-aa0b-029d5ef95414');

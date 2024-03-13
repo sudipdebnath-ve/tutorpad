@@ -21,7 +21,7 @@ import Tutor from "./components/users/Tutor";
 import TutorAdd from "./components/users/tutors/TutorAdd";
 import StaffAdd from "./components/users/tutors/StaffAdd";
 import TutorEditDetails from "./components/users/tutors/details/TutorEditDetails";
-import FamilyInvoices from "./components/users/family-invoives/FamilyInvoices";
+import FamilyInvoice from "./components/family-invoice/FamilyInvoice";
 import CategoriesLocations from "./components/categories-locations/CategoriesLocations";
 import AddCategories from "./components/categories-locations/categories/add/AddCategories";
 import EditCategories from "./components/categories-locations/categories/edit/EditCategories";
@@ -29,6 +29,7 @@ import AddLocations from "./components/categories-locations/locations/add/AddLoc
 import EditLocations from "./components/categories-locations/locations/edit/EditLocations";
 import Attendance from "./components/attendance/Attendance";
 import ChargeCategory from "./components/charge-category/ChargeCategory";
+import TransactionDetailType from "./components/family-invoice/TransactionDetailType";
 function App() {
   return (
     <Routes>
@@ -64,7 +65,8 @@ function App() {
       
       <Route path="/online-resources" element={<OnlineResources />} />
       <Route path="/bussiness-settings" element={<BussinessSettings />} />
-      <Route path="/familiies-and-invoices" element={<FamilyInvoices />} />
+      <Route path="/familiies-and-invoices" element={<FamilyInvoice />} />
+      <Route path="/familiies-and-invoices/transaction-type" element={<TransactionDetailType />} />
     </Routes>
   );
 }
