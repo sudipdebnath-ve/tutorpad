@@ -30,6 +30,7 @@ import EditLocations from "./components/categories-locations/locations/edit/Edit
 import Attendance from "./components/attendance/Attendance";
 import ChargeCategory from "./components/charge-category/ChargeCategory";
 import TransactionDetailType from "./components/family-invoice/TransactionDetailType";
+import FamilyDetails from "./components/family-invoice/FamilyDetails";
 function App() {
   return (
     <Routes>
@@ -67,6 +68,7 @@ function App() {
       <Route path="/bussiness-settings" element={<BussinessSettings />} />
       <Route path="/familiies-and-invoices" element={<FamilyInvoice />} />
       <Route path="/familiies-and-invoices/transaction-type" element={<TransactionDetailType />} />
+      <Route path="/familiies-and-invoices/family/:id" element={<FamilyDetails />} />
     </Routes>
   );
 }

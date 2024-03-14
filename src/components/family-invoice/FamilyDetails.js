@@ -17,7 +17,12 @@ import { ToastContainer, toast } from "react-toastify";
 import Invoice from "./Invoice.js";
 import Family from "./Family.js";
 import Transaction from "./Transaction.js";
-
+import Select from "react-select";
+import {user} from 'react-icons-kit/feather/user';
+import { Icon } from 'react-icons-kit';
+import {settings} from 'react-icons-kit/feather/settings';
+import {mail} from 'react-icons-kit/feather/mail';
+import {ic_receipt_outline} from 'react-icons-kit/md/ic_receipt_outline';
 const customStyles = {
   content: {
     top: '50%',
@@ -28,7 +33,7 @@ const customStyles = {
     transform: 'translate(-50%, -50%)',
   },
 };
-const FamilyInvoice = () => {
+const FamilyDetails = () => {
   const { fetchChargeCategory,sidebarToggle, loading } = useUserDataContext();
   const [addNewDropdown, setAddNewDropdown] = useState(false);
   const [modalIsOpen,setModalIsOpen] = useState(false);
@@ -104,25 +109,82 @@ const FamilyInvoice = () => {
         <main className="content student">
           <div className="container-fluid p-0">
             <div className="row d-flex">
-              <div className="col-xl-12 col-xxl-12">
+              <div className="col-xl-4 col-xxl-4">
+                <div className="card">
+                  <div className="card-body">
+                    <div className="row">
+                      <div className="col-md-12">
+                        <Link to={"/familiies-and-invoices"}>{`<`} Back To family & Invoice</Link>
+                        <Select defaultValue={1}  onChange={(e)=>{}} isMulti={false} options={[{label:'Nitai Koiri',id:1}]} />
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-md-12">
+                        <h6 style={{textAlign:'center',marginTop:'10px',marginBottom:'10px'}}><strong>Family Details</strong></h6>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-md-12">
+                        <label>Students</label>
+                        <ul>
+                          <li><Link to={"/"}><Icon icon={user} /> Amit Kumar </Link><span style={{background:'lightgreen',padding:'2px 5px',color:'white'}}>Active</span></li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-md-12">
+                        <label>Family Contact</label>
+                        <ul>
+                          <li><Link to={"/"}><Icon icon={user} /> Raj Kumar </Link><span style={{background:'lightblue',padding:'2px 5px',color:'white'}}>Invoice Recipient</span></li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-md-12">
+                        <label><Icon icon={ic_receipt_outline}/> Next Invoice</label>
+                        <div style={{lineHeight:'0px',fontSize:10}}>
+                          <p>Invoice Date: 01-04-2024</p>
+                          <p>Date Range: 01-04-2024 to 30-04-2024</p>
+                          <p>Invoice Date: 01-04-2024</p>
+                          <p>Total Due: <span style={{background:'red',padding:'2px 5px',color:'white'}}>₹ 100.00 balance owing</span></p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-md-12">
+                        <label><Icon icon={settings}/> Auto-Invoice Settings</label>
+                        <div style={{lineHeight:'0px',fontSize:10}}>
+                          <p>Prepaid Lessons</p>
+                          <p>Repeats: The 1st of the month every 1 month</p>
+                          <p>Balance Forward: <span style={{minWidth:'50px',padding:'2px 5px',background:'lightgreen',textAlign:'center',color:'white'}}>
+                                                Enabled
+                                              </span>
+                          </p>
+                          <p>Auto-Email: <span style={{minWidth:'50px',padding:'2px 5px',background:'red',textAlign:'center',color:'white'}}>
+                                            Disabled
+                                          </span>
+                          </p>
+                         
+                        </div>
+                      </div>
+                    </div>
+                    <hr></hr>
+                    <div className="row">
+                      <div className="col-md-12">
+                        <button className="btn btn-md btn-info form-control"><Icon icon={settings} style={{color:'white',marginRight:5}} />Edit Auto-Invoice Settings</button>
+                       </div>
+                       <div style={{marginTop:5}} className="col-md-12">
+                        <button className="btn btn-md btn-danger form-control"><Icon icon={mail} style={{color:'white',marginRight:5}} />Disable Auto-Invoicing</button>
+                       </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-xl-8 col-xxl-8">
                 <ul className="nav nav-tabs" id="myTab" role="tablist">
                   <li className="nav-item" role="presentation">
                     <button
                       className="nav-link active"
-                      id="home-tab"
-                      data-bs-toggle="tab"
-                      data-bs-target="#home"
-                      type="button"
-                      role="tab"
-                      aria-controls="home"
-                      aria-selected="true"
-                    >
-                      Family
-                    </button>
-                  </li>
-                  <li className="nav-item" role="presentation">
-                    <button
-                      className="nav-link"
                       id="transaction-tab"
                       data-bs-toggle="tab"
                       data-bs-target="#transaction"
@@ -131,7 +193,7 @@ const FamilyInvoice = () => {
                       aria-controls="transaction"
                       aria-selected="true"
                     >
-                      Transaction
+                      Account
                     </button>
                   </li>
                   <li className="nav-item" role="presentation">
@@ -152,14 +214,6 @@ const FamilyInvoice = () => {
                 <div className="tab-content" id="myTabContent">
                   <div
                     className="tab-pane fade show active"
-                    id="home"
-                    role="tabpanel"
-                    aria-labelledby="home-tab"
-                  >
-                    <Family />
-                  </div>
-                  <div
-                    className="tab-pane fade"
                     id="transaction"
                     role="tabpanel"
                     aria-labelledby="transaction-tab"
@@ -361,4 +415,4 @@ const FamilyInvoice = () => {
   );
 };
 
-export default FamilyInvoice;
+export default FamilyDetails;

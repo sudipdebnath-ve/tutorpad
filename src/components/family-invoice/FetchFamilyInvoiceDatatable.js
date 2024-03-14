@@ -8,6 +8,7 @@ import { Link } from "react-router-dom"
 import { Icon } from 'react-icons-kit';
 import {edit2} from 'react-icons-kit/feather/edit2';
 import {trash2} from 'react-icons-kit/feather/trash2';
+import {chevronRight} from 'react-icons-kit/feather/chevronRight';
 import { useNavigate } from "react-router-dom";
 import DeleteModel from "../form/delete-model/DeleteModel.js";
 import { ToastContainer, toast } from "react-toastify";
@@ -34,13 +35,13 @@ const FetchFamilyInvoiceDatatable = ({setSelectedId,set_chargecat_name,setModalI
       // headerClassName: "super-app-theme--header",
       // valueGetter: (params) =>
       //   `<a href="${params.row.first_name}">${params.row.first_name}</a>`,
-      width: '650',
+      width: '400',
       // valueGetter: (params: GridValueGetterParams) =>
       //   `<a href="${params.row.first_name}">${params.row.first_name}</a>`,
       // },
       renderCell: (params) => (
-        <Link to={`/tutors/details/${params.row.id}`}>
-          {params.row.chargecat_name}
+        <Link to={`/familiies-and-invoices/family/${params.row.id}`}>
+          {params.row.name}
         </Link>
       ),
       editable: true,
@@ -54,13 +55,26 @@ const FetchFamilyInvoiceDatatable = ({setSelectedId,set_chargecat_name,setModalI
       field: "balance",
       headerName: "Balance",
       width: 150,
+      renderCell: (params) => (
+        params.row.balance_negative==0?(<div style={{minWidth:'50px',padding:'0 5px',background:'lightgreen',textAlign:'center',color:'white'}}>
+                              ₹ {params.row.balance}
+                            </div>
+                          ):(<div style={{minWidth:'50px',padding:'0 5px',background:'red',textAlign:'center',color:'white'}}>
+                          -₹ {params.row.balance}
+                        </div>)
+      ),
     },
     {
       field: "auto_invoicing",
       headerName: "Auto Invoicing",
       width: 150,
       renderCell: (params) => (
-       <div style={{background:'green'}}>{params.row.auto_invoicing}</div>
+        params.row.auto_invoicing==1?(<div style={{minWidth:'50px',padding:'0 5px',background:'lightgreen',textAlign:'center',color:'white'}}>
+                              Enabled
+                            </div>
+                          ):(<div style={{minWidth:'50px',padding:'0 5px',background:'red',textAlign:'center',color:'white'}}>
+                              Disabled
+                        </div>)
       ),
     },
     {
@@ -69,8 +83,9 @@ const FetchFamilyInvoiceDatatable = ({setSelectedId,set_chargecat_name,setModalI
       width: 150,
       renderCell: (params) => (
        <div style={{display:'flex',gap:5}}>
-          <Icon onClick={()=>{setSelectedId(params.row.id);set_chargecat_name(params.row.chargecat_name);setModalIsOpen(true);setIsEdit(true);}} icon={edit2} />
-          <Icon onClick={()=>onDeleteModelHandler(params.row.id)} icon={trash2} />
+        <Link to={`/familiies-and-invoices/family/${params.row.id}`}>
+          <Icon icon={chevronRight} />
+        </Link>
        </div>
       ),
     }
