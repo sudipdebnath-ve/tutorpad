@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import 'react-datepicker/dist/react-datepicker.css';
-import FetchChargeCategoryDatatable from "./FetchFamilyInvoiceDatatable.js";
+import FetchFamilyTransactionDatatable from "./FetchFamilyTransactionDatatable.js";
 import "../users/assets/css/customDatepicker.css";
 
-const Transaction = ()=>{
+const TransactionByFamily = ()=>{
     const [modalIsOpen,setModalIsOpen] = useState(false);
     const [isEdit,setIsEdit] = useState(false);
     const [chargecat_name,set_chargecat_name] = useState("");
@@ -29,11 +29,11 @@ const Transaction = ()=>{
                     </div>
                     <div className="card-body d-flex">
                     <div className="align-self-center w-100">
-                        <FetchChargeCategoryDatatable setIsEdit={setIsEdit} setModalIsOpen={setModalIsOpen} set_chargecat_name={set_chargecat_name} setSelectedId={setSelectedId} />
+                        <FetchFamilyTransactionDatatable setIsEdit={setIsEdit} setModalIsOpen={setModalIsOpen} set_chargecat_name={set_chargecat_name} setSelectedId={setSelectedId} />
                     </div>
                     </div>
                 </div>
                 </div>
             </div>
 }
-export default Transaction;
+export default TransactionByFamily;

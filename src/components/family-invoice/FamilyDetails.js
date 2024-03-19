@@ -23,74 +23,10 @@ import { Icon } from 'react-icons-kit';
 import {settings} from 'react-icons-kit/feather/settings';
 import {mail} from 'react-icons-kit/feather/mail';
 import {ic_receipt_outline} from 'react-icons-kit/md/ic_receipt_outline';
-const customStyles = {
-  content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-  },
-};
-const FamilyDetails = () => {
-  const { fetchChargeCategory,sidebarToggle, loading } = useUserDataContext();
-  const [addNewDropdown, setAddNewDropdown] = useState(false);
-  const [modalIsOpen,setModalIsOpen] = useState(false);
-  const [isLoading,setIsLoading] = useState(false);
-  const [isEdit,setIsEdit] = useState(false);
-  const [chargecat_name,set_chargecat_name] = useState("");
-  const [selectedId,setSelectedId] = useState("");
-  const handleClickAddNew = (e) => {
-    if (addNewDropdown == false) {
-      setAddNewDropdown(true);
-    } else {
-      setAddNewDropdown(false);
-    }
-  };
+import TransactionByFamily from "./TransactionByFamily.js";
 
-  const onSubmitHandler = async ()=>{
-    setIsLoading(true);
-    if(isEdit)
-    {
-      const response = await updateChargeCategories({chargecat_name},selectedId);
-      if (response.success == true) {
-        toast.success(response.message, {
-          position: toast.POSITION.TOP_CENTER,
-        });
-        fetchChargeCategory();
-        setIsLoading(false);
-        setModalIsOpen(false);
-      }else{
-        setIsLoading(false);
-        toast.error(JSON.stringify(response.response.data.data), {
-          position: toast.POSITION.TOP_CENTER,
-        })
-        
-      }
-    }else{
-      const response = await createChargeCategories({chargecat_name});
-      if (response.success == true) {
-        toast.success(response.message, {
-          position: toast.POSITION.TOP_CENTER,
-        });
-        fetchChargeCategory();
-        setIsLoading(false);
-        setModalIsOpen(false);
-      }else{
-        setIsLoading(false);
-        toast.error(JSON.stringify(response.response.data.data), {
-          position: toast.POSITION.TOP_CENTER,
-        })
-        
-      }
-    }
-    
-  }
-  const onCancel = ()=>{
-    set_chargecat_name("");
-    setModalIsOpen(false);
-  }
+const FamilyDetails = () => {
+  const {sidebarToggle } = useUserDataContext();
 
   return (
     <div className="wrapper">
@@ -193,7 +129,7 @@ const FamilyDetails = () => {
                       aria-controls="transaction"
                       aria-selected="true"
                     >
-                      Account
+                      Transaction
                     </button>
                   </li>
                   <li className="nav-item" role="presentation">
@@ -218,7 +154,7 @@ const FamilyDetails = () => {
                     role="tabpanel"
                     aria-labelledby="transaction-tab"
                   >
-                    <Transaction/>
+                    <TransactionByFamily/>
                     
                   </div>
                   <div

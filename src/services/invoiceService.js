@@ -16,3 +16,38 @@ export const getFamilyAccounts= async () => {
         console.log(error);
       });
 };
+
+export const getFamilyAccountsDetails= async (id) => {
+  return invoicesApi.get('family-account/'+id).then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+export const saveTransaction= async (data) => {
+  return invoicesApi.post('create-transaction',data).then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+export const updateTransaction= async (data,id) => {
+  return invoicesApi.patch('update-transaction/'+id,data).then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+export const getTransactionById = async (id) => {
+  return invoicesApi.get('transaction/'+id).then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};

@@ -67,7 +67,9 @@ function App() {
       <Route path="/online-resources" element={<OnlineResources />} />
       <Route path="/bussiness-settings" element={<BussinessSettings />} />
       <Route path="/familiies-and-invoices" element={<FamilyInvoice />} />
-      <Route path="/familiies-and-invoices/transaction-type" element={<TransactionDetailType />} />
+      <Route path="/familiies-and-invoices/transaction-type/:screen" element={<TransactionDetailType />} />
+      <Route path="/familiies-and-invoices/transaction-type/:screen/:type" element={<TransactionDetailType />} />
+      <Route path="/familiies-and-invoices/transaction-type/:screen/:type/:id" element={<TransactionDetailType />} />
       <Route path="/familiies-and-invoices/family/:id" element={<FamilyDetails />} />
     </Routes>
   );

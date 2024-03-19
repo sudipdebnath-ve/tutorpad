@@ -27,6 +27,7 @@ const AppContext = ({ children }) => {
     template_title: "",
     template_content: "",
   });
+  const [allTransactionsByFamily, setAllTransactionsByFamily] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -338,6 +339,32 @@ const AppContext = ({ children }) => {
       });
   }
 
+
+  const fetchTransactionsByFamily = async (id) => {
+    setLoading(true);
+    const validateconfig = {
+      method: "GET",
+      url: `${API_URL}account-transactions/`+id,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(validateconfig)
+      .then((response) => {
+        // console.log(response.data);
+        if (response.data.success === true) {
+          setLoading(false);
+          setAllTransactionsByFamily(response.data.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+  };
+
+
+
   return (
     <userDataContext.Provider
       value={{
@@ -374,7 +401,9 @@ const AppContext = ({ children }) => {
         allChargeCategory,
         allFamilies, 
         setAllFamilies,
-        fetchFamilies
+        fetchFamilies,
+        allTransactionsByFamily, 
+        fetchTransactionsByFamily
       }}
     >
       {children}
