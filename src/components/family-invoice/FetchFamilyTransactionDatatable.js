@@ -24,7 +24,7 @@ const FetchFamilyTransactionDatatable = () => {
   const navigate = useNavigate();
   useEffect(() => {
     fetchTransactionsByFamily(param.id);
-  }, [userId]);
+  }, [userId,param]);
 
 
   const columns = [

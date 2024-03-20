@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import MiniSidebar from "../sidebar/MiniSidebar.js";
@@ -6,7 +6,7 @@ import Sidebar from "../sidebar/Sidebar.js";
 import TopBar from "../sidebar/TopBar.js";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import instructors from "../users/assets/images/Instructors.svg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import FetchChargeCategoryDatatable from "./FetchFamilyInvoiceDatatable.js";
 import Loader from "../Loader.js";
 import "../users/assets/css/customDatepicker.css";
@@ -26,8 +26,21 @@ import {ic_receipt_outline} from 'react-icons-kit/md/ic_receipt_outline';
 import TransactionByFamily from "./TransactionByFamily.js";
 
 const FamilyDetails = () => {
-  const {sidebarToggle } = useUserDataContext();
-
+  const {sidebarToggle,allFamilies } = useUserDataContext();
+  const param = useParams();
+  const navigate = useNavigate();
+  const [selectedFamily,setSelectedFamily] = useState();
+  const [isAutoInvoicing,setIsAutoInvoicing] = useState(0);
+  const onChangeSelectFamiliyHandler = (e)=>{
+    setSelectedFamily(e);
+    navigate('/familiies-and-invoices/family/'+e.value);
+  }
+  useEffect(()=>{
+    const familiyData = allFamilies.filter((f)=>f.id==param.id);
+    const familySelectedData = familiyData.map((e)=>{return {label:e.name,value:e.id}});
+    setIsAutoInvoicing(familiyData.auto_invoicing);
+    setSelectedFamily(...familySelectedData);
+  },[param])
   return (
     <div className="wrapper">
       {sidebarToggle ? (
@@ -51,7 +64,7 @@ const FamilyDetails = () => {
                     <div className="row">
                       <div className="col-md-12">
                         <Link to={"/familiies-and-invoices"}>{`<`} Back To family & Invoice</Link>
-                        <Select defaultValue={1}  onChange={(e)=>{}} isMulti={false} options={[{label:'Nitai Koiri',id:1}]} />
+                        <Select value={selectedFamily}  onChange={(e)=>onChangeSelectFamiliyHandler(e)} isMulti={false} options={[...allFamilies.map((e)=>{return {label:e.name,value:e.id}})]} />
                       </div>
                     </div>
                     <div className="row">
@@ -71,7 +84,7 @@ const FamilyDetails = () => {
                       <div className="col-md-12">
                         <label>Family Contact</label>
                         <ul>
-                          <li><Link to={"/"}><Icon icon={user} /> Raj Kumar </Link><span style={{background:'lightblue',padding:'2px 5px',color:'white'}}>Invoice Recipient</span></li>
+                          <li><Link to={"/"}><Icon icon={user} /> {selectedFamily?.label||""} </Link><span style={{background:'lightblue',padding:'2px 5px',color:'white'}}>Invoice Recipient</span></li>
                         </ul>
                       </div>
                     </div>
@@ -106,12 +119,20 @@ const FamilyDetails = () => {
                     </div>
                     <hr></hr>
                     <div className="row">
-                      <div className="col-md-12">
-                        <button className="btn btn-md btn-info form-control"><Icon icon={settings} style={{color:'white',marginRight:5}} />Edit Auto-Invoice Settings</button>
-                       </div>
-                       <div style={{marginTop:5}} className="col-md-12">
-                        <button className="btn btn-md btn-danger form-control"><Icon icon={mail} style={{color:'white',marginRight:5}} />Disable Auto-Invoicing</button>
-                       </div>
+                      {
+                        isAutoInvoicing==1 && <><div className="col-md-12">
+                                              <button className="btn btn-md btn-info form-control"><Icon icon={settings} style={{color:'white',marginRight:5}} />Edit Auto-Invoice Settings</button>
+                                            </div>
+                                            <div style={{marginTop:5}} className="col-md-12">
+                                              <button className="btn btn-md btn-danger form-control"><Icon icon={mail} style={{color:'white',marginRight:5}} />Disable Auto-Invoicing</button>
+                                            </div></>
+                      }
+                      {
+                        isAutoInvoicing==0 && <div className="col-md-12">
+                                              <button className="btn btn-md btn-info form-control"><Icon icon={settings} style={{color:'white',marginRight:5}} />Enable Auto-Invoice</button>
+                                             </div>
+                      }
+                      
                     </div>
                   </div>
                 </div>

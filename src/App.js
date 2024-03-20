@@ -33,7 +33,7 @@ import TransactionDetailType from "./components/family-invoice/TransactionDetail
 import FamilyDetails from "./components/family-invoice/FamilyDetails";
 function App() {
   return (
-    <Routes>
+    <Routes basename="/">
       <Route index element={<Register />} />
       <Route path="/signin" element={<Signin />} />
       <Route path="/dashboard" element={<Dashboard />} />
