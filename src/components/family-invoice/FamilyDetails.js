@@ -12,7 +12,6 @@ import Loader from "../Loader.js";
 import "../users/assets/css/customDatepicker.css";
 import Modal from 'react-modal';
 import { Spinner } from 'react-bootstrap';
-import { createChargeCategories,updateChargeCategories } from "../../services/categoriesService.js";
 import { ToastContainer, toast } from "react-toastify";
 import Invoice from "./Invoice.js";
 import Family from "./Family.js";
@@ -24,22 +23,30 @@ import {settings} from 'react-icons-kit/feather/settings';
 import {mail} from 'react-icons-kit/feather/mail';
 import {ic_receipt_outline} from 'react-icons-kit/md/ic_receipt_outline';
 import TransactionByFamily from "./TransactionByFamily.js";
+import { getFamilyAccountsDetails } from "../../services/invoiceService.js";
 
 const FamilyDetails = () => {
   const {sidebarToggle,allFamilies } = useUserDataContext();
   const param = useParams();
   const navigate = useNavigate();
   const [selectedFamily,setSelectedFamily] = useState();
+  const [students,setStudents] = useState([]);
   const [isAutoInvoicing,setIsAutoInvoicing] = useState(0);
   const onChangeSelectFamiliyHandler = (e)=>{
     setSelectedFamily(e);
     navigate('/familiies-and-invoices/family/'+e.value);
   }
+  const getFamilyAccountsDetailsHandler = async()=>{
+    const response = await getFamilyAccountsDetails(param.id);
+    console.log(response.data.students);
+    setStudents(response?.data?.students||[]);
+  }
   useEffect(()=>{
     const familiyData = allFamilies.filter((f)=>f.id==param.id);
     const familySelectedData = familiyData.map((e)=>{return {label:e.name,value:e.id}});
-    setIsAutoInvoicing(familiyData.auto_invoicing);
+    setIsAutoInvoicing(familiyData[0].auto_invoicing);
     setSelectedFamily(...familySelectedData);
+    getFamilyAccountsDetailsHandler();
   },[param])
   return (
     <div className="wrapper">
@@ -76,7 +83,12 @@ const FamilyDetails = () => {
                       <div className="col-md-12">
                         <label>Students</label>
                         <ul>
-                          <li><Link to={"/"}><Icon icon={user} /> Amit Kumar </Link><span style={{background:'lightgreen',padding:'2px 5px',color:'white'}}>Active</span></li>
+                          {
+                            students.map((e)=>{
+                              return <li><Link to={"/"}><Icon icon={user} /> {e?.name||""} </Link><span style={{background:`${e?.status_color}`,padding:'2px 5px',color:'white'}}>{e?.status_label}</span></li>
+                            })
+                          }
+                          
                         </ul>
                       </div>
                     </div>

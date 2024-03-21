@@ -9,6 +9,7 @@ import './style.css';
 import TransactionType from "./TransactionType.js";
 import PaymentRefundForm from "./PaymentRefundForm.js";
 import { useParams,useNavigate } from "react-router-dom";
+import ChargesDiscountForm from "./ChargesDiscountForm.js";
 
 const TransactionDetailType = () => {
   const param = useParams();
@@ -43,8 +44,9 @@ const TransactionDetailType = () => {
                     <div className={`card-body ${isPaymentTypeScreen==1?"contaner-area":"contaner-area-min"}`}>
                         <span>Step {isPaymentTypeScreen==1?"1/2":"2/2"}</span>
                         {
-                            isPaymentTypeScreen==1?<TransactionType />:<PaymentRefundForm transactionType={param?.type} />
+                            // isPaymentTypeScreen==1?<TransactionType />:<PaymentRefundForm transactionType={param?.type} />
                         }
+                        <ChargesDiscountForm />
                         
                         
                     </div>
