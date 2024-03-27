@@ -7,8 +7,7 @@ import {chevronLeft} from 'react-icons-kit/feather/chevronLeft';
 import { Icon } from 'react-icons-kit';
 import { ToastContainer, toast } from "react-toastify";
 import { getFamilyAccounts,getFamilyAccountsDetails,saveTransaction,getTransactionById,updateTransaction } from "../../services/invoiceService";
-const PaymentRefundForm = ({transactionType}) => {
-const student_id_ref = useRef(null);
+const PaymentRefundForm = () => {
 const navigate = useNavigate();
  const [family_account_id,set_family_account_id] = useState();
  const [transaction_amount,set_transaction_amount] = useState();
@@ -22,6 +21,7 @@ const navigate = useNavigate();
  const getFamilyAccountsHandler = async ()=>{
     const responseFamilies = await getFamilyAccounts();
     set_familiies(responseFamilies?.data||[]);
+
     if(param?.id)
     {
         const responseTransaction = await getTransactionById(param.id);
@@ -41,6 +41,13 @@ const navigate = useNavigate();
             set_description(responseTransaction.data.description);
         }
         
+    }else{
+        
+        const dataFamilies =  responseFamilies.data.map((e)=>{return {value:e.id,label:e.name}});
+        const selectedFamilies = dataFamilies.filter((f)=>f.value==param.family_id);
+        const accountDetailsResponse = await getFamilyAccountsDetails(selectedFamilies[0]?.value);
+        set_students(accountDetailsResponse?.data?.students||[]);
+        set_family_account_id(selectedFamilies[0]);
     }
  }
  
@@ -58,7 +65,7 @@ const navigate = useNavigate();
         transaction_amount:transaction_amount,
         transaction_date:transaction_date,
         student_id:student_id?.value||"",
-        transaction_type:transactionType,
+        transaction_type:param.type,
         description:description,
     }
     if(param?.id)
@@ -73,7 +80,7 @@ const navigate = useNavigate();
             toast.success(response?.message, {
                 position: toast.POSITION.TOP_CENTER,
             });
-            navigate("/familiies-and-invoices");
+            navigate("/familiies-and-invoices/family/"+param.family_id);
         }else{
             toast.error("something went wrong !", {
                 position: toast.POSITION.TOP_CENTER,
@@ -90,7 +97,7 @@ const navigate = useNavigate();
             toast.success(response?.message, {
                 position: toast.POSITION.TOP_CENTER,
             });
-            navigate("/familiies-and-invoices");
+            navigate("/familiies-and-invoices/family/"+param.family_id);
         }else{
             toast.error("something went wrong !", {
                 position: toast.POSITION.TOP_CENTER,
@@ -107,7 +114,7 @@ const navigate = useNavigate();
         transaction_amount:transaction_amount,
         transaction_date:transaction_date,
         student_id:student_id?.value||"",
-        transaction_type:transactionType,
+        transaction_type:param.type,
         description:description,
     }
     const response = await saveTransaction(data);
@@ -131,7 +138,7 @@ const navigate = useNavigate();
 
  useEffect(()=>{
     getFamilyAccountsHandler();
- },[])
+ },[param])
 
   return  <> 
         <ToastContainer />
@@ -140,7 +147,7 @@ const navigate = useNavigate();
               <div className="card card-body form-area">
                   <div className="row">
                       <div className="col-md-12">
-                          <h4 style={{textAlign:'left'}}>Payment Details</h4>
+                          <h4 style={{textAlign:'left'}}>{param.type==1?"Payment":"Refund"} Details</h4>
                       </div>
                   </div>
                   <div className="row">
@@ -179,7 +186,7 @@ const navigate = useNavigate();
                       <div className="col-md-12">
                       <div className="formbold-form-btn-wrapper">
                           <div className="btn-end">
-                              <Link className="cancel" to={'/familiies-and-invoices/transaction-type/'+1}>
+                              <Link className="cancel" to={'/familiies-and-invoices/transaction-type/'+1+'/'+param.family_id}>
                               Back
                               </Link>
                               <Link className="cancel" to={"/familiies-and-invoices"}>

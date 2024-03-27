@@ -44,7 +44,7 @@ const FamilyDetails = () => {
   useEffect(()=>{
     const familiyData = allFamilies.filter((f)=>f.id==param.id);
     const familySelectedData = familiyData.map((e)=>{return {label:e.name,value:e.id}});
-    setIsAutoInvoicing(familiyData[0].auto_invoicing);
+    setIsAutoInvoicing(familiyData[0]?.auto_invoicing);
     setSelectedFamily(...familySelectedData);
     getFamilyAccountsDetailsHandler();
   },[param])

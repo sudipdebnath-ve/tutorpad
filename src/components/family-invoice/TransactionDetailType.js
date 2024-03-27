@@ -13,12 +13,7 @@ import ChargesDiscountForm from "./ChargesDiscountForm.js";
 
 const TransactionDetailType = () => {
   const param = useParams();
-  const navigate = useNavigate();
   const {sidebarToggle} = useUserDataContext();
-  const [isPaymentTypeScreen,setIsPaymentTypeScreen] = useState(param.screen);
-  useEffect(()=>{
-    setIsPaymentTypeScreen(param.screen)
-  },[param]);
   return (
     <div className="wrapper">
       {sidebarToggle ? (
@@ -41,14 +36,17 @@ const TransactionDetailType = () => {
                     <div className="card-header">
                         <h5>Add Transaction</h5>
                     </div>
-                    <div className={`card-body ${isPaymentTypeScreen==1?"contaner-area":"contaner-area-min"}`}>
-                        <span>Step {isPaymentTypeScreen==1?"1/2":"2/2"}</span>
+                    <div className={`card-body ${param.screen==1?"contaner-area":"contaner-area-min"}`}>
+                        <span>Step {param.screen==1?"1/2":"2/2"}</span>
                         {
-                            // isPaymentTypeScreen==1?<TransactionType />:<PaymentRefundForm transactionType={param?.type} />
+                          param.screen==1 && <TransactionType />
                         }
-                        <ChargesDiscountForm />
-                        
-                        
+                        {
+                          param.screen==2 && (param.type==1 || param.type==2) && <PaymentRefundForm/>
+                        }
+                        {
+                          param.screen==2 && (param.type==3 || param.type==4) && <ChargesDiscountForm />
+                        }
                     </div>
                 </div>
               </div>

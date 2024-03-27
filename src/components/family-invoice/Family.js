@@ -15,16 +15,6 @@ const Family = ()=>{
                 <div className="card flex-fill w-100">
                     <div className="card-header">
                     <div style={{display:'flex',flexDirection:'column',}}>
-                        <Link to={"/familiies-and-invoices/transaction-type/1"}>
-                            <div
-                            style={{width:'fit-content'}}
-                                className="dropdown addnew"
-                                onClick={()=>{}}
-                            >
-                                <i className="fa fa-plus" aria-hidden="true"></i>
-                                <a className="btn">Add New</a>
-                            </div>
-                        </Link>
                         <div style={{lineHeight:'5px',marginTop:'22px'}}>
                             <p><strong>You're owed ₹ 100.00 as of</strong> 31-03-2024 </p>
                             <p><strong>Prepaid Balance: ₹ 100.00</strong> </p>

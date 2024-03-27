@@ -28,6 +28,7 @@ const AppContext = ({ children }) => {
     template_content: "",
   });
   const [allTransactionsByFamily, setAllTransactionsByFamily] = useState([]);
+  const [allTransactionsByDates, setAllTransactionsByDates] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -363,6 +364,29 @@ const AppContext = ({ children }) => {
       });
   };
 
+  const fetchTransactionsByDates = async (fromDate,toDate) => {
+    setLoading(true);
+    const validateconfig = {
+      method: "GET",
+      url: `${API_URL}transactions?date_from=${fromDate}&date_to=${toDate}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(validateconfig)
+      .then((response) => {
+        // console.log(response.data);
+        if (response.data.success === true) {
+          setLoading(false);
+          setAllTransactionsByDates(response.data.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+  };
+
 
 
   return (
@@ -403,7 +427,9 @@ const AppContext = ({ children }) => {
         setAllFamilies,
         fetchFamilies,
         allTransactionsByFamily, 
-        fetchTransactionsByFamily
+        fetchTransactionsByFamily,
+        allTransactionsByDates, 
+        fetchTransactionsByDates
       }}
     >
       {children}

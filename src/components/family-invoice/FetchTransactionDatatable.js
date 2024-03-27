@@ -4,7 +4,7 @@ import { DataGrid, GridToolbar, GridValueGetterParams } from "@mui/x-data-grid";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import students from "../users/assets/images/students.svg";
 import Loader from "../Loader.js";
-import { Link, useParams } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { Icon } from 'react-icons-kit';
 import {edit2} from 'react-icons-kit/feather/edit2';
 import {trash2} from 'react-icons-kit/feather/trash2';
@@ -13,18 +13,18 @@ import { useNavigate } from "react-router-dom";
 import DeleteModel from "../form/delete-model/DeleteModel.js";
 import { ToastContainer, toast } from "react-toastify";
 import { deleteChargeCategories } from "../../services/categoriesService.js";
-const FetchFamilyTransactionDatatable = () => {
-  const param = useParams();
+const FetchTransactionDatatable = ({setSelectedId,set_chargecat_name,setModalIsOpen,setIsEdit,fromDate,toDate}) => {
+  
   const [val, setVal] = useState(false);
-  const { allTransactionsByFamily, fetchTransactionsByFamily, userId, setLoading, loading } =
+  const { allTransactionsByDates,fetchTransactionsByDates, userId, setLoading, loading } =
     useUserDataContext();
   const [deleteId,setDeleteId] = useState(null);
   const [deleteModalIsOpen,setDeleteModalIsOpen] = useState(false);
   const [isDeleteLoading,setIsDeleteLoading] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
-    fetchTransactionsByFamily(param.id);
-  }, [userId,param]);
+    fetchTransactionsByDates(fromDate,toDate);
+  }, [userId,fromDate,toDate]);
 
 
   const columns = [
@@ -51,22 +51,11 @@ const FetchFamilyTransactionDatatable = () => {
       field: "transaction_amount",
       headerName: "Transaction Amount",
       width: 150,
-      renderCell:(params)=>(
-        <>
-        {
-          params.row.transaction_type==1 && <div style={{background:'green',padding:'2px 5px',color:'white'}}>{params.row.transaction_label} {params.row.transaction_amount}</div>
-        }
-        {
-          params.row.transaction_type==2 && <div style={{background:'green',padding:'2px 5px',color:'white'}}>{params.row.transaction_label} {params.row.transaction_amount}</div>
-        }
-        {
-          params.row.transaction_type==3 && <div style={{background:'red',padding:'2px 5px',color:'white'}}>{params.row.transaction_label} -{params.row.transaction_amount}</div>
-        }
-        {
-          params.row.transaction_type==4 && <div style={{background:'red',padding:'2px 5px',color:'white'}}>{params.row.transaction_label} -{params.row.transaction_amount}</div>
-        }
-        </>
-      ),
+    },
+    {
+      field: "transaction_label",
+      headerName: "Type",
+      width: 150,
     },
     {
       field: "edit",
@@ -74,13 +63,12 @@ const FetchFamilyTransactionDatatable = () => {
       width: 150,
       renderCell: (params) => (
        <div style={{display:'flex',gap:5}}>
-          <Icon onClick={()=>navigate("/familiies-and-invoices/transaction-type/2/"+param.id+"/"+params.row.transaction_type+"/"+params.row.id)} icon={edit2} />
+          <Icon onClick={()=>navigate("/familiies-and-invoices/transaction-type/2/"+params.row.transaction_type+"/"+params.row.id)} icon={edit2} />
           <Icon onClick={()=>onDeleteModelHandler(params.row.id)} icon={trash2} />
        </div>
       ),
     }
   ];
-
   const onDeleteModelHandler = (id)=>{
     setDeleteId(id);
     setDeleteModalIsOpen(true);
@@ -90,7 +78,7 @@ const FetchFamilyTransactionDatatable = () => {
     setIsDeleteLoading(true);
     const response = await deleteChargeCategories(id);
     if (response.success == true) {
-      fetchTransactionsByFamily(param.id);
+      fetchTransactionsByDates(fromDate,toDate);
       toast.success(response.message, {
         position: toast.POSITION.TOP_CENTER,
       });
@@ -110,10 +98,10 @@ const FetchFamilyTransactionDatatable = () => {
 
   useEffect(() => {
     setVal(true);
-    console.log(allTransactionsByFamily);
-  }, [allTransactionsByFamily]);
+    console.log(allTransactionsByDates);
+  }, [allTransactionsByDates]);
   if (val) {
-    var rows = allTransactionsByFamily;
+    var rows = allTransactionsByDates;
     setLoading(false);
   } else {
     setLoading(true);
@@ -122,7 +110,7 @@ const FetchFamilyTransactionDatatable = () => {
     <div>
       <DeleteModel isLoading = {isDeleteLoading} setIsLoading={setIsDeleteLoading} modalIsOpen={deleteModalIsOpen} id={deleteId} setIsOpen={setDeleteModalIsOpen} onOk={onDeleteHandler}  />
       <>
-        {rows && allTransactionsByFamily.length > 0 ? (
+        {rows && allTransactionsByDates.length > 0 ? (
           loading ? (
             <>
               <Loader />
@@ -220,4 +208,4 @@ const FetchFamilyTransactionDatatable = () => {
   );
 };
 
-export default FetchFamilyTransactionDatatable;
+export default FetchTransactionDatatable;
