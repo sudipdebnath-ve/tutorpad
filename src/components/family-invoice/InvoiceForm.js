@@ -1,0 +1,544 @@
+import React, { useEffect, useRef, useState } from "react";
+import "react-datepicker/dist/react-datepicker.css";
+import "./style.css";
+import Select from "react-select";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { chevronLeft } from "react-icons-kit/feather/chevronLeft";
+import { Icon } from "react-icons-kit";
+import { ToastContainer, toast } from "react-toastify";
+
+import InvoiceFormatCondensed from '../../assets/images/InvoiceFormatCondensed.svg'
+import InvoiceFormatNormal from '../../assets/images/InvoiceFormatNormal.svg'
+import InvoiceFormatExpanded from '../../assets/images/InvoiceFormatExpanded.svg'
+import {
+  getFamilyAccounts,
+  getFamilyAccountsDetails,
+  getTransactionById,
+  createInvoice
+} from "../../services/invoiceService";
+const InvoiceForm = () => {
+  const navigate = useNavigate();
+  const [family_account_id, set_family_account_id] = useState();
+  const [invoice_create_date, set_invoice_create_date] = useState();
+  const [skip_0_invoices, set_skip_0_invoices] =useState(0);
+  const [charge_category, set_charge_category] = useState();
+  const [date_range_charges, set_date_range_charges] =useState('1');
+  const [invoice_start_date, set_invoice_start_date] = useState();
+  const [invoice_end_date, set_invoice_end_date] = useState();
+  const [invoice_due_type, set_invoice_due_type] =useState('1');
+  const [invoice_due_date, set_invoice_due_date] =useState();
+  const [email_immediately,set_email_immediately]=useState();
+  const [error, setError] = useState();
+  const [description, set_description] = useState();
+  const [familiies, set_familiies] = useState([]);
+ 
+  const [show_form2, set_show_form2] = useState(false);
+  const [show_category_input, set_show_category_input] = useState(false);
+  const [show_due_date, set_show_due_date] = useState(false);
+  const [displayType, setDisplayType] = useState('2');
+  const [showPrivateNote, setShowPrivateNote] = useState(false);
+  const param = useParams();
+
+  const handleDataRangeChargeChange = (e) => {
+    set_date_range_charges(e.target.value);
+    // Show the Category input field only if "Only charges & discounts within the date range" is selected
+    set_show_category_input(e.target.value === '0');
+  };
+
+  const handleDueDate = (e) => {
+      set_invoice_due_type(e.target.value);
+      set_show_due_date(e.target.value === '2');
+  }
+
+  // Function to handle radio button change
+  const handleRadioButtonChange = (event) => {
+    setDisplayType(event.target.value);
+  };
+
+  const handleCheckboxChange = (e) => {
+    setShowPrivateNote(e.target.checked);
+  };
+
+  const handleChange = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+
+    if(name === "skip_0_invoices"){
+      set_skip_0_invoices("1");
+    }
+    if(name === "invoice_create_date"){
+      set_invoice_create_date(value);
+    }
+    if(name === "date_range_charges"){
+      set_date_range_charges(e.target.value);
+      // Show the Category input field only if "Only charges & discounts within the date range" is selected
+      set_show_category_input(e.target.value === '0');
+    }
+  }
+
+  
+
+  const getFamilyAccountsHandler = async () => {
+    const responseFamilies = await getFamilyAccounts();
+    set_familiies(responseFamilies?.data || []);
+
+    if (param?.id) {
+      const responseTransaction = await getTransactionById(param.id);
+      if (responseTransaction?.data) {
+        const dataFamilies = responseFamilies.data.map((e) => {
+          return { value: e.id, label: e.name };
+        });
+        const selectedFamilies = dataFamilies.filter(
+          (f) => f.value === responseTransaction.data.family_account_id
+        );
+        set_family_account_id(selectedFamilies[0]);
+      }
+    } else {
+      const dataFamilies = responseFamilies.data.map((e) => {
+        return { value: e.id, label: e.name };
+      });
+      const selectedFamilies = dataFamilies.filter(
+        (f) => f.value == param.family_id
+      );
+      const accountDetailsResponse = await getFamilyAccountsDetails(
+        selectedFamilies[0]?.value
+      );
+      set_family_account_id(selectedFamilies[0]);
+    }
+  };
+
+  // const getFamilyAccountsDetailsHandler = async (value) => {
+  //   set_student_id("");
+  //   set_students([]);
+  //   const response = await getFamilyAccountsDetails(value.value);
+  //   set_students(response.data.students);
+  // };
+
+  const handleShowForm2 = () => {
+    set_show_form2(true);
+  };
+
+  const backToForm1Handler = () => {
+    // Logic to go back to Form 1
+    set_show_form2(false);
+  };
+
+  const saveInvoiceDetails = async () => {
+    const data = {
+      family_account_ids: family_account_id?.value || "",
+      invoice_create_date: invoice_create_date,
+      skip_0_invoices: skip_0_invoices,
+      charge_category: charge_category ,
+      date_range_charges: param.type,
+      invoice_start_date: description,
+      invoice_end_date: invoice_end_date,
+      invoice_due_type: invoice_due_type,
+      invoice_due_date: invoice_due_date,
+      display_type: displayType,
+      email_immediately: email_immediately
+    };
+
+    const response = await createInvoice(data);
+    if(response?.success===true){
+      toast.success(response?.message, {
+        position: toast.POSITION.TOP_CENTER,
+    });
+    navigate("/familiies-and-invoices");
+    }
+    else{
+      toast.error("something went wrong !", {
+          position: toast.POSITION.TOP_CENTER,
+      });
+  }
+  };
+
+  useEffect(() => {
+    getFamilyAccountsHandler();
+  }, [param]);
+
+  return (
+    <>
+    <ToastContainer />
+        <Link to={"/familiies-and-invoices"}>
+          <Icon icon={chevronLeft} /> Back To Family Account
+        </Link>
+      {!show_form2 ? (
+        <>
+          <div className="payment-type-box">
+            <div className="card card-body form-area">
+              <div className="row mt-2">
+                <div className="col-md-12">
+                  <span style={{ textAlign: "left" }}>Step 1/2</span>
+                </div>
+              </div>
+              <div className="row mt-3">
+                <div className="col-md-12">
+                  <p
+                    style={{
+                      textAlign: "left",
+                      fontWeight: "bold",
+                      color: "black",
+                    }}
+                  >
+                    Who do you want to create an invoice for?
+                  </p>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-12">
+                  <label className="fw-bold">Family</label>
+                  <Select
+                    value={family_account_id}
+                    onChange={(e) => {
+                      set_family_account_id(e);
+                      // getFamilyAccountsDetailsHandler(e);
+                    }}
+                    isMulti={false}
+                    options={[
+                      ...familiies.map((e) => {
+                        return { value: e.id, label: e.name };
+                      }),
+                    ]}
+                  />
+                </div>
+              </div>
+              <div className="row mt-3">
+                <div className="col-md-12 d-flex gap-2">
+                  <input type="checkbox" name="skip_0_invoices"
+                  onChange={handleChange} />
+                  <span className="ml-3">
+                    Skip families with ₹ 0.00 invoices
+                  </span>
+                </div>
+              </div>
+              <div className="row mt-3">
+                <div className="col-md-12 d-flex flex-column">
+                  <label className="fw-bold">Invoice Date</label>
+                  <span className="fs-5 text-muted">
+                    Invoice date appears on top of your invoice
+                  </span>
+                  <input
+                    type="date"
+                    value={invoice_create_date}
+                    onChange={handleChange}
+                    className="form-control"
+                    name="invoice_create_date"
+                  />
+                </div>
+              </div>
+              <div className="row mt-3">
+                <div className="col-md-12">
+                  <div className="mb-2">
+                    <span className="fw-bold">
+                      What do you want to include?
+                    </span>
+                  </div>
+                  <div className="col-md-12">
+                    <input className="form-check-input" type="radio" 
+                    name="date_range_charges"
+                     value="0"
+                     checked={date_range_charges === '0'} 
+                     onChange={handleChange} />
+                    <label className="form-check-label ml-2">
+                      Only charges & discounts within the date range
+                    </label>
+                  </div>
+                  <div>
+                    <input className="form-check-input" type="radio" name="date_range_charges"
+                     value="1"
+                     checked={date_range_charges === '1'} 
+                     onChange={handleChange} />
+                    <label className="form-check-label ml-2">
+                      Include previous balance & payments from before the start
+                      date
+                    </label>
+                  </div>
+                </div>
+              </div>
+              {show_category_input && 
+              <div className="row mt-3">
+                <div className="col-md-12">
+                  <label className="fw-bold">Categories</label>
+                  <span className="ml-2 text-muted">Optional</span>
+                  <input type="text" className="form-control" name="categories" onChange={handleChange} />
+                </div>
+              </div>
+              }
+              <hr />
+              <div className="row mt-3">
+                <div className="col-md-12 ">
+                  <p
+                    style={{
+                      textAlign: "left",
+                      fontWeight: "bold",
+                      color: "black",
+                    }}
+                  >
+                    What date range do you want the invoice to cover?
+                  </p>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-6">
+                  <label className="fw-bold">Start Date</label>
+                  <input type="date" className="form-control" name="invoice_start_date"
+                  onChange={invoice_start_date} />
+                </div>
+                <div className="col-md-6">
+                  <label className="fw-bold">End Date</label>
+                  <input type="date" className="form-control" name="invoice_end_date" />
+                </div>
+              </div>
+              <div className="row mt-3">
+                <div className="col-md-12">
+                  <p
+                    style={{
+                      textAlign: "left",
+                      fontWeight: "bold",
+                      color: "black",
+                    }}
+                  >
+                    What is the due date?
+                  </p>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="invoice_due_type"
+                      value='1'
+                      checked = {invoice_due_type === '1'}
+                      onChange={handleDueDate}
+                    />
+                    <label className="form-check-label">No due date</label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="invoice_due_type"
+                      value='2'
+                      checked = {invoice_due_type === '2'}
+                      onChange={handleDueDate}
+                    />
+                    <label class="form-check-label">Choose a Date</label>
+                  </div>
+                </div>
+              </div>
+              {show_due_date && 
+              <div className="row mt-2">
+                <div className="col-md-12">
+                  <label className="fw-bold">Due Date</label>
+                  <input type="date" className="form-control" name="invoice_due_date" />
+                </div>
+              </div>
+            }
+              <hr />
+              <div className="row">
+                <div className="col-md-12">
+                  <div className="formbold-form-btn-wrapper">
+                    <div className="btn-end">
+                      <Link className="cancel" to={"/familiies-and-invoices"}>
+                        Cancel
+                      </Link>
+                      <button
+                        onClick={() => handleShowForm2()}
+                        className="formbold-btn"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+        <div className="payment-type-box">
+          <div className="card card-body form-area">
+            <div className="row mt-2">
+              <div className="col-md-12">
+                 <span style={{ textAlign: "left" }}>Step 2/2</span>
+              </div>
+            </div>
+            <div className="row mt-3">
+              <div className="col-md-12">
+                <p
+                  style={{
+                    textAlign: "left",
+                    fontWeight: "bold",
+                    color: "black",
+                  }}
+                >
+                  Tell us more about the invoice
+                </p>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-6">
+                <p
+                  style={{
+                    textAlign: "left",
+                    fontWeight: "bold",
+                    color: "black",
+                  }}
+                >
+                  How do you want to display invoice items?
+                </p>
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="display_type"
+                    value='1'
+                    onChange={handleRadioButtonChange}
+                    checked={displayType === '1'}
+                  />
+                    <label className="form-check-label d-flex flex-column">
+                    <span>Condensed</span>
+                    <span className="m-0 p-0 fs-5 text-muted">Combine identical invoice items into a single line</span>
+                    </label>
+                    {/* <img src={InvoiceFormatCondensed} alt="Your SVG" /> */}
+                </div>
+                <div className="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="display_type"
+                    value='2'
+                    onChange={handleRadioButtonChange}
+                    checked={displayType === '2'}
+                  />
+                  <label class="form-check-label d-flex flex-column">
+                    <span>Normal</span>
+                  <span className="fs-5 text-muted">Show each lesson / event on its own line</span>
+                  </label>
+                </div>
+                <div className="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="display_type"
+                    value='3'
+                    onChange={handleRadioButtonChange}
+                    checked={displayType === '3'}
+                  />
+                  <label class="form-check-label d-flex flex-column">
+                    <span>Expanded</span>
+                  <span className="fs-5 text-muted">Include lessons / events with no charges</span>
+                  </label>
+                </div>
+              </div>
+              <div className="col-md-6 d-flex justify-content-center align-items-center">
+              {/* Conditional rendering of SVG image based on selected display type */}
+              {displayType === '1' && (
+                <img src={InvoiceFormatCondensed} alt="Condensed Image" />
+              )}
+              {displayType === '2' && (
+                <img src={InvoiceFormatNormal} alt="Normal Image" />
+              )}
+              {displayType === '3' && (
+                <img src={InvoiceFormatExpanded} alt="Expanded Image" />
+              )}
+            </div>
+            </div>
+            <div className="row">
+              <div className="col-md-12">
+                <label className="d-flex gap-2">
+                <span className="fw-bold">Footer Note</span>
+                 <span className="text-muted">Optional</span>
+                </label>
+                <textarea className="form-control" 
+                name="notes" rows="4" cols="10"
+                placeholder="This note will show at the bottom of your invoice."
+                style={{ height: 'auto', width: '100%' }}></textarea>
+              </div>
+            </div>
+            <div className="row mt-3">
+                <div className="col-md-12 d-flex gap-2">
+                  <input type="checkbox" name="" className="form-check-input"
+                  onChange={handleCheckboxChange} />
+                  <span className="ml-3">
+                  I'd like to add a private note for my records
+                  </span>
+                </div>
+              </div>
+              {showPrivateNote && 
+              <div className="row mt-3">
+              <div className="col-md-12">
+                <label className="d-flex gap-2">
+                <span className="fw-bold">Private Note</span>
+                 <span className="text-muted">Optional</span>
+                </label>
+                <textarea className="form-control" 
+                name="notes" rows="4" cols="10"
+                placeholder="An optional, private note. This will NOT be included on the invoice."
+                style={{ height: 'auto', width: '100%' }}></textarea>
+              </div>
+            </div>
+            }
+            <hr />
+            
+            <div className="row mt-3">
+              <div className="col-md-12">
+                <p
+                  style={{
+                    textAlign: "left",
+                    fontWeight: "bold",
+                    color: "black",
+                  }}
+                >
+                 Do you want to email the invoice?
+                </p>
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="due_date"
+                  />
+                  <label className="form-check-label d-flex flex-column">
+                    <span>Create but don't email</span>
+                    <span className="fs-5 text-muted">You can email this invoice later</span>
+                    </label>
+                </div>
+                <div className="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="due_date"
+                    disabled
+                  />
+                  <label class="form-check-label">Email invoices immediately</label>
+                </div>
+              </div>
+            </div>
+            
+            <hr />
+            <div className="row">
+              <div className="col-md-12">
+                <div className="formbold-form-btn-wrapper">
+                  <div className="btn-end">
+                    <button
+                    className="cancel" onClick={backToForm1Handler}>
+                      Back
+                    </button>
+                    <button
+                      onClick={() => saveInvoiceDetails()}
+                      className="formbold-btn"
+                    >
+                      Create
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+      )}
+    </>
+  );
+};
+
+export default InvoiceForm;

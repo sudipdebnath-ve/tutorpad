@@ -17,6 +17,15 @@ export const getFamilyAccounts= async () => {
       });
 };
 
+export const createInvoice= async (data) => {
+  return invoicesApi.get('create-invoice',data).then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
 export const getFamilyAccountsDetails= async (id) => {
   return invoicesApi.get('family-account/'+id).then((response) => {
       return response.data;
