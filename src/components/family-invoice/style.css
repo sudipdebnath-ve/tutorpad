@@ -45,3 +45,19 @@
 .ml-2{
     margin-left: 2px;
 }
+
+.form-field-label-text{
+    color: #344242;
+}
+
+.date-input-enable-autoinvoice{
+    /* display: flex !important;
+    align-items: center;
+    border: none !important;
+    height: 40px !important;
+    padding: 0 8px !important; */
+}
+
+.invoice-type{
+    display: flex;
+}

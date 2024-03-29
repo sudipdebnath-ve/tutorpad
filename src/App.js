@@ -31,6 +31,8 @@ import Attendance from "./components/attendance/Attendance";
 import ChargeCategory from "./components/charge-category/ChargeCategory";
 import TransactionDetailType from "./components/family-invoice/TransactionDetailType";
 import FamilyDetails from "./components/family-invoice/FamilyDetails";
+import AutoInvoiceForm from "./components/family-invoice/AutoInvoice";
+import AutoInvoiceOptions from "./components/family-invoice/AutoInvoiceOptions";
 function App() {
   return (
     <Routes basename="/">
@@ -72,6 +74,8 @@ function App() {
       <Route path="/familiies-and-invoices/transaction-type/:screen/:family_id/:type" element={<TransactionDetailType />} />
       <Route path="/familiies-and-invoices/transaction-type/:screen/:type/:family_id/:id" element={<TransactionDetailType />} />
       <Route path="/familiies-and-invoices/family/:id" element={<FamilyDetails />} />
+      <Route path="/familiies-and-invoices/create-invoice" element={<AutoInvoiceForm/>} />
+      <Route path="/familiies-and-invoices/invoice-options" element={<AutoInvoiceOptions />} />
     </Routes>
   );
 }
