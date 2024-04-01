@@ -32,7 +32,7 @@ const TransactionDetailType = () => {
           <div className="container-fluid p-0">
             <div className="row d-flex">
               <div className="col-xl-12 col-xxl-12">
-                <div className="card">
+                <div className={`card`}>
                     <div className="card-header">
                         <h5>Add Transaction</h5>
                     </div>

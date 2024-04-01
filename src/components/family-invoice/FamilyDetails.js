@@ -141,7 +141,9 @@ const FamilyDetails = () => {
                       }
                       {
                         isAutoInvoicing==0 && <div className="col-md-12">
+                                              <Link to = {"/familiies-and-invoices/autoinvoice-invoicedetails"}>
                                               <button className="btn btn-md btn-info form-control"><Icon icon={settings} style={{color:'white',marginRight:5}} />Enable Auto-Invoice</button>
+                                              </Link>
                                              </div>
                       }
                       

@@ -74,8 +74,8 @@ function App() {
       <Route path="/familiies-and-invoices/transaction-type/:screen/:family_id/:type" element={<TransactionDetailType />} />
       <Route path="/familiies-and-invoices/transaction-type/:screen/:type/:family_id/:id" element={<TransactionDetailType />} />
       <Route path="/familiies-and-invoices/family/:id" element={<FamilyDetails />} />
-      <Route path="/familiies-and-invoices/create-invoice" element={<AutoInvoiceForm/>} />
-      <Route path="/familiies-and-invoices/invoice-options" element={<AutoInvoiceOptions />} />
+      <Route path="/familiies-and-invoices/autoinvoice-invoicedetails" element={<AutoInvoiceForm/>} />
+      <Route path="/familiies-and-invoices/autoinvoice-invoice-options" element={<AutoInvoiceOptions />} />
     </Routes>
   );
 }

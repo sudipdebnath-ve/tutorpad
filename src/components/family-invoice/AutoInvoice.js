@@ -19,7 +19,7 @@ const AutoInvoiceForm = () => {
   const param = useParams();
   return (
     <>
-    {/* <div className="wrapper">
+    <div className="wrapper">
     {sidebarToggle ? (
         <>
           <MiniSidebar />
@@ -28,23 +28,28 @@ const AutoInvoiceForm = () => {
         <>
           <Sidebar />
         </>
-      )} */}
+      )}
 
-      {/* <div className="main bg-color">
-        <TopBar /> */}
-        {/* <main className="content student">
+      <div className="main bg-color">
+        <TopBar />
+        <main className="content student">
           <div className="container-fluid p-0">
             <div className="row d-flex">
-              <div className="col-xl-12 col-xxl-12"> */}
+              <div className="col-xl-12 col-xxl-12">
+              {/* <div className="card"> */}
                 
-      <ToastContainer />
-      <div className="automatic-invoicing">
-        Automatic Invoicing
-      </div>
-      <div className="payment-type-box">
+      {/* <ToastContainer />
+      <div className="card-header">
+                        <h5>Add Transaction</h5>
+                    </div> */}
+      <div className = "invoice-details-wrapper">
+      <div className="payment-type-box"  >
       <Link to={"/familiies-and-invoices"}>
         <Icon icon={chevronLeft} /> Back To Families & Invoices
       </Link>
+      <div className="automatic-invoicing">
+        Automatic Invoicing
+      </div>
         <div className="card card-body form-area">
             <span style={{ paddingBottom: "20px" }}>Step {param.screen == 1 ? "1/2" : "2/2"}</span>
 
@@ -183,23 +188,23 @@ const AutoInvoiceForm = () => {
                                   <Link className="cancel" to={'/familiies-and-invoices/transaction-type/'+1+'/'+param.family_id}>
                                         Back
                                     </Link>
-                                    <Link className="cancel" to={"/familiies-and-invoices"}>
-                                        Cancel
+                                    <Link className="cancel" to={"/familiies-and-invoices/autoinvoice-invoice-options"}>
+                                        Next
                                     </Link>
                             </div>
                       </div>
                 </div>
           </div>
-
+          </div>
         </div>
       </div>
-      {/* </div>
-      
       </div>
       </div>
-      </main> */}
       {/* </div> */}
-      {/* </div> */}
+      </div>
+      </main>
+      </div>
+      </div>
     </>
   );
 };
