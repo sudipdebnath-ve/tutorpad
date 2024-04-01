@@ -18,7 +18,7 @@ import {
 } from "../../services/invoiceService";
 const InvoiceForm = () => {
   const navigate = useNavigate();
-  const [family_account_id, set_family_account_id] = useState();
+  const [family_account_id, set_family_account_id] = useState([]);
   const [invoice_create_date, set_invoice_create_date] = useState();
   const [skip_0_invoices, set_skip_0_invoices] =useState(0);
   const [charge_category, set_charge_category] = useState();
@@ -27,7 +27,7 @@ const InvoiceForm = () => {
   const [invoice_end_date, set_invoice_end_date] = useState();
   const [invoice_due_type, set_invoice_due_type] =useState('1');
   const [invoice_due_date, set_invoice_due_date] =useState();
-  const [email_immediately,set_email_immediately]=useState();
+  const [email_immediately,set_email_immediately]=useState('0');
   const [error, setError] = useState();
   const [description, set_description] = useState();
   const [familiies, set_familiies] = useState([]);
@@ -39,21 +39,6 @@ const InvoiceForm = () => {
   const [showPrivateNote, setShowPrivateNote] = useState(false);
   const param = useParams();
 
-  const handleDataRangeChargeChange = (e) => {
-    set_date_range_charges(e.target.value);
-    // Show the Category input field only if "Only charges & discounts within the date range" is selected
-    set_show_category_input(e.target.value === '0');
-  };
-
-  const handleDueDate = (e) => {
-      set_invoice_due_type(e.target.value);
-      set_show_due_date(e.target.value === '2');
-  }
-
-  // Function to handle radio button change
-  const handleRadioButtonChange = (event) => {
-    setDisplayType(event.target.value);
-  };
 
   const handleCheckboxChange = (e) => {
     setShowPrivateNote(e.target.checked);
@@ -70,10 +55,42 @@ const InvoiceForm = () => {
       set_invoice_create_date(value);
     }
     if(name === "date_range_charges"){
-      set_date_range_charges(e.target.value);
+      set_date_range_charges(value);
       // Show the Category input field only if "Only charges & discounts within the date range" is selected
-      set_show_category_input(e.target.value === '0');
+      set_show_category_input(value === '0');
     }
+
+    if(name === "invoice_start_date"){
+      set_invoice_start_date(value);
+    }
+    if(name === "invoice_end_date"){
+      set_invoice_end_date(value);
+    }
+
+    if(name === "invoice_start_date"){
+      set_invoice_start_date(value);
+    }
+
+    if(name === "invoice_due_type"){
+      set_invoice_due_type(value);
+      set_show_due_date(value === '2');
+    }
+
+    if(name === "invoice_due_date"){
+      set_invoice_due_date(value);
+    }
+
+    if(name === "display_type"){
+      setDisplayType(value);
+    }
+
+
+    if(name === 'email_immediately'){
+      set_email_immediately(value);
+    }
+
+     
+
   }
 
   
@@ -124,13 +141,14 @@ const InvoiceForm = () => {
   };
 
   const saveInvoiceDetails = async () => {
+
     const data = {
-      family_account_ids: family_account_id?.value || "",
+      family_account_ids: family_account_id || [],
       invoice_create_date: invoice_create_date,
       skip_0_invoices: skip_0_invoices,
       charge_category: charge_category ,
-      date_range_charges: param.type,
-      invoice_start_date: description,
+      date_range_charges: date_range_charges,
+      invoice_start_date: invoice_start_date,
       invoice_end_date: invoice_end_date,
       invoice_due_type: invoice_due_type,
       invoice_due_date: invoice_due_date,
@@ -138,15 +156,19 @@ const InvoiceForm = () => {
       email_immediately: email_immediately
     };
 
+
     const response = await createInvoice(data);
+    console.log(response);
     if(response?.success===true){
       toast.success(response?.message, {
         position: toast.POSITION.TOP_CENTER,
     });
-    navigate("/familiies-and-invoices");
+    setTimeout(() => {
+      navigate("/familiies-and-invoices/family/"+param?.family_id);
+    }, 2000);
     }
     else{
-      toast.error("something went wrong !", {
+      toast.error("Something went wrong!!!!", {
           position: toast.POSITION.TOP_CENTER,
       });
   }
@@ -159,7 +181,7 @@ const InvoiceForm = () => {
   return (
     <>
     <ToastContainer />
-        <Link to={"/familiies-and-invoices"}>
+        <Link to={"/familiies-and-invoices/family/"+param?.family_id}>
           <Icon icon={chevronLeft} /> Back To Family Account
         </Link>
       {!show_form2 ? (
@@ -188,12 +210,18 @@ const InvoiceForm = () => {
                 <div className="col-md-12">
                   <label className="fw-bold">Family</label>
                   <Select
-                    value={family_account_id}
-                    onChange={(e) => {
-                      set_family_account_id(e);
+                     name="family_account_id"
+                     value={family_account_id}
+                    onChange={(selectedOptions) => {
+                     // set_family_account_id(selectedOptions);
+                       // Extract IDs from selected options
+                       console.log("Selected Family Accounts:", selectedOptions);
+  
+                       const selectedIds = selectedOptions ? selectedOptions.map(option => option.value) : [];
+                       set_family_account_id(selectedIds);
                       // getFamilyAccountsDetailsHandler(e);
                     }}
-                    isMulti={false}
+                    isMulti={true}
                     options={[
                       ...familiies.map((e) => {
                         return { value: e.id, label: e.name };
@@ -282,11 +310,12 @@ const InvoiceForm = () => {
                 <div className="col-md-6">
                   <label className="fw-bold">Start Date</label>
                   <input type="date" className="form-control" name="invoice_start_date"
-                  onChange={invoice_start_date} />
+                  onChange={handleChange} />
                 </div>
                 <div className="col-md-6">
                   <label className="fw-bold">End Date</label>
-                  <input type="date" className="form-control" name="invoice_end_date" />
+                  <input type="date" className="form-control" name="invoice_end_date"
+                  onChange={handleChange} />
                 </div>
               </div>
               <div className="row mt-3">
@@ -307,7 +336,7 @@ const InvoiceForm = () => {
                       name="invoice_due_type"
                       value='1'
                       checked = {invoice_due_type === '1'}
-                      onChange={handleDueDate}
+                      onChange={handleChange}
                     />
                     <label className="form-check-label">No due date</label>
                   </div>
@@ -318,7 +347,7 @@ const InvoiceForm = () => {
                       name="invoice_due_type"
                       value='2'
                       checked = {invoice_due_type === '2'}
-                      onChange={handleDueDate}
+                      onChange={handleChange}
                     />
                     <label class="form-check-label">Choose a Date</label>
                   </div>
@@ -328,7 +357,8 @@ const InvoiceForm = () => {
               <div className="row mt-2">
                 <div className="col-md-12">
                   <label className="fw-bold">Due Date</label>
-                  <input type="date" className="form-control" name="invoice_due_date" />
+                  <input type="date" className="form-control" name="invoice_due_date"
+                  onChange={handleChange} />
                 </div>
               </div>
             }
@@ -392,14 +422,13 @@ const InvoiceForm = () => {
                     type="radio"
                     name="display_type"
                     value='1'
-                    onChange={handleRadioButtonChange}
+                    onChange={handleChange}
                     checked={displayType === '1'}
                   />
                     <label className="form-check-label d-flex flex-column">
                     <span>Condensed</span>
                     <span className="m-0 p-0 fs-5 text-muted">Combine identical invoice items into a single line</span>
                     </label>
-                    {/* <img src={InvoiceFormatCondensed} alt="Your SVG" /> */}
                 </div>
                 <div className="form-check">
                   <input
@@ -407,7 +436,7 @@ const InvoiceForm = () => {
                     type="radio"
                     name="display_type"
                     value='2'
-                    onChange={handleRadioButtonChange}
+                    onChange={handleChange}
                     checked={displayType === '2'}
                   />
                   <label class="form-check-label d-flex flex-column">
@@ -421,7 +450,7 @@ const InvoiceForm = () => {
                     type="radio"
                     name="display_type"
                     value='3'
-                    onChange={handleRadioButtonChange}
+                    onChange={handleChange}
                     checked={displayType === '3'}
                   />
                   <label class="form-check-label d-flex flex-column">
@@ -452,7 +481,8 @@ const InvoiceForm = () => {
                 <textarea className="form-control" 
                 name="notes" rows="4" cols="10"
                 placeholder="This note will show at the bottom of your invoice."
-                style={{ height: 'auto', width: '100%' }}></textarea>
+                style={{ height: 'auto', width: '100%' }}
+                onChange={handleChange}></textarea>
               </div>
             </div>
             <div className="row mt-3">
@@ -495,7 +525,9 @@ const InvoiceForm = () => {
                   <input
                     className="form-check-input"
                     type="radio"
-                    name="due_date"
+                    name="email_immediately"
+                    value='0'
+                    onChange={handleChange}
                   />
                   <label className="form-check-label d-flex flex-column">
                     <span>Create but don't email</span>
@@ -506,7 +538,9 @@ const InvoiceForm = () => {
                   <input
                     class="form-check-input"
                     type="radio"
-                    name="due_date"
+                    value='1'
+                    name="email_immediately"
+                    onChange={handleChange}
                     disabled
                   />
                   <label class="form-check-label">Email invoices immediately</label>

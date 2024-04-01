@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import 'react-datepicker/dist/react-datepicker.css';
-import FetchChargeCategoryDatatable from "./FetchFamilyInvoiceDatatable.js";
+
 import "../users/assets/css/customDatepicker.css";
 import { Link, useParams } from "react-router-dom";
+import FetchInvoicesDatatable from "./FetchInvoicesDatatable.js";
+
 
 const Invoice = ()=>{
     const [modalIsOpen,setModalIsOpen] = useState(false);
@@ -33,7 +35,7 @@ const Invoice = ()=>{
                     </div>
                     <div className="card-body d-flex">
                     <div className="align-self-center w-100">
-                        <FetchChargeCategoryDatatable setIsEdit={setIsEdit} setModalIsOpen={setModalIsOpen} set_chargecat_name={set_chargecat_name} setSelectedId={setSelectedId} />
+                        <FetchInvoicesDatatable setIsEdit={setIsEdit} setModalIsOpen={setModalIsOpen} set_chargecat_name={set_chargecat_name} setSelectedId={setSelectedId} id={param?.id} />
                     </div>
                     </div>
                 </div>

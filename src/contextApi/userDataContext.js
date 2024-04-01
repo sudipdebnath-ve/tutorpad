@@ -18,6 +18,7 @@ const AppContext = ({ children }) => {
   const [tutorData, setTutorData] =useState(false);
   const [allChargeCategory, setAllChargeCategory] = useState([]);
   const [allFamilies, setAllFamilies] = useState([]);
+  const [accountInvoices, setAccountInvoices] = useState([])
   const [allTutors, setAllTutors] = useState([]);
   const [getAvailabilityData, setGetAvailabilityData] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
@@ -210,6 +211,29 @@ const AppContext = ({ children }) => {
         if (response.data.success === true) {
           setLoading(false);
           setAllFamilies(response.data.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+  };
+
+  const fetchInvoices = async (id) => {
+    setLoading(true);
+    const validateconfig = {
+      method: "GET",
+      url: `${API_URL}account-invoices/${id}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(validateconfig)
+      .then((response) => {
+        // console.log(response.data);
+        if (response.data.success === true) {
+          setLoading(false);
+          setAccountInvoices(response.data.data);
         }
       })
       .catch((error) => {
@@ -426,6 +450,8 @@ const AppContext = ({ children }) => {
         allFamilies, 
         setAllFamilies,
         fetchFamilies,
+        fetchInvoices,
+        accountInvoices,
         allTransactionsByFamily, 
         fetchTransactionsByFamily,
         allTransactionsByDates, 
