@@ -29,9 +29,9 @@ const InvoiceForm = () => {
   const [invoice_due_date, set_invoice_due_date] =useState();
   const [email_immediately,set_email_immediately]=useState('0');
   const [error, setError] = useState();
-  const [description, set_description] = useState();
-  const [familiies, set_familiies] = useState([]);
  
+  const [familiies, set_familiies] = useState([]);
+  const [family_account, set_family_account] = useState([]);
   const [show_form2, set_show_form2] = useState(false);
   const [show_category_input, set_show_category_input] = useState(false);
   const [show_due_date, set_show_due_date] = useState(false);
@@ -89,39 +89,22 @@ const InvoiceForm = () => {
       set_email_immediately(value);
     }
 
-     
-
   }
 
-  
+//  console.log(param)
 
   const getFamilyAccountsHandler = async () => {
     const responseFamilies = await getFamilyAccounts();
     set_familiies(responseFamilies?.data || []);
 
-    if (param?.id) {
-      const responseTransaction = await getTransactionById(param.id);
-      if (responseTransaction?.data) {
-        const dataFamilies = responseFamilies.data.map((e) => {
-          return { value: e.id, label: e.name };
-        });
-        const selectedFamilies = dataFamilies.filter(
-          (f) => f.value === responseTransaction.data.family_account_id
-        );
-        set_family_account_id(selectedFamilies[0]);
-      }
-    } else {
-      const dataFamilies = responseFamilies.data.map((e) => {
-        return { value: e.id, label: e.name };
-      });
-      const selectedFamilies = dataFamilies.filter(
-        (f) => f.value == param.family_id
-      );
-      const accountDetailsResponse = await getFamilyAccountsDetails(
-        selectedFamilies[0]?.value
-      );
-      set_family_account_id(selectedFamilies[0]);
-    }
+    const selectedFamilies = responseFamilies.data.map((e) => {
+      return { value: e.id, label: e.name };
+    });
+    console.log(selectedFamilies);
+    
+    set_family_account_id(selectedFamilies[0]);
+    set_family_account(selectedFamilies[0]);
+
   };
 
   // const getFamilyAccountsDetailsHandler = async (value) => {
@@ -135,15 +118,15 @@ const InvoiceForm = () => {
     set_show_form2(true);
   };
 
+
   const backToForm1Handler = () => {
     // Logic to go back to Form 1
     set_show_form2(false);
   };
 
   const saveInvoiceDetails = async () => {
-
     const data = {
-      family_account_ids: family_account_id || [],
+      family_account_ids: param?.family_id ? [family_account_id.value] : family_account_id || []  ,
       invoice_create_date: invoice_create_date,
       skip_0_invoices: skip_0_invoices,
       charge_category: charge_category ,
@@ -164,7 +147,7 @@ const InvoiceForm = () => {
         position: toast.POSITION.TOP_CENTER,
     });
     setTimeout(() => {
-      navigate("/familiies-and-invoices/family/"+param?.family_id);
+      navigate("/familiies-and-invoices");
     }, 2000);
     }
     else{
@@ -178,10 +161,15 @@ const InvoiceForm = () => {
     getFamilyAccountsHandler();
   }, [param]);
 
+//   console.log("familiies:", familiies);
+// console.log("param.family_id:", param.family_id);
+// console.log(family_name);
+
+
   return (
     <>
     <ToastContainer />
-        <Link to={"/familiies-and-invoices/family/"+param?.family_id}>
+        <Link to={"/familiies-and-invoices/"}>
           <Icon icon={chevronLeft} /> Back To Family Account
         </Link>
       {!show_form2 ? (
@@ -206,20 +194,29 @@ const InvoiceForm = () => {
                   </p>
                 </div>
               </div>
+              {param?.family_id ? (
+                <div className="row">
+                  <div className="col-md-12">
+                  <p className="fw-bold">{familiies.find((e) => e.id == param.family_id)?.name}</p>
+                  </div>
+                </div>
+              ) : (
               <div className="row">
                 <div className="col-md-12">
-                  <label className="fw-bold">Family</label>
+                  <label className="fw-bold text-dark">Family</label>
                   <Select
                      name="family_account_id"
-                     value={family_account_id}
+                     defaultValue={family_account}
                     onChange={(selectedOptions) => {
-                     // set_family_account_id(selectedOptions);
-                       // Extract IDs from selected options
-                       console.log("Selected Family Accounts:", selectedOptions);
-  
-                       const selectedIds = selectedOptions ? selectedOptions.map(option => option.value) : [];
-                       set_family_account_id(selectedIds);
+                      //set_family_account_id(e);
                       // getFamilyAccountsDetailsHandler(e);
+                      if (Array.isArray(selectedOptions)) {
+                        // If selectedOptions is an array (multiple selections)
+                        set_family_account_id(selectedOptions.map(option => option.value));
+                      } else {
+                        // If selectedOptions is not an array (single selection)
+                        set_family_account_id([selectedOptions.value]);
+                      }
                     }}
                     isMulti={true}
                     options={[
@@ -230,6 +227,7 @@ const InvoiceForm = () => {
                   />
                 </div>
               </div>
+              )}
               <div className="row mt-3">
                 <div className="col-md-12 d-flex gap-2">
                   <input type="checkbox" name="skip_0_invoices"

@@ -18,7 +18,7 @@ const Invoice = ()=>{
                 <div className="card flex-fill w-100">
                 <div className="card-header">
                     <div style={{display:'flex',flexDirection:'column',}}>
-                    <Link to={"/familiies-and-invoices/invoice/1/"+param.id}>
+                    <Link to={param.id ? `/familiies-and-invoices/invoice/1/${param.id}` : "/familiies-and-invoices/invoice/1"}>
                         <div
                         style={{width:'fit-content'}}
                             className="dropdown addnew"

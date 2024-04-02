@@ -10,22 +10,28 @@ import {edit2} from 'react-icons-kit/feather/edit2';
 import {trash2} from 'react-icons-kit/feather/trash2';
 
 
+
 import { useNavigate } from "react-router-dom";
 import DeleteModel from "../form/delete-model/DeleteModel.js";
 import { ToastContainer, toast } from "react-toastify";
 import { deleteChargeCategories } from "../../services/categoriesService.js";
+import FloatingMenus from "./FloatingMenus.js";
 const FetchInvoicesDatatable = ({setSelectedId,set_chargecat_name,setModalIsOpen,setIsEdit,id}) => {
   
   const [val, setVal] = useState(false);
+  
   const { fetchInvoices, userId, setLoading, loading, accountInvoices } =
     useUserDataContext();
   const [deleteId,setDeleteId] = useState(null);
   const [deleteModalIsOpen,setDeleteModalIsOpen] = useState(false);
   const [isDeleteLoading,setIsDeleteLoading] = useState(false);
+  
+  const [isMenuOpenId,setIsMenuOpenId] = useState(0);
   const navigate = useNavigate();
   useEffect(() => {
     fetchInvoices(id);
   }, [userId]);
+
 
 
   const columns = [
@@ -70,12 +76,18 @@ const FetchInvoicesDatatable = ({setSelectedId,set_chargecat_name,setModalIsOpen
     {
       field: "edit",
       headerName: "Edit",
-      width: 150,
+      width: 100,
       renderCell: (params) => (
-       <div style={{display:'flex',gap:5}}>
-        <Link to={`/familiies-and-invoices/family/${id}`}>
+      <div style={{position:'absolute'}}>
+        { params.row.id ==isMenuOpenId && <FloatingMenus id={params.row.id} onMouseLeave={()=>setIsMenuOpenId(0)}  /> } 
+       <div style={{display:'flex',gap:5}} className="dropdown">
+        <button 
+        style={{border:'none',backgroundColor:'transparent'}}
+        onClick={()=>setIsMenuOpenId(params.row.id)}
+        >
         <i class="fa-solid fa-ellipsis-vertical"></i>
-        </Link>
+        </button>
+       </div>
        </div>
       ),
     }
@@ -177,6 +189,52 @@ const FetchInvoicesDatatable = ({setSelectedId,set_chargecat_name,setModalIsOpen
                       }}
                     />
                   </Box>
+                  {/* {popupmenu && (
+              // <>
+              //   <div className="dropdown-menu dropdown-menu-end show"
+              //   style={{ position: 'absolute', top: -220, right: 0 }}>
+              //     <Link className="dropdown-item" to="/my-preferences">
+              //       <i className="fa fa-eye" aria-hidden="true"></i> &nbsp; View
+              //     </Link>
+              //     <Link className="dropdown-item" to="/bussiness-settings">
+              //       <i className="fa fa-envelope" aria-hidden="true"></i>{" "}
+              //       &nbsp;Email
+              //     </Link>
+              //     <Link className="dropdown-item" to="/bussiness-settings">
+              //       <i className="fa fa-download" aria-hidden="true"></i>{" "}
+              //       &nbsp;Download PDF
+              //     </Link>
+              //     <div className="dropdown-divider"></div>
+              //     <Link className="dropdown-item" >
+              //       {" "}
+              //       &nbsp;Override Status
+              //     </Link>
+              //     <Link className="dropdown-item" >
+              //      {" "}
+              //       &nbsp;Void
+              //     </Link>
+              //     <Link className="dropdown-item" >
+              //       {" "}
+              //       &nbsp;Paid
+              //     </Link>
+              //     <div className="dropdown-divider"></div>
+              //     <Link className="dropdown-item" to="/bussiness-settings">
+              //       <i className="fa fa-plus" aria-hidden="true"></i>{" "}
+              //       &nbsp;Add a Payment
+              //     </Link>
+              //     <div className="dropdown-divider"></div>
+              //     <Link className="dropdown-item" to="/bussiness-settings">
+              //     <i className="fa fa-archive" aria-hidden="true"></i>{" "}
+              //       &nbsp;Archive
+              //     </Link>
+              //     <Link className="dropdown-item" to="/bussiness-settings">
+              //       <i className="fa fa-trash" aria-hidden="true"></i>{" "}
+              //       &nbsp;Delete
+              //     </Link>
+              //   </div>
+              // </>
+              <FloatingMenus />
+            )} */}
                 </div>
               </div>
             </>
