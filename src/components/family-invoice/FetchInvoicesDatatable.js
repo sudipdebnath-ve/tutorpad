@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import DeleteModel from "../form/delete-model/DeleteModel.js";
 import { ToastContainer, toast } from "react-toastify";
 import { deleteChargeCategories } from "../../services/categoriesService.js";
+import { getInvoicePdf } from "../../services/invoiceService.js";
 import FloatingMenus from "./FloatingMenus.js";
 const FetchInvoicesDatatable = ({setSelectedId,set_chargecat_name,setModalIsOpen,setIsEdit,id}) => {
   
@@ -25,6 +26,7 @@ const FetchInvoicesDatatable = ({setSelectedId,set_chargecat_name,setModalIsOpen
   const [deleteId,setDeleteId] = useState(null);
   const [deleteModalIsOpen,setDeleteModalIsOpen] = useState(false);
   const [isDeleteLoading,setIsDeleteLoading] = useState(false);
+  const [invoice_link, set_invoice_link] = useState('')
   
   const [isMenuOpenId,setIsMenuOpenId] = useState(0);
   const navigate = useNavigate();
@@ -33,18 +35,35 @@ const FetchInvoicesDatatable = ({setSelectedId,set_chargecat_name,setModalIsOpen
   }, [userId]);
 
 
+  const viewPdf = async (id) => {
+    const response = await getInvoicePdf(id);
+    const pdf_url= response?.data.pdf_url;
+    set_invoice_link(pdf_url);
+    if (pdf_url) {
+      window.open(pdf_url, '_blank');
+    }
+}
 
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
     {
       field: "invoice_create_date",
       headerName: "Invoice Date",
-      width: '150',
-    //   renderCell: (params) => (
-    //     <Link to={`/familiies-and-invoices/family/${params.row.id}`}>
-    //       {params.row.name}
-    //     </Link>
-    //   ),
+      width: '180',
+      renderCell: (params) => (
+        <div>
+      <div style={{ marginBottom: '5px' }}>
+        <Link to='#' onClick={(e) => viewPdf(params.row.id)}>
+          {params.row.invoice_create_date}
+        </Link>
+      </div>
+      <div style={{ display: 'flex', gap: '5px' }}>
+        {params.row.is_paid === 0 && <div style={{ minWidth: '50px', padding: '0 5px', background: '#eafcd2', color:'#18790b', textAlign: 'center' }}>Paid</div>}
+        {/* {params.row.is_void === 0 && <div style={{ minWidth: '50px', padding: '0 5px', background: '#ffe4d7', color:'#b71c37', textAlign: 'center' }}>Void</div>} */}
+        {params.row.is_archived === 0 && <div style={{ minWidth: '50px', padding: '0 5px', background: '#eaeeee',color:'#344242', textAlign: 'center' }}>Archive</div>}
+      </div>
+    </div>
+      ),
       editable: true,
     },
     {
@@ -63,7 +82,7 @@ const FetchInvoicesDatatable = ({setSelectedId,set_chargecat_name,setModalIsOpen
     {
       field: "amount",
       headerName: "Amount",
-      width: 150,
+      width: 100,
       renderCell: (params) => (
         params.row.amount==0?(<div style={{minWidth:'50px',padding:'0 5px',background:'lightgreen',textAlign:'center',color:'white'}}>
                               ₹ {params.row.amount}
@@ -189,52 +208,6 @@ const FetchInvoicesDatatable = ({setSelectedId,set_chargecat_name,setModalIsOpen
                       }}
                     />
                   </Box>
-                  {/* {popupmenu && (
-              // <>
-              //   <div className="dropdown-menu dropdown-menu-end show"
-              //   style={{ position: 'absolute', top: -220, right: 0 }}>
-              //     <Link className="dropdown-item" to="/my-preferences">
-              //       <i className="fa fa-eye" aria-hidden="true"></i> &nbsp; View
-              //     </Link>
-              //     <Link className="dropdown-item" to="/bussiness-settings">
-              //       <i className="fa fa-envelope" aria-hidden="true"></i>{" "}
-              //       &nbsp;Email
-              //     </Link>
-              //     <Link className="dropdown-item" to="/bussiness-settings">
-              //       <i className="fa fa-download" aria-hidden="true"></i>{" "}
-              //       &nbsp;Download PDF
-              //     </Link>
-              //     <div className="dropdown-divider"></div>
-              //     <Link className="dropdown-item" >
-              //       {" "}
-              //       &nbsp;Override Status
-              //     </Link>
-              //     <Link className="dropdown-item" >
-              //      {" "}
-              //       &nbsp;Void
-              //     </Link>
-              //     <Link className="dropdown-item" >
-              //       {" "}
-              //       &nbsp;Paid
-              //     </Link>
-              //     <div className="dropdown-divider"></div>
-              //     <Link className="dropdown-item" to="/bussiness-settings">
-              //       <i className="fa fa-plus" aria-hidden="true"></i>{" "}
-              //       &nbsp;Add a Payment
-              //     </Link>
-              //     <div className="dropdown-divider"></div>
-              //     <Link className="dropdown-item" to="/bussiness-settings">
-              //     <i className="fa fa-archive" aria-hidden="true"></i>{" "}
-              //       &nbsp;Archive
-              //     </Link>
-              //     <Link className="dropdown-item" to="/bussiness-settings">
-              //       <i className="fa fa-trash" aria-hidden="true"></i>{" "}
-              //       &nbsp;Delete
-              //     </Link>
-              //   </div>
-              // </>
-              <FloatingMenus />
-            )} */}
                 </div>
               </div>
             </>

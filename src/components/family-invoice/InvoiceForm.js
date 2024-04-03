@@ -28,6 +28,7 @@ const InvoiceForm = () => {
   const [invoice_due_type, set_invoice_due_type] =useState('1');
   const [invoice_due_date, set_invoice_due_date] =useState();
   const [email_immediately,set_email_immediately]=useState('0');
+  const [private_note, set_private_note] = useState('');
   const [error, setError] = useState();
  
   const [familiies, set_familiies] = useState([]);
@@ -84,9 +85,12 @@ const InvoiceForm = () => {
       setDisplayType(value);
     }
 
-
     if(name === 'email_immediately'){
       set_email_immediately(value);
+    }
+
+    if(name === 'private_note'){
+      set_private_note(value);
     }
 
   }
@@ -136,7 +140,8 @@ const InvoiceForm = () => {
       invoice_due_type: invoice_due_type,
       invoice_due_date: invoice_due_date,
       display_type: displayType,
-      email_immediately: email_immediately
+      email_immediately: email_immediately,
+      private_note: private_note,
     };
 
 
@@ -500,8 +505,10 @@ const InvoiceForm = () => {
                  <span className="text-muted">Optional</span>
                 </label>
                 <textarea className="form-control" 
-                name="notes" rows="4" cols="10"
+                name="private_note" rows="4" cols="10"
+                
                 placeholder="An optional, private note. This will NOT be included on the invoice."
+                onChange={handleChange}
                 style={{ height: 'auto', width: '100%' }}></textarea>
               </div>
             </div>
@@ -539,7 +546,6 @@ const InvoiceForm = () => {
                     value='1'
                     name="email_immediately"
                     onChange={handleChange}
-                    disabled
                   />
                   <label class="form-check-label">Email invoices immediately</label>
                 </div>

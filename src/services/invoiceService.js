@@ -60,3 +60,12 @@ export const getTransactionById = async (id) => {
       console.log(error);
     });
 };
+
+export const getInvoicePdf = async (id) => {
+    return invoicesApi.get('invoice-pdf/'+id).then((response) => {
+      return response.data;
+    })
+    .catch((err)=>{
+      console.log(err);
+    })
+}
