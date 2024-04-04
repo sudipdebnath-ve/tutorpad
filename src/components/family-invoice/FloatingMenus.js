@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from "react-router-dom"
 
-import { getInvoicePdf } from '../../services/invoiceService'
+import { getInvoicePdf, updatePaidStatus, updateArchiveStatus, updateVoidStatus } from '../../services/invoiceService'
 import axios from 'axios'
 
-function FloatingMenus({onMouseLeave,id}) {
+function FloatingMenus({onMouseLeave,
+  id,
+  is_paid, 
+  set_is_paid,
+  is_archived, 
+  set_is_archived,
+  is_void,
+  set_is_void,  
+}) {
    const [invoice_link, set_invoice_link] = useState('')
-
 
 
   const viewPdf = async () => {
@@ -16,6 +23,14 @@ function FloatingMenus({onMouseLeave,id}) {
   }
 
   const downloadPdf = async () => {
+
+    // const pdfUrl = invoice_link;
+    // const link = document.createElement("a");
+    // link.href = pdfUrl;
+    // link.download = "document.pdf"; // specify the filename
+    // document.body.appendChild(link);
+    // link.click();
+    // document.body.removeChild(link);
     try {
       const response = await axios.get(invoice_link,{
         responseType: "blob"
@@ -27,11 +42,12 @@ function FloatingMenus({onMouseLeave,id}) {
       const url = window.URL.createObjectURL(pdfBlob);
 
       const tempLink = document.createElement('a');
-      tempLink.href = url;
-      tempLink.setAttribute("download", `invoice_${id}.pdf`);
+      tempLink.href = invoice_link;
+      tempLink.setAttribute("download", "invoice.pdf");
 
       document.body.appendChild(tempLink);
-      tempLink.click();
+      console.log(tempLink);
+    //  tempLink.click();
 
       document.body.removeChild(tempLink);
       window.URL.revokeObjectURL(url);
@@ -40,6 +56,70 @@ function FloatingMenus({onMouseLeave,id}) {
     } catch (error) {
       console.log("Error downloading pdf file: ",error);
     }
+  }
+
+  const togglePaidStatus = async () => {
+    const newPaidStatus = is_paid == '1' ? '0' : '1';
+    const newVoidStatus = is_void == '1' && newPaidStatus == '1' ? '0' : is_void;
+    const data = {
+      paid: newPaidStatus,
+      void: newVoidStatus
+    };
+    try {
+      const response = await updatePaidStatus(data, id);
+      if (response.success) {
+        // Update the is_paid state by calling the set_is_paid function
+        // Update the is_paid and is_void states
+      set_is_paid(newPaidStatus);
+      set_is_void(newVoidStatus == '0' ? '0' : newVoidStatus);
+      } else {
+        // Handle errors if needed
+      }
+    } catch (error) {
+      console.log("Error toggling paid status: ", error);
+    }
+  };
+
+  const toggleArchivedStatus = async () => {
+    const data = {
+      archive: is_archived == '1' ? '0' : '1'
+    };
+    try {
+      const response = await updateArchiveStatus(data, id);
+      if (response.success) {
+        // Update the is_paid state by calling the set_is_paid function
+        set_is_archived(prevState => prevState == '1' ? '0' : '1');
+      } else {
+        // Handle errors if needed
+      }
+    } catch (error) {
+      console.log("Error toggling archive status: ", error);
+    }
+  };
+
+  const toggleVoidStatus = async () => {
+    const newVoidStatus = is_void == '1' ? '0' : '1';
+    const newPaidStatus = is_paid == '1' && newVoidStatus == '1' ? '0' : is_paid;
+    const data = {
+      paid: newPaidStatus,
+      void: newVoidStatus
+    };
+    try {
+      const response = await updateVoidStatus(data, id);
+      if (response.success) {
+        // Update the is_paid state by calling the set_is_paid function
+        set_is_void(newVoidStatus);
+        set_is_paid(newPaidStatus == '0' ? '0' : newPaidStatus);
+      } else {
+        // Handle errors if needed
+      }
+    } catch (error) {
+      console.log("Error toggling void status: ", error);
+    }
+  }
+
+  const deleteInvoice = async () => {
+
   }
   
 
@@ -68,28 +148,33 @@ function FloatingMenus({onMouseLeave,id}) {
         {" "}
         &nbsp;Override Status
         </button>
-        <Link to={``} className="dropdown-item" >
+        <button to={``} className="dropdown-item"
+        style={{background: '#ffe4d7', color:'#b71c37',marginBottom:'2px'}}
+        onClick={toggleVoidStatus} >
         {" "}
         &nbsp;Void
-        </Link>
-        <Link className="dropdown-item" >
+        </button>
+        <button className="dropdown-item" onClick={togglePaidStatus}
+        style={{background: '#eafcd2', color:'#18790b'}} >
         {" "}
         &nbsp;Paid
-        </Link>
+        </button>
         <div className="dropdown-divider"></div>
-        <Link className="dropdown-item" to="/bussiness-settings">
+        <Link className="dropdown-item">
         <i className="fa fa-plus" aria-hidden="true"></i>{" "}
         &nbsp;Add a Payment
         </Link>
         <div className="dropdown-divider"></div>
-        <Link className="dropdown-item" to="/bussiness-settings">
+        <button className="dropdown-item"
+        onClick={toggleArchivedStatus}>
         <i className="fa fa-archive" aria-hidden="true"></i>{" "}
-        &nbsp;Archive
-        </Link>
-        <Link className="dropdown-item" to="/bussiness-settings">
+        &nbsp;{is_archived == '0' ? 'Archive' : 'Unarchive'}
+        </button>
+        <button className="dropdown-item"
+        onClick={deleteInvoice}>
         <i className="fa fa-trash" aria-hidden="true"></i>{" "}
         &nbsp;Delete
-        </Link>
+        </button>
     </div>
     </>
   )

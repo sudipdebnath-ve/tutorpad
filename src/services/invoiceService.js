@@ -52,6 +52,33 @@ export const updateTransaction= async (data,id) => {
     });
 };
 
+export const updatePaidStatus = async (data,id) => {
+  return invoicesApi.patch('invoice-paid/'+id,data).then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+export const updateArchiveStatus = async (data,id) => {
+  return invoicesApi.patch('invoice-archive/'+id,data).then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+export const updateVoidStatus = async (data,id) => {
+  return invoicesApi.patch('invoice-void/'+id,data).then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
 export const getTransactionById = async (id) => {
   return invoicesApi.get('transaction/'+id).then((response) => {
       return response.data;

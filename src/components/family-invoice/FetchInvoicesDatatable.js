@@ -27,13 +27,16 @@ const FetchInvoicesDatatable = ({setSelectedId,set_chargecat_name,setModalIsOpen
   const [deleteModalIsOpen,setDeleteModalIsOpen] = useState(false);
   const [isDeleteLoading,setIsDeleteLoading] = useState(false);
   const [invoice_link, set_invoice_link] = useState('')
+  const [is_paid, set_is_paid] = useState('');
+  const [is_archived, set_is_archived] = useState('');
+  const [is_void, set_is_void] = useState('');
   
   const [isMenuOpenId,setIsMenuOpenId] = useState(0);
   const navigate = useNavigate();
   useEffect(() => {
     fetchInvoices(id);
-  }, [userId]);
-
+  }, [userId,is_paid,is_archived,is_void]);
+  
 
   const viewPdf = async (id) => {
     const response = await getInvoicePdf(id);
@@ -58,9 +61,13 @@ const FetchInvoicesDatatable = ({setSelectedId,set_chargecat_name,setModalIsOpen
         </Link>
       </div>
       <div style={{ display: 'flex', gap: '5px' }}>
-        {params.row.is_paid === 0 && <div style={{ minWidth: '50px', padding: '0 5px', background: '#eafcd2', color:'#18790b', textAlign: 'center' }}>Paid</div>}
-        {/* {params.row.is_void === 0 && <div style={{ minWidth: '50px', padding: '0 5px', background: '#ffe4d7', color:'#b71c37', textAlign: 'center' }}>Void</div>} */}
-        {params.row.is_archived === 0 && <div style={{ minWidth: '50px', padding: '0 5px', background: '#eaeeee',color:'#344242', textAlign: 'center' }}>Archive</div>}
+        {params.row.is_paid === 1  ? 
+        <div style={{ minWidth: '50px', padding: '0 5px', background: '#eafcd2', color:'#18790b', textAlign: 'center' }}>Paid</div>
+        :
+        <div style={{ minWidth: '50px', padding: '0 5px', background: '#ffe4d7', color:'#b71c37', textAlign: 'center' }}>Void</div>
+        }
+       {/* {params.row.is_void === 1 && <div style={{ minWidth: '50px', padding: '0 5px', background: '#ffe4d7', color:'#b71c37', textAlign: 'center' }}>Void</div>} */}
+        {params.row.is_archived === 1 && <div style={{ minWidth: '50px', padding: '0 5px', background: '#eaeeee',color:'#344242', textAlign: 'center' }}>Archive</div>}
       </div>
     </div>
       ),
@@ -98,7 +105,15 @@ const FetchInvoicesDatatable = ({setSelectedId,set_chargecat_name,setModalIsOpen
       width: 100,
       renderCell: (params) => (
       <div style={{position:'absolute'}}>
-        { params.row.id ==isMenuOpenId && <FloatingMenus id={params.row.id} onMouseLeave={()=>setIsMenuOpenId(0)}  /> } 
+        { params.row.id ==isMenuOpenId && <FloatingMenus id={params.row.id} 
+        onMouseLeave={()=>setIsMenuOpenId(0)} 
+        is_paid={params.row.is_paid}
+        set_is_paid={set_is_paid}
+        is_archived={params.row.is_archived}
+        set_is_archived={set_is_archived}
+        is_void={params.row.is_void}
+        set_is_void={set_is_void} 
+         /> } 
        <div style={{display:'flex',gap:5}} className="dropdown">
         <button 
         style={{border:'none',backgroundColor:'transparent'}}
