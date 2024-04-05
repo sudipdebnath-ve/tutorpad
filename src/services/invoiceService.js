@@ -96,3 +96,23 @@ export const getInvoicePdf = async (id) => {
       console.log(err);
     })
 }
+
+export const getDownloadPdf = async (id) => {
+  return invoicesApi.get('download-invoice-pdf/'+id,{
+    responseType: "blob"
+  }).then((response) => {
+    return response.data;
+  })
+  .catch((err)=>{
+    console.log(err);
+  })
+}
+
+export const deleteInvoiceById = async (id) => {
+  return invoicesApi.delete('delete-invoice/'+id).then((response) => {
+    return response.data;
+  })
+  .catch((err)=>{
+    console.log(err);
+  })
+}

@@ -30,12 +30,13 @@ const FetchInvoicesDatatable = ({setSelectedId,set_chargecat_name,setModalIsOpen
   const [is_paid, set_is_paid] = useState('');
   const [is_archived, set_is_archived] = useState('');
   const [is_void, set_is_void] = useState('');
+  const [is_deleted, set_is_deleted] = useState(false);
   
   const [isMenuOpenId,setIsMenuOpenId] = useState(0);
   const navigate = useNavigate();
   useEffect(() => {
     fetchInvoices(id);
-  }, [userId,is_paid,is_archived,is_void]);
+  }, [userId,is_paid,is_archived,is_void,is_deleted]);
   
 
   const viewPdf = async (id) => {
@@ -112,7 +113,8 @@ const FetchInvoicesDatatable = ({setSelectedId,set_chargecat_name,setModalIsOpen
         is_archived={params.row.is_archived}
         set_is_archived={set_is_archived}
         is_void={params.row.is_void}
-        set_is_void={set_is_void} 
+        set_is_void={set_is_void}
+        set_is_deleted = {set_is_deleted} 
          /> } 
        <div style={{display:'flex',gap:5}} className="dropdown">
         <button 
