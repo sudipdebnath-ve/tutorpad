@@ -8,7 +8,7 @@ import { Link } from "react-router-dom"
 import { Icon } from 'react-icons-kit';
 import {edit2} from 'react-icons-kit/feather/edit2';
 import {trash2} from 'react-icons-kit/feather/trash2';
-
+import Families_Invoices from '../../assets/images/Families_Invoices.svg'
 
 
 import { useNavigate } from "react-router-dom";
@@ -62,13 +62,10 @@ const FetchInvoicesDatatable = ({setSelectedId,set_chargecat_name,setModalIsOpen
         </Link>
       </div>
       <div style={{ display: 'flex', gap: '5px' }}>
-        {params.row.is_paid === 1  ? 
-        <div style={{ minWidth: '50px', padding: '0 5px', background: '#eafcd2', color:'#18790b', textAlign: 'center' }}>Paid</div>
-        :
-        <div style={{ minWidth: '50px', padding: '0 5px', background: '#ffe4d7', color:'#b71c37', textAlign: 'center' }}>Void</div>
-        }
-       {/* {params.row.is_void === 1 && <div style={{ minWidth: '50px', padding: '0 5px', background: '#ffe4d7', color:'#b71c37', textAlign: 'center' }}>Void</div>} */}
-        {params.row.is_archived === 1 && <div style={{ minWidth: '50px', padding: '0 5px', background: '#eaeeee',color:'#344242', textAlign: 'center' }}>Archive</div>}
+        {params.row.is_paid == 1  && 
+        <div style={{ minWidth: '50px', padding: '0 5px', background: '#eafcd2', color:'#18790b', textAlign: 'center' }}>Paid</div> }
+        {params.row.is_void == 1 && <div style={{ minWidth: '50px', padding: '0 5px', background: '#ffe4d7', color:'#b71c37', textAlign: 'center' }}>Void</div>}
+        {params.row.is_archived == 1 && <div style={{ minWidth: '50px', padding: '0 5px', background: '#eaeeee',color:'#344242', textAlign: 'center' }}>Archive</div>}
       </div>
     </div>
       ),
@@ -239,20 +236,19 @@ const FetchInvoicesDatatable = ({setSelectedId,set_chargecat_name,setModalIsOpen
               <>
                 <div className="py-3">
                   <div className="chart chart-xs">
-                    <img src={students}></img>
+                    <img src={Families_Invoices}></img>
                   </div>
                 </div>
                 <h4>
-                  <strong>You don't have any tutors yet</strong>
+                  <strong>You don't have any invoices yet</strong>
                 </h4>
-                <p style={{ textAlign: "center" }}>
-                  Add your tutors, and more.
-                </p>
                 <div className="addnewstudent">
+                  <div>
                   <i className="fa fa-plus" aria-hidden="true"></i>
                   <a className="btn dropdown-toggle" href="#" role="button">
                     Add New
                   </a>
+                  </div>
 
                   <div
                     className="dropdown-menu"

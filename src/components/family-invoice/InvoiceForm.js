@@ -130,7 +130,7 @@ const InvoiceForm = () => {
 
   const saveInvoiceDetails = async () => {
     const data = {
-      family_account_ids: param?.family_id ? [family_account_id.value] : family_account_id || []  ,
+      family_account_ids: param?.family_id ? [param?.family_id] : family_account_id || []  ,
       invoice_create_date: invoice_create_date,
       skip_0_invoices: skip_0_invoices,
       charge_category: charge_category ,

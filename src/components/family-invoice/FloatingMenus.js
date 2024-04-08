@@ -24,6 +24,7 @@ function FloatingMenus({
 }) {
   const [invoice_link, set_invoice_link] = useState("");
   const [showVoidModal, setShowVoidModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   function afterOpenModal() {
     // references are now sync'd and can be accessed.
@@ -154,7 +155,7 @@ function FloatingMenus({
   return (
     <>
       <div
-        onMouseLeave={showVoidModal ? null : onMouseLeave}
+        onMouseLeave={(showVoidModal || showDeleteModal) ? null : onMouseLeave}
         className="dropdown-menu dropdown-menu-end show"
         style={{ position: "absolute", right: 80, top: 0, zIndex: 99999999 }}
       >
@@ -200,7 +201,7 @@ function FloatingMenus({
           <i className="fa fa-archive" aria-hidden="true"></i> &nbsp;
           {is_archived == "0" ? "Archive" : "Unarchive"}
         </button>
-        <button className="dropdown-item" onClick={deleteInvoice}>
+        <button className="dropdown-item" onClick={()=>setShowDeleteModal(true)}>
           <i className="fa fa-trash" aria-hidden="true"></i> &nbsp;Delete
         </button>
       </div>
@@ -252,6 +253,58 @@ function FloatingMenus({
                   className="formbold-btn"
                 >
                   Void Invoice
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ReactModal>
+      <ReactModal
+        isOpen={showDeleteModal}
+        onAfterOpen={afterOpenModal}
+        onRequestClose={() => setShowDeleteModal(false)}
+        style={customStyles}
+        contentLabel="Delete Invoice Modal"
+      >
+        <div className="calendar-modal">
+          <div
+            className="close-h"
+            style={{ position: "absolute", top: "10px", right: "10px" }}
+          >
+            <button
+              className="closeModal"
+              style={{
+                backgroundColor: "transparent",
+                fontSize: "25px",
+                color: "red",
+              }}
+              onClick={()=>setShowDeleteModal(false)}
+            >
+              X
+            </button>
+          </div>
+          <div className="calendar-date-time">
+            <h3 className="fw-bold">Confirm Delete</h3>
+            <div className="formbold-input-flex">
+              <p>
+              Are you sure you want to delete this invoice?
+              </p>
+            </div>
+            <hr />
+            <div className="formbold-form-btn-wrapper">
+              <div className="btn-end">
+                <button
+                  onClick={() => setShowDeleteModal(false)}
+                  className="cancel"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => deleteInvoice()}
+                  className="formbold-btn"
+                  style={{backgroundColor:'red'}}
+                >
+                  Delete
                 </button>
               </div>
             </div>
