@@ -17,6 +17,15 @@ export const getFamilyAccounts= async () => {
       });
 };
 
+export const createInvoice= async (data) => {
+  return invoicesApi.post('create-invoice',data).then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
 export const getFamilyAccountsDetails= async (id) => {
   return invoicesApi.get('family-account/'+id).then((response) => {
       return response.data;
@@ -50,7 +59,35 @@ export const disableAutoInvoicesTransaction= async (id) => {
     .catch((error) => {
       console.log(error);
     });
-}
+};
+
+export const updatePaidStatus = async (data,id) => {
+  return invoicesApi.patch('invoice-paid/'+id,data).then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+export const updateArchiveStatus = async (data,id) => {
+  return invoicesApi.patch('invoice-archive/'+id,data).then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+export const updateVoidStatus = async (data,id) => {
+  return invoicesApi.patch('invoice-void/'+id,data).then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
 export const getTransactionById = async (id) => {
   return invoicesApi.get('transaction/'+id).then((response) => {
       return response.data;
@@ -67,5 +104,33 @@ export const enableAutoInoviceById = async ( data,id ) =>{
   .catch((error) => {
      console.log(error);
    });
+}
 
+export const getInvoicePdf = async (id) => {
+    return invoicesApi.get('invoice-pdf/'+id).then((response) => {
+      return response.data;
+    })
+    .catch((err)=>{
+      console.log(err);
+    })
+}
+
+export const getDownloadPdf = async (id) => {
+  return invoicesApi.get('download-invoice-pdf/'+id,{
+    responseType: "blob"
+  }).then((response) => {
+    return response.data;
+  })
+  .catch((err)=>{
+    console.log(err);
+  })
+}
+
+export const deleteInvoiceById = async (id) => {
+  return invoicesApi.delete('delete-invoice/'+id).then((response) => {
+    return response.data;
+  })
+  .catch((err)=>{
+    console.log(err);
+  })
 }

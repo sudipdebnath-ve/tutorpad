@@ -122,7 +122,7 @@ const getFrequency = (freq)=>{
     if(param?.id)
     {
         const response = await updateTransaction(data,param.id);
-        if (response?.success == true) {
+        if (response?.success === true) {
             set_family_account_id("");
             set_transaction_amount("");
             set_transaction_date("");
