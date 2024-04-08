@@ -43,6 +43,14 @@ export const updateTransaction= async (data,id) => {
     });
 };
 
+export const disableAutoInvoicesTransaction= async (id) => {
+  return invoicesApi.patch('disable-auto-invoicing/'+id).then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
 export const getTransactionById = async (id) => {
   return invoicesApi.get('transaction/'+id).then((response) => {
       return response.data;
@@ -51,3 +59,13 @@ export const getTransactionById = async (id) => {
       console.log(error);
     });
 };
+
+export const enableAutoInoviceById = async ( data,id ) =>{
+  return invoicesApi.post('configure-auto-invoicing/'+id, data).then ((response)=>{
+        return response.data;
+  })
+  .catch((error) => {
+     console.log(error);
+   });
+
+}
