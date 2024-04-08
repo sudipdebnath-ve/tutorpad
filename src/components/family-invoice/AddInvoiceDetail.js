@@ -10,8 +10,9 @@ import TransactionType from "./TransactionType.js";
 import PaymentRefundForm from "./PaymentRefundForm.js";
 import { useParams,useNavigate } from "react-router-dom";
 import ChargesDiscountForm from "./ChargesDiscountForm.js";
+import InvoiceForm from "./InvoiceForm.js";
 
-const TransactionDetailType = () => {
+const AddInvoiceDetail = () => {
   const param = useParams();
   const {sidebarToggle} = useUserDataContext();
   return (
@@ -32,20 +33,16 @@ const TransactionDetailType = () => {
           <div className="container-fluid p-0">
             <div className="row d-flex">
               <div className="col-xl-12 col-xxl-12">
-                <div className={`card`}>
+                <div className="card pb-3">
                     <div className="card-header">
-                        <h5>Add Transaction</h5>
+                        <h5>New Invoice</h5>
                     </div>
-                    <div className={`card-body ${param.screen==1?"contaner-area":"contaner-area-min"}`}>
-                        <span>Step {param.screen==1?"1/2":"2/2"}</span>
+                    <div className={`card-body ${param.screen==1?"contaner-area-min":"contaner-area-min"}`}>
                         {
-                          param.screen==1 && <TransactionType />
+                          param.screen==1 && <InvoiceForm/>
                         }
                         {
-                          param.screen==2 && (param.type==1 || param.type==2) && <PaymentRefundForm/>
-                        }
-                        {
-                          param.screen==2 && (param.type==3 || param.type==4) && <ChargesDiscountForm />
+                          param.screen==2 && <InvoiceForm/>
                         }
                     </div>
                 </div>
@@ -58,4 +55,4 @@ const TransactionDetailType = () => {
   );
 };
 
-export default TransactionDetailType;
+export default AddInvoiceDetail;

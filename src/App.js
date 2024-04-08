@@ -30,7 +30,9 @@ import EditLocations from "./components/categories-locations/locations/edit/Edit
 import Attendance from "./components/attendance/Attendance";
 import ChargeCategory from "./components/charge-category/ChargeCategory";
 import TransactionDetailType from "./components/family-invoice/TransactionDetailType";
+import AddInvoiceDetail from "./components/family-invoice/AddInvoiceDetail";
 import FamilyDetails from "./components/family-invoice/FamilyDetails";
+import AutoInvoiceForm from "./components/family-invoice/AutoInvoiceForm";
 function App() {
   return (
     <Routes basename="/">
@@ -72,6 +74,11 @@ function App() {
       <Route path="/familiies-and-invoices/transaction-type/:screen/:family_id/:type" element={<TransactionDetailType />} />
       <Route path="/familiies-and-invoices/transaction-type/:screen/:type/:family_id/:id" element={<TransactionDetailType />} />
       <Route path="/familiies-and-invoices/family/:id" element={<FamilyDetails />} />
+      <Route path="/familiies-and-invoices/autoinvoice-formdetails/:id" element={<AutoInvoiceForm/>} />
+      <Route path="/familiies-and-invoices/invoice/:screen" element={<AddInvoiceDetail />} />
+      <Route path="/familiies-and-invoices/invoice/:screen/:family_id" element={<AddInvoiceDetail />} />
+      <Route path="/familiies-and-invoices/invoice/:screen/:family_id/:type" element={<AddInvoiceDetail />} />
+      <Route path="/familiies-and-invoices/invoice/:screen/:type/:family_id/:id" element={<AddInvoiceDetail />} />
     </Routes>
   );
 }

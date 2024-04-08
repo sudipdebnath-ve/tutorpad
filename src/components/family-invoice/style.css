@@ -45,3 +45,34 @@
 .ml-2{
     margin-left: 2px;
 }
+
+.form-field-label-text{
+    color: #344242;
+}
+
+.date-input-enable-autoinvoice{
+    /* display: flex !important;
+    align-items: center;
+    border: none !important;
+    height: 40px !important;
+    padding: 0 8px !important; */
+}
+
+.invoice-type{
+    display: flex;
+}
+
+.invoice-details-wrapper .payment-type-box{
+    height: auto;
+    overflow:auto;
+}
+
+.automatic-invoicing{
+    padding-top: 32px;
+    padding-bottom: 16px;
+    font: 750 2.027rem / 1.1 Inter Variable, Arial, sans-serif;
+    color: #1b2222;
+}
+.payment-type-box:not(.automatic-invoicing) {
+    display: flex; /* Override display:block to display:flex for .payment-type-box except for .automatic-invoicing */
+}
