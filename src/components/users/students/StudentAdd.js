@@ -50,7 +50,7 @@ const StudentAdd = () => {
     price: "",
     note: "",
     invoicing: "",
-    family_account_id:null,
+    family_account_id: null,
   });
 
   useEffect(() => {
@@ -64,15 +64,13 @@ const StudentAdd = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const name = `${formData.parentfirstname} ${formData.parentlastname}`;
-    
-    if(formData.studentType=="Child")
-    {
-      
+
+    if (formData.studentType == "Child") {
       const parentInfo = await getParentDetailsList(name);
-      setParentList(parentInfo.data)
-      console.log("DATA=>",formData);
+      setParentList(parentInfo.data);
+      console.log("DATA=>", formData);
     }
     const stepMenuOne = document.querySelector(".formbold-step-menu1");
     const stepMenuTwo = document.querySelector(".formbold-step-menu2");
@@ -97,6 +95,7 @@ const StudentAdd = () => {
       ) {
         value.className = "border-2 border-danger form-control";
         let label = document.getElementById(value.name);
+        console.log("label", label.innerText);
         label.className = "formbold-form-label text-danger";
         req = true;
 
@@ -105,10 +104,17 @@ const StudentAdd = () => {
           block: "start",
           inline: "start",
         });
+
+        setError((prev) => ({
+          ...prev,
+          [value?.name]: `The ${label.innerText} is required`,
+        }));
       } else if (value.required && value.value) {
+        console.log("value", value.value);
         value.className = "form-control";
         let label = document.getElementById(value.name);
         label.className = "formbold-form-label";
+        setError((prev) => ({ ...prev, [value?.name]: "" }));
       }
     }
     for (let [key, value] of Object.entries(emailfield)) {
@@ -121,7 +127,7 @@ const StudentAdd = () => {
         // console.log("value.value", value.value);
 
         value.className = "border-2 border-danger form-control";
-        let label = document.getElementById(value.name);
+        let label = document?.getElementById(value?.name);
         label.className = "formbold-form-label text-danger";
         flagemail = true;
         label.scrollIntoView({
@@ -129,12 +135,18 @@ const StudentAdd = () => {
           block: "start",
           inline: "start",
         });
+        console.log("value?.name", value?.name);
+        setError((prev) => ({
+          ...prev,
+          [value?.name]: `The ${label.innerText} is required`,
+        }));
       } else if (value.required && value.value) {
         console.log("value", value.value);
 
         value.className = "form-control";
         let label = document.getElementById(value.name);
         label.className = "formbold-form-label";
+        setError((prev) => ({ ...prev, [value?.name]: "" }));
       }
     }
     if (req === false && flagemail === false) {
@@ -165,13 +177,22 @@ const StudentAdd = () => {
 
     if (name === "student_status") {
       setSelectedStatus(value);
-    } 
+    }
     if (name === "studentType") {
       setStudentType(value);
-      if (value === 'Adult') {
+      if (value === "Adult") {
         setShowParentDetails(false);
       } else {
         setShowParentDetails(true);
+        let emailfield = document?.querySelectorAll("input[type=email]");
+        for (let [key, value] of Object.entries(emailfield)) {
+          console.log("value", value.name);
+          if (value?.name == "email") {
+            value?.classList?.remove("border-danger", "border-2");
+            let label = document?.getElementById(value?.name);
+            label?.classList?.remove("text-danger");
+          }
+        }
       }
     }
 
@@ -182,10 +203,10 @@ const StudentAdd = () => {
     e.preventDefault();
     console.log(userId);
 
-    if(!formData.hasOwnProperty("student_status")){
+    if (!formData.hasOwnProperty("student_status")) {
       formData["student_status"] = selectedStatus;
     }
-    if(!formData.hasOwnProperty("studentType")){
+    if (!formData.hasOwnProperty("studentType")) {
       formData["studentType"] = studentType;
     }
     formData["user_id"] = userId;
@@ -222,6 +243,8 @@ const StudentAdd = () => {
       setAdditionalDetails(true);
     }
   };
+
+  console.log("error", error);
   return (
     <div className="wrapper">
       {sidebarToggle ? (
@@ -280,6 +303,13 @@ const StudentAdd = () => {
                               onChange={handleChange}
                               required
                             />
+                            <small style={{ color: "red" }}>
+                              {error?.first_name?.length ? (
+                                error.first_name
+                              ) : (
+                                <></>
+                              )}
+                            </small>
                           </div>
                           <div>
                             <label
@@ -296,6 +326,13 @@ const StudentAdd = () => {
                               onChange={handleChange}
                               required
                             />
+                            <small style={{ color: "red" }}>
+                              {error?.last_name?.length ? (
+                                error.last_name
+                              ) : (
+                                <></>
+                              )}
+                            </small>
                           </div>
                         </div>
 
@@ -307,14 +344,20 @@ const StudentAdd = () => {
                               id="email"
                             >
                               Email Address
+                              {formData?.studentType == "Child" && (
+                                <span>Optional</span>
+                              )}
                             </label>
                             <input
                               type="email"
                               name="email"
                               className="form-control"
-                              required
+                              required={formData?.studentType == "Adult"}
                               onChange={handleChange}
                             />
+                            <small style={{ color: "red" }}>
+                              {error?.email?.length ? error.email : <></>}
+                            </small>
                           </div>
                           <div>
                             <div>
@@ -332,6 +375,9 @@ const StudentAdd = () => {
                                 required
                                 onChange={handleChange}
                               />
+                              <small style={{ color: "red" }}>
+                                {error?.phone?.length ? error.phone : <></>}
+                              </small>
                             </div>
                             <input
                               type="checkbox"
@@ -546,7 +592,7 @@ const StudentAdd = () => {
                                   name="student_status"
                                   onChange={handleChange}
                                   value="active"
-                                  checked={selectedStatus==="active"}
+                                  checked={selectedStatus === "active"}
                                 />
                                 <span
                                   className="bg-design"
@@ -566,7 +612,7 @@ const StudentAdd = () => {
                                   name="student_status"
                                   onChange={handleChange}
                                   value="trial"
-                                  checked={selectedStatus==="trial"}
+                                  checked={selectedStatus === "trial"}
                                 />
                                 <span
                                   className="bg-design"
@@ -586,7 +632,7 @@ const StudentAdd = () => {
                                   name="student_status"
                                   onChange={handleChange}
                                   value="Waiting"
-                                  checked={selectedStatus==="Waiting"}
+                                  checked={selectedStatus === "Waiting"}
                                 />
                                 <span
                                   className="bg-design"
@@ -606,7 +652,7 @@ const StudentAdd = () => {
                                   name="student_status"
                                   onChange={handleChange}
                                   value="Lead"
-                                  checked={selectedStatus==="Lead"}
+                                  checked={selectedStatus === "Lead"}
                                 />
                                 <span
                                   className="bg-design"
@@ -626,7 +672,7 @@ const StudentAdd = () => {
                                   name="student_status"
                                   onChange={handleChange}
                                   value="Inactive"
-                                  checked={selectedStatus==="Inactive"}
+                                  checked={selectedStatus === "Inactive"}
                                 />
                                 <span
                                   className="bg-design"
@@ -661,7 +707,7 @@ const StudentAdd = () => {
                                   name="studentType"
                                   onChange={handleChange}
                                   value="Adult"
-                                  checked={studentType === 'Adult'}
+                                  checked={studentType === "Adult"}
                                 />
                                 Adult
                               </div>
@@ -672,7 +718,7 @@ const StudentAdd = () => {
                                   name="studentType"
                                   onChange={handleChange}
                                   value="Child"
-                                  checked={studentType === 'Child'}
+                                  checked={studentType === "Child"}
                                 />
                                 Child
                               </div>
@@ -718,71 +764,100 @@ const StudentAdd = () => {
                         </div>
                         {showParentDetails && (
                           <>
-                        <div className="formbold-input-flex">
-                          <div>
-                            <label
-                              htmlFor="parentfirstname"
-                              className="formbold-form-label"
-                              id="parentfirstname"
-                            >
-                              Parent First Name
-                            </label>
-                            <input
-                              type="text"
-                              name="parentfirstname"
-                              className="form-control"
-                              onChange={handleChange}
-                            />
-                          </div>
-                          <div>
-                            <label
-                              htmlFor="parentlastname"
-                              className="formbold-form-label"
-                              id="parentlastname"
-                            >
-                              Parent Last name
-                            </label>
-                            <input
-                              type="text"
-                              name="parentlastname"
-                              className="form-control"
-                              onChange={handleChange}
-                            />
-                          </div>
-                        </div>
-                        <div className="formbold-input-flex">
-                          <div>
-                            <label
-                              htmlFor="parentemail"
-                              className="formbold-form-label"
-                            >
-                              Email Address <span>Optional</span>
-                            </label>
-                            <input
-                              type="email"
-                              name="parentemail"
-                              className="form-control"
-                              onChange={handleChange}
-                            />
-                          </div>
-                          <div>
-                            <label
-                              htmlFor="parentmobile"
-                              className="formbold-form-label"
-                            >
-                              Mobile Number <span>Optional</span>
-                            </label>
-                            <input
-                              type="text"
-                              name="parentmobile"
-                              className="form-control"
-                              onChange={handleChange}
-                            />
-                            <input type="checkbox" className="sms" name="sms" />
-                            SMS Capable
-                          </div>
-                        </div>
-                        </>
+                            <div className="formbold-input-flex">
+                              <div>
+                                <label
+                                  htmlFor="parentfirstname"
+                                  className="formbold-form-label"
+                                  id="parentfirstname"
+                                >
+                                  Parent First Name
+                                </label>
+                                <input
+                                  type="text"
+                                  name="parentfirstname"
+                                  className="form-control"
+                                  onChange={handleChange}
+                                  required
+                                />
+                                <small style={{ color: "red" }}>
+                                  {error?.parentfirstname?.length ? (
+                                    error.parentfirstname
+                                  ) : (
+                                    <></>
+                                  )}
+                                </small>
+                              </div>
+                              <div>
+                                <label
+                                  htmlFor="parentlastname"
+                                  className="formbold-form-label"
+                                  id="parentlastname"
+                                >
+                                  Parent Last name
+                                </label>
+                                <input
+                                  type="text"
+                                  name="parentlastname"
+                                  className="form-control"
+                                  onChange={handleChange}
+                                  required
+                                />
+                                <small style={{ color: "red" }}>
+                                  {error?.parentlastname?.length ? (
+                                    error.parentlastname
+                                  ) : (
+                                    <></>
+                                  )}
+                                </small>
+                              </div>
+                            </div>
+                            <div className="formbold-input-flex">
+                              <div>
+                                <label
+                                  htmlFor="parentemail"
+                                  className="formbold-form-label"
+                                  id="parentemail"
+                                >
+                                  Email Address
+                                </label>
+                                <input
+                                  type="email"
+                                  name="parentemail"
+                                  className="form-control"
+                                  onChange={handleChange}
+                                  required={formData?.studentType == "Child"}
+                                />
+                                <small style={{ color: "red" }}>
+                                  {error?.parentemail?.length ? (
+                                    error.parentemail
+                                  ) : (
+                                    <></>
+                                  )}
+                                </small>
+                              </div>
+                              <div>
+                                <label
+                                  htmlFor="parentmobile"
+                                  className="formbold-form-label"
+                                >
+                                  Mobile Number <span>Optional</span>
+                                </label>
+                                <input
+                                  type="text"
+                                  name="parentmobile"
+                                  className="form-control"
+                                  onChange={handleChange}
+                                />
+                                <input
+                                  type="checkbox"
+                                  className="sms"
+                                  name="sms"
+                                />
+                                SMS Capable
+                              </div>
+                            </div>
+                          </>
                         )}
                         <div className="formbold-input-flex diff">
                           <div>
@@ -989,27 +1064,46 @@ const StudentAdd = () => {
                           </div>
                         </div>
                       </div>
-                      
+
                       <div className="formbold-form-step-2">
-                        {
-                          parentList?.length>0 && <div className="alert alert-md alert-warning">
-                                                  <p><strong>This Parent Already Exist</strong></p>
-                                                  <p>You already have an parent under name,email or phone number.</p>
-                                                  <p>Choose an existing family below or ignore duplicates.</p>
-                                                  {
-                                                    parentList.map((e)=>{
-                                                      return <p>
-                                                                <input type="radio" onChange={handleChange} name="family_account_id" value={e.id} />
-                                                                <span> {`${e.name}`}</span>
-                                                              </p>
-                                                    })
-                                                  }
-                                                  <p>
-                                                    <input onChange={handleChange} checked type="radio" name="family_account_id" value={null} />
-                                                      <span> {`Ignore duplicate and continue`}</span>
-                                                  </p>
-                                                </div>
-                        }
+                        {parentList?.length > 0 && (
+                          <div className="alert alert-md alert-warning">
+                            <p>
+                              <strong>This Parent Already Exist</strong>
+                            </p>
+                            <p>
+                              You already have an parent under name,email or
+                              phone number.
+                            </p>
+                            <p>
+                              Choose an existing family below or ignore
+                              duplicates.
+                            </p>
+                            {parentList.map((e) => {
+                              return (
+                                <p>
+                                  <input
+                                    type="radio"
+                                    onChange={handleChange}
+                                    name="family_account_id"
+                                    value={e.id}
+                                  />
+                                  <span> {`${e.name}`}</span>
+                                </p>
+                              );
+                            })}
+                            <p>
+                              <input
+                                onChange={handleChange}
+                                checked
+                                type="radio"
+                                name="family_account_id"
+                                value={null}
+                              />
+                              <span> {`Ignore duplicate and continue`}</span>
+                            </p>
+                          </div>
+                        )}
                         <h5>Set Up Automatic Invoicing</h5>
                         <p className="py-3">
                           You can set up automatic invoicing now, or you can set
@@ -1051,9 +1145,9 @@ const StudentAdd = () => {
                           </div>
                         </div>
                         <div className="text-center">
-                      <small style={{ color: "red" }}>
-                      {error?.email?.length ? error.email[0] : <></>}
-                        </small>
+                          <small style={{ color: "red" }}>
+                            {error?.email?.length ? error.email[0] : <></>}
+                          </small>
                         </div>
                         <div className="formbold-form-btn-wrapper">
                           <button className="formbold-back-btn">Back</button>
