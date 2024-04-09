@@ -24,6 +24,7 @@ const Register = () => {
     bname: "",
     business_size: "",
   });
+  const [isTermsChecked, setIsTermsChecked] = useState(false);
   const [type, setType] = useState("password");
   const [icon, setIcon] = useState(eyeOff);
   const [error, setError] = useState({});
@@ -47,22 +48,27 @@ const Register = () => {
     }
   };
   const handleSubmit = async () => {
+    const formData = {
+      first_name: userdetails.firstname,
+      email: userdetails.email,
+      password: userdetails.password,
+      c_password: userdetails.rpassword,
+      last_name: userdetails.lastname,
+      domain: userdetails.domain,
+      bname: userdetails.bname,
+      business_size: userdetails.business_size,
+    };
+
+    if (isTermsChecked) {
+      formData.terms = isTermsChecked;
+    }
     const config = {
       method: "POST",
       url: `${NON_LOGGED_IN_API_URL}register`,
       headers: {
         "Content-Type": "application/json",
       },
-      data: JSON.stringify({
-        first_name: userdetails.firstname,
-        email: userdetails.email,
-        password: userdetails.password,
-        c_password: userdetails.rpassword,
-        last_name: userdetails.lastname,
-        domain: userdetails.domain,
-        bname: userdetails.bname,
-        business_size: userdetails.business_size,
-      }),
+      data: JSON.stringify(formData),
       // validateStatus: (status) => status !== 404,
     };
     await axios(config)
@@ -84,6 +90,9 @@ const Register = () => {
       .catch((error) => {
         if (error.response.data.success === false) {
           setError(error.response.data.data);
+          toast.error(error.response.data.message, {
+            position: toast.POSITION.TOP_CENTER,
+          });
         }
       });
   };
@@ -93,6 +102,8 @@ const Register = () => {
   //     navigate("/signin");
   //   }
   // });
+
+  console.log("checked", isTermsChecked);
 
   return (
     <div className="d-md-flex half">
@@ -177,19 +188,22 @@ const Register = () => {
                       {error?.c_password?.length ? error.c_password[0] : <></>}
                     </small>
                   </div>
-                  <div className="form-group d-flex align-items-center last mb-3">
-                    <input
-                      type="text"
-                      className="form-control domain"
-                      placeholder="domain"
-                      name="domain"
-                      onChange={handleChange}
-                    />
-                    <span style={{ fontSize: "16px" }}>.tutorpad.com</span>
+                  <div className="form-group last mb-3">
+                    <div className="d-flex align-items-center">
+                      <input
+                        type="text"
+                        className="form-control domain"
+                        placeholder="domain"
+                        name="domain"
+                        onChange={handleChange}
+                      />
+                      <span style={{ fontSize: "16px" }}>.tutorpad.com</span>
+                    </div>
+                    <small style={{ color: "red" }}>
+                      {error?.domain?.length ? error.domain[0] : <></>}
+                    </small>
                   </div>
-                  <small style={{ color: "red" }}>
-                    {error?.domain?.length ? error.domain[0] : <></>}
-                  </small>
+
                   <div className="form-group last mb-3">
                     <input
                       type="text"
@@ -213,28 +227,38 @@ const Register = () => {
                       </option>
                     </select>
                     <small style={{ color: "red" }}>
-                      {error?.bussiness_size?.length ? (
-                        error.bussiness_size[0]
+                      {error?.business_size?.length ? (
+                        error.business_size[0]
                       ) : (
                         <></>
                       )}
                     </small>
                   </div>
-
-                  <div className="d-sm-flex mb-5 align-items-center justify-content-between">
-                    <label className="control control--checkbox mb-3 mb-sm-0">
-                      <span className="caption">
-                        I agree to the <Link to="/">Terms of Service</Link> and{" "}
-                        <Link to="/">Privacy Policy</Link>
-                      </span>
-                      <input type="checkbox" />
-                      <div className="control__indicator"></div>
-                    </label>
-                    {/* <span className="ml-auto">
+                  <div className="form-group  last mb-5">
+                    <div className="d-sm-flex align-items-center justify-content-between">
+                      <label className="control control--checkbox mb-3 mb-sm-0">
+                        <span className="caption">
+                          I agree to the <Link to="/">Terms of Service</Link>{" "}
+                          and <Link to="/">Privacy Policy</Link>
+                        </span>
+                        <input
+                          type="checkbox"
+                          name="terms"
+                          required
+                          checked={isTermsChecked}
+                          onChange={() => setIsTermsChecked(!isTermsChecked)}
+                        />
+                        <div className="control__indicator"></div>
+                      </label>
+                      {/* <span className="ml-auto">
                       <Link to="#" className="forgot-pass">
                         Forgot Password
                       </Link>
                     </span> */}
+                    </div>
+                    <small style={{ color: "red" }}>
+                      {error?.terms?.length ? error.terms[0] : <></>}
+                    </small>
                   </div>
 
                   <input
