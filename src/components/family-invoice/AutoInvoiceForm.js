@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams ,useLocation} from "react-router-dom";
 import Icon from "react-icons-kit";
 import { chevronLeft } from "react-icons-kit/feather/chevronLeft";
 import { MiniSidebar, Sidebar, TopBar } from "../sidebar";
@@ -13,12 +13,15 @@ import "./style.css";
 import { enableAutoInoviceById, getAutoInoviceById } from "../../services/invoiceService";
 
 const AutoInvoiceForm = () => {
+const location = useLocation();
+//   const { state } = location;
+//   console.log("state changed------", state?.isChanged, state?.setIsChanged);
   const navigate = useNavigate();
   const param = useParams();
   const { sidebarToggle, allFamilies } = useUserDataContext();
   const [step, setStep] = useState(1);                  // Track current step of the form
   const [transaction_date, set_transaction_date] = useState("");
-  const [next_billing_cycle, set_next_billing_cycle] = useState("")
+  const [next_billing_cycle, set_next_billing_cycle] = useState("2024-05-01")
   const [is_prepaid_invoice, set_is_prepaid_invoice] = useState("0");
   const [invoice_create_on, set_invoice_create_on] = useState("1");
   const [invoice_due_type, set_invoice_due_type] = useState("0");
@@ -28,8 +31,8 @@ const AutoInvoiceForm = () => {
   const [invoice_0, set_invoice_0] = useState("0");
   const [auto_email, set_auto_email] = useState("0");
   const [footer_text, set_footer_text] = useState("")
-  const [event_frequency, set_event_frequency] = useState("Daily");
-  const [event_frequency_val, set_event_frequency_val] = useState("");
+  const [event_frequency, set_event_frequency] = useState("Monthly");
+  const [event_frequency_val, set_event_frequency_val] = useState("1");
   const [frequency, setFrequency] = useState("");
   const [dueDateOption, setDueDateOption] = useState("");
   const [transactionDate, setTransactionDate] = useState("");
@@ -51,13 +54,6 @@ const AutoInvoiceForm = () => {
     setDueDateOption(e.target.value);
     set_invoice_due_type(e.target.value);
   };
-  //   const handleDateChange = (e) => {
-  //     if (step === 1) {
-  //       set_transaction_date(e.target.value);
-  //     } else {
-  //       setTransactionDate(e.target.value);
-  //     }
-  //   };
 
   // Handler for Next button click
   const handleNext = () => {
@@ -209,6 +205,7 @@ const AutoInvoiceForm = () => {
                                       value='0'
                                       name="is_prepaid_invoice"
                                       onChange={(e)=> set_is_prepaid_invoice(e.target.value)}
+                                      checked={is_prepaid_invoice==='0'}
                                     ></input>
                                     Upcoming lessions (prepaid)
                                     <input

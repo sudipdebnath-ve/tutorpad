@@ -52,8 +52,8 @@ export const updateTransaction= async (data,id) => {
     });
 };
 
-export const disableAutoInvoicesTransaction= async (id) => {
-  return invoicesApi.patch('disable-auto-invoicing/'+id).then((response) => {
+export const disableAutoInvoicesTransaction= async (id, data) => {
+  return invoicesApi.patch('disable-auto-invoicing/'+id, data).then((response) => {
       return response.data;
     })
     .catch((error) => {
