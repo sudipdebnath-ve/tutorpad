@@ -112,6 +112,7 @@ const FetchInvoicesDatatable = ({setSelectedId,set_chargecat_name,setModalIsOpen
         is_void={params.row.is_void}
         set_is_void={set_is_void}
         set_is_deleted = {set_is_deleted} 
+        family_id = {id}
          /> } 
        <div style={{display:'flex',gap:5}} className="dropdown">
         <button 
