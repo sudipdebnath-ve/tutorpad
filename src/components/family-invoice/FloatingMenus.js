@@ -21,6 +21,7 @@ function FloatingMenus({
   is_void,
   set_is_void,
   set_is_deleted,
+  family_id
 }) {
   const [invoice_link, set_invoice_link] = useState("");
   const [showVoidModal, setShowVoidModal] = useState(false);
@@ -73,11 +74,8 @@ function FloatingMenus({
 
   const togglePaidStatus = async () => {
     const newPaidStatus = is_paid == "1" ? "0" : "1";
-    const newVoidStatus =
-      is_void == "1" && newPaidStatus == "1" ? "0" : is_void;
     const data = {
       paid: newPaidStatus,
-      void: newVoidStatus,
     };
     try {
       const response = await updatePaidStatus(data, id);
@@ -85,7 +83,6 @@ function FloatingMenus({
         // Update the is_paid state by calling the set_is_paid function
         // Update the is_paid and is_void states
         set_is_paid(newPaidStatus);
-        set_is_void(newVoidStatus == "0" ? "0" : newVoidStatus);
       } else {
         // Handle errors if needed
       }
@@ -113,10 +110,7 @@ function FloatingMenus({
 
   const toggleVoidStatus = async () => {
     const newVoidStatus = is_void == "1" ? "0" : "1";
-    const newPaidStatus =
-      is_paid == "1" && newVoidStatus == "1" ? "0" : is_paid;
     const data = {
-      paid: newPaidStatus,
       void: newVoidStatus,
     };
     try {
@@ -124,7 +118,6 @@ function FloatingMenus({
       if (response.success) {
         // Update the is_paid state by calling the set_is_paid function
         set_is_void(newVoidStatus);
-        set_is_paid(newPaidStatus == "0" ? "0" : newPaidStatus);
         setShowVoidModal(false)
       } else {
         // Handle errors if needed
@@ -162,7 +155,7 @@ function FloatingMenus({
         <Link className="dropdown-item" to={invoice_link} target="_blank">
           <i className="fa fa-eye" aria-hidden="true"></i> &nbsp; View
         </Link>
-        <Link className="dropdown-item">
+        <Link className="dropdown-item" to={`/familiies-and-invoices/send-invoice/${family_id}`}>
           <i className="fa fa-envelope" aria-hidden="true"></i> &nbsp;Email
         </Link>
         <button className="dropdown-item" onClick={downloadPdf}>
@@ -193,7 +186,7 @@ function FloatingMenus({
           &nbsp;Paid
         </button>
         <div className="dropdown-divider"></div>
-        <Link className="dropdown-item">
+        <Link className="dropdown-item" to={`/familiies-and-invoices/transaction-details/1/${family_id}/${id}`}>
           <i className="fa fa-plus" aria-hidden="true"></i> &nbsp;Add a Payment
         </Link>
         <div className="dropdown-divider"></div>
