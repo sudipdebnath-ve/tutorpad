@@ -10,6 +10,7 @@ import TransactionType from "./TransactionType.js";
 import PaymentRefundForm from "./PaymentRefundForm.js";
 import { useParams,useNavigate } from "react-router-dom";
 import ChargesDiscountForm from "./ChargesDiscountForm.js";
+import AddTransactionForm from "./AddTransactionForm.js";
 
 const TransactionDetailType = () => {
   const param = useParams();

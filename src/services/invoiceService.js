@@ -134,3 +134,13 @@ export const deleteInvoiceById = async (id) => {
     console.log(err);
   })
 }
+
+export const getInvoiceById = async (id) => {
+  return invoicesApi.get('invoice/'+id,{
+  }).then((response) => {
+    return response.data;
+  })
+  .catch((err)=>{
+    console.log(err);
+  })
+}

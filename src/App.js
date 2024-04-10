@@ -33,6 +33,8 @@ import TransactionDetailType from "./components/family-invoice/TransactionDetail
 import AddInvoiceDetail from "./components/family-invoice/AddInvoiceDetail";
 import FamilyDetails from "./components/family-invoice/FamilyDetails";
 import AutoInvoiceForm from "./components/family-invoice/AutoInvoiceForm";
+import AddTransactionForm from "./components/family-invoice/AddTransactionForm";
+import SendInvoiceEmail from "./components/family-invoice/SendInvoiceEmail";
 function App() {
   return (
     <Routes basename="/">
@@ -73,9 +75,11 @@ function App() {
       <Route path="/familiies-and-invoices/transaction-type/:screen/:family_id" element={<TransactionDetailType />} />
       <Route path="/familiies-and-invoices/transaction-type/:screen/:family_id/:type" element={<TransactionDetailType />} />
       <Route path="/familiies-and-invoices/transaction-type/:screen/:type/:family_id/:id" element={<TransactionDetailType />} />
+      <Route path="/familiies-and-invoices/transaction-details/:type/:family_id/:invoice_id" element={<AddTransactionForm />} />
       <Route path="/familiies-and-invoices/family/:id" element={<FamilyDetails />} />
       <Route path="/familiies-and-invoices/autoinvoice-formdetails/:id" element={<AutoInvoiceForm/>} />
       <Route path="/familiies-and-invoices/invoice/:screen" element={<AddInvoiceDetail />} />
+      <Route path="/familiies-and-invoices/send-invoice/:family_id" element={<SendInvoiceEmail />} />
       <Route path="/familiies-and-invoices/invoice/:screen/:family_id" element={<AddInvoiceDetail />} />
       <Route path="/familiies-and-invoices/invoice/:screen/:family_id/:type" element={<AddInvoiceDetail />} />
       <Route path="/familiies-and-invoices/invoice/:screen/:type/:family_id/:id" element={<AddInvoiceDetail />} />
