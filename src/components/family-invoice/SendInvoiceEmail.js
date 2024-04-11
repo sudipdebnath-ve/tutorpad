@@ -12,21 +12,17 @@ import TopBar from "../sidebar/TopBar.js";
 import { Editor } from "@tinymce/tinymce-react";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import {
-  getFamilyAccounts,
   getFamilyAccountsDetails,
-  saveTransaction,
-  getInvoiceById,
+  sendEmail,
+  getInvoiceById
 } from "../../services/invoiceService";
 const SendInvoiceEmail = () => {
   const navigate = useNavigate();
-  const [family_account_id, set_family_account_id] = useState();
-  const [transaction_amount, set_transaction_amount] = useState();
-  const [transaction_date, set_transaction_date] = useState();
-  const [student_id, set_student_id] = useState();
-  const [description, set_description] = useState();
-  const [familiies, set_familiies] = useState([]);
-  const [students, set_students] = useState([]);
-  const [tenant_email, set_tenant_email] =useState('');
+  const [bcc, set_bcc] = useState('0');
+
+  const [family_name, set_family_name] = useState('');
+  const [to_email, set_to_email] = useState('')
+  const [invoice_details, set_invoice_details] = useState({})
   const { sidebarToggle, fetchData,userData } = useUserDataContext();
   const param = useParams();
   console.log(param);
@@ -39,76 +35,52 @@ const SendInvoiceEmail = () => {
   const templates = {
     invoice_email: {
       subject: "Your Invoice",
-      message: `<p>Dear Sanskrit,</p><p>Attached, you will find a copy of your invoice. Please provide payment at your earliest convenience.</p><p>Sincerely,</p><p>Tina</p><p>Tina Majumder</p>`,
+      message: `<p>Dear ${family_name},</p><p>Attached, you will find a copy of your invoice. Please provide payment at your earliest convenience.</p><p>Sincerely,</p><p>${userData.first_name}</p><p>${userData.name}</p>`,
     },
     invoice_reminder: {
       subject: "Invoice Reminder",
-      message: `<p>Dear Sanskrit,</p><p>This is a reminder that your invoice dated 02-04-2024 for ₹ 0.00 is now overdue; a copy is attached. Please provide payment at your earliest convenience.</p><p>If you've already sent payment, please disregard this message.</p><p>Sincerely,</p><p>Tina</p><p>Tina Majumder</p>`,
+      message: `<p>Dear ${family_name},</p><p>This is a reminder that your invoice dated ${invoice_details?.invoice_create_date} for ₹ ${(invoice_details?.amount)?.toFixed(2)} is now overdue; a copy is attached. Please provide payment at your earliest convenience.</p><p>If you've already sent payment, please disregard this message.</p><p>Sincerely,</p><p>${userData.first_name}</p><p>${userData.name}</p>`,
     },
   };
+
+  const [subject, set_subject] =useState(templates[selectedTemplate].subject);
   const handleRadioChange = (e) => {
     setSelectedTemplate(e.target.value);
+    set_subject(templates[e.target.value].subject)
   };
 
-  const getFamilyAccountsHandler = async () => {
-    const responseFamilies = await getFamilyAccounts();
-    set_familiies(responseFamilies?.data || []);
 
-    if (param?.invoice_id) {
-      const invoiceResponse = await getInvoiceById(param.invoice_id);
-      if (invoiceResponse?.data) {
-        const dataFamilies = responseFamilies.data.map((e) => {
-          return { value: e.id, label: e.name };
-        });
-        const selectedFamilies = dataFamilies.filter(
-          (f) => f.value == param.family_id
-        );
-        const accountDetailsResponse = await getFamilyAccountsDetails(
-          selectedFamilies[0]?.value
-        );
-        set_transaction_date(invoiceResponse.data.invoice_start_date);
-        set_students(accountDetailsResponse?.data?.students || []);
-        set_family_account_id(selectedFamilies[0]);
+  const getFamilyAccountsDetailsHandler = async () => {
+    if(param?.family_id){
+      const response = await getFamilyAccountsDetails(param.family_id);
+      if(response?.data){
+        const accountDetails = response.data;
+         set_to_email(accountDetails.email);
+         set_family_name(accountDetails.name);
       }
-    } else {
-      const dataFamilies = responseFamilies.data.map((e) => {
-        return { value: e.id, label: e.name };
-      });
-      const selectedFamilies = dataFamilies.filter(
-        (f) => f.value == param.family_id
-      );
-      const accountDetailsResponse = await getFamilyAccountsDetails(
-        selectedFamilies[0]?.value
-      );
-      set_students(accountDetailsResponse?.data?.students || []);
-      set_family_account_id(selectedFamilies[0]);
     }
   };
 
-  const getFamilyAccountsDetailsHandler = async (value) => {
-    set_student_id("");
-    set_students([]);
-    const response = await getFamilyAccountsDetails(value.value);
-    set_students(response.data.students);
-  };
+  const getInvoiceDetailsById = async () => {
+    if(param?.invoice_id){
+      const response = await getInvoiceById(param.invoice_id);
+      if(response?.data){
+        set_invoice_details(response.data)
+      }
+    }
+  }
 
-  const saveTransactionHandler = async () => {
+  const sendEmailHandler = async () => {
     const data = {
-      family_account_id: family_account_id?.value || "",
-      transaction_amount: transaction_amount,
-      transaction_date: transaction_date,
-      student_id: student_id?.value || "",
-      transaction_type: param.type,
-      description: description,
-      invoice_id: param.invoice_id,
+      email_from: userData?.email,
+      email_to: to_email,
+      bcc: bcc,
+      template: selectedTemplate === "invoice_email" ? '1' : '2',
+      subject: subject,
+      message: message,
     };
-    const response = await saveTransaction(data);
+    const response = await sendEmail(data,param.invoice_id);
     if (response?.success == true) {
-      set_family_account_id("");
-      set_transaction_amount("");
-      set_transaction_date("");
-      set_student_id("");
-      set_description("");
       toast.success(response?.message, {
         position: toast.POSITION.TOP_CENTER,
       });
@@ -122,31 +94,6 @@ const SendInvoiceEmail = () => {
     }
   };
 
-  const saveAndTransactionHandler = async () => {
-    const data = {
-      family_account_id: family_account_id?.value || "",
-      transaction_amount: transaction_amount,
-      transaction_date: transaction_date,
-      student_id: student_id?.value || "",
-      transaction_type: param.type,
-      description: description,
-    };
-    const response = await saveTransaction(data);
-    if (response?.success == true) {
-      set_family_account_id("");
-      set_transaction_amount("");
-      set_transaction_date("");
-      set_student_id("");
-      set_description("");
-      toast.success(response?.message, {
-        position: toast.POSITION.TOP_CENTER,
-      });
-    } else {
-      toast.error("something went wrong !", {
-        position: toast.POSITION.TOP_CENTER,
-      });
-    }
-  };
 
   // useEffect(() => {
   //   getFamilyAccountsHandler();
@@ -154,7 +101,9 @@ const SendInvoiceEmail = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+    getFamilyAccountsDetailsHandler();
+    getInvoiceDetailsById();
+  }, [param]);
 
   console.log(userData);
 
@@ -198,44 +147,29 @@ const SendInvoiceEmail = () => {
                           <div className="row">
                             <div className="col-md-12">
                               <label>Form</label>
-                              {/* <Select
-                                value={family_account_id}
-                                onChange={(e) => {
-                                  set_family_account_id(e);
-                                  getFamilyAccountsDetailsHandler(e);
-                                }}
-                                isMulti={false}
-                                options={[
-                                  ...familiies.map((e) => {
-                                    return { value: e.id, label: e.name };
-                                  }),
-                                ]} 
-                              /> */}
                               <input 
-                                name="form"
+                                name="form_email"
                                 value={userData.email}
                                 className="form-control"
+                                disabled
                               />
                             </div>
                             <div className="col-md-12">
                               <label>To</label>
-                              <Select
-                                value={student_id}
-                                onChange={(e) => {
-                                  set_student_id(e);
-                                }}
-                                isMulti={false}
-                                options={[
-                                  ...students.map((e) => {
-                                    return { value: e.id, label: e.name };
-                                  }),
-                                ]}
+                              <input 
+                                name="to_email"
+                                value={to_email}
+                                className="form-control"
+                                disabled
                               />
                             </div>
                           </div>
                           <div className="row mt-3">
                             <div className="col-md-12">
-                              <input type="checkbox" name="" />
+                              <input type="checkbox" name="bcc"
+                              value={bcc}
+                              onChange={(e)=>set_bcc(e.target.value)}
+                              />
                               <span className="ml-2">BCC me on this email</span>
                             </div>
                           </div>
@@ -277,7 +211,8 @@ const SendInvoiceEmail = () => {
                                 type="text"
                                 className="form-control"
                                 name="subject"
-                                value={templates[selectedTemplate].subject}
+                                value={subject}
+                                onChange={(e)=>set_subject(e.target.value)}
                               />
                             </div>
                           </div>
@@ -303,7 +238,7 @@ const SendInvoiceEmail = () => {
       bullist numlist outdent indent | removeformat | help",
                                 }}
                                 onEditorChange={(content) =>
-                                  set_description(content)
+                                  setMessage(content)
                                 }
                               />
                             </div>
@@ -331,19 +266,8 @@ const SendInvoiceEmail = () => {
                                   >
                                     Cancel
                                   </Link>
-                                  {!param?.id && (
-                                    <button
-                                      className="cancel"
-                                      onClick={() => {
-                                        saveAndTransactionHandler();
-                                      }}
-                                    >
-                                      Save & Add Another
-                                    </button>
-                                  )}
-
                                   <button
-                                    onClick={() => saveTransactionHandler()}
+                                    onClick={() => sendEmailHandler()}
                                     className="formbold-btn"
                                   >
                                     Save

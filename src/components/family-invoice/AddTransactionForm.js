@@ -159,7 +159,7 @@ const AddTransactionForm = () => {
                     <div
                       className={`card-body contaner-area-min mb-2`}
                     >
-                      <Link to={"/familiies-and-invoices"}>
+                      <Link to={"/familiies-and-invoices/family/"+param?.family_id}>
                         <Icon icon={chevronLeft} /> Back To Family Account
                       </Link>
                       <div className="payment-type-box">
