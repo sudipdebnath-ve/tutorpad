@@ -155,7 +155,7 @@ function FloatingMenus({
         <Link className="dropdown-item" to={invoice_link} target="_blank">
           <i className="fa fa-eye" aria-hidden="true"></i> &nbsp; View
         </Link>
-        <Link className="dropdown-item" to={`/familiies-and-invoices/send-invoice/${family_id}`}>
+        <Link className="dropdown-item" to={`/familiies-and-invoices/send-invoice/${family_id}/${id}`}>
           <i className="fa fa-envelope" aria-hidden="true"></i> &nbsp;Email
         </Link>
         <button className="dropdown-item" onClick={downloadPdf}>

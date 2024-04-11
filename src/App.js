@@ -79,7 +79,7 @@ function App() {
       <Route path="/familiies-and-invoices/family/:id" element={<FamilyDetails />} />
       <Route path="/familiies-and-invoices/autoinvoice-formdetails/:id" element={<AutoInvoiceForm/>} />
       <Route path="/familiies-and-invoices/invoice/:screen" element={<AddInvoiceDetail />} />
-      <Route path="/familiies-and-invoices/send-invoice/:family_id" element={<SendInvoiceEmail />} />
+      <Route path="/familiies-and-invoices/send-invoice/:family_id/:invoice_id" element={<SendInvoiceEmail />} />
       <Route path="/familiies-and-invoices/invoice/:screen/:family_id" element={<AddInvoiceDetail />} />
       <Route path="/familiies-and-invoices/invoice/:screen/:family_id/:type" element={<AddInvoiceDetail />} />
       <Route path="/familiies-and-invoices/invoice/:screen/:type/:family_id/:id" element={<AddInvoiceDetail />} />
