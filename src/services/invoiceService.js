@@ -153,3 +153,12 @@ export const getInvoiceById = async (id) => {
     console.log(err);
   })
 }
+
+export const sendEmail = async ( data,id ) =>{
+  return invoicesApi.post('email-invoice/'+id, data).then ((response)=>{
+        return response.data;
+  })
+  .catch((error) => {
+     console.log(error);
+   });
+}

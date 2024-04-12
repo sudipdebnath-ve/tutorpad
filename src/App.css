@@ -1,6 +1,21 @@
+:root {
+  --primary-bgColor: #262626;
+}
+
+[data-theme="light"] {
+  --bg-color: #f7f5ed;
+  --text-color: #000;
+}
+
+[data-theme="dark"] {
+  --bg-color: #363636;
+  --text-color: #fff;
+}
+
 body {
-  font-family: "Roboto", sans-serif;
+  font-family: Poppins, sans-serif;
   background-color: #fff;
+  color: var(--text-color);
 }
 
 p {
@@ -20,7 +35,8 @@ h6,
 .h4,
 .h5,
 .h6 {
-  font-family: "Roboto", sans-serif;
+  font-family: Poppins, sans-serif;
+  color: var(--text-color);
 }
 
 a {

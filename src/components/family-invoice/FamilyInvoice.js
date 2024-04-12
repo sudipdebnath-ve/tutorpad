@@ -17,6 +17,7 @@ import { ToastContainer, toast } from "react-toastify";
 import Invoice from "./Invoice.js";
 import Family from "./Family.js";
 import Transaction from "./Transaction.js";
+import AllInvoice from "./AllInvoice.js";
 
 const customStyles = {
   content: {
@@ -173,7 +174,7 @@ const FamilyInvoice = () => {
                     role="tabpanel"
                     aria-labelledby="invoice-tab"
                   >
-                    <Invoice/>
+                    <AllInvoice/>
                     
                   </div>
 
