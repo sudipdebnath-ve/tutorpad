@@ -18,7 +18,8 @@ const AppContext = ({ children }) => {
   const [tutorData, setTutorData] =useState(false);
   const [allChargeCategory, setAllChargeCategory] = useState([]);
   const [allFamilies, setAllFamilies] = useState([]);
-  const [accountInvoices, setAccountInvoices] = useState([])
+  const [accountInvoices, setAccountInvoices] = useState([]);
+  const [allInvoicesByDate, setAllInvoicesByDate] = useState([]);
   const [allTutors, setAllTutors] = useState([]);
   const [getAvailabilityData, setGetAvailabilityData] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
@@ -242,6 +243,29 @@ const AppContext = ({ children }) => {
       });
   };
 
+  const fetchInvoicesByDate = async (date_from,date_to) => {
+    setLoading(true);
+    const validateconfig = {
+      method: "GET",
+      url: `${API_URL}invoices?date_from=${date_from}&date_to=${date_to}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(validateconfig)
+      .then((response) => {
+        // console.log(response.data);
+        if (response.data.success === true) {
+          setLoading(false);
+          setAllInvoicesByDate(response.data.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+  };
+
   //Availability start
 
   const allAvailabilityData = async () => {
@@ -455,7 +479,9 @@ const AppContext = ({ children }) => {
         allTransactionsByFamily, 
         fetchTransactionsByFamily,
         allTransactionsByDates, 
-        fetchTransactionsByDates
+        fetchTransactionsByDates,
+        fetchInvoicesByDate,
+        allInvoicesByDate
       }}
     >
       {children}
