@@ -23,7 +23,7 @@ import {settings} from 'react-icons-kit/feather/settings';
 import {mail} from 'react-icons-kit/feather/mail';
 import {ic_receipt_outline} from 'react-icons-kit/md/ic_receipt_outline';
 import TransactionByFamily from "./TransactionByFamily.js";
-import { getFamilyAccountsDetails, disableAutoInvoicesTransaction } from "../../services/invoiceService.js";
+import { getFamilyAccountsDetails, disableAutoInvoicesTransaction, getIncomingInvoice } from "../../services/invoiceService.js";
 import { Modal as BootstrapModal, Button } from 'react-bootstrap';
 import { Icon as ReactIcon  } from 'react-icons';
 
@@ -32,6 +32,7 @@ const FamilyDetails = () => {
   const param = useParams();
   const navigate = useNavigate();
   const [selectedFamily,setSelectedFamily] = useState();
+  const [incoming_invoice, set_incoming_invoice] = useState({});
   const [students,setStudents] = useState([]);
   const [family, set_family] = useState({});
   const [isAutoInvoicing,setIsAutoInvoicing] = useState(true);
@@ -57,6 +58,13 @@ const FamilyDetails = () => {
     setIsAutoInvoicing(response?.data?.auto_invoicing || 0);
   }
 
+  const getIncomingInvoiceHandler = async()=> {
+    const response = await getIncomingInvoice(param.id);
+    if(response?.success===true){
+         set_incoming_invoice(response.data);
+    }
+  }
+
   const disableAutoInvoicesTransactionHandler = async()=>{
     try {
       // Call the API function to disable auto-invoicing
@@ -79,6 +87,7 @@ const FamilyDetails = () => {
     setIsAutoInvoicing(familiyData[0]?.auto_invoicing);
     setSelectedFamily(...familySelectedData);
     getFamilyAccountsDetailsHandler();
+    getIncomingInvoiceHandler();
   },[param, isDisabled])
 
   console.log ("family----------", family, "family.balance_forward--------", family.balance_forward)
@@ -144,10 +153,10 @@ const FamilyDetails = () => {
                         <div className="col-md-12">
                           <label><Icon icon={ic_receipt_outline} /> Next Invoice XYZ</label>
                           <div style={{ lineHeight: '1.2', fontSize: 10 }}>
-                            <p>Invoice Date: {family.invoice_create_date}</p>
-                            <p>Date Range: 01-04-2024 to 30-04-2024</p>
-                            <p>Invoice Date: 01-04-2024</p>
-                            <p>Total Due: <span style={{ background: 'red', padding: '2px 5px', color: 'white' }}>₹ 100.00 balance owing</span></p>
+                            <p>Invoice Date: {incoming_invoice?.invoice_create_date}</p>
+                            <p>Date Range: {incoming_invoice?.invoice_start_date} to {incoming_invoice.invoice_end_date}</p>
+                            <p>Invoice Date: {incoming_invoice?.invoice_create_date}</p>
+                            <p>Total Due: <span style={{ background: 'red', padding: '2px 5px', color: 'white' }}>₹{incoming_invoice?.amount}.00 balance owing</span></p>
                           </div>
                         </div>
                       </div><div className="row">
