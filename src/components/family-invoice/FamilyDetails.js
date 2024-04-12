@@ -136,14 +136,12 @@ const FamilyDetails = () => {
                         </ul>
                       </div>
                     </div>
-                    {console.log("is autoinvoicing------", isAutoInvoicing)}
-                    {/* {  Boolean(0) && <div> Hiiiii welcome</div>} */}
-                    {Boolean(isAutoInvoicing) && (
+                    {isAutoInvoicing && (
                       <>
                     <div className="row">
                         <div className="col-md-12">
                           <label><Icon icon={ic_receipt_outline} /> Next Invoice XYZ</label>
-                          <div style={{ lineHeight: '1.2', fontSize: 10 }}>
+                          <div style={{ lineHeight: '0px', fontSize: 10 }}>
                             <p>Invoice Date: {family.invoice_create_date}</p>
                             <p>Date Range: 01-04-2024 to 30-04-2024</p>
                             <p>Invoice Date: 01-04-2024</p>
@@ -173,7 +171,7 @@ const FamilyDetails = () => {
                     <hr></hr>
                     <div className="row">
                       {
-                        Boolean(isAutoInvoicing) && <><div className="col-md-12">
+                        isAutoInvoicing && <><div className="col-md-12">
                                               <Link to = {"/familiies-and-invoices/autoinvoice-formdetails/"+param.id}>
                                               <button className="btn btn-md btn-info form-control"><Icon icon={settings} style={{color:'white',marginRight:5}} />Edit Auto-Invoice Settings</button>
                                               </Link>
