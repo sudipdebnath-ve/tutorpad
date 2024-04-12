@@ -4,7 +4,7 @@ import Sidebar from "../sidebar/Sidebar.js";
 import TopBar from "../sidebar/TopBar.js";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import students from "../users/assets/images/students.svg";
-import Categories from './categories/Categories.js';
+import Categories from "./categories/Categories.js";
 import Locations from "./locations/Locations.js";
 const CategoriesLocations = () => {
   const { sidebarToggle, loading } = useUserDataContext();
@@ -53,7 +53,7 @@ const CategoriesLocations = () => {
                       aria-controls="location"
                       aria-selected="false"
                     >
-                     Locations
+                      Locations
                     </button>
                   </li>
                 </ul>
@@ -64,7 +64,7 @@ const CategoriesLocations = () => {
                     role="tabpanel"
                     aria-labelledby="categories-tab"
                   >
-                    <Categories/>
+                    <Categories />
                   </div>
 
                   <div
@@ -73,7 +73,7 @@ const CategoriesLocations = () => {
                     role="tabpanel"
                     aria-labelledby="location-tab"
                   >
-                    <Locations/>
+                    <Locations />
                   </div>
                 </div>
               </div>
