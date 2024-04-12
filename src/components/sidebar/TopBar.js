@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { GoBell } from "react-icons/go";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import avatar from "../users/assets/avatars/avatar.jpg";
+import CustomizedSwitch from "../CustomizedSwitch.js";
 
 const TopBar = () => {
-  const { userData, logOut, setSidebarToggle, sidebarToggle } =
+  const { userData, logOut, setSidebarToggle, sidebarToggle, toggleTheme } =
     useUserDataContext();
 
   const [pageName, setPageName] = useState("");
@@ -39,19 +41,25 @@ const TopBar = () => {
     }
   };
   return (
-    <nav className="navbar navbar-expand navbar-light navbar-bg">
+    <nav className="navbar navbar-expand">
       <Link className="sidebar-toggle" onClick={handleSidebarToggle}>
         <i className="hamburger align-self-center"></i>
       </Link>
-      <h2 style={{ margin: "0" }}>
+      <h2 style={{ margin: "0" }} className="page-name">
         <strong>
           {pageName ? pageName.charAt(0).toUpperCase() + pageName.slice(1) : ""}
         </strong>
       </h2>
 
       <div className="navbar-collapse collapse">
-        <ul className="navbar-nav navbar-align">
-          <li className="nav-item dropdown">
+        <input
+          className="form-control  search-box"
+          type="search"
+          placeholder="Search File Here"
+          aria-label="Search"
+        />
+        <ul className="navbar-nav navbar-align align-items-center">
+          <li className="nav-item dropdown bell">
             <Link
               className="nav-icon dropdown-toggle"
               to="#"
@@ -59,7 +67,8 @@ const TopBar = () => {
               onClick={() => setNotificationToggle(!notificationToggle)}
             >
               <div className="position-relative">
-                <i className="fa fa-bell" aria-hidden="true"></i>
+                {/* <i className="fa-regular fa-bell" area-hidden="true"></i> */}
+                <GoBell />
                 <span className="indicator">0</span>
               </div>
             </Link>
@@ -115,7 +124,7 @@ const TopBar = () => {
             )}
           </li>
           <li className="nav-item dropdown">
-            <Link
+            {/* <Link
               className="nav-icon dropdown-toggle"
               to="#"
               id="messagesDropdown"
@@ -123,7 +132,10 @@ const TopBar = () => {
               <div className="position-relative">
                 <i className="fa fa-question-circle" aria-hidden="true"></i>
               </div>
-            </Link>
+            </Link> */}
+            <span className="text-color" style={{ fontFamily: "Poppins" }}>
+              Hi, {userData.first_name}
+            </span>
             <div
               className="dropdown-menu dropdown-menu-lg dropdown-menu-end py-0"
               aria-labelledby="messagesDropdown"
@@ -228,16 +240,19 @@ const TopBar = () => {
             >
               {userData?.business_data?.dp_url ? (
                 <>
-                  <img src={userData?.business_data?.dp_url} alt="" className="avatar img-fluid rounded me-1"  />
+                  <img
+                    src={userData?.business_data?.dp_url}
+                    alt=""
+                    className="avatar img-fluid  me-1"
+                  />
                 </>
               ) : (
                 <img
                   src={avatar}
-                  className="avatar img-fluid rounded me-1"
+                  className="avatar img-fluid me-1"
                   alt="Charles Hall"
                 />
               )}{" "}
-              <span className="text-dark">{userData.first_name}</span>
             </Link>
             {profileToggle && (
               <>
@@ -260,6 +275,7 @@ const TopBar = () => {
             )}
           </li>
         </ul>
+        <CustomizedSwitch />
       </div>
     </nav>
   );
