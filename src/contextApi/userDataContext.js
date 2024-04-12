@@ -53,7 +53,7 @@ const AppContext = ({ children }) => {
 
   const navigate = useNavigate();
 
-  const fetchData = async (token) => {
+  const fetchData = async () => {
     setLoading(true);
     const validateconfig = {
       method: "GET",
@@ -65,7 +65,7 @@ const AppContext = ({ children }) => {
     await axios(validateconfig)
       .then((response) => {
         // console.log(response);
-        if (response.status === 200) {
+        if (response.data.success === true) {
           setLoading(false);
           setUserData(response.data.data);
           setUserId(response.data.id);

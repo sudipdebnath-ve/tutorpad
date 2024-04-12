@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import DeleteModel from "../form/delete-model/DeleteModel.js";
 import { ToastContainer, toast } from "react-toastify";
 import { deleteChargeCategories } from "../../services/categoriesService.js";
+import transactions from '../../assets/images/transactions.svg'
 const FetchTransactionDatatable = ({setSelectedId,set_chargecat_name,setModalIsOpen,setIsEdit,fromDate,toDate}) => {
   
   const [val, setVal] = useState(false);
@@ -179,15 +180,12 @@ const FetchTransactionDatatable = ({setSelectedId,set_chargecat_name,setModalIsO
               <>
                 <div className="py-3">
                   <div className="chart chart-xs">
-                    <img src={students}></img>
+                    <img src={transactions}></img>
                   </div>
                 </div>
                 <h4>
-                  <strong>You don't have any tutors yet</strong>
+                  <strong>There aren't any transactions for this date range</strong>
                 </h4>
-                <p style={{ textAlign: "center" }}>
-                  Add your tutors, and more.
-                </p>
                 <div className="addnewstudent">
                   <i className="fa fa-plus" aria-hidden="true"></i>
                   <a className="btn dropdown-toggle" href="#" role="button">

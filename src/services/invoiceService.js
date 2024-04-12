@@ -52,8 +52,8 @@ export const updateTransaction= async (data,id) => {
     });
 };
 
-export const disableAutoInvoicesTransaction= async (id) => {
-  return invoicesApi.patch('disable-auto-invoicing/'+id).then((response) => {
+export const disableAutoInvoicesTransaction= async (id, data) => {
+  return invoicesApi.patch('disable-auto-invoicing/'+id, data).then((response) => {
       return response.data;
     })
     .catch((error) => {
@@ -133,4 +133,23 @@ export const deleteInvoiceById = async (id) => {
   .catch((err)=>{
     console.log(err);
   })
+}
+
+export const getInvoiceById = async (id) => {
+  return invoicesApi.get('invoice/'+id,{
+  }).then((response) => {
+    return response.data;
+  })
+  .catch((err)=>{
+    console.log(err);
+  })
+}
+
+export const sendEmail = async ( data,id ) =>{
+  return invoicesApi.post('email-invoice/'+id, data).then ((response)=>{
+        return response.data;
+  })
+  .catch((error) => {
+     console.log(error);
+   });
 }
