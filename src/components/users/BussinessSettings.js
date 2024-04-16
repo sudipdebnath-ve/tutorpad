@@ -162,7 +162,7 @@ const BussinessSettings = () => {
         </>
       )}
 
-      <div className="main bg-color">
+      <div className="main">
         <TopBar />
 
         <ReactModal

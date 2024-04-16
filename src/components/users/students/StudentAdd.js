@@ -257,7 +257,7 @@ const StudentAdd = () => {
         </>
       )}
 
-      <div className="main bg-color">
+      <div className="main">
         <TopBar />
 
         <main className="content studentadd">
@@ -359,7 +359,7 @@ const StudentAdd = () => {
                               {error?.email?.length ? error.email : <></>}
                             </small>
                           </div>
-                          <div>
+                          <div className="smsCapable">
                             <div>
                               <label
                                 htmlFor="phone"
@@ -836,7 +836,7 @@ const StudentAdd = () => {
                                   )}
                                 </small>
                               </div>
-                              <div>
+                              <div className="smsCapable">
                                 <label
                                   htmlFor="parentmobile"
                                   className="formbold-form-label"

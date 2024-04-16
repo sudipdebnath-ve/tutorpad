@@ -21,7 +21,7 @@ const StudentEmailMessage = () => {
         </>
       )}
 
-      <div className="main bg-color">
+      <div className="main">
         <TopBar />
 
         <main className="content studentemail">

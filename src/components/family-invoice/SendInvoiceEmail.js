@@ -14,16 +14,16 @@ import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import {
   getFamilyAccountsDetails,
   sendEmail,
-  getInvoiceById
+  getInvoiceById,
 } from "../../services/invoiceService";
 const SendInvoiceEmail = () => {
   const navigate = useNavigate();
-  const [bcc, set_bcc] = useState('0');
+  const [bcc, set_bcc] = useState("0");
 
-  const [family_name, set_family_name] = useState('');
-  const [to_email, set_to_email] = useState('')
-  const [invoice_details, set_invoice_details] = useState({})
-  const { sidebarToggle, fetchData,userData } = useUserDataContext();
+  const [family_name, set_family_name] = useState("");
+  const [to_email, set_to_email] = useState("");
+  const [invoice_details, set_invoice_details] = useState({});
+  const { sidebarToggle, fetchData, userData } = useUserDataContext();
   const param = useParams();
   console.log(param);
   const [message, setMessage] = useState("");
@@ -39,47 +39,52 @@ const SendInvoiceEmail = () => {
     },
     invoice_reminder: {
       subject: "Invoice Reminder",
-      message: `<p>Dear ${family_name},</p><p>This is a reminder that your invoice dated ${invoice_details?.invoice_create_date} for ₹ ${(invoice_details?.amount)?.toFixed(2)} is now overdue; a copy is attached. Please provide payment at your earliest convenience.</p><p>If you've already sent payment, please disregard this message.</p><p>Sincerely,</p><p>${userData.first_name}</p><p>${userData.name}</p>`,
+      message: `<p>Dear ${family_name},</p><p>This is a reminder that your invoice dated ${
+        invoice_details?.invoice_create_date
+      } for ₹ ${invoice_details?.amount?.toFixed(
+        2
+      )} is now overdue; a copy is attached. Please provide payment at your earliest convenience.</p><p>If you've already sent payment, please disregard this message.</p><p>Sincerely,</p><p>${
+        userData.first_name
+      }</p><p>${userData.name}</p>`,
     },
   };
 
-  const [subject, set_subject] =useState(templates[selectedTemplate].subject);
+  const [subject, set_subject] = useState(templates[selectedTemplate].subject);
   const handleRadioChange = (e) => {
     setSelectedTemplate(e.target.value);
-    set_subject(templates[e.target.value].subject)
+    set_subject(templates[e.target.value].subject);
   };
 
-
   const getFamilyAccountsDetailsHandler = async () => {
-    if(param?.family_id){
+    if (param?.family_id) {
       const response = await getFamilyAccountsDetails(param.family_id);
-      if(response?.data){
+      if (response?.data) {
         const accountDetails = response.data;
-         set_to_email(accountDetails.email);
-         set_family_name(accountDetails.name);
+        set_to_email(accountDetails.email);
+        set_family_name(accountDetails.name);
       }
     }
   };
 
   const getInvoiceDetailsById = async () => {
-    if(param?.invoice_id){
+    if (param?.invoice_id) {
       const response = await getInvoiceById(param.invoice_id);
-      if(response?.data){
-        set_invoice_details(response.data)
+      if (response?.data) {
+        set_invoice_details(response.data);
       }
     }
-  }
+  };
 
   const sendEmailHandler = async () => {
     const data = {
       email_from: userData?.email,
       email_to: to_email,
       bcc: bcc,
-      template: selectedTemplate === "invoice_email" ? '1' : '2',
+      template: selectedTemplate === "invoice_email" ? "1" : "2",
       subject: subject,
       message: message,
     };
-    const response = await sendEmail(data,param.invoice_id);
+    const response = await sendEmail(data, param.invoice_id);
     if (response?.success == true) {
       toast.success(response?.message, {
         position: toast.POSITION.TOP_CENTER,
@@ -93,7 +98,6 @@ const SendInvoiceEmail = () => {
       });
     }
   };
-
 
   // useEffect(() => {
   //   getFamilyAccountsHandler();
@@ -120,7 +124,7 @@ const SendInvoiceEmail = () => {
           </>
         )}
 
-        <div className="main bg-color">
+        <div className="main">
           <TopBar />
           <main className="content student">
             <ToastContainer />
@@ -147,7 +151,7 @@ const SendInvoiceEmail = () => {
                           <div className="row">
                             <div className="col-md-12">
                               <label>Form</label>
-                              <input 
+                              <input
                                 name="form_email"
                                 value={userData.email}
                                 className="form-control"
@@ -156,7 +160,7 @@ const SendInvoiceEmail = () => {
                             </div>
                             <div className="col-md-12">
                               <label>To</label>
-                              <input 
+                              <input
                                 name="to_email"
                                 value={to_email}
                                 className="form-control"
@@ -166,9 +170,11 @@ const SendInvoiceEmail = () => {
                           </div>
                           <div className="row mt-3">
                             <div className="col-md-12">
-                              <input type="checkbox" name="bcc"
-                              value={bcc}
-                              onChange={(e)=>set_bcc(e.target.value)}
+                              <input
+                                type="checkbox"
+                                name="bcc"
+                                value={bcc}
+                                onChange={(e) => set_bcc(e.target.value)}
                               />
                               <span className="ml-2">BCC me on this email</span>
                             </div>
@@ -212,7 +218,7 @@ const SendInvoiceEmail = () => {
                                 className="form-control"
                                 name="subject"
                                 value={subject}
-                                onChange={(e)=>set_subject(e.target.value)}
+                                onChange={(e) => set_subject(e.target.value)}
                               />
                             </div>
                           </div>

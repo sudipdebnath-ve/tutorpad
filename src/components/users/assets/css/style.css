@@ -1610,7 +1610,7 @@ legend + * {
   background-color: #fff;
   border: 1px solid var(--bs-border-color);
   border-radius: var(--bs-border-radius);
-  color: #495057;
+  color: var(--text-color);
   display: block;
   font-size: 0.875rem;
   font-weight: 400;
@@ -3316,9 +3316,9 @@ fieldset:disabled .btn {
 }
 .nav-tabs .nav-item.show .nav-link,
 .nav-tabs .nav-link.active {
-  background-color: var(--bs-nav-tabs-link-active-bg);
-  border-color: var(--bs-nav-tabs-link-active-border-color);
-  color: var(--bs-nav-tabs-link-active-color);
+  background-color: var(--card-bg-color);
+  /* border-color: white; */
+  color: var(--text-color);
 }
 .nav-tabs .dropdown-menu {
   border-top-left-radius: 0;
@@ -3879,7 +3879,7 @@ fieldset:disabled .btn {
   margin-left: var(--bs-card-spacer-x);
 }
 .card-header {
-  background-color: var(--bs-card-cap-bg);
+  background-color: var(--card-bg-color);
   border-bottom: var(--bs-card-border-width) solid var(--bs-card-border-color);
   color: var(--bs-card-cap-color);
   margin-bottom: 0;
@@ -11604,6 +11604,24 @@ span.flatpickr-weekday {
   color: #fb771a !important;
   padding: 20px;
 }
+.css-ptkaw2-MuiDataGrid-root {
+  color: var(--text-color) !important;
+}
+.css-c63i49-MuiInputBase-input-MuiInput-input {
+  color: var(--text-color) !important;
+}
+.css-ptiqhd-MuiSvgIcon-root {
+  color: var(--text-color) !important;
+}
+.css-1eed5fa-MuiInputBase-root-MuiInput-root {
+  border-bottom: 1px solid var(--text-color) !important;
+}
+.css-zylse7-MuiButtonBase-root-MuiIconButton-root {
+  color: var(--text-color) !important;
+}
+.css-i4bv87-MuiSvgIcon-root {
+  color: var(--text-color) !important;
+}
 /******************* My Preferences start********************/
 .initials {
   display: flex;
@@ -11932,10 +11950,10 @@ button.closeModal {
 /******************* Student start********************/
 
 .student .nav-link.active {
-  color: #fb771a !important;
+  color: var(--text-color) !important;
 }
 .student .nav-link {
-  color: #000000 !important;
+  color: var(--text-color) !important;
   font-weight: 600;
   width: 200px;
 }
@@ -11946,7 +11964,7 @@ button.closeModal {
   border: 1px solid #c2c2c2;
 }
 .dropdown.addnew {
-  background-color: #fb771a;
+  background-color: var(--text-color);
   border-radius: 5px;
   border: none;
 }
@@ -11954,7 +11972,7 @@ button.closeModal {
   border: none;
 }
 .addnew a {
-  color: #ffffff;
+  color: var(--card-bg-color);
   border: none;
 }
 .student .dropdown {
@@ -11973,7 +11991,7 @@ button.closeModal {
   color: #000;
 }
 .dropdown.addnew i {
-  color: #ffffff;
+  color: var(--card-bg-color);
 }
 .student .dropdown-toggle:after {
   border: solid;
@@ -12097,6 +12115,8 @@ button.closeModal {
   gap: 30px;
 }
 .onlineresources .resource {
+  color: var(--text-color);
+  background-color: var(--card-bg-color);
   display: flex;
   align-items: center;
   gap: 50px;
@@ -12111,6 +12131,7 @@ button.closeModal {
   gap: 20px;
 }
 .onlineresources .folder-files p {
+  color: var(--text-color);
   margin: 0;
 }
 .onlineresources .image-user {

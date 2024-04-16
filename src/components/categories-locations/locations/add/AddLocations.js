@@ -16,7 +16,10 @@ import InputBox from "../../../form/input-box/InputBox.js";
 import ColorSelectBox from "../../../form/color-select-box/ColorSelectBox.js";
 import OptionBox from "../../../form/option-box/OptionBox.js";
 import InputCheckBox from "../../../form/input-check-box/InputCheckBox.js";
-import {getAddressTypes,createLocations} from "../../../../services/locationsService.js";
+import {
+  getAddressTypes,
+  createLocations,
+} from "../../../../services/locationsService.js";
 import TextAreaInputBox from "../../../form/textarea-input-box/TextAreaInputBox.js";
 import { iconsList } from "../../../../utils/constant.js";
 import Icon from "react-icons-kit";
@@ -24,63 +27,75 @@ const AddLocations = () => {
   const { fetchData, sidebarToggle, token, userId } = useUserDataContext();
   const navigate = useNavigate();
   const [color, setColor] = useState({});
-  const ListComponent = ({title,text})=>{
-    return <div>
-            <div className="formbold-form-label">{title}</div>
-            <div>{text}</div>
-          </div>
-  }
-  const [iconList, setIconList] = useState([...iconsList.map((e)=>{return {label:<Icon icon={e.icon} />,text:<Icon icon={e.icon} />,value:e.code}})]);
+  const ListComponent = ({ title, text }) => {
+    return (
+      <div>
+        <div className="formbold-form-label">{title}</div>
+        <div>{text}</div>
+      </div>
+    );
+  };
+  const [iconList, setIconList] = useState([
+    ...iconsList.map((e) => {
+      return {
+        label: <Icon icon={e.icon} />,
+        text: <Icon icon={e.icon} />,
+        value: e.code,
+      };
+    }),
+  ]);
   const [addressList, setAddressList] = useState([]);
   const [addressListData, setAddressListData] = useState([]);
   const [isColorBoxOpen, setIsColorBoxOpen] = useState(false);
-  const [eventlocName,setEventlocName] = useState("");
-  const [eventlocColor,setEventlocColor] = useState("");
-  const [eventlocIcon,setEventlocIcon] = useState("");
-  const [eventlocAddress,setEventlocAddress] = useState("");
-  const [eventlocCustomAddress,setEventlocCustomAddress] = useState("");
- 
+  const [eventlocName, setEventlocName] = useState("");
+  const [eventlocColor, setEventlocColor] = useState("");
+  const [eventlocIcon, setEventlocIcon] = useState("");
+  const [eventlocAddress, setEventlocAddress] = useState("");
+  const [eventlocCustomAddress, setEventlocCustomAddress] = useState("");
+
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem("tutorPad"));
     if (!token) {
       navigate("/signin");
-    }else{
+    } else {
       getAddressTypesHandler();
     }
   }, []);
 
-  const getAddressTypesHandler = async ()=>{
+  const getAddressTypesHandler = async () => {
     const res = await getAddressTypes();
-    const list = await res.data.map((e)=>{
-      return {label:ListComponent({title:e.la_title,text:e.la_description}),text:e.la_title,value:e.id}
+    const list = await res.data.map((e) => {
+      return {
+        label: ListComponent({ title: e.la_title, text: e.la_description }),
+        text: e.la_title,
+        value: e.id,
+      };
     });
     setAddressList(list);
     setAddressListData(res.data);
     console.log(res.data);
-  }
+  };
   const formSubmit = async () => {
-    
     const formData = {
-      eventloc_name:eventlocName,
-      eventloc_color:eventlocColor?.code,
-      eventloc_icon:eventlocIcon,
-      eventloc_address:eventlocAddress.toString(),
-      eventloc_custom_address:eventlocCustomAddress,
-    }
+      eventloc_name: eventlocName,
+      eventloc_color: eventlocColor?.code,
+      eventloc_icon: eventlocIcon,
+      eventloc_address: eventlocAddress.toString(),
+      eventloc_custom_address: eventlocCustomAddress,
+    };
     const response = await createLocations(formData);
     if (response.success == true) {
       toast.success(response.message, {
         position: toast.POSITION.TOP_CENTER,
       });
       navigate("/calendar/categories");
-    }else{
+    } else {
       toast.error(JSON.stringify(response.response.data.data), {
         position: toast.POSITION.TOP_CENTER,
-      })
-      
+      });
     }
   };
- 
+
   return (
     <div className="wrapper">
       {sidebarToggle ? (
@@ -93,7 +108,7 @@ const AddLocations = () => {
         </>
       )}
 
-      <div className="main bg-color">
+      <div className="main">
         <TopBar />
 
         <main className="content studentadd">
@@ -108,56 +123,79 @@ const AddLocations = () => {
                   </div>
                   <h1>Add New Locations</h1>
                   <div className="formbold-form-wrapper">
-                      <div className="formbold-steps">
-                        <ul>
-                          <li className="formbold-step-menu1 active">
+                    <div className="formbold-steps">
+                      <ul>
+                        <li className="formbold-step-menu1 active">
                           Locations Details
-                          </li>
-                        </ul>
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="row">
+                      <div className="col-md-12">
+                        <InputBox
+                          label={"Name"}
+                          setValue={setEventlocName}
+                          value={eventlocName}
+                        />
                       </div>
-                      <div className="row">
-                        <div className="col-md-12">
-                          <InputBox label={"Name"} setValue={setEventlocName} value={eventlocName} />
-                        </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-md-6">
+                        <SelectBox
+                          label={"Icon"}
+                          options={iconList}
+                          onChangeSelect={setEventlocIcon}
+                        />
                       </div>
-                      <div className="row">
-                        <div className="col-md-6">
-                          <SelectBox label={"Icon"} options={iconList} onChangeSelect={setEventlocIcon}  />
-                        </div>
-                        <div className="col-md-6">
-                          <ColorSelectBox label={"Colors"} isColorBoxOpen={isColorBoxOpen} setColor={setEventlocColor} color={eventlocColor} setIsColorBoxOpen={setIsColorBoxOpen} />
-                        </div>
+                      <div className="col-md-6">
+                        <ColorSelectBox
+                          label={"Colors"}
+                          isColorBoxOpen={isColorBoxOpen}
+                          setColor={setEventlocColor}
+                          color={eventlocColor}
+                          setIsColorBoxOpen={setIsColorBoxOpen}
+                        />
                       </div>
-                      <div className="row">
-                        <div className="col-md-6">
-                          <SelectBox label={"Address"} options={addressList} onChangeSelect={setEventlocAddress}  />
-                        </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-md-6">
+                        <SelectBox
+                          label={"Address"}
+                          options={addressList}
+                          onChangeSelect={setEventlocAddress}
+                        />
                       </div>
-                      <div className="row">
-                        <div className="col-md-12">
-                          {
-                            addressListData?.find((f)=>f.id===eventlocAddress)?.la_has_input===1 && <TextAreaInputBox setValue={setEventlocCustomAddress} value={eventlocCustomAddress} label={"Specify Address"}/>
-                          }
-                        </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-md-12">
+                        {addressListData?.find((f) => f.id === eventlocAddress)
+                          ?.la_has_input === 1 && (
+                          <TextAreaInputBox
+                            setValue={setEventlocCustomAddress}
+                            value={eventlocCustomAddress}
+                            label={"Specify Address"}
+                          />
+                        )}
                       </div>
-                      <div className="row">
-                          <div className="col-md-12">
-                          <div className="formbold-form-btn-wrapper">
-                              <button className="formbold-back-btn">Back</button>
-                              <div className="btn-end">
-                                <Link className="cancel" to="/calendar/categories">
-                                  Cancel
-                                </Link>
-                                <button
-                                  className="formbold-btn"
-                                  onClick={formSubmit}
-                                >
-                                  Submit
-                                </button>
-                              </div>
-                            </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-md-12">
+                        <div className="formbold-form-btn-wrapper">
+                          <button className="formbold-back-btn">Back</button>
+                          <div className="btn-end">
+                            <Link className="cancel" to="/calendar/categories">
+                              Cancel
+                            </Link>
+                            <button
+                              className="formbold-btn"
+                              onClick={formSubmit}
+                            >
+                              Submit
+                            </button>
                           </div>
+                        </div>
                       </div>
+                    </div>
                   </div>
                 </div>
               </div>
