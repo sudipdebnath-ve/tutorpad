@@ -19,12 +19,12 @@ import {
 const InvoiceForm = () => {
   const navigate = useNavigate();
   const [family_account_id, set_family_account_id] = useState([]);
-  const [invoice_create_date, set_invoice_create_date] = useState();
+  const [invoice_create_date, set_invoice_create_date] = useState(getTodayDate());
   const [skip_0_invoices, set_skip_0_invoices] =useState(0);
   const [charge_category, set_charge_category] = useState();
   const [date_range_charges, set_date_range_charges] =useState('1');
-  const [invoice_start_date, set_invoice_start_date] = useState();
-  const [invoice_end_date, set_invoice_end_date] = useState();
+  const [invoice_start_date, set_invoice_start_date] = useState(getStartOfMonth());
+  const [invoice_end_date, set_invoice_end_date] = useState(getEndOfMonth());
   const [invoice_due_type, set_invoice_due_type] =useState('1');
   const [invoice_due_date, set_invoice_due_date] =useState();
   const [email_immediately,set_email_immediately]=useState('0');
@@ -44,6 +44,72 @@ const InvoiceForm = () => {
   const handleCheckboxChange = (e) => {
     setShowPrivateNote(e.target.checked);
   };
+
+  function getTodayDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    let month = today.getMonth() + 1;
+    let day = today.getDate();
+
+    // Add leading zero if month or day is less than 10
+    if (month < 10) {
+      month = '0' + month;
+    }
+    if (day < 10) {
+      day = '0' + day;
+    }
+
+    return `${year}-${month}-${day}`;
+  }
+
+  function getStartOfMonth() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1;
+  
+    // Calculate the first day of the current month
+    const startDate = new Date(year, month - 1, 1);
+  
+    // Format the start date
+    const startYear = startDate.getFullYear();
+    let startMonth = startDate.getMonth() + 1;
+    let startDay = startDate.getDate();
+  
+    // Add leading zero if month or day is less than 10
+    if (startMonth < 10) {
+      startMonth = '0' + startMonth;
+    }
+    if (startDay < 10) {
+      startDay = '0' + startDay;
+    }
+  
+    return `${startYear}-${startMonth}-${startDay}`;
+  }
+  
+  function getEndOfMonth() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1;
+  
+    // Calculate the last day of the current month
+    const endDate = new Date(year, month, 0);
+  
+    // Format the end date
+    const endYear = endDate.getFullYear();
+    let endMonth = endDate.getMonth() + 1;
+    let endDay = endDate.getDate();
+  
+    // Add leading zero if month or day is less than 10
+    if (endMonth < 10) {
+      endMonth = '0' + endMonth;
+    }
+    if (endDay < 10) {
+      endDay = '0' + endDay;
+    }
+  
+    return `${endYear}-${endMonth}-${endDay}`;
+  }
+  
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -312,12 +378,12 @@ const InvoiceForm = () => {
               <div className="row">
                 <div className="col-md-6">
                   <label className="fw-bold">Start Date</label>
-                  <input type="date" className="form-control" name="invoice_start_date"
+                  <input type="date" value={invoice_start_date} className="form-control" name="invoice_start_date"
                   onChange={handleChange} />
                 </div>
                 <div className="col-md-6">
                   <label className="fw-bold">End Date</label>
-                  <input type="date" className="form-control" name="invoice_end_date"
+                  <input type="date" value={invoice_end_date} className="form-control" name="invoice_end_date"
                   onChange={handleChange} />
                 </div>
               </div>

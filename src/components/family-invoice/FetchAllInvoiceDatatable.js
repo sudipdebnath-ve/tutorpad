@@ -17,11 +17,12 @@ import { ToastContainer, toast } from "react-toastify";
 import { deleteChargeCategories } from "../../services/categoriesService.js";
 import { getInvoicePdf } from "../../services/invoiceService.js";
 import FloatingMenus from "./FloatingMenus.js";
-const FetchAllInvoiceDatatable = ({setSelectedId,set_chargecat_name,setModalIsOpen,setIsEdit,id}) => {
+import { all } from "axios";
+const FetchAllInvoiceDatatable = ({setSelectedId,set_chargecat_name,setModalIsOpen,setIsEdit,fromDate,toDate}) => {
   
   const [val, setVal] = useState(false);
   
-  const { fetchInvoices, userId, setLoading, loading, accountInvoices } =
+  const {  userId, setLoading, loading, fetchInvoicesByDate, allInvoicesByDate } =
     useUserDataContext();
   const [deleteId,setDeleteId] = useState(null);
   const [deleteModalIsOpen,setDeleteModalIsOpen] = useState(false);
@@ -35,9 +36,11 @@ const FetchAllInvoiceDatatable = ({setSelectedId,set_chargecat_name,setModalIsOp
   const [isMenuOpenId,setIsMenuOpenId] = useState(0);
   const navigate = useNavigate();
   useEffect(() => {
-    fetchInvoices(id);
-  }, [userId,is_paid,is_archived,is_void,is_deleted]);
+    fetchInvoicesByDate(fromDate,toDate)
+  }, [userId,is_paid,is_archived,is_void,is_deleted,fromDate,toDate]);
   
+
+
 
   const viewPdf = async (id) => {
     const response = await getInvoicePdf(id);
@@ -70,6 +73,14 @@ const FetchAllInvoiceDatatable = ({setSelectedId,set_chargecat_name,setModalIsOp
     </div>
       ),
       editable: true,
+    },
+    {
+      field: "family_account_name",
+      headerName: "Family",
+      width: 200,
+      renderCell: (params) => (
+        `${params.row.family_account_name}`
+      ),
     },
     {
       field: "date_range",
@@ -112,7 +123,7 @@ const FetchAllInvoiceDatatable = ({setSelectedId,set_chargecat_name,setModalIsOp
         is_void={params.row.is_void}
         set_is_void={set_is_void}
         set_is_deleted = {set_is_deleted} 
-        family_id = {id}
+        family_id = {params.row.family_account_id}
          /> } 
        <div style={{display:'flex',gap:5}} className="dropdown">
         <button 
@@ -136,7 +147,7 @@ const FetchAllInvoiceDatatable = ({setSelectedId,set_chargecat_name,setModalIsOp
     setIsDeleteLoading(true);
     const response = await deleteChargeCategories(id);
     if (response.success == true) {
-      fetchInvoices(id);
+      fetchInvoicesByDate(fromDate,toDate);
       toast.success(response.message, {
         position: toast.POSITION.TOP_CENTER,
       });
@@ -156,10 +167,10 @@ const FetchAllInvoiceDatatable = ({setSelectedId,set_chargecat_name,setModalIsOp
 
   useEffect(() => {
     setVal(true);
-    console.log(accountInvoices);
-  }, [accountInvoices]);
+    console.log(allInvoicesByDate);
+  }, [allInvoicesByDate]);
   if (val) {
-    var rows = accountInvoices;
+    var rows = allInvoicesByDate;
     setLoading(false);
   } else {
     setLoading(true);
@@ -168,7 +179,7 @@ const FetchAllInvoiceDatatable = ({setSelectedId,set_chargecat_name,setModalIsOp
     <div>
       <DeleteModel isLoading = {isDeleteLoading} setIsLoading={setIsDeleteLoading} modalIsOpen={deleteModalIsOpen} id={deleteId} setIsOpen={setDeleteModalIsOpen} onOk={onDeleteHandler}  />
       <>
-        {rows && accountInvoices.length > 0 ? (
+        {rows && allInvoicesByDate.length > 0 ? (
           loading ? (
             <>
               <Loader />

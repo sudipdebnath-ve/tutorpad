@@ -54,7 +54,7 @@ const AllInvoice = ()=>{
                     </div>
                     <div className="card-body d-flex">
                     <div className="align-self-center w-100">
-                        <FetchAllInvoiceDatatable setIsEdit={setIsEdit} setModalIsOpen={setModalIsOpen} set_chargecat_name={set_chargecat_name} setSelectedId={setSelectedId} id={param?.id} />
+                        <FetchAllInvoiceDatatable fromDate={fromDate} toDate={toDate} setIsEdit={setIsEdit} setModalIsOpen={setModalIsOpen} set_chargecat_name={set_chargecat_name} setSelectedId={setSelectedId} />
                     </div>
                     </div>
                 </div>
