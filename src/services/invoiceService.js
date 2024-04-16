@@ -115,6 +115,15 @@ export const getInvoicePdf = async (id) => {
     })
 }
 
+export const getIncomingInvoice = async (id) => {
+  return invoicesApi.get('upcoming-latest-invoice/'+id).then((response) => {
+    return response.data;
+  })
+  .catch((err)=>{
+    console.log(err);
+  })
+}
+
 export const getDownloadPdf = async (id) => {
   return invoicesApi.get('download-invoice-pdf/'+id,{
     responseType: "blob"

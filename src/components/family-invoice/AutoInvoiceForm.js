@@ -125,7 +125,7 @@ const AutoInvoiceForm = () => {
                 <div className="col-xl-12 col-xxl-12">
                   <div className="invoice-details-wrapper">
                     <div className="payment-type-box">
-                      <Link to={"/familiies-and-invoices"}>
+                      <Link to={"/familiies-and-invoices"} style={{ width: "100%" }}>
                         <Icon icon={chevronLeft} /> Back To Families & Invoices
                       </Link>
                       <div className="automatic-invoicing">

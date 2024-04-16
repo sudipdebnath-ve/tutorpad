@@ -49,7 +49,7 @@ const StudentEditDetails = () => {
   const getTutorById = (id) => {
     return allTutors.find((tutor) => tutor.id === id);
   };
-
+  console.log("studentFetchData-------", studentFetchData)
   const fetchAssignTutors = async (id) => {
     setLoading(true);
     console.log(id);
@@ -894,7 +894,7 @@ const StudentEditDetails = () => {
                       <>
                         <div className="active-user">
                           <span className="active">
-                            {studentFetchData?.student_status}
+                            {studentFetchData?.status_label}
                           </span>
                         </div>
                       </>

@@ -22,6 +22,7 @@ import payroll from "../../assets/images/payroll.svg";
 import attendance from "../assets/images/attendance.svg";
 import Select from "react-select";
 
+
 const TutorEditDetails = () => {
   const {
     sidebarToggle,
@@ -1483,7 +1484,7 @@ const TutorEditDetails = () => {
                         <i className="fa fa-pencil" aria-hidden="true"></i>
                       </div>
                     </div>
-                    <span>
+                    <span className="notes-section">
                       Click the edit button to add a private note about this
                       tutor
                     </span>
