@@ -26,8 +26,10 @@ import {
   cloneEvents,
 } from "../../../services/calenderService.js";
 import { getCategories } from "../../../services/categoriesService.js";
+
 const customStyles = {
   content: {
+    background: "black",
     width: "25%",
     minHeight: "35%",
     top: "50%",
@@ -86,6 +88,7 @@ const Calendars = () => {
     fetchStudentData,
     fetchLocation,
     allLocation,
+    isDarkMode,
   } = useUserDataContext();
 
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -167,6 +170,21 @@ const Calendars = () => {
   const [notes, set_notes] = useState("");
   const [delete_all, set_delete_all] = useState(false);
   const [attendees_info, set_attendees_info] = useState([]);
+
+  const colourStyles = {
+    control: (styles) => ({
+      ...styles,
+      backgroundColor: isDarkMode ? "#363636" : "white",
+    }),
+    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+      return {
+        ...styles,
+        backgroundColor: isDarkMode ? "#363636" : "white",
+        color: isDarkMode ? "#FFF" : "black",
+        cursor: isDisabled ? "not-allowed" : "default",
+      };
+    },
+  };
 
   const resetForm = () => {
     set_event_attendees([]);
@@ -251,7 +269,7 @@ const Calendars = () => {
 
   const getCategoriesHandler = async () => {
     const result = await getCategories();
-    setCategoriesList(result.data);
+    setCategoriesList(result?.data);
   };
 
   const getEventDetailsByIdHandler = async (id) => {
@@ -668,6 +686,7 @@ const Calendars = () => {
       <div className="main">
         <TopBar />
         <ReactModal
+          bodyOpenClassName="react-modal"
           isOpen={modalIsOpen === "event"}
           onAfterOpen={afterOpenModal}
           onRequestClose={closeModal}
@@ -870,6 +889,7 @@ const Calendars = () => {
                             onChange={(e) => set_event_attendees(e)}
                             isMulti={true}
                             options={studentsList}
+                            styles={colourStyles}
                           />
                         </div>
                       </div>
@@ -1407,6 +1427,7 @@ const Calendars = () => {
                             onChange={(e) => set_event_attendees(e)}
                             isMulti={true}
                             options={studentsList}
+                            styles={colourStyles}
                           />
                         </div>
                       </div>

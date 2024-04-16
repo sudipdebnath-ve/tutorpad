@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import bgimage from "../../assets/images/bg.jpg";
 import { ToastContainer, toast } from "react-toastify";
@@ -69,15 +69,18 @@ const Signin = () => {
     i18next.changeLanguage(e.target.value);
   };
 
+  useEffect(() => {
+    document?.documentElement?.setAttribute("data-theme", "light");
+  });
+
   return (
-    <div className="d-md-flex half">
+    <div className="d-md-flex justify-content-center align-items-center h-100 primary-bg">
       <ToastContainer />
-      <div className="bg" style={{ backgroundImage: `url(${bgimage})` }}></div>
+
       <div className="contents">
         <div className="container">
           <div className="row align-items-center justify-content-center">
             <div className="col-md-12">
-              <LanguageOption onChange={(e) => handleClick(e)} />
               <div className="form-block mx-auto">
                 <div className="text-center mb-5">
                   <h3>
