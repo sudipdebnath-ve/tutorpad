@@ -5953,6 +5953,12 @@ fieldset:disabled .btn {
 }
 .text-center {
   text-align: center !important;
+
+}
+
+.text-center strong {
+  color: var(--text-color);
+  
 }
 .text-decoration-none {
   text-decoration: none !important;
@@ -11636,11 +11642,13 @@ span.flatpickr-weekday {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
+  color: var(--text-color);
 }
 .image-user img {
   width: 90px;
   height: 90px;
   border-radius: 50%;
+  color: var(--text-color);
 }
 .initials h2 {
   margin: 0;
@@ -11650,6 +11658,7 @@ span.flatpickr-weekday {
   text-align: center;
   padding-top: 20px;
   font-size: 18px;
+  color: var(--text-color);
 }
 .location-user,
 .email-user {
