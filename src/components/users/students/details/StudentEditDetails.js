@@ -356,7 +356,7 @@ const StudentEditDetails = () => {
         </>
       )}
 
-      <div className="main bg-color">
+      <div className="main">
         <TopBar />
 
         <ReactModal

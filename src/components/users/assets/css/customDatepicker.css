@@ -1,21 +1,33 @@
+[data-theme="light"] {
+  --bg-color: #f7f5ed;
+  --text-color: #000;
+  --card-bg-color: #fff;
+}
+
+[data-theme="dark"] {
+  --bg-color: #363636;
+  --text-color: #fff;
+  --card-bg-color: #363636;
+}
+
 .custom_datepicker {
-    border: none;
-    background-color: transparent;
-    color: orange;
-    font-weight: bold;
+  border: none;
+  background-color: transparent;
+  color: var(--text-color);
+  font-weight: bold;
 }
 
 .custom-datepicker-container {
-    position: relative;
-    display: inline-block;
+  position: relative;
+  display: inline-block;
 }
 
 .down-arrow {
-    position: absolute;
-    right: 185px; /* Adjust the right distance according to your design */
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 1rem; /* Adjust the font size as needed */
-    color: orange; /* Replace with your desired arrow color */
-    cursor: pointer;
-  }
+  position: absolute;
+  right: 185px; /* Adjust the right distance according to your design */
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem; /* Adjust the font size as needed */
+  color: var(--text-color); /* Replace with your desired arrow color */
+  cursor: pointer;
+}

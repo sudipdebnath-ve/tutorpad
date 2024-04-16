@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import MiniSidebar from "../sidebar/MiniSidebar.js";
 import Sidebar from "../sidebar/Sidebar.js";
 import TopBar from "../sidebar/TopBar.js";
@@ -9,7 +9,7 @@ import instructors from "../users/assets/images/Instructors.svg";
 import { Link } from "react-router-dom";
 import FetchTutorDatatable from "./tutors/FetchTutorDatatable.js";
 import Loader from "../Loader.js";
-import "../users/assets/css/customDatepicker.css"
+import "../users/assets/css/customDatepicker.css";
 
 const Tutor = () => {
   const { sidebarToggle, loading } = useUserDataContext();
@@ -57,23 +57,24 @@ const Tutor = () => {
         </>
       )}
 
-      <div className="main bg-color">
+      <div className="main">
         <TopBar />
         <main className="content student">
           <div className="container-fluid p-0">
             <div className="row d-flex">
               <div className="col-xl-12 col-xxl-12">
                 <div className="pb-2">
-                  <h2 className="fs-2 fw-bold">Payroll Balance as of {" "}
-                  <div className="custom-datepicker-container">
-                  <DatePicker
-                  selected={selectedDate}
-                  onChange={handleDateChange}
-                  dateFormat="dd/MM/yyyy"
-                  className="custom_datepicker"
-                />
-                <span className="down-arrow">&#9660;</span>
-                </div>
+                  <h2 className="fs-2 fw-bold">
+                    Payroll Balance as of{" "}
+                    <div className="custom-datepicker-container">
+                      <DatePicker
+                        selected={selectedDate}
+                        onChange={handleDateChange}
+                        dateFormat="dd/MM/yyyy"
+                        className="custom_datepicker"
+                      />
+                      <span className="down-arrow">&#9660;</span>
+                    </div>
                   </h2>
                 </div>
                 <ul className="nav nav-tabs" id="myTab" role="tablist">

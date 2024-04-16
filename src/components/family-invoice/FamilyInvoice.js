@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import MiniSidebar from "../sidebar/MiniSidebar.js";
 import Sidebar from "../sidebar/Sidebar.js";
 import TopBar from "../sidebar/TopBar.js";
@@ -10,9 +10,12 @@ import { Link } from "react-router-dom";
 import FetchChargeCategoryDatatable from "./FetchFamilyInvoiceDatatable.js";
 import Loader from "../Loader.js";
 import "../users/assets/css/customDatepicker.css";
-import Modal from 'react-modal';
-import { Spinner } from 'react-bootstrap';
-import { createChargeCategories,updateChargeCategories } from "../../services/categoriesService.js";
+import Modal from "react-modal";
+import { Spinner } from "react-bootstrap";
+import {
+  createChargeCategories,
+  updateChargeCategories,
+} from "../../services/categoriesService.js";
 import { ToastContainer, toast } from "react-toastify";
 import Invoice from "./Invoice.js";
 import Family from "./Family.js";
@@ -21,22 +24,22 @@ import AllInvoice from "./AllInvoice.js";
 
 const customStyles = {
   content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
   },
 };
 const FamilyInvoice = () => {
-  const { fetchChargeCategory,sidebarToggle, loading } = useUserDataContext();
+  const { fetchChargeCategory, sidebarToggle, loading } = useUserDataContext();
   const [addNewDropdown, setAddNewDropdown] = useState(false);
-  const [modalIsOpen,setModalIsOpen] = useState(false);
-  const [isLoading,setIsLoading] = useState(false);
-  const [isEdit,setIsEdit] = useState(false);
-  const [chargecat_name,set_chargecat_name] = useState("");
-  const [selectedId,setSelectedId] = useState("");
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [chargecat_name, set_chargecat_name] = useState("");
+  const [selectedId, setSelectedId] = useState("");
   const handleClickAddNew = (e) => {
     if (addNewDropdown == false) {
       setAddNewDropdown(true);
@@ -45,11 +48,13 @@ const FamilyInvoice = () => {
     }
   };
 
-  const onSubmitHandler = async ()=>{
+  const onSubmitHandler = async () => {
     setIsLoading(true);
-    if(isEdit)
-    {
-      const response = await updateChargeCategories({chargecat_name},selectedId);
+    if (isEdit) {
+      const response = await updateChargeCategories(
+        { chargecat_name },
+        selectedId
+      );
       if (response.success == true) {
         toast.success(response.message, {
           position: toast.POSITION.TOP_CENTER,
@@ -57,15 +62,14 @@ const FamilyInvoice = () => {
         fetchChargeCategory();
         setIsLoading(false);
         setModalIsOpen(false);
-      }else{
+      } else {
         setIsLoading(false);
         toast.error(JSON.stringify(response.response.data.data), {
           position: toast.POSITION.TOP_CENTER,
-        })
-        
+        });
       }
-    }else{
-      const response = await createChargeCategories({chargecat_name});
+    } else {
+      const response = await createChargeCategories({ chargecat_name });
       if (response.success == true) {
         toast.success(response.message, {
           position: toast.POSITION.TOP_CENTER,
@@ -73,20 +77,18 @@ const FamilyInvoice = () => {
         fetchChargeCategory();
         setIsLoading(false);
         setModalIsOpen(false);
-      }else{
+      } else {
         setIsLoading(false);
         toast.error(JSON.stringify(response.response.data.data), {
           position: toast.POSITION.TOP_CENTER,
-        })
-        
+        });
       }
     }
-    
-  }
-  const onCancel = ()=>{
+  };
+  const onCancel = () => {
     set_chargecat_name("");
     setModalIsOpen(false);
-  }
+  };
 
   return (
     <div className="wrapper">
@@ -100,7 +102,7 @@ const FamilyInvoice = () => {
         </>
       )}
 
-      <div className="main bg-color">
+      <div className="main">
         <TopBar />
         <main className="content student">
           <div className="container-fluid p-0">
@@ -165,8 +167,7 @@ const FamilyInvoice = () => {
                     role="tabpanel"
                     aria-labelledby="transaction-tab"
                   >
-                    <Transaction/>
-                    
+                    <Transaction />
                   </div>
                   <div
                     className="tab-pane fade"
@@ -174,8 +175,7 @@ const FamilyInvoice = () => {
                     role="tabpanel"
                     aria-labelledby="invoice-tab"
                   >
-                    <AllInvoice/>
-                    
+                    <AllInvoice />
                   </div>
 
                   <div

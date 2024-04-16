@@ -18,7 +18,7 @@ const StaffAdd = () => {
     title: "",
     first_name: "",
     last_name: "",
-    name : "",
+    name: "",
     username: "",
     password: "",
     email: "",
@@ -32,7 +32,7 @@ const StaffAdd = () => {
     address: "",
     privileges: "",
     preferred_locatio: "",
-    status: "staff"
+    status: "staff",
   });
 
   const [privileges, setPrivileges] = useState({
@@ -257,7 +257,7 @@ const StaffAdd = () => {
         </>
       )}
 
-      <div className="main bg-color">
+      <div className="main">
         <TopBar />
 
         <main className="content studentadd">
@@ -289,7 +289,7 @@ const StaffAdd = () => {
                       <div className="formbold-form-step-1 active">
                         <div className="formbold-input-flex diff">
                           <div>
-                          <label
+                            <label
                               htmlFor="title"
                               className="formbold-form-label"
                               id="title"
@@ -303,8 +303,8 @@ const StaffAdd = () => {
                               onChange={handleChange}
                             />
                           </div>
-                          </div>
-                          <div className="formbold-input-flex diff">
+                        </div>
+                        <div className="formbold-input-flex diff">
                           <div>
                             <label
                               htmlFor="first_name"
@@ -377,18 +377,19 @@ const StaffAdd = () => {
                         </div>
                         <div className="formbold-input-flex diff">
                           <div>
-                          <input
+                            <input
                               type="checkbox"
                               className="sms"
                               name="sms"
                               onChange={handleChange}
                             />
-                            <label
-                            htmlFor="sms"> Enable login access
-                            </label>
-                            <br/>
-                            <span>An email will be sent with a link to set up their password</span>
-                            </div>
+                            <label htmlFor="sms"> Enable login access</label>
+                            <br />
+                            <span>
+                              An email will be sent with a link to set up their
+                              password
+                            </span>
+                          </div>
                         </div>
                         <div className="formbold-input-flex diff">
                           <div>
@@ -408,7 +409,7 @@ const StaffAdd = () => {
                           </div>
                         </div>
                         <hr></hr>
-                       
+
                         <div className="formbold-form-btn-wrapper">
                           <div className="btn-end">
                             <Link className="cancel" to="/tutors">
@@ -752,7 +753,6 @@ const StaffAdd = () => {
                             </span>
                           </div>
                         </div>
-
 
                         <div className="formbold-form-btn-wrapper">
                           <button className="formbold-back-btn">Back</button>

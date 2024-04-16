@@ -292,7 +292,7 @@ const MyPreferences = () => {
         if (error.response.data.success === false) {
           setError(error.response.data.data.error);
         }
-       // console.log(error.response.data.data.error);
+        // console.log(error.response.data.data.error);
       });
   };
 
@@ -441,7 +441,7 @@ const MyPreferences = () => {
         toast.success(response.data.message, {
           position: toast.POSITION.TOP_CENTER,
         });
-       // setIsOpen(false);
+        // setIsOpen(false);
         closeModal();
         allAvailabilityData();
       })
@@ -465,7 +465,7 @@ const MyPreferences = () => {
         </>
       )}
 
-      <div className="main bg-color">
+      <div className="main">
         <TopBar />
 
         <ReactModal
@@ -737,17 +737,15 @@ const MyPreferences = () => {
                           className="form-control"
                           onChange={handleChangePassword}
                         />
-                         <div className="pt-2">
-                        {error?.length > 0 && (
-                          <small style={{ color: "red" }}>
-                            {error}
-                          </small>
-                        )}
-                        {error?.current_password?.length > 0 && (
-                          <small style={{ color: "red" }}>
-                            {error.current_password[0]}
-                          </small>
-                        )}
+                        <div className="pt-2">
+                          {error?.length > 0 && (
+                            <small style={{ color: "red" }}>{error}</small>
+                          )}
+                          {error?.current_password?.length > 0 && (
+                            <small style={{ color: "red" }}>
+                              {error.current_password[0]}
+                            </small>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -766,11 +764,11 @@ const MyPreferences = () => {
                           onChange={handleChangePassword}
                         />
                         <div className="pt-2">
-                        {error?.new_password?.length > 0 && (
-                          <small style={{ color: "red" }}>
-                            {error.new_password[0]}
-                          </small>
-                        )}
+                          {error?.new_password?.length > 0 && (
+                            <small style={{ color: "red" }}>
+                              {error.new_password[0]}
+                            </small>
+                          )}
                         </div>
                       </div>
                       <div>
@@ -789,12 +787,12 @@ const MyPreferences = () => {
                             onChange={handleChangePassword}
                           />
                           <div className="pt-2">
-                        {error?.confirm_new_password?.length > 0 && (
-                          <small style={{ color: "red" }}>
-                            {error.confirm_new_password[0]}
-                          </small>
-                        )}
-                        </div>
+                            {error?.confirm_new_password?.length > 0 && (
+                              <small style={{ color: "red" }}>
+                                {error.confirm_new_password[0]}
+                              </small>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate, useParams ,useLocation} from "react-router-dom";
+import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import Icon from "react-icons-kit";
 import { chevronLeft } from "react-icons-kit/feather/chevronLeft";
 import { MiniSidebar, Sidebar, TopBar } from "../sidebar";
@@ -10,18 +10,21 @@ import InvoiceFormatCondensed from "../../assets/images/InvoiceFormatCondensed.s
 import InvoiceFormatNormal from "../../assets/images/InvoiceFormatNormal.svg";
 import InvoiceFormatExpanded from "../../assets/images/InvoiceFormatExpanded.svg";
 import "./style.css";
-import { enableAutoInoviceById, getAutoInoviceById } from "../../services/invoiceService";
+import {
+  enableAutoInoviceById,
+  getAutoInoviceById,
+} from "../../services/invoiceService";
 
 const AutoInvoiceForm = () => {
-const location = useLocation();
-//   const { state } = location;
-//   console.log("state changed------", state?.isChanged, state?.setIsChanged);
+  const location = useLocation();
+  //   const { state } = location;
+  //   console.log("state changed------", state?.isChanged, state?.setIsChanged);
   const navigate = useNavigate();
   const param = useParams();
   const { sidebarToggle, allFamilies } = useUserDataContext();
-  const [step, setStep] = useState(1);                  // Track current step of the form
+  const [step, setStep] = useState(1); // Track current step of the form
   const [transaction_date, set_transaction_date] = useState("");
-  const [next_billing_cycle, set_next_billing_cycle] = useState("2024-05-01")
+  const [next_billing_cycle, set_next_billing_cycle] = useState("2024-05-01");
   const [is_prepaid_invoice, set_is_prepaid_invoice] = useState("0");
   const [invoice_create_on, set_invoice_create_on] = useState("1");
   const [invoice_due_type, set_invoice_due_type] = useState("0");
@@ -30,23 +33,20 @@ const location = useLocation();
   const [balance_forward, set_balance_forward] = useState("0");
   const [invoice_0, set_invoice_0] = useState("0");
   const [auto_email, set_auto_email] = useState("0");
-  const [footer_text, set_footer_text] = useState("")
+  const [footer_text, set_footer_text] = useState("");
   const [event_frequency, set_event_frequency] = useState("Monthly");
   const [event_frequency_val, set_event_frequency_val] = useState("1");
   const [frequency, setFrequency] = useState("");
   const [dueDateOption, setDueDateOption] = useState("");
   const [transactionDate, setTransactionDate] = useState("");
-  
 
   const handleRadioButtonChange = (e) => {
     if (step === 1) {
       setFrequency(e.target.value);
       set_invoice_create_on(e.target.value);
-      
     } else {
       setDisplayType(e.target.value);
     }
-    
   };
 
   // Handlers for date changes
@@ -70,59 +70,54 @@ const location = useLocation();
 
   console.log("param.id ----------", param.id);
 
-  const getFrequencyTypeNum = (frequency_val)=>{
-    if (frequency_val=="Weekly"){
-        return 1;
-    }else if (frequency_val=="Monthly")
-    {
-        return 2;
-    }else if (frequency_val=="Yearly")
-    {
-        return 3;
-    }else{
-        return 2;
+  const getFrequencyTypeNum = (frequency_val) => {
+    if (frequency_val == "Weekly") {
+      return 1;
+    } else if (frequency_val == "Monthly") {
+      return 2;
+    } else if (frequency_val == "Yearly") {
+      return 3;
+    } else {
+      return 2;
     }
-  }
-  const handleSave = async () =>{
+  };
+  const handleSave = async () => {
     const data = {
-        next_billing_cycle: next_billing_cycle,
-        is_prepaid_invoice: is_prepaid_invoice,
-        invoice_create_on: invoice_create_on, 
-        invoice_due_type: invoice_due_type,
-        invoice_due_date: invoice_due_date,
-        displayType:displayType,
-        balance_forward: balance_forward,
-        invoice_0:  invoice_0,
-        auto_email: auto_email,
-        footer_text: footer_text,
-        invoice_frequency:getFrequencyTypeNum(event_frequency),
-        invoice_frequency_val: event_frequency_val,
-
+      next_billing_cycle: next_billing_cycle,
+      is_prepaid_invoice: is_prepaid_invoice,
+      invoice_create_on: invoice_create_on,
+      invoice_due_type: invoice_due_type,
+      invoice_due_date: invoice_due_date,
+      displayType: displayType,
+      balance_forward: balance_forward,
+      invoice_0: invoice_0,
+      auto_email: auto_email,
+      footer_text: footer_text,
+      invoice_frequency: getFrequencyTypeNum(event_frequency),
+      invoice_frequency_val: event_frequency_val,
+    };
+    if (param?.id) {
+      const response = await enableAutoInoviceById(data, param.id);
+      if (response?.success === true) {
+        toast.success(response?.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        setTimeout(() => {
+          navigate("/familiies-and-invoices");
+        }, 2000);
+      } else {
+        toast.error("Something went wrong!!!!", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      }
     }
-    if (param?.id){
-        const response = await enableAutoInoviceById (data, param.id);
-        if(response?.success===true){
-            toast.success(response?.message, {
-              position: toast.POSITION.TOP_CENTER,
-          });
-          setTimeout(() => {
-            navigate("/familiies-and-invoices");
-          }, 2000);
-          }
-          else{
-            toast.error("Something went wrong!!!!", {
-                position: toast.POSITION.TOP_CENTER,
-            });
-        }
-    }
-  }
+  };
   return (
     <>
-     
-     <ToastContainer />
+      <ToastContainer />
       <div className="wrapper">
         {sidebarToggle ? <MiniSidebar /> : <Sidebar />}
-        <div className="main bg-color">
+        <div className="main">
           <TopBar />
           <main className="content student">
             <div className="container-fluid p-0">
@@ -177,7 +172,9 @@ const location = useLocation();
                                     type="date"
                                     value={next_billing_cycle}
                                     name="next_billing_cycle"
-                                    onChange={(e) =>set_next_billing_cycle(e.target.value)}
+                                    onChange={(e) =>
+                                      set_next_billing_cycle(e.target.value)
+                                    }
                                     className="form-control"
                                     style={{ width: "300px", height: "40px" }}
                                   />
@@ -202,17 +199,21 @@ const location = useLocation();
                                   <div className="input-radio">
                                     <input
                                       type="radio"
-                                      value='0'
+                                      value="0"
                                       name="is_prepaid_invoice"
-                                      onChange={(e)=> set_is_prepaid_invoice(e.target.value)}
-                                      checked={is_prepaid_invoice==='0'}
+                                      onChange={(e) =>
+                                        set_is_prepaid_invoice(e.target.value)
+                                      }
+                                      checked={is_prepaid_invoice === "0"}
                                     ></input>
                                     Upcoming lessions (prepaid)
                                     <input
                                       type="radio"
-                                      value='1'
+                                      value="1"
                                       name="is_prepaid_invoice"
-                                      onChange={(e)=> set_is_prepaid_invoice(e.target.value)}
+                                      onChange={(e) =>
+                                        set_is_prepaid_invoice(e.target.value)
+                                      }
                                     ></input>
                                     Previous lessions (postpaid)
                                   </div>
@@ -229,7 +230,9 @@ const location = useLocation();
                                   event_frequency={event_frequency}
                                   set_event_frequency={set_event_frequency}
                                   event_frequency_val={event_frequency_val}
-                                  set_event_frequency_val={set_event_frequency_val}
+                                  set_event_frequency_val={
+                                    set_event_frequency_val
+                                  }
                                 />
                               </div>
                             </div>
@@ -253,7 +256,7 @@ const location = useLocation();
                                         value="1"
                                         name="invoice_create_on"
                                         onChange={handleRadioButtonChange}
-                                        checked={invoice_create_on==='1'}
+                                        checked={invoice_create_on === "1"}
                                       ></input>
                                       First day of billing cycle
                                       <input
@@ -261,7 +264,7 @@ const location = useLocation();
                                         value="2"
                                         name="invoice_create_on"
                                         onChange={handleRadioButtonChange}
-                                        checked={invoice_create_on==='2'}
+                                        checked={invoice_create_on === "2"}
                                       ></input>
                                       Choose a date
                                     </div>
@@ -321,7 +324,7 @@ const location = useLocation();
                                       value="0"
                                       name="invoice_due_type"
                                       onChange={handleDueDateChange}
-                                      checked={invoice_due_type==="0"}
+                                      checked={invoice_due_type === "0"}
                                     ></input>
                                     No due date
                                     <input
@@ -329,7 +332,7 @@ const location = useLocation();
                                       value="1"
                                       name="invoice_due_type"
                                       onChange={handleDueDateChange}
-                                      checked={invoice_due_type==="1"}
+                                      checked={invoice_due_type === "1"}
                                     ></input>
                                     Choose a date
                                   </div>
@@ -494,12 +497,11 @@ const location = useLocation();
                                 paddingBottom: "20px",
                               }}
                             >
-                              <input type="checkbox" 
-                               
-                               name="balance_forward"
-                               onChange={(e)=>set_balance_forward('1')}
-                               
-                                />
+                              <input
+                                type="checkbox"
+                                name="balance_forward"
+                                onChange={(e) => set_balance_forward("1")}
+                              />
                               <span className="ml-2">
                                 Include previous balance & payments on the
                                 invoice
@@ -528,11 +530,12 @@ const location = useLocation();
                                 paddingBottom: "20px",
                               }}
                             >
-                              <input type="checkbox" 
-                                    value = "0"
-                                    name="invoice_0"
-                                    onChange={(e) =>set_invoice_0("1")}
-                                     />
+                              <input
+                                type="checkbox"
+                                value="0"
+                                name="invoice_0"
+                                onChange={(e) => set_invoice_0("1")}
+                              />
                               <span className="ml-2">
                                 Create invoices even if nothing is owing
                               </span>
@@ -560,12 +563,12 @@ const location = useLocation();
                                 paddingBottom: "20px",
                               }}
                             >
-                              <input 
+                              <input
                                 type="checkbox"
-                                value = "0"
+                                value="0"
                                 name="auto_email"
-                                onChange={(e) =>set_auto_email("1")}
-                                />
+                                onChange={(e) => set_auto_email("1")}
+                              />
                               <span className="ml-2">
                                 Automatically send invoices on invoice date
                               </span>
@@ -579,12 +582,14 @@ const location = useLocation();
                                 </label>
                                 <textarea
                                   className="form-control"
-                                  value = {footer_text}
+                                  value={footer_text}
                                   name="footer_text"
-                                  onChange={(e) => set_footer_text(e.target.value)}
+                                  onChange={(e) =>
+                                    set_footer_text(e.target.value)
+                                  }
                                   rows="4"
                                   cols="10"
-                                //   placeholder="This note will show at the bottom of your invoice."
+                                  //   placeholder="This note will show at the bottom of your invoice."
                                   style={{ height: "auto", width: "100%" }}
                                 ></textarea>
                               </div>
@@ -599,7 +604,7 @@ const location = useLocation();
                               style={{ justifyContent: "flex-end" }}
                             >
                               <div className="btn-end">
-                              <Link
+                                <Link
                                   className="cancel"
                                   to={"/familiies-and-invoices"}
                                 >
@@ -608,30 +613,34 @@ const location = useLocation();
                                 {/* Render Next or Back button based on step */}
                                 {step === 1 && (
                                   <button
-                                  className="formbold-btn"
-                                  onClick={handleNext}
-                                >
-                                  Next
-                                  <svg
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 16 16"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="formbold-btn"
+                                    onClick={handleNext}
                                   >
-                                    <g clipPath="url(#clip0_1675_1807)">
-                                      <path
-                                        d="M10.7814 7.33312L7.20541 3.75712L8.14808 2.81445L13.3334 7.99979L8.14808 13.1851L7.20541 12.2425L10.7814 8.66645H2.66675V7.33312H10.7814Z"
-                                        fill="white"
-                                      />
-                                    </g>
-                                    <defs>
-                                      <clipPath id="clip0_1675_1807">
-                                        <rect width="16" height="16" fill="white" />
-                                      </clipPath>
-                                    </defs>
-                                  </svg>
-                                </button>
+                                    Next
+                                    <svg
+                                      width="16"
+                                      height="16"
+                                      viewBox="0 0 16 16"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <g clipPath="url(#clip0_1675_1807)">
+                                        <path
+                                          d="M10.7814 7.33312L7.20541 3.75712L8.14808 2.81445L13.3334 7.99979L8.14808 13.1851L7.20541 12.2425L10.7814 8.66645H2.66675V7.33312H10.7814Z"
+                                          fill="white"
+                                        />
+                                      </g>
+                                      <defs>
+                                        <clipPath id="clip0_1675_1807">
+                                          <rect
+                                            width="16"
+                                            height="16"
+                                            fill="white"
+                                          />
+                                        </clipPath>
+                                      </defs>
+                                    </svg>
+                                  </button>
                                 )}
                                 {step === 2 && (
                                   <button
@@ -641,7 +650,7 @@ const location = useLocation();
                                     Back
                                   </button>
                                 )}
-                                
+
                                 {/* Render Save button only on Step 2 */}
                                 {step === 2 && (
                                   <button

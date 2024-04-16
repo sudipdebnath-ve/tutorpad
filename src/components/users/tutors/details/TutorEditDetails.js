@@ -264,7 +264,7 @@ const TutorEditDetails = () => {
         );
       }
     }
-    setFormData({...formData,["privileges"]:checkedPrivileges});
+    setFormData({ ...formData, ["privileges"]: checkedPrivileges });
   };
 
   const handleClick = (e) => {
@@ -400,7 +400,7 @@ const TutorEditDetails = () => {
     setAssignStudent({ ...assignStudent, [name]: value });
   };
 
- // console.log(tutorFetchData.dp_url);
+  // console.log(tutorFetchData.dp_url);
 
   const saveAssignStudent = async (e) => {
     e.preventDefault();
@@ -655,7 +655,7 @@ const TutorEditDetails = () => {
         </>
       )}
 
-      <div className="main bg-color">
+      <div className="main">
         <TopBar />
 
         <ReactModal
@@ -682,12 +682,9 @@ const TutorEditDetails = () => {
                       </label>
                       <div className="initials py-3">
                         <div className="image-user">
-                        {formData?.dp_url ? (
+                          {formData?.dp_url ? (
                             <>
-                              <img
-                                src={formData?.dp_url}
-                                alt=""
-                              />
+                              <img src={formData?.dp_url} alt="" />
                             </>
                           ) : (
                             <h2>{initial}</h2>
@@ -717,7 +714,6 @@ const TutorEditDetails = () => {
                           className="form-control"
                           onChange={handleChange}
                           value={formData?.title}
-                        
                         />
                       </div>
                     </div>
@@ -882,7 +878,9 @@ const TutorEditDetails = () => {
                     <Link className="cancel" onClick={closeModal}>
                       Cancel
                     </Link>
-                    <button className="formbold-btn" onClick={formSubmit}>Submit</button>
+                    <button className="formbold-btn" onClick={formSubmit}>
+                      Submit
+                    </button>
                   </div>
                 </div>
               </div>
@@ -916,7 +914,6 @@ const TutorEditDetails = () => {
                           Student
                         </label>
                         <div>
-
                           <select
                             name="student_id"
                             className="form-control"
@@ -957,12 +954,14 @@ const TutorEditDetails = () => {
                           id="default_lesson_cat"
                           value={defaultLessonCat}
                         >
-                           <option value="">Select a category</option>
+                          <option value="">Select a category</option>
                           {allCategory &&
                             allCategory.map((cat) => {
                               return (
                                 <option key={cat.id} value={cat.id}>
-                                  {cat.eventcat_name ? cat.eventcat_name : 'Unknown Category'}
+                                  {cat.eventcat_name
+                                    ? cat.eventcat_name
+                                    : "Unknown Category"}
                                 </option>
                               );
                             })}
@@ -977,7 +976,7 @@ const TutorEditDetails = () => {
                           </small>
                         </div>
                       </div>
-                      
+
                       <div>
                         <label
                           htmlFor="default_lesson_length"
@@ -1068,7 +1067,7 @@ const TutorEditDetails = () => {
                     </div>
 
                     <div className="formbold-input-flex">
-                    {defaultBilling !== "no_automatic_charge" && (
+                      {defaultBilling !== "no_automatic_charge" && (
                         <div>
                           <div>
                             <label
@@ -1118,39 +1117,39 @@ const TutorEditDetails = () => {
                               </span>
                             </div>
                           </div>
-                      </div>
+                        </div>
                       )}
                       <div className="formbold-input-flex diff">
-                      <div>
-                        <label
-                          htmlFor="make_up_credits"
-                          className="formbold-form-label"
-                          id="make_up_credits"
-                        >
-                          Make-Up Credits
-                        </label>
-                        <div style={{ position: "relative" }}>
-                          <input
-                            type="text"
-                            name="make_up_credits"
-                            className="form-control"
-                            onChange={handleAssignStudent}
-                            value={makeUpCredits}
-                            required
-                          />
-                          <span
-                            style={{
-                              position: "absolute",
-                              right: "10px",
-                              top: "50%",
-                              transform: "translateY(-50%)",
-                            }}
+                        <div>
+                          <label
+                            htmlFor="make_up_credits"
+                            className="formbold-form-label"
+                            id="make_up_credits"
                           >
-                            Credits
-                          </span>
+                            Make-Up Credits
+                          </label>
+                          <div style={{ position: "relative" }}>
+                            <input
+                              type="text"
+                              name="make_up_credits"
+                              className="form-control"
+                              onChange={handleAssignStudent}
+                              value={makeUpCredits}
+                              required
+                            />
+                            <span
+                              style={{
+                                position: "absolute",
+                                right: "10px",
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                              }}
+                            >
+                              Credits
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
                     </div>
                     <div
                       className="formbold-input-flex diff bg-gradient p-2 rounded-2"
@@ -1438,16 +1437,13 @@ const TutorEditDetails = () => {
                   <div className="card-body">
                     <div className="initials">
                       <div className="image-user">
-                      {formData?.dp_url ? (
-                            <>
-                              <img
-                                src={formData?.dp_url}
-                                alt=""
-                              />
-                            </>
-                          ) : (
-                            <h2>{initial && initial.toLocaleUpperCase()}</h2>
-                          )}
+                        {formData?.dp_url ? (
+                          <>
+                            <img src={formData?.dp_url} alt="" />
+                          </>
+                        ) : (
+                          <h2>{initial && initial.toLocaleUpperCase()}</h2>
+                        )}
                       </div>
                     </div>
                     <div
@@ -1530,7 +1526,7 @@ const TutorEditDetails = () => {
                         data-bs-parent="#accordionFlushExample"
                       >
                         <div className="accordion-body">
-                        <h3>Assigned Students</h3>
+                          <h3>Assigned Students</h3>
                           {students.length > 0 ? (
                             <table className="table">
                               <thead>
@@ -1579,7 +1575,8 @@ const TutorEditDetails = () => {
                                         </>
                                       )}
 
-                                      {student.default_billing === "per_hour_charge" && (
+                                      {student.default_billing ===
+                                        "per_hour_charge" && (
                                         <>
                                           <i
                                             className="fa fa-inr"
@@ -1588,23 +1585,21 @@ const TutorEditDetails = () => {
                                           {student.per_hour_charge}/hour
                                         </>
                                       )}
-                                      {student.default_billing !== "per_month_charge" &&
+                                      {student.default_billing !==
+                                        "per_month_charge" &&
                                         student.default_billing !==
                                           "per_lesson_charge" &&
-                                          student.default_billing !==
+                                        student.default_billing !==
                                           "per_hour_charge" && (
                                           <p>Default price not specified</p>
                                         )}
                                     </td>
                                     <td>{student.default_lesson_length}</td>
                                     <td>
-                                      {
-                                        allCategory.find(
-                                          (cat) =>
-                                            cat.id ===
-                                            student.default_lesson_cat
-                                        )?.eventcat_name || 'Unknown Category'
-                                      }
+                                      {allCategory.find(
+                                        (cat) =>
+                                          cat.id === student.default_lesson_cat
+                                      )?.eventcat_name || "Unknown Category"}
                                     </td>
                                     <td>
                                       Total: {student.makeup_credits} <br />
@@ -1648,31 +1643,29 @@ const TutorEditDetails = () => {
                                     </strong>
                                   </h5>
                                   <hr></hr>
-                                  </div>
-                                </div>
-                                </div>
-                                )}
-                                <div className="formbold-form-btn-wrapper">
-                                  <div className="btn-end">
-                                    <button
-                                      className="formbold-btn"
-                                      onClick={(e) =>
-                                        openModal("assignStudent")
-                                      }
-                                    >
-                                      <i
-                                        style={{ color: "#ffffff" }}
-                                        className="fa fa-plus"
-                                        aria-hidden="true"
-                                      ></i>
-                                      Assign Student
-                                    </button>
-                                  </div>
                                 </div>
                               </div>
                             </div>
+                          )}
+                          <div className="formbold-form-btn-wrapper">
+                            <div className="btn-end">
+                              <button
+                                className="formbold-btn"
+                                onClick={(e) => openModal("assignStudent")}
+                              >
+                                <i
+                                  style={{ color: "#ffffff" }}
+                                  className="fa fa-plus"
+                                  aria-hidden="true"
+                                ></i>
+                                Assign Student
+                              </button>
+                            </div>
                           </div>
                         </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div className="card">
                   <div

@@ -75,7 +75,7 @@ const StudentImport = () => {
         </>
       )}
 
-      <div className="main bg-color">
+      <div className="main">
         <TopBar />
 
         <main className="content studentadd">

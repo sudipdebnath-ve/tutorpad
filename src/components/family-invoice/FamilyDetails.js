@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import MiniSidebar from "../sidebar/MiniSidebar.js";
 import Sidebar from "../sidebar/Sidebar.js";
 import TopBar from "../sidebar/TopBar.js";
@@ -10,54 +10,57 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import FetchChargeCategoryDatatable from "./FetchFamilyInvoiceDatatable.js";
 import Loader from "../Loader.js";
 import "../users/assets/css/customDatepicker.css";
-import Modal from 'react-modal'; 
-import { Spinner } from 'react-bootstrap';
+import Modal from "react-modal";
+import { Spinner } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import Invoice from "./Invoice.js";
 import Family from "./Family.js";
 import Transaction from "./Transaction.js";
 import Select from "react-select";
-import {user} from 'react-icons-kit/feather/user';
-import { Icon } from 'react-icons-kit'; 
-import {settings} from 'react-icons-kit/feather/settings';
-import {mail} from 'react-icons-kit/feather/mail';
-import {ic_receipt_outline} from 'react-icons-kit/md/ic_receipt_outline';
+import { user } from "react-icons-kit/feather/user";
+import { Icon } from "react-icons-kit";
+import { settings } from "react-icons-kit/feather/settings";
+import { mail } from "react-icons-kit/feather/mail";
+import { ic_receipt_outline } from "react-icons-kit/md/ic_receipt_outline";
 import TransactionByFamily from "./TransactionByFamily.js";
-import { getFamilyAccountsDetails, disableAutoInvoicesTransaction } from "../../services/invoiceService.js";
-import { Modal as BootstrapModal, Button } from 'react-bootstrap';
-import { Icon as ReactIcon  } from 'react-icons';
+import {
+  getFamilyAccountsDetails,
+  disableAutoInvoicesTransaction,
+} from "../../services/invoiceService.js";
+import { Modal as BootstrapModal, Button } from "react-bootstrap";
+import { Icon as ReactIcon } from "react-icons";
 
 const FamilyDetails = () => {
-  const {sidebarToggle,allFamilies } = useUserDataContext();
+  const { sidebarToggle, allFamilies } = useUserDataContext();
   const param = useParams();
   const navigate = useNavigate();
-  const [selectedFamily,setSelectedFamily] = useState();
-  const [students,setStudents] = useState([]);
+  const [selectedFamily, setSelectedFamily] = useState();
+  const [students, setStudents] = useState([]);
   const [family, set_family] = useState({});
-  const [isAutoInvoicing,setIsAutoInvoicing] = useState(true);
+  const [isAutoInvoicing, setIsAutoInvoicing] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
-  const [ isChanged, setIsChanged] = useState(false)
+  const [isChanged, setIsChanged] = useState(false);
 
   const handleCloseModal = () => setShowModal(false);
   const handleShowModal = () => setShowModal(true);
 
-  const onChangeSelectFamiliyHandler = (e)=>{
+  const onChangeSelectFamiliyHandler = (e) => {
     setSelectedFamily(e);
-    navigate('/familiies-and-invoices/family/'+e.value);
-  }
+    navigate("/familiies-and-invoices/family/" + e.value);
+  };
 
-  const getFamilyAccountsDetailsHandler = async()=>{
+  const getFamilyAccountsDetailsHandler = async () => {
     const response = await getFamilyAccountsDetails(param.id);
-    console.log("response of a student------------->",response.data.students);
-    console.log("response of a family-------------->",response.data);
+    console.log("response of a student------------->", response.data.students);
+    console.log("response of a family-------------->", response.data);
     set_family(response?.data);
-    setStudents(response?.data?.students||[]);
+    setStudents(response?.data?.students || []);
     setIsAutoInvoicing(response?.data?.auto_invoicing || 0);
-  }
+  };
 
-  const disableAutoInvoicesTransactionHandler = async()=>{
+  const disableAutoInvoicesTransactionHandler = async () => {
     try {
       // Call the API function to disable auto-invoicing
       const response = await disableAutoInvoicesTransaction(param.id);
@@ -67,22 +70,27 @@ const FamilyDetails = () => {
       handleCloseModal();
       // setIsChanged(!isChanged);
     } catch (error) {
-      console.error('Error disabling auto-invoicing:', error);
+      console.error("Error disabling auto-invoicing:", error);
       setError(error.response.data.message); // Set error message
     }
-  }
+  };
 
-
-  useEffect(()=>{
-    const familiyData = allFamilies.filter((f)=>f.id==param.id);
-    const familySelectedData = familiyData.map((e)=>{return {label:e.name,value:e.id}});
+  useEffect(() => {
+    const familiyData = allFamilies.filter((f) => f.id == param.id);
+    const familySelectedData = familiyData.map((e) => {
+      return { label: e.name, value: e.id };
+    });
     setIsAutoInvoicing(familiyData[0]?.auto_invoicing);
     setSelectedFamily(...familySelectedData);
     getFamilyAccountsDetailsHandler();
-  },[param, isDisabled])
+  }, [param, isDisabled]);
 
-  console.log ("family----------", family, "family.balance_forward--------", family.balance_forward)
-
+  console.log(
+    "family----------",
+    family,
+    "family.balance_forward--------",
+    family.balance_forward
+  );
 
   return (
     <div className="wrapper">
@@ -96,7 +104,7 @@ const FamilyDetails = () => {
         </>
       )}
 
-      <div className="main bg-color">
+      <div className="main">
         <TopBar />
         <main className="content student">
           <div className="container-fluid p-0">
@@ -106,25 +114,56 @@ const FamilyDetails = () => {
                   <div className="card-body">
                     <div className="row">
                       <div className="col-md-12">
-                        <Link to={"/familiies-and-invoices"}>{`<`} Back To family & Invoice</Link>
-                        <Select value={selectedFamily}  onChange={(e)=>onChangeSelectFamiliyHandler(e)} isMulti={false} options={[...allFamilies.map((e)=>{return {label:e.name,value:e.id}})]} />
+                        <Link to={"/familiies-and-invoices"}>
+                          {`<`} Back To family & Invoice
+                        </Link>
+                        <Select
+                          value={selectedFamily}
+                          onChange={(e) => onChangeSelectFamiliyHandler(e)}
+                          isMulti={false}
+                          options={[
+                            ...allFamilies.map((e) => {
+                              return { label: e.name, value: e.id };
+                            }),
+                          ]}
+                        />
                       </div>
                     </div>
                     <div className="row">
                       <div className="col-md-12">
-                        <h6 style={{textAlign:'center',marginTop:'10px',marginBottom:'10px'}}><strong>Family Details</strong></h6>
+                        <h6
+                          style={{
+                            textAlign: "center",
+                            marginTop: "10px",
+                            marginBottom: "10px",
+                          }}
+                        >
+                          <strong>Family Details</strong>
+                        </h6>
                       </div>
                     </div>
                     <div className="row">
                       <div className="col-md-12">
                         <label>Students</label>
                         <ul>
-                          {
-                            students.map((e)=>{
-                              return <li><Link to={"/"}><Icon icon={user} /> {e?.name||""} </Link><span style={{background:`${e?.status_color}`,padding:'2px 5px',color:'white'}}>{e?.status_label}</span></li>
-                            })
-                          }
-                          
+                          {students.map((e) => {
+                            return (
+                              <li>
+                                <Link to={"/"}>
+                                  <Icon icon={user} /> {e?.name || ""}{" "}
+                                </Link>
+                                <span
+                                  style={{
+                                    background: `${e?.status_color}`,
+                                    padding: "2px 5px",
+                                    color: "white",
+                                  }}
+                                >
+                                  {e?.status_label}
+                                </span>
+                              </li>
+                            );
+                          })}
                         </ul>
                       </div>
                     </div>
@@ -132,7 +171,20 @@ const FamilyDetails = () => {
                       <div className="col-md-12">
                         <label>Family Contact</label>
                         <ul>
-                          <li><Link to={"/"}><Icon icon={user} /> {selectedFamily?.label||""} </Link><span style={{background:'lightblue',padding:'2px 5px',color:'white'}}>Invoice Recipient</span></li>
+                          <li>
+                            <Link to={"/"}>
+                              <Icon icon={user} /> {selectedFamily?.label || ""}{" "}
+                            </Link>
+                            <span
+                              style={{
+                                background: "lightblue",
+                                padding: "2px 5px",
+                                color: "white",
+                              }}
+                            >
+                              Invoice Recipient
+                            </span>
+                          </li>
                         </ul>
                       </div>
                     </div>
@@ -140,70 +192,170 @@ const FamilyDetails = () => {
                     {/* {  Boolean(0) && <div> Hiiiii welcome</div>} */}
                     {Boolean(isAutoInvoicing) && (
                       <>
-                    <div className="row">
-                        <div className="col-md-12">
-                          <label><Icon icon={ic_receipt_outline} /> Next Invoice XYZ</label>
-                          <div style={{ lineHeight: '1.2', fontSize: 10 }}>
-                            <p>Invoice Date: {family.invoice_create_date}</p>
-                            <p>Date Range: 01-04-2024 to 30-04-2024</p>
-                            <p>Invoice Date: 01-04-2024</p>
-                            <p>Total Due: <span style={{ background: 'red', padding: '2px 5px', color: 'white' }}>₹ 100.00 balance owing</span></p>
-                          </div>
-                        </div>
-                      </div><div className="row">
+                        <div className="row">
                           <div className="col-md-12">
-                            <label><Icon icon={settings} /> Auto-Invoice Settings</label>
-                            <div style={{ lineHeight: '1.2', fontSize: 10 }}>
-                              <p>{family.is_prepaid_invoice === 0 ? 'Prepaid Lessons' : 'Postpaid Lessons'}</p>
-                              <p>Repeats: The 1st of the month every 1 month</p>
-                              <p>Balance Forward:
-                                <span style={{ minWidth: '50px', padding: '2px 5px', background: family.balance_forward === 1 ? 'lightgreen' : 'red', textAlign: 'center', color: 'white' }}>
-                                  {family.balance_forward === 1 ? 'Enabled' : 'Disabled'}
-                                </span>
-                              </p>
-                              <p>Auto-Email:
-                                <span style={{ minWidth: '50px', padding: '2px 5px', background: family.auto_email === 1 ? "lightgreen" : 'red', textAlign: 'center', color: 'white' }}>
-                                  {family.auto_email === 1 ? 'Enabled' : 'Disabled'}
+                            <label>
+                              <Icon icon={ic_receipt_outline} /> Next Invoice
+                              XYZ
+                            </label>
+                            <div style={{ lineHeight: "1.2", fontSize: 10 }}>
+                              <p>Invoice Date: {family.invoice_create_date}</p>
+                              <p>Date Range: 01-04-2024 to 30-04-2024</p>
+                              <p>Invoice Date: 01-04-2024</p>
+                              <p>
+                                Total Due:{" "}
+                                <span
+                                  style={{
+                                    background: "red",
+                                    padding: "2px 5px",
+                                    color: "white",
+                                  }}
+                                >
+                                  ₹ 100.00 balance owing
                                 </span>
                               </p>
                             </div>
                           </div>
-                        </div></>
+                        </div>
+                        <div className="row">
+                          <div className="col-md-12">
+                            <label>
+                              <Icon icon={settings} /> Auto-Invoice Settings
+                            </label>
+                            <div style={{ lineHeight: "1.2", fontSize: 10 }}>
+                              <p>
+                                {family.is_prepaid_invoice === 0
+                                  ? "Prepaid Lessons"
+                                  : "Postpaid Lessons"}
+                              </p>
+                              <p>Repeats: The 1st of the month every 1 month</p>
+                              <p>
+                                Balance Forward:
+                                <span
+                                  style={{
+                                    minWidth: "50px",
+                                    padding: "2px 5px",
+                                    background:
+                                      family.balance_forward === 1
+                                        ? "lightgreen"
+                                        : "red",
+                                    textAlign: "center",
+                                    color: "white",
+                                  }}
+                                >
+                                  {family.balance_forward === 1
+                                    ? "Enabled"
+                                    : "Disabled"}
+                                </span>
+                              </p>
+                              <p>
+                                Auto-Email:
+                                <span
+                                  style={{
+                                    minWidth: "50px",
+                                    padding: "2px 5px",
+                                    background:
+                                      family.auto_email === 1
+                                        ? "lightgreen"
+                                        : "red",
+                                    textAlign: "center",
+                                    color: "white",
+                                  }}
+                                >
+                                  {family.auto_email === 1
+                                    ? "Enabled"
+                                    : "Disabled"}
+                                </span>
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </>
                     )}
                     <hr></hr>
                     <div className="row">
-                      {
-                        Boolean(isAutoInvoicing) && <><div className="col-md-12">
-                                              <Link to = {"/familiies-and-invoices/autoinvoice-formdetails/"+param.id}>
-                                              <button className="btn btn-md btn-info form-control"><Icon icon={settings} style={{color:'white',marginRight:5}} />Edit Auto-Invoice Settings</button>
-                                              </Link>
-                                            </div>
-                                            <div style={{marginTop:5}} className="col-md-12">
-                                              <button className="btn btn-md btn-danger form-control" onClick={handleShowModal}><Icon icon={mail} style={{color:'white',marginRight:5}} />Disable Auto-Invoicing</button>
-                                            </div>
+                      {Boolean(isAutoInvoicing) && (
+                        <>
+                          <div className="col-md-12">
+                            <Link
+                              to={
+                                "/familiies-and-invoices/autoinvoice-formdetails/" +
+                                param.id
+                              }
+                            >
+                              <button className="btn btn-md btn-info form-control">
+                                <Icon
+                                  icon={settings}
+                                  style={{ color: "white", marginRight: 5 }}
+                                />
+                                Edit Auto-Invoice Settings
+                              </button>
+                            </Link>
+                          </div>
+                          <div style={{ marginTop: 5 }} className="col-md-12">
+                            <button
+                              className="btn btn-md btn-danger form-control"
+                              onClick={handleShowModal}
+                            >
+                              <Icon
+                                icon={mail}
+                                style={{ color: "white", marginRight: 5 }}
+                              />
+                              Disable Auto-Invoicing
+                            </button>
+                          </div>
 
-                                    <BootstrapModal show={showModal} onHide={handleCloseModal}>
-                                        <BootstrapModal.Header closeButton>
-                                            <BootstrapModal.Title >Disable Auto-Invoicing</BootstrapModal.Title>
-                                            </BootstrapModal.Header>
-                                            <BootstrapModal.Body>
-                                              <p >Are you sure you want to disable auto-invoicing? The selected family will no longer receive auto-invoices and you will have to send them manually.</p>
-                                            </BootstrapModal.Body>
-                                            <BootstrapModal.Footer>
-                                              <Button variant="secondary" onClick={handleCloseModal}>Cancel</Button>
-                                              <Button variant="primary" onClick={disableAutoInvoicesTransactionHandler} >Disable auto invoicing</Button>
-                                            </BootstrapModal.Footer>
-                                          </BootstrapModal>
-                                            </>
-                      }
-                      {
-                        !isAutoInvoicing && <div className="col-md-12">
-                                              <Link to = {{pathname:`/familiies-and-invoices/autoinvoice-formdetails/${param.id}`}}>
-                                              <button className="btn btn-md btn-info form-control"><Icon icon={settings} style= {{color:'white',marginRight:5}} />Enable Auto-Invoice</button>
-                                              </Link>
-                                             </div>
-                      }
-                      
+                          <BootstrapModal
+                            show={showModal}
+                            onHide={handleCloseModal}
+                          >
+                            <BootstrapModal.Header closeButton>
+                              <BootstrapModal.Title>
+                                Disable Auto-Invoicing
+                              </BootstrapModal.Title>
+                            </BootstrapModal.Header>
+                            <BootstrapModal.Body>
+                              <p>
+                                Are you sure you want to disable auto-invoicing?
+                                The selected family will no longer receive
+                                auto-invoices and you will have to send them
+                                manually.
+                              </p>
+                            </BootstrapModal.Body>
+                            <BootstrapModal.Footer>
+                              <Button
+                                variant="secondary"
+                                onClick={handleCloseModal}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                variant="primary"
+                                onClick={disableAutoInvoicesTransactionHandler}
+                              >
+                                Disable auto invoicing
+                              </Button>
+                            </BootstrapModal.Footer>
+                          </BootstrapModal>
+                        </>
+                      )}
+                      {!isAutoInvoicing && (
+                        <div className="col-md-12">
+                          <Link
+                            to={{
+                              pathname: `/familiies-and-invoices/autoinvoice-formdetails/${param.id}`,
+                            }}
+                          >
+                            <button className="btn btn-md btn-info form-control">
+                              <Icon
+                                icon={settings}
+                                style={{ color: "white", marginRight: 5 }}
+                              />
+                              Enable Auto-Invoice
+                            </button>
+                          </Link>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -246,8 +398,7 @@ const FamilyDetails = () => {
                     role="tabpanel"
                     aria-labelledby="transaction-tab"
                   >
-                    <TransactionByFamily/>
-                    
+                    <TransactionByFamily />
                   </div>
                   <div
                     className="tab-pane fade"
@@ -255,8 +406,7 @@ const FamilyDetails = () => {
                     role="tabpanel"
                     aria-labelledby="invoice-tab"
                   >
-                    <Invoice/>
-                    
+                    <Invoice />
                   </div>
 
                   <div
