@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import bgimage from "../../assets/images/bg.jpg";
 import { ToastContainer, toast } from "react-toastify";
@@ -97,18 +97,16 @@ const Register = () => {
       });
   };
 
-  // useEffect(() => {
-  //   if (localStorage.getItem("tutorPad")) {
-  //     navigate("/signin");
-  //   }
-  // });
+  useEffect(() => {
+    document?.documentElement?.setAttribute("data-theme", "light");
+  });
 
   console.log("checked", isTermsChecked);
 
   return (
-    <div className="d-md-flex half">
+    <div className="d-md-flex align-items-center justify-content-center primary-bg">
       <ToastContainer />
-      <div className="bg" style={{ backgroundImage: `url(${bgimage})` }}></div>
+
       <div className="contents">
         <div className="container">
           <div className="row align-items-center justify-content-center">

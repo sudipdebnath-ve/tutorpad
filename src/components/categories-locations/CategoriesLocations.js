@@ -21,7 +21,7 @@ const CategoriesLocations = () => {
         </>
       )}
 
-      <div className="main bg-color">
+      <div className="main">
         <TopBar />
         <main className="content student">
           <div className="container-fluid p-0">

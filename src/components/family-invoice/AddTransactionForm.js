@@ -65,12 +65,12 @@ const AddTransactionForm = () => {
     }
   };
 
-//   const getFamilyAccountsDetailsHandler = async (value) => {
-//     set_student_id("");
-//     set_students([]);
-//     const response = await getFamilyAccountsDetails(value.value);
-//     set_students(response.data.students);
-//   };
+  //   const getFamilyAccountsDetailsHandler = async (value) => {
+  //     set_student_id("");
+  //     set_students([]);
+  //     const response = await getFamilyAccountsDetails(value.value);
+  //     set_students(response.data.students);
+  //   };
 
   const saveTransactionHandler = async () => {
     const data = {
@@ -92,9 +92,9 @@ const AddTransactionForm = () => {
       toast.success(response?.message, {
         position: toast.POSITION.TOP_CENTER,
       });
-      setTimeout(()=>{
+      setTimeout(() => {
         navigate("/familiies-and-invoices/family/" + param.family_id);
-      },2000)
+      }, 2000);
     } else {
       toast.error("something went wrong !", {
         position: toast.POSITION.TOP_CENTER,
@@ -145,7 +145,7 @@ const AddTransactionForm = () => {
           </>
         )}
 
-        <div className="main bg-color">
+        <div className="main">
           <TopBar />
           <main className="content student">
             <ToastContainer />
@@ -156,10 +156,12 @@ const AddTransactionForm = () => {
                     <div className="card-header">
                       <h5>Add Transaction</h5>
                     </div>
-                    <div
-                      className={`card-body contaner-area-min mb-2`}
-                    >
-                      <Link to={"/familiies-and-invoices/family/"+param?.family_id}>
+                    <div className={`card-body contaner-area-min mb-2`}>
+                      <Link
+                        to={
+                          "/familiies-and-invoices/family/" + param?.family_id
+                        }
+                      >
                         <Icon icon={chevronLeft} /> Back To Family Account
                       </Link>
                       <div className="payment-type-box">
@@ -256,9 +258,9 @@ const AddTransactionForm = () => {
                                   <Link
                                     className="cancel"
                                     to={
-                                        "/familiies-and-invoices/family/" +
-                                        param.family_id
-                                      }
+                                      "/familiies-and-invoices/family/" +
+                                      param.family_id
+                                    }
                                   >
                                     Cancel
                                   </Link>

@@ -1,5 +1,16 @@
 /*************************** Student Add Start ****************************/
 
+[data-theme="light"] {
+  --bg-color: #f7f5ed;
+  --text-color: #000;
+  --card-bg-color: #fff;
+}
+
+[data-theme="dark"] {
+  --bg-color: #363636;
+  --text-color: #fff;
+  --card-bg-color: #363636;
+}
 .formbold-main-wrapper {
   padding: 12px 48px 48px 48px;
   margin: 0 auto;
@@ -11,7 +22,7 @@
   margin: 0 auto;
   max-width: 750px;
   width: 100%;
-  background: white;
+  background: var(--card-bg-color) !important;
   padding: 20px;
   border: 1px solid #dee2e6;
 }
@@ -51,7 +62,7 @@
   color: #536387;
 }
 .formbold-steps li.active {
-  color: #07074d;
+  color: var(--text-color);
 }
 .formbold-steps li.active span {
   background: #fb771a;
@@ -68,7 +79,7 @@
 }
 
 .formbold-form-label {
-  color: #485252;
+  color: var(--text-color) important;
   font-weight: 600;
   font-size: 15px;
   line-height: 1;
@@ -78,6 +89,7 @@
   font-weight: 400;
   font-size: 12px;
   line-height: 1;
+  color: var(--text-color);
 }
 .formbold-input-flex span {
   color: #a3a1a1;
@@ -197,10 +209,12 @@
 }
 .studentadd .form-control {
   padding: 0.6rem 0.85rem;
+  background-color: var(--card-bg-color);
 }
 .studentadd .sms {
   margin-top: 15px;
   margin-right: 8px;
+  color: var(--text-color);
 }
 
 .studentadd .administrator {
@@ -241,6 +255,7 @@
 .studentStatus {
   display: flex;
   padding-top: 8px;
+  color: var(--text-color);
 }
 .studentStatus div {
   display: flex;
@@ -267,6 +282,7 @@
   display: flex;
   padding-top: 8px;
   gap: 35%;
+  color: var(--text-color);
 }
 .invoicing {
   display: flex;
@@ -276,6 +292,7 @@
 .formbold-form-step-2 h5 {
   font-weight: 600;
 }
+
 
 /*************************** Student Add End ****************************/
 
@@ -307,6 +324,7 @@
   text-align: center;
   padding: 50px;
   border-radius: 5px;
+  color: var(--text-color);
 }
 .default-setting {
   border: 1px solid #c2c2c2;

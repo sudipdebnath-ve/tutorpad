@@ -118,12 +118,15 @@
   --bg-color: #f7f5ed;
   --text-color: #000;
   --card-bg-color: #fff;
+  --hover-bg-color: #f7f5ed;
 }
 
 [data-theme="dark"] {
   --bg-color: #363636;
   --text-color: #fff;
   --card-bg-color: #363636;
+  --hover-bg-color: rgba(255, 255, 255, 0.5);
+  --hover-text-color: #000;
 }
 
 body {
@@ -239,6 +242,7 @@ tr {
 }
 label {
   display: inline-block;
+  color: var(--text-color);
 }
 button {
   border-radius: 0;
@@ -255,6 +259,12 @@ textarea {
   font-size: inherit;
   line-height: inherit;
   margin: 0;
+}
+input,
+textarea,
+select {
+  color: var(--text-color) !important;
+  background: var(--card-bg-color) !important;
 }
 button,
 select {
@@ -273,6 +283,12 @@ select:disabled {
     [type="week"]
   ):not([type="time"])::-webkit-calendar-picker-indicator {
   display: none !important;
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(var(--date-filter-percentage));
+}
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(var(--date-filter-percentage));
 }
 [type="button"],
 [type="reset"],
@@ -1610,7 +1626,7 @@ legend + * {
   background-color: #fff;
   border: 1px solid var(--bs-border-color);
   border-radius: var(--bs-border-radius);
-  color: #495057;
+  color: var(--text-color);
   display: block;
   font-size: 0.875rem;
   font-weight: 400;
@@ -3316,9 +3332,9 @@ fieldset:disabled .btn {
 }
 .nav-tabs .nav-item.show .nav-link,
 .nav-tabs .nav-link.active {
-  background-color: var(--bs-nav-tabs-link-active-bg);
-  border-color: var(--bs-nav-tabs-link-active-border-color);
-  color: var(--bs-nav-tabs-link-active-color);
+  background-color: var(--card-bg-color);
+  /* border-color: white; */
+  color: var(--text-color);
 }
 .nav-tabs .dropdown-menu {
   border-top-left-radius: 0;
@@ -3879,7 +3895,7 @@ fieldset:disabled .btn {
   margin-left: var(--bs-card-spacer-x);
 }
 .card-header {
-  background-color: var(--bs-card-cap-bg);
+  background-color: var(--card-bg-color);
   border-bottom: var(--bs-card-border-width) solid var(--bs-card-border-color);
   color: var(--bs-card-cap-color);
   margin-bottom: 0;
@@ -5953,6 +5969,12 @@ fieldset:disabled .btn {
 }
 .text-center {
   text-align: center !important;
+
+}
+
+.text-center strong {
+  color: var(--text-color);
+  
 }
 .text-decoration-none {
   text-decoration: none !important;
@@ -10252,7 +10274,7 @@ body {
 .sidebar-content {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  /* height: 100vh; */
 }
 .sidebar-nav {
   flex-grow: 1;
@@ -10803,6 +10825,18 @@ text {
   position: fixed;
   scrollbar-width: none;
   visibility: hidden;
+}
+.rbc-calendar {
+  color: var(--text-color);
+}
+.rbc-btn-group > button {
+  color: var(--text-color) !important;
+}
+.rbc-date-cell.rbc-now {
+  color: #000 !important;
+}
+.rbc-toolbar button.rbc-active {
+  color: #000 !important;
 }
 .flatpickr-calendar {
   animation: none;
@@ -11604,6 +11638,24 @@ span.flatpickr-weekday {
   color: #fb771a !important;
   padding: 20px;
 }
+.css-ptkaw2-MuiDataGrid-root {
+  color: var(--text-color) !important;
+}
+.css-c63i49-MuiInputBase-input-MuiInput-input {
+  color: var(--text-color) !important;
+}
+.css-ptiqhd-MuiSvgIcon-root {
+  color: var(--text-color) !important;
+}
+.css-1eed5fa-MuiInputBase-root-MuiInput-root {
+  border-bottom: 1px solid var(--text-color) !important;
+}
+.css-zylse7-MuiButtonBase-root-MuiIconButton-root {
+  color: var(--text-color) !important;
+}
+.css-i4bv87-MuiSvgIcon-root {
+  color: var(--text-color) !important;
+}
 /******************* My Preferences start********************/
 .initials {
   display: flex;
@@ -11618,11 +11670,13 @@ span.flatpickr-weekday {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
+  color: var(--text-color);
 }
 .image-user img {
   width: 90px;
   height: 90px;
   border-radius: 50%;
+  color: var(--text-color);
 }
 .initials h2 {
   margin: 0;
@@ -11632,6 +11686,7 @@ span.flatpickr-weekday {
   text-align: center;
   padding-top: 20px;
   font-size: 18px;
+  color: var(--text-color);
 }
 .location-user,
 .email-user {
@@ -11774,9 +11829,9 @@ span.flatpickr-weekday {
   padding: 0.5rem 0.85rem;
 }
 button.closeModal {
-  background: #c06b32;
-  color: #ffffff;
-  border: navajowhite;
+  background: var(--card-bg-color);
+  color: var(--text-color);
+  /* border: navajowhite; */
 }
 .b-none {
   border: none;
@@ -11932,10 +11987,10 @@ button.closeModal {
 /******************* Student start********************/
 
 .student .nav-link.active {
-  color: #fb771a !important;
+  color: var(--text-color) !important;
 }
 .student .nav-link {
-  color: #000000 !important;
+  color: var(--text-color) !important;
   font-weight: 600;
   width: 200px;
 }
@@ -11946,7 +12001,7 @@ button.closeModal {
   border: 1px solid #c2c2c2;
 }
 .dropdown.addnew {
-  background-color: #fb771a;
+  background-color: var(--text-color);
   border-radius: 5px;
   border: none;
 }
@@ -11954,7 +12009,7 @@ button.closeModal {
   border: none;
 }
 .addnew a {
-  color: #ffffff;
+  color: var(--card-bg-color);
   border: none;
 }
 .student .dropdown {
@@ -11973,7 +12028,7 @@ button.closeModal {
   color: #000;
 }
 .dropdown.addnew i {
-  color: #ffffff;
+  color: var(--card-bg-color);
 }
 .student .dropdown-toggle:after {
   border: solid;
@@ -12097,6 +12152,8 @@ button.closeModal {
   gap: 30px;
 }
 .onlineresources .resource {
+  color: var(--text-color);
+  background-color: var(--card-bg-color);
   display: flex;
   align-items: center;
   gap: 50px;
@@ -12111,6 +12168,7 @@ button.closeModal {
   gap: 20px;
 }
 .onlineresources .folder-files p {
+  color: var(--text-color);
   margin: 0;
 }
 .onlineresources .image-user {
@@ -12170,6 +12228,10 @@ button.closeModal {
   position: relative;
   z-index: 9999;
 }
+.ReactModal__Content {
+  background: var(--card-bg-color) !important;
+  color: var(--text-color);
+}
 .calendar-modal .popup-icons {
   display: flex;
   gap: 20px;
@@ -12198,9 +12260,10 @@ button.closeModal {
 }
 .calendar-modal .multi i {
   font-size: 16px;
+  color: var(--text-color);
 }
 .calendar-modal .multi:hover {
-  background: #ebebeb;
+  background: var(--hover-bg-color);
 }
 .calendar-modal .form-control {
   padding: 0.5rem 0.85rem;

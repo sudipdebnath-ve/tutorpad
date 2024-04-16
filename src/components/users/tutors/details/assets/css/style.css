@@ -1,3 +1,15 @@
+[data-theme="light"] {
+  --bg-color: #f7f5ed;
+  --text-color: #000;
+  --card-bg-color: #fff;
+}
+
+[data-theme="dark"] {
+  --bg-color: #363636;
+  --text-color: #fff;
+  --card-bg-color: #363636;
+}
+
 .student-details .active-user {
   text-align: center;
   margin: 15px;
@@ -5,6 +17,7 @@
 .student-details .link-to-family {
   text-align: center;
   padding-top: 10px;
+  color: var(--text-color);
 }
 .student-details .active-user .active {
   color: rgb(24, 121, 11);
@@ -18,6 +31,7 @@
 .student-details .link-to-family a {
   color: #fb771a;
   font-weight: 600;
+  color: var(--text-color);
 }
 .student-details h3 {
   font-weight: 600;
@@ -32,14 +46,20 @@
 .arrange-edit-sign h3 {
   margin: 0;
 }
+
+.card-body span {
+  color: var(--text-color);
+}
 .student-edit-user {
   display: inline;
   border: 1px solid #c3c3c3;
   padding: 5px;
   border-radius: 5px;
+  color: var(--text-color);
 }
 .student-edit-user.add {
   padding: 5px 10px;
+  
 }
 .student-details .edit-user {
   position: absolute;
@@ -71,6 +91,30 @@
   background-color: #fff9e7;
   box-shadow: inset 0 calc(-1 * var(--bs-accordion-border-width)) 0
     var(--bs-accordion-border-color);
+}
+
+.accordion-body{
+  color: var(--text-color) !important;
+  background-color: var(--card-bg-color)!important;
+}
+.availablity{
+  color: var(--text-color);
+}
+
+.formbold-input-flex{
+  color: var(--text-color);
+}
+
+.mypreference-modal.close-h {
+  color: var(--text-color) 
+}
+
+.accordion-body .flex-fill strong {
+  color: var(--text-color)  
+}
+
+.accordion-body .student-properties-edit {
+  color: var(--text-color)
 }
 .student-details .btn-end a,
 .student-details .btn-end .formbold-btn {

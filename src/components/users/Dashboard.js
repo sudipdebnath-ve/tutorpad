@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import study from "./assets/images/study.png";
 import createAccount from "./assets/images/create-account.png";
 import createInvoice from "./assets/images/create-invoice.png";
@@ -73,7 +73,13 @@ const Dashboard = () => {
                     </div>
                   </div>
                   <div className="col mt-0">
+                    
+                    <Link
+                          className="dropdown-item"
+                          to={"/students/add"}
+                    >
                     <h5 className="card-title">Add Student</h5>
+                    </Link>
                   </div>
                 </div>
 

@@ -19,7 +19,7 @@ const StudentAdd = () => {
     title: "",
     first_name: "",
     last_name: "",
-    name : "",
+    name: "",
     username: "",
     password: "",
     email: "",
@@ -40,7 +40,7 @@ const StudentAdd = () => {
     lesson: "Lesson",
     privileges: "",
     preferred_locatio: "",
-    tutor_status: "tutor"
+    tutor_status: "tutor",
   });
 
   const [privileges, setPrivileges] = useState({
@@ -262,7 +262,7 @@ const StudentAdd = () => {
         </>
       )}
 
-      <div className="main bg-color">
+      <div className="main">
         <TopBar />
 
         <main className="content studentadd">
@@ -486,10 +486,9 @@ const StudentAdd = () => {
                                 />
                               </div>
                             </div>
-                            </>
+                          </>
                         )}
-                        {formData.payroll ===
-                          "Flat hourly rate" && (
+                        {formData.payroll === "Flat hourly rate" && (
                           <>
                             <div className="formbold-input-flex">
                               <div>
@@ -507,12 +506,11 @@ const StudentAdd = () => {
                                 />
                               </div>
                             </div>
-                            </>
+                          </>
                         )}
                         {formData.payroll !==
                           "No automatic payroll calculation" && (
                           <>
-
                             <div className="formbold-input-flex diff">
                               <div>
                                 <label
@@ -624,11 +622,11 @@ const StudentAdd = () => {
                         </div>
                       </div>
                       <div className="formbold-form-step-2">
-                      <div className="text-center">
-                            <small style={{ color: "red" }}>
-                              {error?.email?.length ? error.email[0] : <></>}
-                            </small>
-                          </div>
+                        <div className="text-center">
+                          <small style={{ color: "red" }}>
+                            {error?.email?.length ? error.email[0] : <></>}
+                          </small>
+                        </div>
                         <h5>Tutor Privileges</h5>
 
                         <div className="formbold-input-flex diff">
