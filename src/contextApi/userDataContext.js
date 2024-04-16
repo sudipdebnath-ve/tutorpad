@@ -15,7 +15,7 @@ const AppContext = ({ children }) => {
   const [emailTemplateData, setEmailTemplateData] = useState([]);
   const [emailOnchange, setEmailOnchange] = useState(false);
   const [studentData, setStudentData] = useState(false);
-  const [tutorData, setTutorData] =useState(false);
+  const [tutorData, setTutorData] = useState(false);
   const [allChargeCategory, setAllChargeCategory] = useState([]);
   const [allFamilies, setAllFamilies] = useState([]);
   const [accountInvoices, setAccountInvoices] = useState([]);
@@ -32,6 +32,25 @@ const AppContext = ({ children }) => {
   const [allTransactionsByFamily, setAllTransactionsByFamily] = useState([]);
   const [allTransactionsByDates, setAllTransactionsByDates] = useState([]);
   const [loading, setLoading] = useState(false);
+  const storedMode = localStorage.getItem("isDarkMode");
+  const initialMode = storedMode ? JSON.parse(storedMode) : false;
+  const [isDarkMode, setIsDarkMode] = useState(initialMode);
+
+  const toggleTheme = () => {
+    setIsDarkMode((prevMode) => {
+      const newMode = !prevMode;
+      // Store mode in localStorage
+      localStorage.setItem("isDarkMode", JSON.stringify(newMode));
+      return newMode;
+    });
+  };
+
+  const theme = isDarkMode ? "dark" : "light";
+
+  useEffect(() => {
+    document?.documentElement?.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [isDarkMode]);
 
   const navigate = useNavigate();
 
@@ -172,7 +191,6 @@ const AppContext = ({ children }) => {
         setLoading(false);
       });
   };
-
 
   const fetchChargeCategory = async () => {
     setLoading(true);
@@ -332,7 +350,7 @@ const AppContext = ({ children }) => {
   //     });
   // };
 
-  const fetchEvent = async (startDate,endDate) => {
+  const fetchEvent = async (startDate, endDate) => {
     const config = {
       method: "GET",
       url: `${API_URL}events?start_date=${startDate}&end_date=${endDate}`,
@@ -348,7 +366,6 @@ const AppContext = ({ children }) => {
         console.log(error);
       });
   };
-
 
   // Calendar Events End
 
@@ -369,7 +386,7 @@ const AppContext = ({ children }) => {
       .catch((error) => {
         console.log(error);
       });
-  }
+  };
 
   const fetchLocation = async () => {
     const config = {
@@ -386,14 +403,13 @@ const AppContext = ({ children }) => {
       .catch((error) => {
         console.log(error);
       });
-  }
-
+  };
 
   const fetchTransactionsByFamily = async (id) => {
     setLoading(true);
     const validateconfig = {
       method: "GET",
-      url: `${API_URL}account-transactions/`+id,
+      url: `${API_URL}account-transactions/` + id,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -412,7 +428,7 @@ const AppContext = ({ children }) => {
       });
   };
 
-  const fetchTransactionsByDates = async (fromDate,toDate) => {
+  const fetchTransactionsByDates = async (fromDate, toDate) => {
     setLoading(true);
     const validateconfig = {
       method: "GET",
@@ -434,8 +450,6 @@ const AppContext = ({ children }) => {
         setLoading(false);
       });
   };
-
-
 
   return (
     <userDataContext.Provider
@@ -471,17 +485,22 @@ const AppContext = ({ children }) => {
         allLocation,
         fetchChargeCategory,
         allChargeCategory,
-        allFamilies, 
+        allFamilies,
         setAllFamilies,
         fetchFamilies,
         fetchInvoices,
         accountInvoices,
-        allTransactionsByFamily, 
+        allTransactionsByFamily,
         fetchTransactionsByFamily,
         allTransactionsByDates, 
         fetchTransactionsByDates,
         fetchInvoicesByDate,
-        allInvoicesByDate
+        allInvoicesByDate,
+        allTransactionsByDates,
+        fetchTransactionsByDates,
+        isDarkMode,
+        theme,
+        toggleTheme,
       }}
     >
       {children}

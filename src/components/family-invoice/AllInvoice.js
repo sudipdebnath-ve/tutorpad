@@ -12,6 +12,7 @@ const AllInvoice = ()=>{
     const [isEdit,setIsEdit] = useState(false);
     const [chargecat_name,set_chargecat_name] = useState("");
     const [selectedId,setSelectedId] = useState("");
+    const param = useParams();
     const [fromDate,setFromDate] = useState(getTodayDate());
     const [toDate,setToDate] = useState(getTodayDate());
     function getTodayDate() {
