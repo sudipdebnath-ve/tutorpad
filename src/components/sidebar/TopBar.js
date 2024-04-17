@@ -13,6 +13,8 @@ const TopBar = () => {
   const [profileToggle, setProfileToggle] = useState(false);
   const [notificationToggle, setNotificationToggle] = useState(false);
 
+  console.log("userData", userData);
+
   useEffect(() => {
     let name = window.location.pathname;
     var new_str = name.replace("/", "");

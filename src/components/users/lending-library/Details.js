@@ -180,7 +180,9 @@ const Details = () => {
                           className="sms"
                           name="lenditem"
                         />
-                        I'd like to lend this item to a student
+                        <label className="checkboxLabel">
+                          I'd like to lend this item to a student
+                        </label>
                         <br></br>
                         <br></br>
                         <div className="formbold-input-flex diff">

@@ -118,12 +118,15 @@
   --bg-color: #f7f5ed;
   --text-color: #000;
   --card-bg-color: #fff;
+  --hover-bg-color: #f7f5ed;
 }
 
 [data-theme="dark"] {
   --bg-color: #363636;
   --text-color: #fff;
   --card-bg-color: #363636;
+  --hover-bg-color: rgba(255, 255, 255, 0.5);
+  --hover-text-color: #000;
 }
 
 body {
@@ -239,6 +242,7 @@ tr {
 }
 label {
   display: inline-block;
+  color: var(--text-color);
 }
 button {
   border-radius: 0;
@@ -255,6 +259,12 @@ textarea {
   font-size: inherit;
   line-height: inherit;
   margin: 0;
+}
+input,
+textarea,
+select {
+  color: var(--text-color) !important;
+  background: var(--card-bg-color) !important;
 }
 button,
 select {
@@ -273,6 +283,12 @@ select:disabled {
     [type="week"]
   ):not([type="time"])::-webkit-calendar-picker-indicator {
   display: none !important;
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(var(--date-filter-percentage));
+}
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(var(--date-filter-percentage));
 }
 [type="button"],
 [type="reset"],
@@ -10258,7 +10274,7 @@ body {
 .sidebar-content {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  /* height: 100vh; */
 }
 .sidebar-nav {
   flex-grow: 1;
@@ -10809,6 +10825,18 @@ text {
   position: fixed;
   scrollbar-width: none;
   visibility: hidden;
+}
+.rbc-calendar {
+  color: var(--text-color);
+}
+.rbc-btn-group > button {
+  color: var(--text-color) !important;
+}
+.rbc-date-cell.rbc-now {
+  color: #000 !important;
+}
+.rbc-toolbar button.rbc-active {
+  color: #000 !important;
 }
 .flatpickr-calendar {
   animation: none;
@@ -11801,9 +11829,9 @@ span.flatpickr-weekday {
   padding: 0.5rem 0.85rem;
 }
 button.closeModal {
-  background: #c06b32;
-  color: #ffffff;
-  border: navajowhite;
+  background: var(--card-bg-color);
+  color: var(--text-color);
+  /* border: navajowhite; */
 }
 .b-none {
   border: none;
@@ -12200,6 +12228,10 @@ button.closeModal {
   position: relative;
   z-index: 9999;
 }
+.ReactModal__Content {
+  background: var(--card-bg-color) !important;
+  color: var(--text-color);
+}
 .calendar-modal .popup-icons {
   display: flex;
   gap: 20px;
@@ -12228,9 +12260,10 @@ button.closeModal {
 }
 .calendar-modal .multi i {
   font-size: 16px;
+  color: var(--text-color);
 }
 .calendar-modal .multi:hover {
-  background: #ebebeb;
+  background: var(--hover-bg-color);
 }
 .calendar-modal .form-control {
   padding: 0.5rem 0.85rem;

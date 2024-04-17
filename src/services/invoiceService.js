@@ -162,3 +162,14 @@ export const sendEmail = async ( data,id ) =>{
      console.log(error);
    });
 }
+
+
+export const getAllInvoiceByDate = async (date_from,date_to) => {
+  return invoicesApi.get(`invoices?date_from=${date_from}&date_to=${date_to}`,{
+  }).then((response) => {
+    return response.data;
+  })
+  .catch((err)=>{
+    console.log(err);
+  })
+}
