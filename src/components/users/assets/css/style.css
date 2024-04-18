@@ -341,7 +341,7 @@ legend + * {
 
 .search-box {
   margin-left: 20px;
-  width: 65% !important;
+  width: 50% !important;
   background: var(--card-bg-color) !important;
 }
 [type="search"] {
@@ -11656,6 +11656,20 @@ span.flatpickr-weekday {
 .css-i4bv87-MuiSvgIcon-root {
   color: var(--text-color) !important;
 }
+
+.css-1miuj5f-MuiDataGrid-panelWrapper {
+  background-color: var(--card-bg-color);
+  
+}
+
+.css-1xif2b4-MuiPopper-root-MuiDataGrid-menu .MuiDataGrid-menuList{
+  background-color: var(--card-bg-color);
+  color: var(--text-color);
+}
+
+.css-1c2i806-MuiFormLabel-root-MuiInputLabel-root{
+  color: var(--text-color);
+}
 /******************* My Preferences start********************/
 .initials {
   display: flex;
@@ -12017,7 +12031,7 @@ button.closeModal {
 }
 .student .card-header {
   display: flex;
-  width: 50%;
+  width: 51%;
 }
 .student .card {
   display: flex;
@@ -12066,12 +12080,17 @@ button.closeModal {
 }
 .student .addnewstudent {
   display: block;
-  width: 155px;
+  width: 160px;
   margin: 0 auto;
   background-color: #fb771a;
   border-radius: 5px;
   border: none;
   padding: 5px;
+}
+
+.student .addnewstudent{
+  background-color: var(--bg-color);
+  border: 1px solid #c3c3c3
 }
 .student .addnewstudent i {
   color: #fff;

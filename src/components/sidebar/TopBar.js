@@ -4,6 +4,7 @@ import { GoBell } from "react-icons/go";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import avatar from "../users/assets/avatars/avatar.jpg";
 import CustomizedSwitch from "../CustomizedSwitch.js";
+import "./style.css";
 
 const TopBar = () => {
   const { userData, logOut, setSidebarToggle, sidebarToggle, toggleTheme } =

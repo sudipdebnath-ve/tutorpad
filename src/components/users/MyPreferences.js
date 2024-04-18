@@ -11,6 +11,7 @@ import { ToastContainer, toast } from "react-toastify";
 import payroll from "../users/assets/images/payroll.svg";
 import { init } from "i18next";
 
+
 const MyPreferences = () => {
   const {
     userData,
@@ -1098,7 +1099,8 @@ const MyPreferences = () => {
                       <Link to="#" className="logout">
                         Log Out of All Devices
                       </Link>
-                      <Link onClick={(e) => openModal("password")}>
+                      <Link onClick={(e) => openModal("password")}
+                            style={{ color: 'var(--text-color);' }}>
                         Change Password
                       </Link>
                     </div>
