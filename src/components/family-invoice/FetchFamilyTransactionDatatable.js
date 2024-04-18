@@ -4,29 +4,33 @@ import { DataGrid, GridToolbar, GridValueGetterParams } from "@mui/x-data-grid";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import students from "../users/assets/images/students.svg";
 import Loader from "../Loader.js";
-import { Link, useParams } from "react-router-dom"
-import { Icon } from 'react-icons-kit';
-import {edit2} from 'react-icons-kit/feather/edit2';
-import {trash2} from 'react-icons-kit/feather/trash2';
-import {chevronRight} from 'react-icons-kit/feather/chevronRight';
+import { Link, useParams } from "react-router-dom";
+import { Icon } from "react-icons-kit";
+import { edit2 } from "react-icons-kit/feather/edit2";
+import { trash2 } from "react-icons-kit/feather/trash2";
+import { chevronRight } from "react-icons-kit/feather/chevronRight";
 import { useNavigate } from "react-router-dom";
 import DeleteModel from "../form/delete-model/DeleteModel.js";
 import { ToastContainer, toast } from "react-toastify";
 import { deleteChargeCategories } from "../../services/categoriesService.js";
-import transaction from '../../assets/images/transactions.svg'
+import transaction from "../../assets/images/transactions.svg";
 const FetchFamilyTransactionDatatable = () => {
   const param = useParams();
   const [val, setVal] = useState(false);
-  const { allTransactionsByFamily, fetchTransactionsByFamily, userId, setLoading, loading } =
-    useUserDataContext();
-  const [deleteId,setDeleteId] = useState(null);
-  const [deleteModalIsOpen,setDeleteModalIsOpen] = useState(false);
-  const [isDeleteLoading,setIsDeleteLoading] = useState(false);
+  const {
+    allTransactionsByFamily,
+    fetchTransactionsByFamily,
+    userId,
+    setLoading,
+    loading,
+  } = useUserDataContext();
+  const [deleteId, setDeleteId] = useState(null);
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     fetchTransactionsByFamily(param.id);
-  }, [userId,param]);
-
+  }, [userId, param]);
 
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
@@ -39,9 +43,8 @@ const FetchFamilyTransactionDatatable = () => {
       field: "student_fname",
       headerName: "Student",
       width: 150,
-      renderCell: (params) => (
-        `${params.row.student_fname} ${params.row.student_lname}`
-      ),
+      renderCell: (params) =>
+        `${params.row.student_fname} ${params.row.student_lname}`,
     },
     {
       field: "description",
@@ -52,20 +55,44 @@ const FetchFamilyTransactionDatatable = () => {
       field: "transaction_amount",
       headerName: "Transaction Amount",
       width: 150,
-      renderCell:(params)=>(
+      renderCell: (params) => (
         <>
-        {
-          params.row.transaction_type==1 && <div style={{background:'green',padding:'2px 5px',color:'white'}}>{params.row.transaction_label} {params.row.transaction_amount}</div>
-        }
-        {
-          params.row.transaction_type==2 && <div style={{background:'green',padding:'2px 5px',color:'white'}}>{params.row.transaction_label} {params.row.transaction_amount}</div>
-        }
-        {
-          params.row.transaction_type==3 && <div style={{background:'red',padding:'2px 5px',color:'white'}}>{params.row.transaction_label} -{params.row.transaction_amount}</div>
-        }
-        {
-          params.row.transaction_type==4 && <div style={{background:'red',padding:'2px 5px',color:'white'}}>{params.row.transaction_label} -{params.row.transaction_amount}</div>
-        }
+          {params.row.transaction_type == 1 && (
+            <div
+              style={{
+                background: "green",
+                padding: "2px 5px",
+                color: "white",
+              }}
+            >
+              {params.row.transaction_label} {params.row.transaction_amount}
+            </div>
+          )}
+          {params.row.transaction_type == 2 && (
+            <div
+              style={{
+                background: "green",
+                padding: "2px 5px",
+                color: "white",
+              }}
+            >
+              {params.row.transaction_label} {params.row.transaction_amount}
+            </div>
+          )}
+          {params.row.transaction_type == 3 && (
+            <div
+              style={{ background: "red", padding: "2px 5px", color: "white" }}
+            >
+              {params.row.transaction_label} -{params.row.transaction_amount}
+            </div>
+          )}
+          {params.row.transaction_type == 4 && (
+            <div
+              style={{ background: "red", padding: "2px 5px", color: "white" }}
+            >
+              {params.row.transaction_label} -{params.row.transaction_amount}
+            </div>
+          )}
         </>
       ),
     },
@@ -74,20 +101,35 @@ const FetchFamilyTransactionDatatable = () => {
       headerName: "Edit",
       width: 150,
       renderCell: (params) => (
-       <div style={{display:'flex',gap:5}}>
-          <Icon onClick={()=>navigate("/familiies-and-invoices/transaction-type/2/"+param.id+"/"+params.row.transaction_type+"/"+params.row.id)} icon={edit2} />
-          <Icon onClick={()=>onDeleteModelHandler(params.row.id)} icon={trash2} />
-       </div>
+        <div style={{ display: "flex", gap: 5 }}>
+          <Icon
+            onClick={() =>
+              navigate(
+                "/familiies-and-invoices/transaction-type/2/" +
+                  param.id +
+                  "/" +
+                  params.row.transaction_type +
+                  "/" +
+                  params.row.id
+              )
+            }
+            icon={edit2}
+          />
+          <Icon
+            onClick={() => onDeleteModelHandler(params.row.id)}
+            icon={trash2}
+          />
+        </div>
       ),
-    }
+    },
   ];
 
-  const onDeleteModelHandler = (id)=>{
+  const onDeleteModelHandler = (id) => {
     setDeleteId(id);
     setDeleteModalIsOpen(true);
-  }
+  };
 
-  const onDeleteHandler = async (id)=>{
+  const onDeleteHandler = async (id) => {
     setIsDeleteLoading(true);
     const response = await deleteChargeCategories(id);
     if (response.success == true) {
@@ -97,17 +139,14 @@ const FetchFamilyTransactionDatatable = () => {
       });
       setDeleteModalIsOpen(false);
       setIsDeleteLoading(false);
-    }else{
+    } else {
       setDeleteModalIsOpen(false);
       setIsDeleteLoading(false);
       toast.error(JSON.stringify(response.response.data.data), {
         position: toast.POSITION.TOP_CENTER,
-      })
-      
+      });
     }
-    
-  }
-
+  };
 
   useEffect(() => {
     setVal(true);
@@ -121,7 +160,14 @@ const FetchFamilyTransactionDatatable = () => {
   }
   return (
     <div>
-      <DeleteModel isLoading = {isDeleteLoading} setIsLoading={setIsDeleteLoading} modalIsOpen={deleteModalIsOpen} id={deleteId} setIsOpen={setDeleteModalIsOpen} onOk={onDeleteHandler}  />
+      <DeleteModel
+        isLoading={isDeleteLoading}
+        setIsLoading={setIsDeleteLoading}
+        modalIsOpen={deleteModalIsOpen}
+        id={deleteId}
+        setIsOpen={setDeleteModalIsOpen}
+        onOk={onDeleteHandler}
+      />
       <>
         {rows && allTransactionsByFamily.length > 0 ? (
           loading ? (
@@ -196,9 +242,11 @@ const FetchFamilyTransactionDatatable = () => {
                   </div>
                 </div>
                 <h4>
-                  <strong>There aren't any transactions for this date range</strong>
+                  <strong>
+                    There aren't any transactions for this date range
+                  </strong>
                 </h4>
-                <div className="addnewstudent">
+                <div className="addnewstudent addnew">
                   <i className="fa fa-plus" aria-hidden="true"></i>
                   <a className="btn dropdown-toggle" href="#" role="button">
                     Add New

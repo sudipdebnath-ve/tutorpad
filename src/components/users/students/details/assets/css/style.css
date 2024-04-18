@@ -80,7 +80,7 @@
   margin-bottom: 0px;
 }
 .accordion-button:not(.collapsed) {
-  color: #fb771a;
+  /* color: #fb771a; */
   background-color: #fff9e7;
   box-shadow: inset 0 calc(-1 * var(--bs-accordion-border-width)) 0
     var(--bs-accordion-border-color);

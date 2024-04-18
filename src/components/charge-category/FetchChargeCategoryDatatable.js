@@ -4,27 +4,35 @@ import { DataGrid, GridToolbar, GridValueGetterParams } from "@mui/x-data-grid";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import students from "../users/assets/images/students.svg";
 import Loader from "../Loader.js";
-import { Link } from "react-router-dom"
-import { Icon } from 'react-icons-kit';
-import {edit2} from 'react-icons-kit/feather/edit2';
-import {trash2} from 'react-icons-kit/feather/trash2';
+import { Link } from "react-router-dom";
+import { Icon } from "react-icons-kit";
+import { edit2 } from "react-icons-kit/feather/edit2";
+import { trash2 } from "react-icons-kit/feather/trash2";
 import { useNavigate } from "react-router-dom";
 import DeleteModel from "../form/delete-model/DeleteModel.js";
 import { ToastContainer, toast } from "react-toastify";
 import { deleteChargeCategories } from "../../services/categoriesService.js";
-const FetchChargeCategoryDatatable = ({setSelectedId,set_chargecat_name,setModalIsOpen,setIsEdit}) => {
-  
+const FetchChargeCategoryDatatable = ({
+  setSelectedId,
+  set_chargecat_name,
+  setModalIsOpen,
+  setIsEdit,
+}) => {
   const [val, setVal] = useState(false);
-  const { fetchChargeCategory, userId, setLoading, loading, allChargeCategory } =
-    useUserDataContext();
-  const [deleteId,setDeleteId] = useState(null);
-  const [deleteModalIsOpen,setDeleteModalIsOpen] = useState(false);
-  const [isDeleteLoading,setIsDeleteLoading] = useState(false);
+  const {
+    fetchChargeCategory,
+    userId,
+    setLoading,
+    loading,
+    allChargeCategory,
+  } = useUserDataContext();
+  const [deleteId, setDeleteId] = useState(null);
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     fetchChargeCategory();
   }, [userId]);
-
 
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
@@ -34,7 +42,7 @@ const FetchChargeCategoryDatatable = ({setSelectedId,set_chargecat_name,setModal
       // headerClassName: "super-app-theme--header",
       // valueGetter: (params) =>
       //   `<a href="${params.row.first_name}">${params.row.first_name}</a>`,
-      width: '650',
+      width: "650",
       // valueGetter: (params: GridValueGetterParams) =>
       //   `<a href="${params.row.first_name}">${params.row.first_name}</a>`,
       // },
@@ -50,20 +58,31 @@ const FetchChargeCategoryDatatable = ({setSelectedId,set_chargecat_name,setModal
       headerName: "Edit",
       width: 150,
       renderCell: (params) => (
-       <div style={{display:'flex',gap:5}}>
-          <Icon onClick={()=>{setSelectedId(params.row.id);set_chargecat_name(params.row.chargecat_name);setModalIsOpen(true);setIsEdit(true);}} icon={edit2} />
-          <Icon onClick={()=>onDeleteModelHandler(params.row.id)} icon={trash2} />
-       </div>
+        <div style={{ display: "flex", gap: 5 }}>
+          <Icon
+            onClick={() => {
+              setSelectedId(params.row.id);
+              set_chargecat_name(params.row.chargecat_name);
+              setModalIsOpen(true);
+              setIsEdit(true);
+            }}
+            icon={edit2}
+          />
+          <Icon
+            onClick={() => onDeleteModelHandler(params.row.id)}
+            icon={trash2}
+          />
+        </div>
       ),
-    }
+    },
   ];
 
-  const onDeleteModelHandler = (id)=>{
+  const onDeleteModelHandler = (id) => {
     setDeleteId(id);
     setDeleteModalIsOpen(true);
-  }
+  };
 
-  const onDeleteHandler = async (id)=>{
+  const onDeleteHandler = async (id) => {
     setIsDeleteLoading(true);
     const response = await deleteChargeCategories(id);
     if (response.success == true) {
@@ -73,17 +92,14 @@ const FetchChargeCategoryDatatable = ({setSelectedId,set_chargecat_name,setModal
       });
       setDeleteModalIsOpen(false);
       setIsDeleteLoading(false);
-    }else{
+    } else {
       setDeleteModalIsOpen(false);
       setIsDeleteLoading(false);
       toast.error(JSON.stringify(response.response.data.data), {
         position: toast.POSITION.TOP_CENTER,
-      })
-      
+      });
     }
-    
-  }
-
+  };
 
   useEffect(() => {
     setVal(true);
@@ -97,7 +113,14 @@ const FetchChargeCategoryDatatable = ({setSelectedId,set_chargecat_name,setModal
   }
   return (
     <div>
-      <DeleteModel isLoading = {isDeleteLoading} setIsLoading={setIsDeleteLoading} modalIsOpen={deleteModalIsOpen} id={deleteId} setIsOpen={setDeleteModalIsOpen} onOk={onDeleteHandler}  />
+      <DeleteModel
+        isLoading={isDeleteLoading}
+        setIsLoading={setIsDeleteLoading}
+        modalIsOpen={deleteModalIsOpen}
+        id={deleteId}
+        setIsOpen={setDeleteModalIsOpen}
+        onOk={onDeleteHandler}
+      />
       <>
         {rows && allChargeCategory.length > 0 ? (
           loading ? (
@@ -177,7 +200,7 @@ const FetchChargeCategoryDatatable = ({setSelectedId,set_chargecat_name,setModal
                 <p style={{ textAlign: "center" }}>
                   Add your tutors, and more.
                 </p>
-                <div className="addnewstudent">
+                <div className="addnewstudent addnew">
                   <i className="fa fa-plus" aria-hidden="true"></i>
                   <a className="btn dropdown-toggle" href="#" role="button">
                     Add New

@@ -4,15 +4,15 @@ import { DataGrid, GridToolbar, GridValueGetterParams } from "@mui/x-data-grid";
 import { useUserDataContext } from "../../../contextApi/userDataContext.js";
 import students from "../../users/assets/images/students.svg";
 import Loader from "../../Loader.js";
-import { Icon } from 'react-icons-kit';
-import {edit2} from 'react-icons-kit/feather/edit2';
-import {trash2} from 'react-icons-kit/feather/trash2';
+import { Icon } from "react-icons-kit";
+import { edit2 } from "react-icons-kit/feather/edit2";
+import { trash2 } from "react-icons-kit/feather/trash2";
 import { useNavigate } from "react-router-dom";
 import { colors } from "../../../utils/constant.js";
-import {mail} from 'react-icons-kit/feather/mail';
-import {messageSquare} from 'react-icons-kit/feather/messageSquare';
-import {xSquare} from 'react-icons-kit/feather/xSquare';
-import {command} from 'react-icons-kit/feather/command';
+import { mail } from "react-icons-kit/feather/mail";
+import { messageSquare } from "react-icons-kit/feather/messageSquare";
+import { xSquare } from "react-icons-kit/feather/xSquare";
+import { command } from "react-icons-kit/feather/command";
 import DeleteModel from "../../form/delete-model/DeleteModel.js";
 import { ToastContainer, toast } from "react-toastify";
 import { deleteLocations } from "../../../services/locationsService.js";
@@ -20,10 +20,10 @@ import { iconsList } from "../../../utils/constant.js";
 const FetchLocationDatatable = () => {
   const navigate = useNavigate();
   const [val, setVal] = useState(false);
-  const [modalIsOpen,setModalIsOpen] = useState(false);
-  const [deleteId,setDeleteId] = useState(null);
-  const [isDeleteLoading,setIsDeleteLoading] = useState(false);
-  
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+
   const { fetchLocation, userId, allLocation, setLoading, loading } =
     useUserDataContext();
 
@@ -43,12 +43,12 @@ const FetchLocationDatatable = () => {
       headerName: "Address",
       width: 150,
       renderCell: (params) => (
-         <div style={{display:'flex',gap:5}}>
-            {
-              params?.row?.la_type.la_has_input==1?params?.row.eventloc_custom_address:params?.row?.la_type.la_title
-            }
+        <div style={{ display: "flex", gap: 5 }}>
+          {params?.row?.la_type.la_has_input == 1
+            ? params?.row.eventloc_custom_address
+            : params?.row?.la_type.la_title}
         </div>
-       ),
+      ),
     },
     {
       field: "eventloc_color",
@@ -56,35 +56,54 @@ const FetchLocationDatatable = () => {
       width: 150,
       editable: true,
       renderCell: (params) => (
-        <div className="colorDotBoxShow"> 
+        <div className="colorDotBoxShow">
           <div className="colorDotBox">
-              <div className="colorDot" style={{background:params.row.eventloc_color}}></div> 
-              <span>{colors.find((f)=>f.code===params.row.eventloc_color)?.color}</span>
+            <div
+              className="colorDot"
+              style={{ background: params.row.eventloc_color }}
+            ></div>
+            <span>
+              {colors.find((f) => f.code === params.row.eventloc_color)?.color}
+            </span>
           </div>
         </div>
-       ),
+      ),
     },
     {
       field: "eventloc_icon",
       headerName: "Icon",
       width: 150,
-      renderCell: (params) => (
-        iconsList.find((f)=>f.code==params?.row?.eventloc_icon)?.icon && <div style={{display:'flex',gap:5}}>
-                                                      <Icon icon={iconsList.find((f)=>f.code===params?.row?.eventloc_icon).icon} />
-                                                  </div>
-       ),
+      renderCell: (params) =>
+        iconsList.find((f) => f.code == params?.row?.eventloc_icon)?.icon && (
+          <div style={{ display: "flex", gap: 5 }}>
+            <Icon
+              icon={
+                iconsList.find((f) => f.code === params?.row?.eventloc_icon)
+                  .icon
+              }
+            />
+          </div>
+        ),
     },
     {
       field: "edit",
       headerName: "Edit",
       width: 150,
       renderCell: (params) => (
-       <div style={{display:'flex',gap:5}}>
-          <Icon onClick={()=>navigate("/calendar/locations/edit/"+params.row.id)} icon={edit2} />
-          <Icon onClick={()=>onDeleteModelHandler(params.row.id)} icon={trash2} />
-       </div>
+        <div style={{ display: "flex", gap: 5 }}>
+          <Icon
+            onClick={() =>
+              navigate("/calendar/locations/edit/" + params.row.id)
+            }
+            icon={edit2}
+          />
+          <Icon
+            onClick={() => onDeleteModelHandler(params.row.id)}
+            icon={trash2}
+          />
+        </div>
       ),
-    }
+    },
   ];
 
   useEffect(() => {
@@ -98,7 +117,7 @@ const FetchLocationDatatable = () => {
     setLoading(true);
   }
 
-  const onDeleteHandler = async (id)=>{
+  const onDeleteHandler = async (id) => {
     setIsDeleteLoading(true);
     const response = await deleteLocations(id);
     if (response.success == true) {
@@ -108,26 +127,31 @@ const FetchLocationDatatable = () => {
       });
       setModalIsOpen(false);
       setIsDeleteLoading(false);
-    }else{
+    } else {
       setModalIsOpen(false);
       setIsDeleteLoading(false);
       toast.error(JSON.stringify(response.response.data.data), {
         position: toast.POSITION.TOP_CENTER,
-      })
-      
+      });
     }
-    
-  }
+  };
 
-  const onDeleteModelHandler = (id)=>{
+  const onDeleteModelHandler = (id) => {
     setDeleteId(id);
     setModalIsOpen(true);
-  }
+  };
 
   return (
     <div>
       <>
-      <DeleteModel isLoading = {isDeleteLoading} setIsLoading={setIsDeleteLoading} modalIsOpen={modalIsOpen} id={deleteId} setIsOpen={setModalIsOpen} onOk={onDeleteHandler}  />
+        <DeleteModel
+          isLoading={isDeleteLoading}
+          setIsLoading={setIsDeleteLoading}
+          modalIsOpen={modalIsOpen}
+          id={deleteId}
+          setIsOpen={setModalIsOpen}
+          onOk={onDeleteHandler}
+        />
         {rows && allLocation.length > 0 ? (
           loading ? (
             <>
@@ -159,8 +183,8 @@ const FetchLocationDatatable = () => {
                             eventcat_sms_reminder: true,
                             eventcat_makeup_credits: true,
                             eventcat_blocked_dates: true,
-                            eventcat_payroll:true,
-                            edit:true,
+                            eventcat_payroll: true,
+                            edit: true,
                           },
                         },
                         pagination: {
@@ -203,7 +227,7 @@ const FetchLocationDatatable = () => {
                 <p style={{ textAlign: "center" }}>
                   Add your students so you can take their attendance, and more.
                 </p>
-                <div className="addnewstudent">
+                <div className="addnewstudent addnew">
                   <i className="fa fa-plus" aria-hidden="true"></i>
                   <a className="btn dropdown-toggle" href="#" role="button">
                     Add New

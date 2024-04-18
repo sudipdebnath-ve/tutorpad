@@ -186,6 +186,13 @@
   color: white;
   cursor: pointer;
 }
+
+.formbold-btn {
+  background-color: var(--bg-color);
+  border: 1px solid #c3c3c3;
+  color: var(--text-color);
+}
+
 .cancel {
   display: flex;
   align-items: center;
@@ -275,7 +282,7 @@
 }
 .back-link a {
   font-size: 16px;
-  color: #f8771e;
+  color: #3b7ddd;
   font-weight: 600;
 }
 .studentFamily {
@@ -292,7 +299,6 @@
 .formbold-form-step-2 h5 {
   font-weight: 600;
 }
-
 
 /*************************** Student Add End ****************************/
 

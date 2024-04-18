@@ -1,0 +1,37 @@
+[data-theme="light"] {
+    --bg-color: #f7f5ed;
+    --text-color: #000;
+    --card-bg-color: #fff;
+    --hover-bg-color: #f7f5ed;
+  }
+  
+  [data-theme="dark"] {
+    --bg-color: #363636;
+    --text-color: #fff;
+    --card-bg-color: #363636;
+    --hover-bg-color: rgba(255, 255, 255, 0.5);
+    --hover-text-color: #000;
+  }
+
+
+.dropdown-menu{
+    background-color: var(--card-bg-color);
+    color: var(--text-color);
+}
+
+.col-10{
+    color: var(--text-color);
+}
+.list-group-item{
+    background-color: var(--card-bg-color);
+    
+}
+
+.dropdown-menu .dropdown-item {
+    color: var(--text-color); 
+  }
+  
+  .dropdown-menu .dropdown-item:hover { 
+    color: var(--hover-text-color);
+    background-color: var(--bs-dropdown-link-active-bg);
+  }

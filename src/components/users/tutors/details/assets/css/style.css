@@ -87,7 +87,7 @@
   margin-bottom: 0px;
 }
 .accordion-button:not(.collapsed) {
-  color: #fb771a;
+  /* color: #fb771a; */
   background-color: #fff9e7;
   box-shadow: inset 0 calc(-1 * var(--bs-accordion-border-width)) 0
     var(--bs-accordion-border-color);
@@ -101,10 +101,21 @@
   color: var(--text-color);
 }
 
+.email-user, .location-user{
+  color: var(--text-color);
+}
+
 .formbold-input-flex{
   color: var(--text-color);
 }
 
+/* .formbold-btn{
+  background-color: var(--bg-color);
+} */
+
+.student-properties-edit{
+  background-color: var(--bg-color);
+}
 .mypreference-modal.close-h {
   color: var(--text-color) 
 }
@@ -160,6 +171,10 @@
   padding-top: 12px;
   display: block;
 }
+
+.calculate-study span{
+  color: var(--text-color);
+}
 .calculate-study span emp {
   color: #fb771a;
 }
@@ -184,6 +199,16 @@ emp {
   padding: 9px 23px;
   color: #ffffff;
   font-size: 14px;
+}
+
+.calendar-body .addnew{
+  background-color: var(--bg-color);
+  border: 1px solid #c3c3c3
+}
+
+.student-details .add-message{
+  background-color: var(--bg-color) !important;
+  border: 1px solid #c3c3c3
 }
 .calendar-body .addnew i {
   color: #ffffff;
@@ -246,4 +271,8 @@ emp {
   background: rgb(217 158 1 / 35%);
   color: #7a4600;
   border-radius: 5px;
+}
+
+.student-access strong {
+  color: var(--text-color);
 }

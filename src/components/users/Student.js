@@ -131,7 +131,7 @@ const Student = () => {
                               )}
                             </div>
                             <div
-                              className="dropdown"
+                              className="dropdown addnew"
                               onClick={handleClickMessage}
                             >
                               <i
@@ -162,7 +162,7 @@ const Student = () => {
                                 </>
                               )}
                             </div>
-                            <div className="dropdown options">
+                            <div className="dropdown options addnew">
                               <i className="fa fa-cog" aria-hidden="true"></i>
 
                               <a

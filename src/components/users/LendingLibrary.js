@@ -53,7 +53,7 @@ const LendingLibrary = () => {
                                 Add your lending items so you can track your
                                 lent items, assign them due dates and more.
                               </p>
-                              <div className="addnewstudent lending">
+                              <div className="addnewstudent addnew lending">
                                 <i
                                   className="fa fa-plus"
                                   aria-hidden="true"

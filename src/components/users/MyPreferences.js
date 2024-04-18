@@ -11,6 +11,7 @@ import { ToastContainer, toast } from "react-toastify";
 import payroll from "../users/assets/images/payroll.svg";
 import { init } from "i18next";
 
+
 const MyPreferences = () => {
   const {
     userData,
