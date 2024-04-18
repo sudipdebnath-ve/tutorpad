@@ -388,8 +388,8 @@ const AutoInvoiceForm = () => {
                               </div>
                             </div>
                             <div className="row">
-                              <div className="col-md-6">
-                                <p
+                              <div className=" col-md-6">
+                                <p className="display-invoice"
                                   style={{
                                     textAlign: "left",
                                     fontWeight: "bold",
@@ -410,7 +410,7 @@ const AutoInvoiceForm = () => {
                                   />
                                   <label className="form-check-label d-flex flex-column">
                                     <span>Condensed</span>
-                                    <span className="m-0 p-0 fs-5 text-muted">
+                                    <span className=" sub-text-display-invoice m-0 p-0 fs-5 text-muted">
                                       Combine identical invoice items into a
                                       single line
                                     </span>
@@ -428,7 +428,7 @@ const AutoInvoiceForm = () => {
                                   />
                                   <label class="form-check-label d-flex flex-column">
                                     <span>Normal</span>
-                                    <span className="fs-5 text-muted">
+                                    <span className=" sub-text-display-invoice fs-5 text-muted">
                                       Show each item on its own line
                                     </span>
                                   </label>
@@ -444,7 +444,7 @@ const AutoInvoiceForm = () => {
                                   />
                                   <label class="form-check-label d-flex flex-column">
                                     <span>Expanded</span>
-                                    <span className="fs-5 text-muted">
+                                    <span className=" sub-text-display-invoice fs-5 text-muted">
                                       Include items with no charges
                                     </span>
                                   </label>
