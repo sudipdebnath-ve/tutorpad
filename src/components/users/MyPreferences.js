@@ -1099,8 +1099,7 @@ const MyPreferences = () => {
                       <Link to="#" className="logout">
                         Log Out of All Devices
                       </Link>
-                      <Link onClick={(e) => openModal("password")}
-                            style={{ color: 'var(--text-color);' }}>
+                      <Link onClick={(e) => openModal("password")}>
                         Change Password
                       </Link>
                     </div>
