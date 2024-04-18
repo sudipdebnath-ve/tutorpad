@@ -6036,6 +6036,16 @@ fieldset:disabled .btn {
   --bs-text-opacity: 1;
   color: rgba(var(--bs-dark-rgb), var(--bs-text-opacity)) !important;
 }
+
+.text-dark, .text-muted{
+  color: var(--text-color) !important;
+}
+
+/* .text-dark, .text-muted:hover {
+  color: var(--hover-text-color);
+  background-color: var(--bs-dropdown-link-active-bg);
+} */
+
 .text-black {
   --bs-text-opacity: 1;
   color: rgba(var(--bs-black-rgb), var(--bs-text-opacity)) !important;
@@ -10011,6 +10021,7 @@ fieldset:disabled .btn {
 }
 .dropdown .list-group .list-group-item:hover {
   background: #f8f9fa;
+  background-color: var(--bs-dropdown-link-active-bg);
 }
 .dropdown-menu-header {
   border-bottom: 1px solid #dee2e6;
@@ -11635,7 +11646,7 @@ span.flatpickr-weekday {
   padding: 6px 22px 35px;
 }
 .css-1knaqv7-MuiButtonBase-root-MuiButton-root {
-  color: #fb771a !important;
+  /* color: #fb771a !important; */
   padding: 20px;
 }
 .css-ptkaw2-MuiDataGrid-root {
@@ -11734,6 +11745,10 @@ span.flatpickr-weekday {
   color: #000;
   font-size: 15px;
   margin-bottom: 10px;
+}
+
+.logout-user a {
+  color: var(--text-color);
 }
 .logout-user a.logout {
   border: 1px solid red;
