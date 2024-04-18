@@ -12,7 +12,7 @@ import i18next from "i18next";
 
 const Signin = () => {
   const { t } = useTranslation();
-  const { fetchData } = useUserDataContext();
+  const { fetchData, setIsDarkMode } = useUserDataContext();
   const navigate = useNavigate();
   const [userdetails, setUserdetails] = useState({
     email: "",
@@ -71,6 +71,8 @@ const Signin = () => {
 
   useEffect(() => {
     document?.documentElement?.setAttribute("data-theme", "light");
+    setIsDarkMode(false);
+    localStorage.setItem("theme", "light");
   });
 
   return (

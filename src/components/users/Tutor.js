@@ -153,7 +153,7 @@ const Tutor = () => {
                               )}
                             </div>
                             <div
-                              className="dropdown"
+                              className="dropdown addnew"
                               onClick={handleClickMessage}
                             >
                               <i
@@ -480,7 +480,7 @@ const Tutor = () => {
                                 Keep your tutors organized by assigning them
                                 into groups
                               </p>
-                              <div className="addnewstudent">
+                              <div className="addnewstudent addnew">
                                 <i
                                   className="fa fa-plus"
                                   aria-hidden="true"

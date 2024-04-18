@@ -12,7 +12,7 @@ import { eye } from "react-icons-kit/feather/eye";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
 
 const Register = () => {
-  const { fetchData } = useUserDataContext();
+  const { fetchData, setIsDarkMode } = useUserDataContext();
   const navigate = useNavigate();
   const [userdetails, setUserdetails] = useState({
     firstname: "",
@@ -99,6 +99,8 @@ const Register = () => {
 
   useEffect(() => {
     document?.documentElement?.setAttribute("data-theme", "light");
+    setIsDarkMode(false);
+    localStorage.setItem("theme", "light");
   });
 
   console.log("checked", isTermsChecked);
