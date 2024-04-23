@@ -4,28 +4,31 @@ import { DataGrid, GridToolbar, GridValueGetterParams } from "@mui/x-data-grid";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import students from "../users/assets/images/students.svg";
 import Loader from "../Loader.js";
-import { Link } from "react-router-dom"
-import { Icon } from 'react-icons-kit';
-import {edit2} from 'react-icons-kit/feather/edit2';
-import {trash2} from 'react-icons-kit/feather/trash2';
-import {chevronRight} from 'react-icons-kit/feather/chevronRight';
+import { Link } from "react-router-dom";
+import { Icon } from "react-icons-kit";
+import { edit2 } from "react-icons-kit/feather/edit2";
+import { trash2 } from "react-icons-kit/feather/trash2";
+import { chevronRight } from "react-icons-kit/feather/chevronRight";
 import { useNavigate } from "react-router-dom";
 import DeleteModel from "../form/delete-model/DeleteModel.js";
 import { ToastContainer, toast } from "react-toastify";
 import { deleteChargeCategories } from "../../services/categoriesService.js";
-const FetchFamilyInvoiceDatatable = ({setSelectedId,set_chargecat_name,setModalIsOpen,setIsEdit}) => {
-  
+const FetchFamilyInvoiceDatatable = ({
+  setSelectedId,
+  set_chargecat_name,
+  setModalIsOpen,
+  setIsEdit,
+}) => {
   const [val, setVal] = useState(false);
   const { fetchFamilies, userId, setLoading, loading, allFamilies } =
     useUserDataContext();
-  const [deleteId,setDeleteId] = useState(null);
-  const [deleteModalIsOpen,setDeleteModalIsOpen] = useState(false);
-  const [isDeleteLoading,setIsDeleteLoading] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     fetchFamilies();
   }, [userId]);
-
 
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
@@ -35,7 +38,7 @@ const FetchFamilyInvoiceDatatable = ({setSelectedId,set_chargecat_name,setModalI
       // headerClassName: "super-app-theme--header",
       // valueGetter: (params) =>
       //   `<a href="${params.row.first_name}">${params.row.first_name}</a>`,
-      width: '400',
+      width: "400",
       // valueGetter: (params: GridValueGetterParams) =>
       //   `<a href="${params.row.first_name}">${params.row.first_name}</a>`,
       // },
@@ -55,48 +58,84 @@ const FetchFamilyInvoiceDatatable = ({setSelectedId,set_chargecat_name,setModalI
       field: "balance",
       headerName: "Balance",
       width: 150,
-      renderCell: (params) => (
-        params.row.balance_negative==0?(<div style={{minWidth:'50px',padding:'0 5px',background:'lightgreen',textAlign:'center',color:'white'}}>
-                              ₹ {params.row.balance}
-                            </div>
-                          ):(<div style={{minWidth:'50px',padding:'0 5px',background:'red',textAlign:'center',color:'white'}}>
-                          -₹ {params.row.balance}
-                        </div>)
-      ),
+      renderCell: (params) =>
+        params.row.balance_negative == 0 ? (
+          <div
+            style={{
+              minWidth: "50px",
+              padding: "0 5px",
+              background: "lightgreen",
+              textAlign: "center",
+              color: "white",
+            }}
+          >
+            ₹ {params.row.balance}
+          </div>
+        ) : (
+          <div
+            style={{
+              minWidth: "50px",
+              padding: "0 5px",
+              background: "red",
+              textAlign: "center",
+              color: "white",
+            }}
+          >
+            -₹ {params.row.balance}
+          </div>
+        ),
     },
     {
       field: "auto_invoicing",
       headerName: "Auto Invoicing",
       width: 150,
-      renderCell: (params) => (
-        params.row.auto_invoicing==1?(<div style={{minWidth:'50px',padding:'0 5px',background:'lightgreen',textAlign:'center',color:'white'}}>
-                              Enabled
-                            </div>
-                          ):(<div style={{minWidth:'50px',padding:'0 5px',background:'red',textAlign:'center',color:'white'}}>
-                              Disabled
-                        </div>)
-      ),
+      renderCell: (params) =>
+        params.row.auto_invoicing == 1 ? (
+          <div
+            style={{
+              minWidth: "50px",
+              padding: "0 5px",
+              background: "lightgreen",
+              textAlign: "center",
+              color: "white",
+            }}
+          >
+            Enabled
+          </div>
+        ) : (
+          <div
+            style={{
+              minWidth: "50px",
+              padding: "0 5px",
+              background: "red",
+              textAlign: "center",
+              color: "white",
+            }}
+          >
+            Disabled
+          </div>
+        ),
     },
     {
       field: "edit",
       headerName: "Edit",
       width: 150,
       renderCell: (params) => (
-       <div style={{display:'flex',gap:5}}>
-        <Link to={`/familiies-and-invoices/family/${params.row.id}`}>
-          <Icon icon={chevronRight} />
-        </Link>
-       </div>
+        <div style={{ display: "flex", gap: 5 }}>
+          <Link to={`/familiies-and-invoices/family/${params.row.id}`}>
+            <Icon icon={chevronRight} />
+          </Link>
+        </div>
       ),
-    }
+    },
   ];
 
-  const onDeleteModelHandler = (id)=>{
+  const onDeleteModelHandler = (id) => {
     setDeleteId(id);
     setDeleteModalIsOpen(true);
-  }
+  };
 
-  const onDeleteHandler = async (id)=>{
+  const onDeleteHandler = async (id) => {
     setIsDeleteLoading(true);
     const response = await deleteChargeCategories(id);
     if (response.success == true) {
@@ -106,17 +145,14 @@ const FetchFamilyInvoiceDatatable = ({setSelectedId,set_chargecat_name,setModalI
       });
       setDeleteModalIsOpen(false);
       setIsDeleteLoading(false);
-    }else{
+    } else {
       setDeleteModalIsOpen(false);
       setIsDeleteLoading(false);
       toast.error(JSON.stringify(response.response.data.data), {
         position: toast.POSITION.TOP_CENTER,
-      })
-      
+      });
     }
-    
-  }
-
+  };
 
   useEffect(() => {
     setVal(true);
@@ -130,7 +166,14 @@ const FetchFamilyInvoiceDatatable = ({setSelectedId,set_chargecat_name,setModalI
   }
   return (
     <div>
-      <DeleteModel isLoading = {isDeleteLoading} setIsLoading={setIsDeleteLoading} modalIsOpen={deleteModalIsOpen} id={deleteId} setIsOpen={setDeleteModalIsOpen} onOk={onDeleteHandler}  />
+      <DeleteModel
+        isLoading={isDeleteLoading}
+        setIsLoading={setIsDeleteLoading}
+        modalIsOpen={deleteModalIsOpen}
+        id={deleteId}
+        setIsOpen={setDeleteModalIsOpen}
+        onOk={onDeleteHandler}
+      />
       <>
         {rows && allFamilies.length > 0 ? (
           loading ? (
@@ -210,7 +253,7 @@ const FetchFamilyInvoiceDatatable = ({setSelectedId,set_chargecat_name,setModalI
                 <p style={{ textAlign: "center" }}>
                   Add your tutors, and more.
                 </p>
-                <div className="addnewstudent">
+                <div className="addnewstudent addnew">
                   <i className="fa fa-plus" aria-hidden="true"></i>
                   <a className="btn dropdown-toggle" href="#" role="button">
                     Add New

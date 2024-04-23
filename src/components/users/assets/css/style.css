@@ -119,6 +119,7 @@
   --text-color: #000;
   --card-bg-color: #fff;
   --hover-bg-color: #f7f5ed;
+  --secondary-card-bg-color: #ededed;
 }
 
 [data-theme="dark"] {
@@ -127,6 +128,7 @@
   --card-bg-color: #363636;
   --hover-bg-color: rgba(255, 255, 255, 0.5);
   --hover-text-color: #000;
+  --secondary-card-bg-color: rgba(0, 0, 0, 0.2);
 }
 
 body {
@@ -217,6 +219,9 @@ img,
 svg {
   vertical-align: middle;
 }
+svg path {
+  fill: var(--text-color) !important;
+}
 table {
   border-collapse: collapse;
   caption-side: bottom;
@@ -279,6 +284,11 @@ select {
 select:disabled {
   opacity: 1;
 }
+
+.css-1dmqq7i-MuiNativeSelect-select-MuiInputBase-input-MuiInput-input > option {
+  background: var(--card-bg-color) !important;
+}
+
 [list]:not([type="date"]):not([type="datetime-local"]):not([type="month"]):not(
     [type="week"]
   ):not([type="time"])::-webkit-calendar-picker-indicator {
@@ -5969,12 +5979,10 @@ fieldset:disabled .btn {
 }
 .text-center {
   text-align: center !important;
-
 }
 
 .text-center strong {
   color: var(--text-color);
-  
 }
 .text-decoration-none {
   text-decoration: none !important;
@@ -6037,7 +6045,8 @@ fieldset:disabled .btn {
   color: rgba(var(--bs-dark-rgb), var(--bs-text-opacity)) !important;
 }
 
-.text-dark, .text-muted{
+.text-dark,
+.text-muted {
   color: var(--text-color) !important;
 }
 
@@ -11670,15 +11679,14 @@ span.flatpickr-weekday {
 
 .css-1miuj5f-MuiDataGrid-panelWrapper {
   background-color: var(--card-bg-color);
-  
 }
 
-.css-1xif2b4-MuiPopper-root-MuiDataGrid-menu .MuiDataGrid-menuList{
+.css-1xif2b4-MuiPopper-root-MuiDataGrid-menu .MuiDataGrid-menuList {
   background-color: var(--card-bg-color);
   color: var(--text-color);
 }
 
-.css-1c2i806-MuiFormLabel-root-MuiInputLabel-root{
+.css-1c2i806-MuiFormLabel-root-MuiInputLabel-root {
   color: var(--text-color);
 }
 /******************* My Preferences start********************/
@@ -11690,12 +11698,13 @@ span.flatpickr-weekday {
 .image-user {
   width: 90px;
   height: 90px;
-  background: #eff0ff;
+  background: var(--secondary-card-bg-color);
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   color: var(--text-color);
+  z-index: 999;
 }
 .image-user img {
   width: 90px;
@@ -12024,21 +12033,23 @@ button.closeModal {
   width: 200px;
 }
 .student .dropdown {
-  background-color: #ffffff;
+  background-color: var(--secondary-card-bg-color);
   padding: 3px 13px;
   border-radius: 5px;
   border: 1px solid #c2c2c2;
+  color: var(--text-color);
 }
 .dropdown.addnew {
-  background-color: var(--text-color);
+  background-color: var(--secondary-card-bg-color);
   border-radius: 5px;
   border: none;
+  color: var(--text-color);
 }
 .student .dropdown a {
   border: none;
 }
 .addnew a {
-  color: var(--card-bg-color);
+  color: var(--text-color);
   border: none;
 }
 .student .dropdown {
@@ -12054,10 +12065,10 @@ button.closeModal {
   flex-direction: row;
 }
 .student i {
-  color: #000;
+  color: var(--text-color);
 }
 .dropdown.addnew i {
-  color: var(--card-bg-color);
+  color: var(--text-color);
 }
 .student .dropdown-toggle:after {
   border: solid;
@@ -12067,12 +12078,10 @@ button.closeModal {
   transform: rotate(45deg);
   margin-left: 11px;
 }
-.dropdown.addnew:hover {
-  background-color: #d96c22;
-}
-.dropdown.addnew a:hover {
-  color: #ffffff;
-}
+
+/* .dropdown.addnew a:hover {
+  color: var(--text-color);
+} */
 .options {
   opacity: 0.4;
 }
@@ -12103,16 +12112,16 @@ button.closeModal {
   padding: 5px;
 }
 
-.student .addnewstudent{
+.student .addnewstudent {
   background-color: var(--bg-color);
-  border: 1px solid #c3c3c3
+  border: 1px solid #c3c3c3;
 }
 .student .addnewstudent i {
-  color: #fff;
+  color: var(--text-color);
   padding-left: 15px;
 }
 .student .addnewstudent a {
-  color: #fff;
+  color: var(--text-color);
 }
 .addNewDropdown {
   display: block;
@@ -12171,7 +12180,7 @@ button.closeModal {
   display: block;
   width: 175px;
   margin: 0 auto;
-  background-color: #fb771a;
+  background-color: var(--secondary-card-bg-color);
   border-radius: 5px;
   border: none;
   padding: 5px;
@@ -12208,7 +12217,7 @@ button.closeModal {
 .onlineresources .image-user {
   width: 42px;
   height: 42px;
-  background: #fb771a;
+  background: var(--secondary-card-bg-color);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -12312,7 +12321,8 @@ button.closeModal {
   font-size: 16px;
 }
 .recurring {
-  background: #ededed;
+  background: var(--secondary-card-bg-color);
+  color: var(--text-color);
   padding: 15px;
   border-radius: 5px;
   margin-bottom: 20px;

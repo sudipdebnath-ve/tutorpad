@@ -219,7 +219,7 @@ const FetchTutorDatatable = () => {
                 <p style={{ textAlign: "center" }}>
                   Add your tutors, and more.
                 </p>
-                <div className="addnewstudent">
+                <div className="addnewstudent addnew">
                   <i className="fa fa-plus" aria-hidden="true"></i>
                   <a className="btn dropdown-toggle" href="#" role="button">
                     Add New

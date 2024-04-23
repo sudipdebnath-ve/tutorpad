@@ -12,7 +12,7 @@
 
 .custom_datepicker {
   border: none;
-  background-color: transparent;
+  background-color: transparent !important;
   color: var(--text-color);
   font-weight: bold;
 }

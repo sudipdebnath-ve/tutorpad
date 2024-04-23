@@ -261,7 +261,7 @@ const AppContext = ({ children }) => {
       });
   };
 
-  const fetchInvoicesByDate = async (date_from,date_to) => {
+  const fetchInvoicesByDate = async (date_from, date_to) => {
     setLoading(true);
     const validateconfig = {
       method: "GET",
@@ -492,13 +492,14 @@ const AppContext = ({ children }) => {
         accountInvoices,
         allTransactionsByFamily,
         fetchTransactionsByFamily,
-        allTransactionsByDates, 
+        allTransactionsByDates,
         fetchTransactionsByDates,
         fetchInvoicesByDate,
         allInvoicesByDate,
         allTransactionsByDates,
         fetchTransactionsByDates,
         isDarkMode,
+        setIsDarkMode,
         theme,
         toggleTheme,
       }}
