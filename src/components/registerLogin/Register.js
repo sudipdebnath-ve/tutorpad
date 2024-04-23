@@ -88,7 +88,7 @@ const Register = () => {
         }
       })
       .catch((error) => {
-        if (error.response.data.success === false) {
+        if (error?.response?.data?.success === false) {
           setError(error.response.data.data);
           toast.error(error.response.data.message, {
             position: toast.POSITION.TOP_CENTER,
@@ -195,7 +195,7 @@ const Register = () => {
                         name="domain"
                         onChange={handleChange}
                       />
-                      <span style={{ fontSize: "16px" }}>.tutorpad.com</span>
+                      <span style={{ fontSize: "16px" }}>.tutorpad.co</span>
                     </div>
                     <small style={{ color: "red" }}>
                       {error?.domain?.length ? error.domain[0] : <></>}
