@@ -187,9 +187,10 @@
   cursor: pointer;
 }
 
-.formbold-btn{
+.formbold-btn {
   background-color: var(--bg-color);
-  border: 1px solid #c3c3c3
+  border: 1px solid #c3c3c3;
+  color: var(--text-color);
 }
 
 .cancel {

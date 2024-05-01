@@ -6045,7 +6045,8 @@ fieldset:disabled .btn {
   color: rgba(var(--bs-dark-rgb), var(--bs-text-opacity)) !important;
 }
 
-.text-dark, .text-muted{
+.text-dark,
+.text-muted {
   color: var(--text-color) !important;
 }
 
@@ -11678,15 +11679,14 @@ span.flatpickr-weekday {
 
 .css-1miuj5f-MuiDataGrid-panelWrapper {
   background-color: var(--card-bg-color);
-  
 }
 
-.css-1xif2b4-MuiPopper-root-MuiDataGrid-menu .MuiDataGrid-menuList{
+.css-1xif2b4-MuiPopper-root-MuiDataGrid-menu .MuiDataGrid-menuList {
   background-color: var(--card-bg-color);
   color: var(--text-color);
 }
 
-.css-1c2i806-MuiFormLabel-root-MuiInputLabel-root{
+.css-1c2i806-MuiFormLabel-root-MuiInputLabel-root {
   color: var(--text-color);
 }
 /******************* My Preferences start********************/
@@ -12112,9 +12112,9 @@ button.closeModal {
   padding: 5px;
 }
 
-.student .addnewstudent{
+.student .addnewstudent {
   background-color: var(--bg-color);
-  border: 1px solid #c3c3c3
+  border: 1px solid #c3c3c3;
 }
 .student .addnewstudent i {
   color: var(--text-color);

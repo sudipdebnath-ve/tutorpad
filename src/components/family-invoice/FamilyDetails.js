@@ -209,17 +209,41 @@ const FamilyDetails = () => {
                     {/* {  Boolean(0) && <div> Hiiiii welcome</div>} */}
                     {Boolean(isAutoInvoicing) && (
                       <>
-                    <div className="row">
-                        <div className="col-md-12">
-                          <label><Icon icon={ic_receipt_outline} /> Next Invoice XYZ</label>
-                          <div style={{ lineHeight: '1.2', fontSize: 10 }}>
-                            <p>Invoice Date: {incoming_invoice?.invoice_create_date}</p>
-                            <p>Date Range: {incoming_invoice?.invoice_start_date} to {incoming_invoice.invoice_end_date}</p>
-                            <p>Invoice Date: {incoming_invoice?.invoice_create_date}</p>
-                            <p>Total Due: <span style={{ background: 'red', padding: '2px 5px', color: 'white' }}>₹{incoming_invoice?.amount}.00 balance owing</span></p>
+                        <div className="row">
+                          <div className="col-md-12">
+                            <label>
+                              <Icon icon={ic_receipt_outline} /> Next Invoice
+                              XYZ
+                            </label>
+                            <div style={{ lineHeight: "1.2", fontSize: 10 }}>
+                              <p>
+                                Invoice Date:{" "}
+                                {incoming_invoice?.invoice_create_date}
+                              </p>
+                              <p>
+                                Date Range:{" "}
+                                {incoming_invoice?.invoice_start_date} to{" "}
+                                {incoming_invoice.invoice_end_date}
+                              </p>
+                              <p>
+                                Invoice Date:{" "}
+                                {incoming_invoice?.invoice_create_date}
+                              </p>
+                              <p>
+                                Total Due:{" "}
+                                <span
+                                  style={{
+                                    background: "red",
+                                    padding: "2px 5px",
+                                    color: "white",
+                                  }}
+                                >
+                                  ₹{incoming_invoice?.amount}.00 balance owing
+                                </span>
+                              </p>
+                            </div>
                           </div>
                         </div>
-                      </div>
                         <div className="row">
                           <div className="col-md-12">
                             <label>
