@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 
 const Signin = () => {
+
   const { t } = useTranslation();
   const { fetchData, setIsDarkMode } = useUserDataContext();
   const navigate = useNavigate();
@@ -45,16 +46,16 @@ const Signin = () => {
       .then((response) => {
         // console.log(response);
         if (response.status === 200) {
-          localStorage.setItem(
-            "tutorPad",
-            JSON.stringify(response.data.data.token)
-          );
+          // localStorage.setItem(
+          //   "tutorPad",
+          //   JSON.stringify(response.data.data.token)
+          // );
           toast.success(response.data.message, {
             position: toast.POSITION.TOP_CENTER,
           });
           setTimeout(() => {
             fetchData();
-            navigate("/dashboard");
+            navigate("/starting/"+JSON.stringify(response.data.data.token));
           }, 3000);
         }
       })

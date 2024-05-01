@@ -15,22 +15,23 @@ import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import MiniSidebar from "../sidebar/MiniSidebar.js";
 import Sidebar from "../sidebar/Sidebar.js";
 import TopBar from "../sidebar/TopBar.js";
-
+var token = JSON.parse(localStorage.getItem("tutorPad"));
 const Dashboard = () => {
   const { userData, fetchData, sidebarToggle } = useUserDataContext();
   const navigate = useNavigate();
   // console.log(userData);
 
   useEffect(() => {
-    var token = JSON.parse(localStorage.getItem("tutorPad"));
+    
+    console.log("token form dashboard is here", token);
     if (!token) {
-      navigate("/signin");
+      // navigate("/signin");
     } else {
       setTimeout(() => {
         fetchData(token);
       }, 2000);
     }
-  }, []);
+  }, [token]);
   return (
     <div className="wrapper">
       {sidebarToggle ? (

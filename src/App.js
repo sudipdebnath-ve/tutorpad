@@ -1,3 +1,4 @@
+
 import "./App.css";
 import Dashboard from "./components/users/Dashboard";
 import Register from "./components/registerLogin/Register";
@@ -35,12 +36,23 @@ import FamilyDetails from "./components/family-invoice/FamilyDetails";
 import AutoInvoiceForm from "./components/family-invoice/AutoInvoiceForm";
 import AddTransactionForm from "./components/family-invoice/AddTransactionForm";
 import SendInvoiceEmail from "./components/family-invoice/SendInvoiceEmail";
+import { useState } from "react";
+import { useEffect } from "react";
+import Starting from "./components/registerLogin/Starting";
+import DomainRegister from "./components/registerLogin/DomainName";
 function App() {
+  const [subdomain, setSubdomain] = useState("");
+  
   return (
-    <Routes basename="/">
-      <Route index element={<Register />} />
+    <Routes basename={"/"}>
+      {/* <Route index element={<Register />} /> */}
+      <Route index element={<Register subdomain={subdomain} setSubdomain={setSubdomain} />} />
       <Route path="/signin" element={<Signin />} />
+      <Route path ="/domain-signin" element={<DomainRegister />} />
+      <Route path="/starting/:token" element={<Starting />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      {/* <Route path="/*" element={<Dashboard />} /> */}
+      
       <Route path="/students" element={<Student />} />
       <Route path="/tutors" element={<Tutor />} />
       <Route path="/charge/category" element={<ChargeCategory />} />
