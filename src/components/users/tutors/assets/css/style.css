@@ -187,16 +187,9 @@
   cursor: pointer;
 }
 
-<<<<<<< HEAD
-.formbold-btn {
-  background-color: var(--bg-color);
-  border: 1px solid #c3c3c3;
-  color: var(--text-color);
-=======
 .formbold-btn{
   background-color: var(--bg-color);
   border: 1px solid #c3c3c3
->>>>>>> 00129a11d28ffd03277a288cb4afc9d6ac23c069
 }
 
 .cancel {
