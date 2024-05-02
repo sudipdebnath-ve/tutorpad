@@ -9,7 +9,7 @@ const loginApi = axios.create({
   });
 
 
-export const getdomain = async  () =>{
+export const getDomainName = async  () =>{
     return loginApi.get('central-portal').then((response) => {
         return response.data;
       })
@@ -18,8 +18,9 @@ export const getdomain = async  () =>{
       });
 }
 
-export const validateDomain = async ( data ) =>{
+export const validateDomainName = async ( data ) =>{
     return loginApi.post('validate-portal',data).then((response) => {
+        console.log("response from validateDomainName------", response)
         return response.data;
       })
       .catch((error) => {

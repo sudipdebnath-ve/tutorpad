@@ -9,7 +9,7 @@ import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import LanguageOption from "../LanguageOption.js";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
-import { getdomain, validateDomain } from "../../services/loginService.js";
+import { getDomainName, validateDomainName } from "../../services/loginService.js";
 
 const DomainRegister = () => {
 
@@ -23,10 +23,10 @@ const DomainRegister = () => {
 
   const [error, setError] = useState({});
   const [centralPortalDomain, setCentralPortalDomain] = useState("");
-  const [domain, setDomain] = useState ("sd.tutorpad.co");
+  const [domain, setDomain] = useState ("");
 
-  const getDomainNameHandler  = async () => {
-    const res = await getdomain();
+  const getDomainNameNameHandler  = async () => {
+    const res = await getDomainName();
     setCentralPortalDomain(res?.data)
 
     // console.log("res is here--------",res.data);
@@ -36,20 +36,24 @@ const DomainRegister = () => {
     const data = {
         domain: domain
       };
-
-      const response = await validateDomain(data);
-      console.log("response is here------------->",response );
+      const response = await validateDomainName(data);
+      console.log("response is from domain wala se------------->",response );
+      return response.success;
+      
   }
 
   const handleSubmit = async () => {
     try {
-      await handleDomainChange();
-      // If handleDomainChange() completes successfully, navigate to "/signin"
-      navigate("/signin");
+        const domainExists = await handleDomainChange();
+        if(domainExists) {
+           navigate("/signin"); 
+        }
+        else{
+            console.error("Domain Not Exist");
+        }
+      
     } catch (error) {
-      // If handleDomainChange() encounters an error, handle it here
       console.error("An error occurred:", error);
-      // Handle the error accordingly, e.g., display an error message to the user
     }
   };
   const handleClick = (e) => {
@@ -60,7 +64,7 @@ const DomainRegister = () => {
     document?.documentElement?.setAttribute("data-theme", "light");
     setIsDarkMode(false);
     localStorage.setItem("theme", "light");
-    getDomainNameHandler()
+    getDomainNameNameHandler()
   });
 
   return (
@@ -92,7 +96,8 @@ const DomainRegister = () => {
                         // value={centralPortalDomain}
                         // onChange={handleChange}
                       />
-                      <span style={{ fontSize: "16px" }}>{centralPortalDomain}</span>
+                      <span style={{ fontSize: "16px" , paddingLeft:"10px" }}>{centralPortalDomain}</span>
+                      {/* <span style={{ fontSize: "16px" , paddingLeft:"10px" }}>tutorpad.co</span> */}
                     </div>
                     <small style={{ color: "red" }}>
                       {error?.domain?.length ? error.domain[0] : <></>}
@@ -101,7 +106,7 @@ const DomainRegister = () => {
 
                   <input
                     type="button"
-                    value="Sign In"
+                    value="Submit"
                     className="btn btn-block btn-primary"
                     onClick={handleSubmit}
                   />
