@@ -10,6 +10,7 @@ import LanguageOption from "../LanguageOption.js";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 import { getDomainName, validateDomainName } from "../../services/loginService.js";
+import "./style.css"
 
 const DomainRegister = () => {
 
@@ -24,23 +25,33 @@ const DomainRegister = () => {
   const [error, setError] = useState({});
   const [centralPortalDomain, setCentralPortalDomain] = useState("");
   const [domain, setDomain] = useState ("");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const getDomainNameNameHandler  = async () => {
-    const res = await getDomainName();
+  const getDomainNameHandler  =  async() => {
+    const res =  await getDomainName();
+    console.log("Domain name ----------", res);
     setCentralPortalDomain(res?.data)
-
-    // console.log("res is here--------",res.data);
+    console.log("Central portal domain ----------", centralPortalDomain);
   };
 
   const handleDomainChange = async () => {
     const data = {
-        domain: domain
-      };
+      domain: `${domain}.tutorpad.co`,
+    };
+    try {
       const response = await validateDomainName(data);
-      console.log("response is from domain wala se------------->",response );
-      return response.success;
-      
-  }
+      console.log("response is from domain wala se------------->", response);
+      if (response && response.success !== undefined) {
+        return response.success;
+      } else {
+        console.error("Invalid response!!!!");
+        return false;
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+      return false;
+    }
+  };
 
   const handleSubmit = async () => {
     try {
@@ -49,11 +60,12 @@ const DomainRegister = () => {
            navigate("/signin"); 
         }
         else{
-            console.error("Domain Not Exist");
+            setErrorMessage("Domain Not Exist");
         }
       
     } catch (error) {
       console.error("An error occurred:", error);
+      setErrorMessage('An error occurred. Please try again later.');
     }
   };
   const handleClick = (e) => {
@@ -64,7 +76,7 @@ const DomainRegister = () => {
     document?.documentElement?.setAttribute("data-theme", "light");
     setIsDarkMode(false);
     localStorage.setItem("theme", "light");
-    getDomainNameNameHandler()
+    getDomainNameHandler()
   });
 
   return (
@@ -81,6 +93,7 @@ const DomainRegister = () => {
                     <strong>TutorPad</strong>
                   </h3>
                 </div>
+                {errorMessage && <div className="error-message">{errorMessage}</div>}
                 <form>
                 <div className="form-group last mb-3">
                     <div className="d-flex align-items-center">
@@ -112,7 +125,6 @@ const DomainRegister = () => {
                   />
                 </form>
                 <br></br>
-                {/* <Link to="/signin" className="btn btn-block btn-primary">Sign In</Link> */}
               </div>
             </div>
           </div>

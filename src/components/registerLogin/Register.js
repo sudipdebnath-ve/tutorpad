@@ -31,7 +31,7 @@ const Register = ( { subdomain, setSubdomain }) => {
   const [error, setError] = useState({});
   const [centralPortalDomain, setCentralPortalDomain] = useState("");
 
-  const getDomainNameNameHandler  = async () => {
+  const getDomainNameHandler  = async () => {
     const res = await getDomainName();
     console.log("res is here--------",res);
     setCentralPortalDomain(res?.data) 
@@ -120,7 +120,7 @@ const Register = ( { subdomain, setSubdomain }) => {
     document?.documentElement?.setAttribute("data-theme", "light");
     setIsDarkMode(false);
     localStorage.setItem("theme", "light");
-    getDomainNameNameHandler()
+    getDomainNameHandler()
   });
 
   console.log("checked", isTermsChecked);
@@ -216,7 +216,7 @@ const Register = ( { subdomain, setSubdomain }) => {
                         name="domain"
                         onChange={handleChange}
                       />
-                      <span style={{ fontSize: "16px" }}>{centralPortalDomain}</span>
+                      <span style={{ fontSize: "16px", paddingLeft:"10px" }}>{centralPortalDomain}</span>
                       {/* <span style={{ fontSize: "16px"}}>tutorpad.co</span> */}
                     </div>
                     <small style={{ color: "red" }}>
