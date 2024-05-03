@@ -11,6 +11,8 @@ import { eyeOff } from "react-icons-kit/feather/eyeOff";
 import { eye } from "react-icons-kit/feather/eye";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import { getdomain } from "../../services/loginService.js";
+import { storeToken } from '../../utils/helper.js';
+
 
 const Register = ( { subdomain, setSubdomain }) => {
   const { fetchData, setIsDarkMode } = useUserDataContext();
@@ -73,6 +75,7 @@ const Register = ( { subdomain, setSubdomain }) => {
       formData.terms = isTermsChecked;
     }
     setSubdomain(subdomain);
+    console.log('subdomain',subdomain);
     
     const config = {
       method: "POST",
@@ -84,26 +87,22 @@ const Register = ( { subdomain, setSubdomain }) => {
       // validateStatus: (status) => status !== 404,
     };
     await axios(config)
-      .then((response) => {
+      .then(async (response) => {
         // console.log(response);
         if (response.status === 200) {
-          // localStorage.setItem('subdomain', JSON.stringify(subdomain));
-          // localStorage.setItem(
-          //   "tutorPad",
-          //   JSON.stringify(response.data.data.token)
-          // );
+          var token = response.data.data.token;
+
+          //store token in localstorage
+          var domain = `${subdomain}.${process.env.REACT_APP_DOMAIN}`;
+          await storeToken(token,domain);
+
           toast.success(response.data.message, {
             position: toast.POSITION.TOP_CENTER,
           });
-          window.open(`http://${subdomain}.localhost:3000/dashboard`,'_self');
-          // setTimeout(() => {
-          //    const currentSubdomain = window.location.hostname.split('.')[0];
-          //   console.log("Current domain--------------------", subdomain);
-          //   navigate("/dashboard");
-            
-          //    navigate(`/${subdomain}/dashboard`);
-          //    navigate(`http://${subdomain}.localhost:3000/dashboard`);
-          // }, 2000);
+
+          const encodedToken = encodeURIComponent(token);
+          const encodedDomain = encodeURIComponent(domain);
+          window.location.href = `http://${subdomain}.${process.env.REACT_APP_DOMAIN}/dashboard#${encodedToken}#${encodedDomain}`;
         }
       })
       .catch((error) => {
