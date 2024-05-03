@@ -33,11 +33,11 @@ const Dashboard = () => {
      // Second useEffect logic
     const timeout = setTimeout(() => {
       if (!token) {
-        navigate("/signin");
+        // navigate("/signin");
       } else {
         fetchData(token);
       }
-    }, 5000);
+    }, 10000);
 
     // Clean up the timeout to prevent memory leaks
     return () => clearTimeout(timeout);
