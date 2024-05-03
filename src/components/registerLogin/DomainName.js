@@ -9,7 +9,8 @@ import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import LanguageOption from "../LanguageOption.js";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
-import { getdomain, validateDomain } from "../../services/loginService.js";
+import { getDomainName, validateDomainName } from "../../services/loginService.js";
+import "./style.css"
 
 const DomainRegister = () => {
 
@@ -23,33 +24,48 @@ const DomainRegister = () => {
 
   const [error, setError] = useState({});
   const [centralPortalDomain, setCentralPortalDomain] = useState("");
-  const [domain, setDomain] = useState ("sd.tutorpad.co");
+  const [domain, setDomain] = useState ("");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const getDomainNameHandler  = async () => {
-    const res = await getdomain();
+  const getDomainNameHandler  =  async() => {
+    const res =  await getDomainName();
+    console.log("Domain name ----------", res);
     setCentralPortalDomain(res?.data)
-
-    // console.log("res is here--------",res.data);
+    console.log("Central portal domain ----------", centralPortalDomain);
   };
 
   const handleDomainChange = async () => {
     const data = {
-        domain: domain
-      };
-
-      const response = await validateDomain(data);
-      console.log("response is here------------->",response );
-  }
+      domain: `${domain}.tutorpad.co`,
+    };
+    try {
+      const response = await validateDomainName(data);
+      console.log("response is from domain wala se------------->", response);
+      if (response && response.success !== undefined) {
+        return response.success;
+      } else {
+        console.error("Invalid response!!!!");
+        return false;
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+      return false;
+    }
+  };
 
   const handleSubmit = async () => {
     try {
-      await handleDomainChange();
-      // If handleDomainChange() completes successfully, navigate to "/signin"
-      navigate("/signin");
+        const domainExists = await handleDomainChange();
+        if(domainExists) {
+           navigate("/signin"); 
+        }
+        else{
+            setErrorMessage("Domain Not Exist");
+        }
+      
     } catch (error) {
-      // If handleDomainChange() encounters an error, handle it here
       console.error("An error occurred:", error);
-      // Handle the error accordingly, e.g., display an error message to the user
+      setErrorMessage('An error occurred. Please try again later.');
     }
   };
   const handleClick = (e) => {
@@ -77,6 +93,7 @@ const DomainRegister = () => {
                     <strong>TutorPad</strong>
                   </h3>
                 </div>
+                {errorMessage && <div className="error-message">{errorMessage}</div>}
                 <form>
                 <div className="form-group last mb-3">
                     <div className="d-flex align-items-center">
@@ -92,7 +109,8 @@ const DomainRegister = () => {
                         // value={centralPortalDomain}
                         // onChange={handleChange}
                       />
-                      <span style={{ fontSize: "16px" }}>{centralPortalDomain}</span>
+                      <span style={{ fontSize: "16px" , paddingLeft:"10px" }}>{centralPortalDomain}</span>
+                      {/* <span style={{ fontSize: "16px" , paddingLeft:"10px" }}>tutorpad.co</span> */}
                     </div>
                     <small style={{ color: "red" }}>
                       {error?.domain?.length ? error.domain[0] : <></>}
@@ -101,13 +119,12 @@ const DomainRegister = () => {
 
                   <input
                     type="button"
-                    value="Sign In"
+                    value="Submit"
                     className="btn btn-block btn-primary"
                     onClick={handleSubmit}
                   />
                 </form>
                 <br></br>
-                {/* <Link to="/signin" className="btn btn-block btn-primary">Sign In</Link> */}
               </div>
             </div>
           </div>

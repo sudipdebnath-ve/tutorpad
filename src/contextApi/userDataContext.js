@@ -79,7 +79,7 @@ const AppContext = ({ children }) => {
   };
 
   useEffect(() => {
-    fetchData();
+    // fetchData();
   }, []);
 
   const logOut = () => {

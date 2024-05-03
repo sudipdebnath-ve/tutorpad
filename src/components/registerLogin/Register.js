@@ -10,9 +10,8 @@ import { Icon } from "react-icons-kit";
 import { eyeOff } from "react-icons-kit/feather/eyeOff";
 import { eye } from "react-icons-kit/feather/eye";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
-import { getdomain } from "../../services/loginService.js";
 import { storeToken } from '../../utils/helper.js';
-
+import { getDomainName } from "../../services/loginService.js";
 
 const Register = ( { subdomain, setSubdomain }) => {
   const { fetchData, setIsDarkMode } = useUserDataContext();
@@ -34,7 +33,7 @@ const Register = ( { subdomain, setSubdomain }) => {
   const [centralPortalDomain, setCentralPortalDomain] = useState("");
 
   const getDomainNameHandler  = async () => {
-    const res = await getdomain();
+    const res = await getDomainName();
     console.log("res is here--------",res);
     setCentralPortalDomain(res?.data) 
   };
@@ -215,7 +214,8 @@ const Register = ( { subdomain, setSubdomain }) => {
                         name="domain"
                         onChange={handleChange}
                       />
-                      <span style={{ fontSize: "16px" }}>{centralPortalDomain}</span>
+                      <span style={{ fontSize: "16px", paddingLeft:"10px" }}>{centralPortalDomain}</span>
+                      {/* <span style={{ fontSize: "16px"}}>tutorpad.co</span> */}
                     </div>
                     <small style={{ color: "red" }}>
                       {error?.domain?.length ? error.domain[0] : <></>}
