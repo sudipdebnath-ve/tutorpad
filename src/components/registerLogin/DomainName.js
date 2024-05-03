@@ -35,6 +35,7 @@ const DomainRegister = () => {
   };
 
   const handleDomainChange = async () => {
+    var fullDomain = `${domain}.${process.env.REACT_APP_DOMAIN}`;
     const data = {
       domain: `${domain}.tutorpad.co`,
     };
@@ -42,7 +43,9 @@ const DomainRegister = () => {
       const response = await validateDomainName(data);
       console.log("response is from domain wala se------------->", response);
       if (response && response.success !== undefined) {
+        localStorage.setItem("domain", fullDomain);
         return response.success;
+        
       } else {
         console.error("Invalid response!!!!");
         return false;

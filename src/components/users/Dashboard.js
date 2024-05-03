@@ -33,7 +33,7 @@ const Dashboard = () => {
      // Second useEffect logic
     const timeout = setTimeout(() => {
       if (!token) {
-        // navigate("/signin");
+        navigate("/signin");
       } else {
         fetchData(token);
       }
@@ -48,6 +48,11 @@ const Dashboard = () => {
 
     // Get hash fragment from URL
     const hash = window.location.hash;
+
+    // Check if hash fragment is empty or doesn't contain parameters
+    if (!hash || hash.indexOf('#') === -1) {
+      return; // Exit the function early if parameters are not present
+    }
 
     // Remove the '#' character
     const hashWithoutSharp = hash.slice(1);

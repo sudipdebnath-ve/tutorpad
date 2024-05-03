@@ -9,6 +9,8 @@ import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import LanguageOption from "../LanguageOption.js";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
+import { storeToken } from '../../utils/helper.js';
+
 
 const Signin = () => {
 
@@ -78,6 +80,7 @@ const Signin = () => {
           //   "tutorPad",
           //   JSON.stringify(response.data.data.token)
           // );
+          storeToken(response.data.data.token,portal);
           toast.success(response.data.message, {
             position: toast.POSITION.TOP_CENTER,
           });
