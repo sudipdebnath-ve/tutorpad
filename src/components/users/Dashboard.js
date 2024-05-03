@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import study from "./assets/images/study.png";
 import createAccount from "./assets/images/create-account.png";
@@ -15,22 +15,62 @@ import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import MiniSidebar from "../sidebar/MiniSidebar.js";
 import Sidebar from "../sidebar/Sidebar.js";
 import TopBar from "../sidebar/TopBar.js";
+import { storeToken } from '../../utils/helper.js';
 
 const Dashboard = () => {
   const { userData, fetchData, sidebarToggle } = useUserDataContext();
   const navigate = useNavigate();
-  // console.log(userData);
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
-    var token = JSON.parse(localStorage.getItem("tutorPad"));
-    if (!token) {
-      navigate("/signin");
-    } else {
-      setTimeout(() => {
+
+    //get token and domain from url and set it into localstorage
+    getTokenData();
+    var domain = window.location.hostname;
+    setToken(JSON.parse(localStorage.getItem(domain+':3000')));
+    console.log('TTTToken : ',token);
+
+     // Second useEffect logic
+    const timeout = setTimeout(() => {
+      if (!token) {
+        // navigate("/signin");
+      } else {
         fetchData(token);
-      }, 2000);
-    }
+      }
+    }, 10000);
+
+    // Clean up the timeout to prevent memory leaks
+    return () => clearTimeout(timeout);
+
   }, []);
+
+  const getTokenData = async () => {
+
+    // Get hash fragment from URL
+    const hash = window.location.hash;
+
+    // Check if hash fragment is empty or doesn't contain parameters
+    if (!hash || hash.indexOf('#') === -1) {
+      return; // Exit the function early if parameters are not present
+    }
+
+    // Remove the '#' character
+    const hashWithoutSharp = hash.slice(1);
+
+    // Split the hash fragment into token and domain
+    const [encodedToken, encodedDomain] = hashWithoutSharp.split('#');
+
+    // Decode the encoded values
+    const token = decodeURIComponent(encodedToken);
+    const domain = decodeURIComponent(encodedDomain);
+
+    //store token in localstorage
+    await storeToken(token,domain);
+
+    // Optionally, you may want to clear the hash fragment after reading it
+    window.history.replaceState({}, document.title, window.location.pathname);
+  };
+
   return (
     <div className="wrapper">
       {sidebarToggle ? (

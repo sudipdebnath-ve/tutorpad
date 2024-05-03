@@ -10,8 +10,10 @@ import { Icon } from "react-icons-kit";
 import { eyeOff } from "react-icons-kit/feather/eyeOff";
 import { eye } from "react-icons-kit/feather/eye";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
+import { storeToken } from '../../utils/helper.js';
+import { getDomainName } from "../../services/loginService.js";
 
-const Register = () => {
+const Register = ( { subdomain, setSubdomain }) => {
   const { fetchData, setIsDarkMode } = useUserDataContext();
   const navigate = useNavigate();
   const [userdetails, setUserdetails] = useState({
@@ -28,6 +30,13 @@ const Register = () => {
   const [type, setType] = useState("password");
   const [icon, setIcon] = useState(eyeOff);
   const [error, setError] = useState({});
+  const [centralPortalDomain, setCentralPortalDomain] = useState("");
+
+  const getDomainNameHandler  = async () => {
+    const res = await getDomainName();
+    console.log("res is here--------",res);
+    setCentralPortalDomain(res?.data) 
+  };
 
   const handleChange = (e) => {
     e.preventDefault();
@@ -48,13 +57,15 @@ const Register = () => {
     }
   };
   const handleSubmit = async () => {
+    const subdomain = userdetails.domain;
+    console.log("subdomain form register page------", subdomain);
     const formData = {
       first_name: userdetails.firstname,
       email: userdetails.email,
       password: userdetails.password,
       c_password: userdetails.rpassword,
       last_name: userdetails.lastname,
-      domain: userdetails.domain,
+      domain: subdomain,
       bname: userdetails.bname,
       business_size: userdetails.business_size,
     };
@@ -62,6 +73,9 @@ const Register = () => {
     if (isTermsChecked) {
       formData.terms = isTermsChecked;
     }
+    setSubdomain(subdomain);
+    console.log('subdomain is here-------------',subdomain);
+    
     const config = {
       method: "POST",
       url: `${NON_LOGGED_IN_API_URL}register`,
@@ -72,23 +86,26 @@ const Register = () => {
       // validateStatus: (status) => status !== 404,
     };
     await axios(config)
-      .then((response) => {
+      .then(async (response) => {
         // console.log(response);
         if (response.status === 200) {
-          localStorage.setItem(
-            "tutorPad",
-            JSON.stringify(response.data.data.token)
-          );
+          var token = response.data.data.token;
+
+          //store token in localstorage
+          var domain = `${subdomain}.${process.env.REACT_APP_DOMAIN}`;
+          await storeToken(token,domain);
+
           toast.success(response.data.message, {
             position: toast.POSITION.TOP_CENTER,
           });
-          setTimeout(() => {
-            navigate("/dashboard");
-          }, 2000);
+
+          const encodedToken = encodeURIComponent(token);
+          const encodedDomain = encodeURIComponent(domain);
+          window.location.href = `http://${subdomain}.${process.env.REACT_APP_DOMAIN}/dashboard#${encodedToken}#${encodedDomain}`;
         }
       })
       .catch((error) => {
-        if (error.response.data.success === false) {
+        if (error?.response?.data?.success === false) {
           setError(error.response.data.data);
           toast.error(error.response.data.message, {
             position: toast.POSITION.TOP_CENTER,
@@ -101,6 +118,7 @@ const Register = () => {
     document?.documentElement?.setAttribute("data-theme", "light");
     setIsDarkMode(false);
     localStorage.setItem("theme", "light");
+    getDomainNameHandler()
   });
 
   console.log("checked", isTermsChecked);
@@ -108,7 +126,6 @@ const Register = () => {
   return (
     <div className="d-md-flex align-items-center justify-content-center primary-bg">
       <ToastContainer />
-
       <div className="contents">
         <div className="container">
           <div className="row align-items-center justify-content-center">
@@ -197,7 +214,8 @@ const Register = () => {
                         name="domain"
                         onChange={handleChange}
                       />
-                      <span style={{ fontSize: "16px" }}>.tutorpad.com</span>
+                      <span style={{ fontSize: "16px", paddingLeft:"10px" }}>{centralPortalDomain}</span>
+                      {/* <span style={{ fontSize: "16px"}}>tutorpad.co</span> */}
                     </div>
                     <small style={{ color: "red" }}>
                       {error?.domain?.length ? error.domain[0] : <></>}
@@ -269,7 +287,7 @@ const Register = () => {
                   />
                 </form>
                 <br></br>
-                Already have an account?<Link to="/signin"> Sign In</Link>
+                Already have an account?<Link to="/domain-signin"> Sign In</Link>
               </div>
             </div>
           </div>

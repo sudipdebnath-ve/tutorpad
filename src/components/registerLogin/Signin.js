@@ -9,8 +9,11 @@ import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import LanguageOption from "../LanguageOption.js";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
+import { storeToken } from '../../utils/helper.js';
+
 
 const Signin = () => {
+
   const { t } = useTranslation();
   const { fetchData, setIsDarkMode } = useUserDataContext();
   const navigate = useNavigate();
@@ -28,7 +31,34 @@ const Signin = () => {
     setUserdetails({ ...userdetails, [name]: value });
   };
 
+  function getDesiredSubdomain(url) {
+    // Handle invalid or non-standard URLs gracefully
+    if (!url || !url.startsWith('http')) {
+      return 'Invalid URL';
+    }
+  
+    // Parse the URL using URL object for robustness
+    const parsedUrl = new URL(url);
+    const hostname = parsedUrl.hostname;
+  
+    // Extract the desired part before localhost (including subdomains)
+    const desiredSubdomainParts = hostname.split('.');
+    desiredSubdomainParts.pop(); // Remove the last part (localhost)
+  
+    // Reconstruct the desired subdomain (including all subdomains)
+    const desiredSubdomain = desiredSubdomainParts.join('.');
+  
+    // Concatenate with .tutorpad.co
+    return desiredSubdomain + '.tutorpad.co';
+  }
+
+
   const handleSubmit = async () => {
+
+    const currentUrl = window.location.href;
+    const portal = getDesiredSubdomain(currentUrl);
+
+    console.log("url from browser tab---------",currentUrl , "after extract the url---------", portal );
     const config = {
       method: "POST",
       url: `${NON_LOGGED_IN_API_URL}login`,
@@ -38,6 +68,7 @@ const Signin = () => {
       data: {
         email: userdetails.email,
         password: userdetails.password,
+        portal: portal,
       },
       validateStatus: (status) => status !== 404,
     };
@@ -45,16 +76,17 @@ const Signin = () => {
       .then((response) => {
         // console.log(response);
         if (response.status === 200) {
-          localStorage.setItem(
-            "tutorPad",
-            JSON.stringify(response.data.data.token)
-          );
+          // localStorage.setItem(
+          //   "tutorPad",
+          //   JSON.stringify(response.data.data.token)
+          // );
+          storeToken(response.data.data.token,portal);
           toast.success(response.data.message, {
             position: toast.POSITION.TOP_CENTER,
           });
           setTimeout(() => {
             fetchData();
-            navigate("/dashboard");
+            navigate("/starting/"+JSON.stringify(response.data.data.token));
           }, 3000);
         }
       })
@@ -65,6 +97,8 @@ const Signin = () => {
         }
       });
   };
+
+
   const handleClick = (e) => {
     i18next.changeLanguage(e.target.value);
   };
