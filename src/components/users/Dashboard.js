@@ -20,24 +20,21 @@ import { storeToken } from '../../utils/helper.js';
 const Dashboard = () => {
   const { userData, fetchData, sidebarToggle } = useUserDataContext();
   const navigate = useNavigate();
-  const [token, setToken] = useState(null);
 
   useEffect(() => {
 
     //get token and domain from url and set it into localstorage
     getTokenData();
-    var domain = window.location.hostname;
-    setToken(JSON.parse(localStorage.getItem(domain+':3000')));
-    console.log('TTTToken : ',token);
+    var currentToken = JSON.parse(localStorage.getItem('tutorPad'));
 
      // Second useEffect logic
     const timeout = setTimeout(() => {
-      if (!token) {
-        // navigate("/signin");
+      if (!currentToken) {
+        navigate("/signin");
       } else {
-        fetchData(token);
+        fetchData(currentToken);
       }
-    }, 10000);
+    }, 5000);
 
     // Clean up the timeout to prevent memory leaks
     return () => clearTimeout(timeout);
@@ -61,8 +58,8 @@ const Dashboard = () => {
     const [encodedToken, encodedDomain] = hashWithoutSharp.split('#');
 
     // Decode the encoded values
-    const token = decodeURIComponent(encodedToken);
-    const domain = decodeURIComponent(encodedDomain);
+    var token = decodeURIComponent(encodedToken);
+    var domain = decodeURIComponent(encodedDomain);
 
     //store token in localstorage
     await storeToken(token,domain);
