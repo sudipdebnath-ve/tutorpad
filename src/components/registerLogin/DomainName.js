@@ -57,7 +57,7 @@ const DomainRegister = () => {
     try {
         const domainExists = await handleDomainChange();
         if(domainExists) {
-           navigate("/signin"); 
+          window.location.href = `http://${domain}.${process.env.REACT_APP_DOMAIN}/signin`; 
         }
         else{
             setErrorMessage("Domain Not Exist");

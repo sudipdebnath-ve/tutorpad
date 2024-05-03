@@ -74,7 +74,7 @@ const Register = ( { subdomain, setSubdomain }) => {
       formData.terms = isTermsChecked;
     }
     setSubdomain(subdomain);
-    console.log('subdomain',subdomain);
+    console.log('subdomain is here-------------',subdomain);
     
     const config = {
       method: "POST",
@@ -287,7 +287,7 @@ const Register = ( { subdomain, setSubdomain }) => {
                   />
                 </form>
                 <br></br>
-                Already have an account?<Link to="/signin"> Sign In</Link>
+                Already have an account?<Link to="/domain-signin"> Sign In</Link>
               </div>
             </div>
           </div>
