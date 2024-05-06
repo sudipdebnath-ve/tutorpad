@@ -10,7 +10,9 @@ import LanguageOption from "../LanguageOption.js";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 import { getDomainName, validateDomainName } from "../../services/loginService.js";
-import "./style.css"
+import "./style.css";
+import { checkAuthAndRedirect } from '../../utils/helper.js';
+
 
 const DomainRegister = () => {
 
@@ -80,6 +82,7 @@ const DomainRegister = () => {
     setIsDarkMode(false);
     localStorage.setItem("theme", "light");
     getDomainNameHandler()
+    checkAuthAndRedirect(navigate,'DomainName');
   });
 
   return (
