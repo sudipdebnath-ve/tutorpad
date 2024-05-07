@@ -43,13 +43,11 @@ const DomainRegister = () => {
     };
     try {
       const response = await validateDomainName(data);
-      console.log("response is from domain wala se------------->", response);
-      if (response && response.success !== undefined) {
+      if (response && response.success) {
         localStorage.setItem("domain", fullDomain);
         return response.success;
-        
       } else {
-        console.error("Invalid response!!!!");
+        setErrorMessage(response.data.domain);
         return false;
       }
     } catch (error) {
@@ -63,9 +61,6 @@ const DomainRegister = () => {
         const domainExists = await handleDomainChange();
         if(domainExists) {
           window.location.href = `http://${domain}.${process.env.REACT_APP_DOMAIN}/signin`; 
-        }
-        else{
-            setErrorMessage("Domain Not Exist");
         }
       
     } catch (error) {
