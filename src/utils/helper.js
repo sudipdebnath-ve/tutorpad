@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { verifyToken } from "../services/authService.js";
 
 export function storeToken(token, domain) {
     localStorage.setItem("tutorPad", JSON.stringify(token));
@@ -8,7 +8,7 @@ export function storeToken(token, domain) {
 }
 
 //checkAuth and redirect
-export function checkAuthAndRedirect(navigate,from) {
+export const checkAuthAndRedirect = async (navigate,from) => {
 
     const domainFromUrl = window.location.hostname;
     console.log('domainFromUrl : ',domainFromUrl);
@@ -19,11 +19,19 @@ export function checkAuthAndRedirect(navigate,from) {
         console.log('1111');
         if (token && token.trim() !== '') {
             // Redirect to dashboard if token is present
-            console.log('2222');
-            //verify token
+            var response = await verifyToken();
+            console.log('response :',response);
+
+            if (response) {
+                navigate('/dashboard');
+            } else {
+                localStorage.clear();
+                navigate('/signin');
+            }
             navigate('/dashboard');
         }else{
             console.log('3333');
+            localStorage.clear();
             navigate('/signin');
         }
     }else{
@@ -32,7 +40,7 @@ export function checkAuthAndRedirect(navigate,from) {
         }
         var token = localStorage.getItem(domainFromUrl);
         if (token && token.trim() !== '') {
-            //verify token
+            // var res = verifyToken();
             navigate('/dashboard');
         }
     }
