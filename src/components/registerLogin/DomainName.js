@@ -39,7 +39,7 @@ const DomainRegister = () => {
   const handleDomainChange = async () => {
     var fullDomain = `${domain}.${process.env.REACT_APP_DOMAIN}`;
     const data = {
-      domain: `${domain}.tutorpad.co`,
+      domain: `${domain}.${process.env.REACT_APP_DOMAIN}`,
     };
     try {
       const response = await validateDomainName(data);

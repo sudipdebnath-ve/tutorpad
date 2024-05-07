@@ -49,7 +49,7 @@ const Signin = () => {
     const desiredSubdomain = desiredSubdomainParts.join('.');
   
     // Concatenate with .tutorpad.co
-    return desiredSubdomain + '.tutorpad.co';
+    return `${desiredSubdomain}.${process.env.REACT_APP_DOMAIN}`;
   }
 
 
