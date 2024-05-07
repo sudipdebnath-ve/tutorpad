@@ -84,7 +84,7 @@ const AppContext = ({ children }) => {
 
   const logOut = () => {
     setLoading(true);
-    localStorage.removeItem("tutorPad");
+    localStorage.clear();
     setTimeout(() => {
       navigate("/signin");
       setLoading(false);

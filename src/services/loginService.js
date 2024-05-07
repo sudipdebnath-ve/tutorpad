@@ -64,5 +64,10 @@ export const validateDomainName = async (data) => {
     })
     .catch((error) => {
       console.log(error);
+      if (error.response && error.response.data) {
+        return error.response.data;
+      } else {
+        return "An unknown error occurred.";
+      }
     });
 };
