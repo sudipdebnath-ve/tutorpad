@@ -17,15 +17,15 @@ export function checkAuthAndRedirect(navigate,from) {
     if (domainFromUrl != expectedDomain) {
         var token = localStorage.getItem(domainFromUrl);
         console.log('1111');
-        if (token && token.trim() !== '') {
-            // Redirect to dashboard if token is present
-            console.log('2222');
-            //verify token
-            navigate('/dashboard');
-        }else{
-            console.log('3333');
-            navigate('/signin');
-        }
+        // if (token && token.trim() !== '') {
+        //     // Redirect to dashboard if token is present
+        //     console.log('2222');
+        //     //verify token
+        //     navigate('/dashboard');
+        // }else{
+        //     console.log('3333');
+        //     navigate('/signin');
+        // }
     }else{
         if(from == "Signin"){
             navigate('/domain-signin');
