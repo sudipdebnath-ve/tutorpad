@@ -68,6 +68,7 @@ const DomainRegister = () => {
       setErrorMessage('An error occurred. Please try again later.');
     }
   };
+  
   const handleClick = (e) => {
     i18next.changeLanguage(e.target.value);
   };
