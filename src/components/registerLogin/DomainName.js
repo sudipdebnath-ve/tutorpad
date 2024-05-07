@@ -10,7 +10,9 @@ import LanguageOption from "../LanguageOption.js";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 import { getDomainName, validateDomainName } from "../../services/loginService.js";
-import "./style.css"
+import "./style.css";
+import { checkAuthAndRedirect } from '../../utils/helper.js';
+
 
 const DomainRegister = () => {
 
@@ -37,17 +39,15 @@ const DomainRegister = () => {
   const handleDomainChange = async () => {
     var fullDomain = `${domain}.${process.env.REACT_APP_DOMAIN}`;
     const data = {
-      domain: `${domain}.tutorpad.co`,
+      domain: `${domain}.${process.env.REACT_APP_DOMAIN}`,
     };
     try {
       const response = await validateDomainName(data);
-      console.log("response is from domain wala se------------->", response);
-      if (response && response.success !== undefined) {
+      if (response && response.success) {
         localStorage.setItem("domain", fullDomain);
         return response.success;
-        
       } else {
-        console.error("Invalid response!!!!");
+        setErrorMessage(response.data.domain);
         return false;
       }
     } catch (error) {
@@ -62,15 +62,13 @@ const DomainRegister = () => {
         if(domainExists) {
           window.location.href = `http://${domain}.${process.env.REACT_APP_DOMAIN}/signin`; 
         }
-        else{
-            setErrorMessage("Domain Not Exist");
-        }
       
     } catch (error) {
       console.error("An error occurred:", error);
       setErrorMessage('An error occurred. Please try again later.');
     }
   };
+  
   const handleClick = (e) => {
     i18next.changeLanguage(e.target.value);
   };
@@ -80,6 +78,7 @@ const DomainRegister = () => {
     setIsDarkMode(false);
     localStorage.setItem("theme", "light");
     getDomainNameHandler()
+    checkAuthAndRedirect(navigate,'DomainName');
   });
 
   return (

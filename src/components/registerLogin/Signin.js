@@ -9,7 +9,7 @@ import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import LanguageOption from "../LanguageOption.js";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
-import { storeToken } from '../../utils/helper.js';
+import { storeToken, checkAuthAndRedirect } from '../../utils/helper.js';
 
 
 const Signin = () => {
@@ -49,7 +49,7 @@ const Signin = () => {
     const desiredSubdomain = desiredSubdomainParts.join('.');
   
     // Concatenate with .tutorpad.co
-    return desiredSubdomain + '.tutorpad.co';
+    return `${desiredSubdomain}.${process.env.REACT_APP_DOMAIN}`;
   }
 
 
@@ -107,6 +107,7 @@ const Signin = () => {
     document?.documentElement?.setAttribute("data-theme", "light");
     setIsDarkMode(false);
     localStorage.setItem("theme", "light");
+    checkAuthAndRedirect(navigate, 'Signin');
   });
 
   return (

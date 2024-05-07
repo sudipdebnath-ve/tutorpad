@@ -10,7 +10,7 @@ import { Icon } from "react-icons-kit";
 import { eyeOff } from "react-icons-kit/feather/eyeOff";
 import { eye } from "react-icons-kit/feather/eye";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
-import { storeToken } from '../../utils/helper.js';
+import { storeToken, checkAuthAndRedirect } from '../../utils/helper.js';
 import { getDomainName } from "../../services/loginService.js";
 
 const Register = ( { subdomain, setSubdomain }) => {
@@ -34,7 +34,6 @@ const Register = ( { subdomain, setSubdomain }) => {
 
   const getDomainNameHandler  = async () => {
     const res = await getDomainName();
-    console.log("res is here--------",res);
     setCentralPortalDomain(res?.data) 
   };
 
@@ -119,6 +118,8 @@ const Register = ( { subdomain, setSubdomain }) => {
     setIsDarkMode(false);
     localStorage.setItem("theme", "light");
     getDomainNameHandler()
+
+    checkAuthAndRedirect(navigate, 'Register');
   });
 
   console.log("checked", isTermsChecked);
