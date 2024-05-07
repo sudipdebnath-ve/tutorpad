@@ -106,24 +106,30 @@ const Dashboard = () => {
                 <div className="row">
                   <div className="col-auto">
                     <div className="stat text-primary icon2">
+                    <Link
+                          // className="dropdown-item"
+                          to={"/students/add"}
+                    >
+                    
                       <img src={addStudent} alt="add-student-icon" />
+                      </Link>
                     </div>
                   </div>
                   <div className="col mt-0">
-                    
-                    <Link
-                          className="dropdown-item"
-                          to={"/students/add"}
-                    >
                     <h5 className="card-title">Add Student</h5>
-                    </Link>
+                    
                   </div>
                 </div>
 
                 <div className="row">
                   <div className="col-auto">
                     <div className="stat text-primary icon3">
+                    <Link
+                          className="dropdown-item"
+                          to={"/calendar"}
+                    >
                       <img src={scheduleEvent} alt="schedule-event-icon" />
+                      </Link>
                     </div>
                   </div>
                   <div className="col mt-0">
