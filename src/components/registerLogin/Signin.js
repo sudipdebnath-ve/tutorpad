@@ -52,13 +52,10 @@ const Signin = () => {
     return `${desiredSubdomain}.${process.env.REACT_APP_DOMAIN}`;
   }
 
-
   const handleSubmit = async () => {
 
     const currentUrl = window.location.href;
     const portal = getDesiredSubdomain(currentUrl);
-
-    console.log("url from browser tab---------",currentUrl , "after extract the url---------", portal );
     const config = {
       method: "POST",
       url: `${NON_LOGGED_IN_API_URL}login`,
@@ -72,32 +69,26 @@ const Signin = () => {
       },
       validateStatus: (status) => status !== 404,
     };
-    await axios(config)
-      .then((response) => {
-        // console.log(response);
-        if (response.status === 200) {
-          // localStorage.setItem(
-          //   "tutorPad",
-          //   JSON.stringify(response.data.data.token)
-          // );
-          storeToken(response.data.data.token,portal);
-          toast.success(response.data.message, {
-            position: toast.POSITION.TOP_CENTER,
-          });
-          setTimeout(() => {
-            fetchData();
-            navigate("/starting/"+JSON.stringify(response.data.data.token));
-          }, 3000);
-        }
-      })
-      .catch((error) => {
+    try{
+      const response = await axios(config);
+      if (response.status === 200) {
+        await storeToken(response.data.data.token, portal);
+        console.log('store token');
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        setTimeout(() => {
+          fetchData();
+          navigate("/dashboard");
+        }, 3000);
+      }
+    } catch (error)  {
         console.log(error);
         if (error.response.data.success === false) {
           setError(error.response.data);
         }
-      });
+      }
   };
-
 
   const handleClick = (e) => {
     i18next.changeLanguage(e.target.value);
@@ -106,7 +97,7 @@ const Signin = () => {
   useEffect(() => {
     document?.documentElement?.setAttribute("data-theme", "light");
     setIsDarkMode(false);
-    localStorage.setItem("theme", "light");
+    localStorage.setItem("theme", "light"); 
     checkAuthAndRedirect(navigate, 'Signin');
   });
 

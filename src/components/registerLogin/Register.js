@@ -118,8 +118,6 @@ const Register = ( { subdomain, setSubdomain }) => {
     setIsDarkMode(false);
     localStorage.setItem("theme", "light");
     getDomainNameHandler()
-
-    checkAuthAndRedirect(navigate, 'Register');
   });
 
   console.log("checked", isTermsChecked);
