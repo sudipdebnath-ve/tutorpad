@@ -12,6 +12,7 @@ import { eye } from "react-icons-kit/feather/eye";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import { storeToken, checkAuthAndRedirect } from '../../utils/helper.js';
 import { getDomainName } from "../../services/loginService.js";
+import Loader from "../Loader.js";
 
 const Register = ( { subdomain, setSubdomain }) => {
   const { fetchData, setIsDarkMode } = useUserDataContext();
@@ -31,6 +32,8 @@ const Register = ( { subdomain, setSubdomain }) => {
   const [icon, setIcon] = useState(eyeOff);
   const [error, setError] = useState({});
   const [centralPortalDomain, setCentralPortalDomain] = useState("");
+  const [loading, setLoading] = useState(false);
+
 
   const getDomainNameHandler  = async () => {
     const res = await getDomainName();
@@ -56,8 +59,8 @@ const Register = ( { subdomain, setSubdomain }) => {
     }
   };
   const handleSubmit = async () => {
+    setLoading(true);
     const subdomain = userdetails.domain;
-    console.log("subdomain form register page------", subdomain);
     const formData = {
       first_name: userdetails.firstname,
       email: userdetails.email,
@@ -73,7 +76,6 @@ const Register = ( { subdomain, setSubdomain }) => {
       formData.terms = isTermsChecked;
     }
     setSubdomain(subdomain);
-    console.log('subdomain is here-------------',subdomain);
     
     const config = {
       method: "POST",
@@ -94,6 +96,7 @@ const Register = ( { subdomain, setSubdomain }) => {
           var domain = `${subdomain}.${process.env.REACT_APP_DOMAIN}`;
           await storeToken(token,domain);
 
+          setLoading(false);
           toast.success(response.data.message, {
             position: toast.POSITION.TOP_CENTER,
           });
@@ -106,9 +109,10 @@ const Register = ( { subdomain, setSubdomain }) => {
       .catch((error) => {
         if (error?.response?.data?.success === false) {
           setError(error.response.data.data);
-          toast.error(error.response.data.message, {
-            position: toast.POSITION.TOP_CENTER,
-          });
+          setLoading(false);
+          // toast.error(error.response.data.message, {
+          //   position: toast.POSITION.TOP_CENTER,
+          // });
         }
       });
   };
@@ -118,13 +122,18 @@ const Register = ( { subdomain, setSubdomain }) => {
     setIsDarkMode(false);
     localStorage.setItem("theme", "light");
     getDomainNameHandler()
+    checkAuthAndRedirect(navigate, 'Register');
+
   });
 
-  console.log("checked", isTermsChecked);
-
   return (
-    <div className="d-md-flex align-items-center justify-content-center primary-bg">
+    <div className="d-md-flex align-items-center justify-content-center h-100 primary-bg">
       <ToastContainer />
+      { loading ? (
+        <>
+          <Loader />
+        </>
+      ) : (
       <div className="contents">
         <div className="container">
           <div className="row align-items-center justify-content-center">
@@ -292,6 +301,7 @@ const Register = ( { subdomain, setSubdomain }) => {
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 };

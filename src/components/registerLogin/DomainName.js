@@ -12,12 +12,13 @@ import i18next from "i18next";
 import { getDomainName, validateDomainName } from "../../services/loginService.js";
 import "./style.css";
 import { checkAuthAndRedirect } from '../../utils/helper.js';
-
+import Loader from "../Loader.js";
 
 const DomainRegister = () => {
 
   const { t } = useTranslation();
   const { fetchData, setIsDarkMode } = useUserDataContext();
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [userdetails, setUserdetails] = useState({
     email: "",
@@ -31,9 +32,7 @@ const DomainRegister = () => {
 
   const getDomainNameHandler  =  async() => {
     const res =  await getDomainName();
-    console.log("Domain name ----------", res);
     setCentralPortalDomain(res?.data)
-    console.log("Central portal domain ----------", centralPortalDomain);
   };
 
   const handleDomainChange = async () => {
@@ -48,7 +47,9 @@ const DomainRegister = () => {
         return response.success;
       } else {
         setErrorMessage(response.data.domain);
+        setLoading(false);
         return false;
+
       }
     } catch (error) {
       console.error("An error occurred:", error);
@@ -58,6 +59,7 @@ const DomainRegister = () => {
 
   const handleSubmit = async () => {
     try {
+        setLoading(true);
         const domainExists = await handleDomainChange();
         if(domainExists) {
           window.location.href = `http://${domain}.${process.env.REACT_APP_DOMAIN}/signin`; 
@@ -85,6 +87,11 @@ const DomainRegister = () => {
     <div className="d-md-flex justify-content-center align-items-center h-100 primary-bg">
       <ToastContainer />
 
+      { loading ? (
+        <>
+          <Loader />
+        </>
+      ) : (
       <div className="contents">
         <div className="container">
           <div className="row align-items-center justify-content-center">
@@ -132,6 +139,7 @@ const DomainRegister = () => {
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 };

@@ -37,7 +37,6 @@ import AutoInvoiceForm from "./components/family-invoice/AutoInvoiceForm";
 import AddTransactionForm from "./components/family-invoice/AddTransactionForm";
 import SendInvoiceEmail from "./components/family-invoice/SendInvoiceEmail";
 import { useState } from "react";
-import { useEffect } from "react";
 import Starting from "./components/registerLogin/Starting";
 import DomainRegister from "./components/registerLogin/DomainName";
 function App() {

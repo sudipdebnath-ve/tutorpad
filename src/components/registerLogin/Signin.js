@@ -10,12 +10,14 @@ import LanguageOption from "../LanguageOption.js";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 import { storeToken, checkAuthAndRedirect } from '../../utils/helper.js';
+import Loader from "../Loader.js";
 
 
 const Signin = () => {
 
   const { t } = useTranslation();
   const { fetchData, setIsDarkMode } = useUserDataContext();
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [userdetails, setUserdetails] = useState({
     email: "",
@@ -54,6 +56,7 @@ const Signin = () => {
 
   const handleSubmit = async () => {
 
+    setLoading(true);
     const currentUrl = window.location.href;
     const portal = getDesiredSubdomain(currentUrl);
     const config = {
@@ -73,20 +76,18 @@ const Signin = () => {
       const response = await axios(config);
       if (response.status === 200) {
         await storeToken(response.data.data.token, portal);
-        console.log('store token');
+        setLoading(false);
         toast.success(response.data.message, {
           position: toast.POSITION.TOP_CENTER,
         });
-        setTimeout(() => {
-          fetchData();
-          navigate("/dashboard");
-        }, 3000);
+        navigate('/dashboard');
       }
     } catch (error)  {
         console.log(error);
         if (error.response.data.success === false) {
           setError(error.response.data);
         }
+        setLoading(false);
       }
   };
 
@@ -102,75 +103,83 @@ const Signin = () => {
   });
 
   return (
+    
     <div className="d-md-flex justify-content-center align-items-center h-100 primary-bg">
       <ToastContainer />
 
-      <div className="contents">
-        <div className="container">
-          <div className="row align-items-center justify-content-center">
-            <div className="col-md-12">
-              <div className="form-block mx-auto">
-                <div className="text-center mb-5">
-                  <h3>
-                    <strong>TutorPad</strong>
-                  </h3>
+      { loading ? (
+        <>
+          <Loader />
+        </>
+      ) : (
+        <div className="contents">
+          <div className="container">
+            <div className="row align-items-center justify-content-center">
+              <div className="col-md-12">
+                <div className="form-block mx-auto">
+                  <div className="text-center mb-5">
+                    <h3>
+                      <strong>TutorPad</strong>
+                    </h3>
+                  </div>
+                  <form>
+                    <div className="form-group first">
+                      <label htmlFor="email">{t("email")}</label>
+                      <input
+                        type="email"
+                        className="form-control"
+                        placeholder={t("email placeholder")}
+                        name="email"
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                    <div className="form-group last mb-3">
+                      <label htmlFor="password">{t("password")}</label>
+                      <input
+                        type="password"
+                        className="form-control"
+                        placeholder={t("password placeholder")}
+                        name="password"
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                    <small style={{ color: "red" }}>
+                      {error?.message?.length ? error.message : <></>}
+                    </small>
+
+                    <div className="d-sm-flex mb-5 align-items-center justify-content-between">
+                      <label className="control control--checkbox mb-3 mb-sm-0">
+                        <span className="caption">{t("remember me")}</span>
+                        <input type="checkbox" />
+                        <div className="control__indicator"></div>
+                      </label>
+                      <span className="ml-auto">
+                        <Link to="/forget-password" className="forgot-pass">
+                          {t("forgot password")}
+                        </Link>
+                      </span>
+                    </div>
+
+                    <input
+                      type="button"
+                      value="Sign In"
+                      className="btn btn-block btn-primary"
+                      onClick={handleSubmit}
+                    />
+                  </form>
+                  <br></br>
+                  {t("don't have an account?")}
+                  <Link to="/"> {t("register here")}</Link>
                 </div>
-                <form>
-                  <div className="form-group first">
-                    <label htmlFor="email">{t("email")}</label>
-                    <input
-                      type="email"
-                      className="form-control"
-                      placeholder={t("email placeholder")}
-                      name="email"
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group last mb-3">
-                    <label htmlFor="password">{t("password")}</label>
-                    <input
-                      type="password"
-                      className="form-control"
-                      placeholder={t("password placeholder")}
-                      name="password"
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <small style={{ color: "red" }}>
-                    {error?.message?.length ? error.message : <></>}
-                  </small>
-
-                  <div className="d-sm-flex mb-5 align-items-center justify-content-between">
-                    <label className="control control--checkbox mb-3 mb-sm-0">
-                      <span className="caption">{t("remember me")}</span>
-                      <input type="checkbox" />
-                      <div className="control__indicator"></div>
-                    </label>
-                    <span className="ml-auto">
-                      <Link to="/forget-password" className="forgot-pass">
-                        {t("forgot password")}
-                      </Link>
-                    </span>
-                  </div>
-
-                  <input
-                    type="button"
-                    value="Sign In"
-                    className="btn btn-block btn-primary"
-                    onClick={handleSubmit}
-                  />
-                </form>
-                <br></br>
-                {t("don't have an account?")}
-                <Link to="/"> {t("register here")}</Link>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
+    
   );
 };
 
