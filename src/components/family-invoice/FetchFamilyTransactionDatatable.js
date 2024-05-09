@@ -21,8 +21,6 @@ const FetchFamilyTransactionDatatable = () => {
     allTransactionsByFamily,
     fetchTransactionsByFamily,
     userId,
-    setLoading,
-    loading,
   } = useUserDataContext();
   const [deleteId, setDeleteId] = useState(null);
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
@@ -154,10 +152,8 @@ const FetchFamilyTransactionDatatable = () => {
   }, [allTransactionsByFamily]);
   if (val) {
     var rows = allTransactionsByFamily;
-    setLoading(false);
-  } else {
-    setLoading(true);
-  }
+    
+  } 
   return (
     <div>
       <DeleteModel
@@ -170,11 +166,7 @@ const FetchFamilyTransactionDatatable = () => {
       />
       <>
         {rows && allTransactionsByFamily.length > 0 ? (
-          loading ? (
-            <>
-              <Loader />
-            </>
-          ) : (
+         
             <>
               <div className="py-3">
                 <div className="chart chart-xs">
@@ -227,14 +219,10 @@ const FetchFamilyTransactionDatatable = () => {
                 </div>
               </div>
             </>
-          )
+          
         ) : (
           <>
-            {loading ? (
-              <>
-                <Loader />
-              </>
-            ) : (
+          
               <>
                 <div className="py-3">
                   <div className="chart chart-xs">
@@ -258,7 +246,7 @@ const FetchFamilyTransactionDatatable = () => {
                   ></div>
                 </div>
               </>
-            )}
+            
           </>
         )}
       </>

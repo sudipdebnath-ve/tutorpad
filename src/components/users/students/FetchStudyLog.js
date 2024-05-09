@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 
 const FetchStudyLog = () => {
   const [val, setVal] = useState(false);
-  const { fetchStudentData, userId, studentData, setLoading, loading } =
+  const { fetchStudentData, userId, studentData } =
     useUserDataContext();
 
   useEffect(() => {
@@ -52,19 +52,13 @@ const FetchStudyLog = () => {
   }, [studentData]);
   if (val) {
     var rows = studentData;
-    setLoading(false);
-  } else {
-    setLoading(true);
-  }
+    
+  } 
   return (
     <div>
       <>
         {rows && studentData.length > 0 ? (
-          loading ? (
-            <>
-              <Loader />
-            </>
-          ) : (
+          
             <>
               <div className="py-3">
                 <div className="chart chart-xs">
@@ -98,14 +92,9 @@ const FetchStudyLog = () => {
                 </div>
               </div>
             </>
-          )
+          
         ) : (
-          <>
-            {loading ? (
-              <>
-                <Loader />
-              </>
-            ) : (
+          
               <>
                 <div className="py-3">
                   <div className="chart chart-xs">
@@ -119,8 +108,7 @@ const FetchStudyLog = () => {
                   Add your students so you can take their attendance, and more.
                 </p>
               </>
-            )}
-          </>
+          
         )}
       </>
     </div>

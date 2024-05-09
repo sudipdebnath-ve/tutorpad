@@ -22,8 +22,6 @@ const FetchChargeCategoryDatatable = ({
   const {
     fetchChargeCategory,
     userId,
-    setLoading,
-    loading,
     allChargeCategory,
   } = useUserDataContext();
   const [deleteId, setDeleteId] = useState(null);
@@ -107,10 +105,8 @@ const FetchChargeCategoryDatatable = ({
   }, [allChargeCategory]);
   if (val) {
     var rows = allChargeCategory;
-    setLoading(false);
-  } else {
-    setLoading(true);
-  }
+    
+  } 
   return (
     <div>
       <DeleteModel
@@ -123,11 +119,7 @@ const FetchChargeCategoryDatatable = ({
       />
       <>
         {rows && allChargeCategory.length > 0 ? (
-          loading ? (
-            <>
-              <Loader />
-            </>
-          ) : (
+          
             <>
               <div className="py-3">
                 <div className="chart chart-xs">
@@ -180,14 +172,9 @@ const FetchChargeCategoryDatatable = ({
                 </div>
               </div>
             </>
-          )
+          
         ) : (
-          <>
-            {loading ? (
-              <>
-                <Loader />
-              </>
-            ) : (
+          
               <>
                 <div className="py-3">
                   <div className="chart chart-xs">
@@ -212,8 +199,7 @@ const FetchChargeCategoryDatatable = ({
                   ></div>
                 </div>
               </>
-            )}
-          </>
+           
         )}
       </>
     </div>
