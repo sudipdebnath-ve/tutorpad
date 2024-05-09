@@ -1,10 +1,13 @@
-import React from "react";
 import loader from "../assets/images/loader.gif";
+import "./Loader.css";
+import { useState } from "react";
 
-const Loader = () => {
-  return (
-    <div className="loader-center">
-      <img src={loader}></img>
+const Loader = ({show}) => {
+  return show && (
+    <div className="loader-overlay">
+      <div className="loader-center">
+        <img src={loader} alt="Loading..." />
+      </div>
     </div>
   );
 };

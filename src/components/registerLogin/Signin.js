@@ -10,14 +10,11 @@ import LanguageOption from "../LanguageOption.js";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 import { storeToken, checkAuthAndRedirect } from '../../utils/helper.js';
-import Loader from "../Loader.js";
-
 
 const Signin = () => {
 
   const { t } = useTranslation();
   const { fetchData, setIsDarkMode } = useUserDataContext();
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [userdetails, setUserdetails] = useState({
     email: "",
@@ -55,8 +52,6 @@ const Signin = () => {
   }
 
   const handleSubmit = async () => {
-
-    setLoading(true);
     const currentUrl = window.location.href;
     const portal = getDesiredSubdomain(currentUrl);
     const config = {
@@ -76,19 +71,17 @@ const Signin = () => {
       const response = await axios(config);
       if (response.status === 200) {
         await storeToken(response.data.data.token, portal);
-        setLoading(false);
         toast.success(response.data.message, {
           position: toast.POSITION.TOP_CENTER,
         });
-        navigate('/dashboard');
+        await navigate('/dashboard');
       }
     } catch (error)  {
-        console.log(error);
-        if (error.response.data.success === false) {
-          setError(error.response.data);
-        }
-        setLoading(false);
+      console.log(error);
+      if (error.response.data.success === false) {
+        setError(error.response.data);
       }
+    }
   };
 
   const handleClick = (e) => {
@@ -100,18 +93,13 @@ const Signin = () => {
     setIsDarkMode(false);
     localStorage.setItem("theme", "light"); 
     checkAuthAndRedirect(navigate, 'Signin');
+
   });
 
   return (
     
     <div className="d-md-flex justify-content-center align-items-center h-100 primary-bg">
       <ToastContainer />
-
-      { loading ? (
-        <>
-          <Loader />
-        </>
-      ) : (
         <div className="contents">
           <div className="container">
             <div className="row align-items-center justify-content-center">
@@ -177,7 +165,6 @@ const Signin = () => {
             </div>
           </div>
         </div>
-      )}
     </div>
     
   );

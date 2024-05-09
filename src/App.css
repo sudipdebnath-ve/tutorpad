@@ -216,3 +216,7 @@ label {
 .form-control.domain {
   width: 60%;
 }
+
+.wrapperBody{
+  height: 100vh;
+}

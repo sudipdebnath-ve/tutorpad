@@ -22,23 +22,10 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-
     //get token and domain from url and set it into localstorage
+    console.log('token 1111: ',JSON.parse(localStorage.getItem('tutorPad')));
+
     getTokenData();
-    var currentToken = JSON.parse(localStorage.getItem('tutorPad'));
-
-     // Second useEffect logic
-    const timeout = setTimeout(() => {
-      if (!currentToken) {
-        navigate("/signin");
-      } else {
-        fetchData(currentToken);
-      }
-    }, 5000);
-
-    // Clean up the timeout to prevent memory leaks
-    return () => clearTimeout(timeout);
-
   }, []);
 
   const getTokenData = async () => {
@@ -48,6 +35,10 @@ const Dashboard = () => {
 
     // Check if hash fragment is empty or doesn't contain parameters
     if (!hash || hash.indexOf('#') === -1) {
+      console.log('token 222: ',JSON.parse(localStorage.getItem('tutorPad')));
+      // setTimeout(() => {
+        fetchData();
+      // }, 2000);
       return; // Exit the function early if parameters are not present
     }
 
@@ -63,6 +54,9 @@ const Dashboard = () => {
 
     //store token in localstorage
     await storeToken(token,domain);
+    // setTimeout(() => {
+    await fetchData();
+    // }, 2000);
 
     // Optionally, you may want to clear the hash fragment after reading it
     window.history.replaceState({}, document.title, window.location.pathname);

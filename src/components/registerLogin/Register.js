@@ -32,7 +32,6 @@ const Register = ( { subdomain, setSubdomain }) => {
   const [icon, setIcon] = useState(eyeOff);
   const [error, setError] = useState({});
   const [centralPortalDomain, setCentralPortalDomain] = useState("");
-  const [loading, setLoading] = useState(false);
 
 
   const getDomainNameHandler  = async () => {
@@ -59,7 +58,6 @@ const Register = ( { subdomain, setSubdomain }) => {
     }
   };
   const handleSubmit = async () => {
-    setLoading(true);
     const subdomain = userdetails.domain;
     const formData = {
       first_name: userdetails.firstname,
@@ -96,7 +94,6 @@ const Register = ( { subdomain, setSubdomain }) => {
           var domain = `${subdomain}.${process.env.REACT_APP_DOMAIN}`;
           await storeToken(token,domain);
 
-          setLoading(false);
           toast.success(response.data.message, {
             position: toast.POSITION.TOP_CENTER,
           });
@@ -109,12 +106,12 @@ const Register = ( { subdomain, setSubdomain }) => {
       .catch((error) => {
         if (error?.response?.data?.success === false) {
           setError(error.response.data.data);
-          setLoading(false);
+          
           // toast.error(error.response.data.message, {
           //   position: toast.POSITION.TOP_CENTER,
           // });
         }
-      });
+      })
   };
 
   useEffect(() => {
@@ -123,17 +120,11 @@ const Register = ( { subdomain, setSubdomain }) => {
     localStorage.setItem("theme", "light");
     getDomainNameHandler()
     checkAuthAndRedirect(navigate, 'Register');
-
   });
 
   return (
-    <div className="d-md-flex align-items-center justify-content-center h-100 primary-bg">
+    <div className="d-md-flex align-items-center justify-content-center primary-bg">
       <ToastContainer />
-      { loading ? (
-        <>
-          <Loader />
-        </>
-      ) : (
       <div className="contents">
         <div className="container">
           <div className="row align-items-center justify-content-center">
@@ -301,7 +292,6 @@ const Register = ( { subdomain, setSubdomain }) => {
           </div>
         </div>
       </div>
-      )}
     </div>
   );
 };

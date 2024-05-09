@@ -7,6 +7,8 @@ const userDataContext = createContext();
 
 export const useUserDataContext = () => useContext(userDataContext);
 const token = JSON.parse(localStorage.getItem("tutorPad"));
+console.log('token 333 : ',token);
+
 
 const AppContext = ({ children }) => {
   const [userData, setUserData] = useState({});
@@ -31,7 +33,6 @@ const AppContext = ({ children }) => {
   });
   const [allTransactionsByFamily, setAllTransactionsByFamily] = useState([]);
   const [allTransactionsByDates, setAllTransactionsByDates] = useState([]);
-  const [loading, setLoading] = useState(false);
   const storedMode = localStorage.getItem("isDarkMode");
   const initialMode = storedMode ? JSON.parse(storedMode) : false;
   const [isDarkMode, setIsDarkMode] = useState(initialMode);
@@ -55,7 +56,7 @@ const AppContext = ({ children }) => {
   const navigate = useNavigate();
 
   const fetchData = async () => {
-    setLoading(true);
+    // console.log('api token : ',token);
     const validateconfig = {
       method: "GET",
       url: `${API_URL}tenant/details`,
@@ -65,16 +66,14 @@ const AppContext = ({ children }) => {
     };
     await axios(validateconfig)
       .then((response) => {
-        // console.log(response);
+        console.log('RRRR : ',response);
         if (response.data.success === true) {
-          setLoading(false);
           setUserData(response.data.data);
           setUserId(response.data.id);
         }
       })
       .catch((error) => {
         console.log(error);
-        setLoading(true);
       });
   };
 
@@ -83,17 +82,14 @@ const AppContext = ({ children }) => {
   }, []);
 
   const logOut = () => {
-    setLoading(true);
     localStorage.clear();
     setTimeout(() => {
       navigate("/signin");
-      setLoading(false);
     }, 1000);
   };
 
   // Email Template start
   const emailTemplate = async () => {
-    setLoading(true);
     const token = JSON.parse(localStorage.getItem("tutorPad"));
     const validateconfig = {
       method: "GET",
@@ -106,18 +102,15 @@ const AppContext = ({ children }) => {
       .then((response) => {
         // console.log(response.data);
         if (response.data.success === true) {
-          setLoading(false);
           setEmailTemplateData(response.data.data);
         }
       })
       .catch((error) => {
         console.log(error);
-        setLoading(false);
       });
   };
 
   const handleEmailTemplate = async (e) => {
-    setLoading(true);
     const token = JSON.parse(localStorage.getItem("tutorPad"));
     if (e.target.value === 0) {
       setEmailOnchange(false);
@@ -135,19 +128,16 @@ const AppContext = ({ children }) => {
       .then((response) => {
         // console.log(response.data);
         if (response.data.success === true) {
-          setLoading(false);
           setEmailData(response.data.data);
         }
       })
       .catch((error) => {
         console.log(error);
-        setLoading(false);
       });
   };
   // Email Template emd
 
   const fetchStudentData = async () => {
-    setLoading(true);
     const validateconfig = {
       method: "GET",
       url: `${API_URL}get-students?user_id=${userId}`,
@@ -159,18 +149,15 @@ const AppContext = ({ children }) => {
       .then((response) => {
         // console.log(response.data);
         if (response.data.success === true) {
-          setLoading(false);
           setStudentData(response.data.data);
         }
       })
       .catch((error) => {
         console.log(error);
-        setLoading(false);
       });
   };
 
   const fetchTutorData = async () => {
-    setLoading(true);
     const validateconfig = {
       method: "GET",
       url: `${API_URL}tutors`,
@@ -182,18 +169,15 @@ const AppContext = ({ children }) => {
       .then((response) => {
         // console.log(response.data);
         if (response.data.success === true) {
-          setLoading(false);
           setTutorData(response.data.data);
         }
       })
       .catch((error) => {
         console.log(error);
-        setLoading(false);
       });
   };
 
   const fetchChargeCategory = async () => {
-    setLoading(true);
     const validateconfig = {
       method: "GET",
       url: `${API_URL}chargecats`,
@@ -205,18 +189,15 @@ const AppContext = ({ children }) => {
       .then((response) => {
         // console.log(response.data);
         if (response.data.success === true) {
-          setLoading(false);
           setAllChargeCategory(response.data.data);
         }
       })
       .catch((error) => {
         console.log(error);
-        setLoading(false);
       });
   };
 
   const fetchFamilies = async () => {
-    setLoading(true);
     const validateconfig = {
       method: "GET",
       url: `${API_URL}family-accounts`,
@@ -228,18 +209,15 @@ const AppContext = ({ children }) => {
       .then((response) => {
         // console.log(response.data);
         if (response.data.success === true) {
-          setLoading(false);
           setAllFamilies(response.data.data);
         }
       })
       .catch((error) => {
         console.log(error);
-        setLoading(false);
       });
   };
 
   const fetchInvoices = async (id) => {
-    setLoading(true);
     const validateconfig = {
       method: "GET",
       url: `${API_URL}account-invoices/${id}`,
@@ -251,18 +229,15 @@ const AppContext = ({ children }) => {
       .then((response) => {
         // console.log(response.data);
         if (response.data.success === true) {
-          setLoading(false);
           setAccountInvoices(response.data.data);
         }
       })
       .catch((error) => {
         console.log(error);
-        setLoading(false);
       });
   };
 
   const fetchInvoicesByDate = async (date_from, date_to) => {
-    setLoading(true);
     const validateconfig = {
       method: "GET",
       url: `${API_URL}invoices?date_from=${date_from}&date_to=${date_to}`,
@@ -274,13 +249,11 @@ const AppContext = ({ children }) => {
       .then((response) => {
         // console.log(response.data);
         if (response.data.success === true) {
-          setLoading(false);
           setAllInvoicesByDate(response.data.data);
         }
       })
       .catch((error) => {
         console.log(error);
-        setLoading(false);
       });
   };
 
@@ -406,7 +379,6 @@ const AppContext = ({ children }) => {
   };
 
   const fetchTransactionsByFamily = async (id) => {
-    setLoading(true);
     const validateconfig = {
       method: "GET",
       url: `${API_URL}account-transactions/` + id,
@@ -418,18 +390,15 @@ const AppContext = ({ children }) => {
       .then((response) => {
         // console.log(response.data);
         if (response.data.success === true) {
-          setLoading(false);
           setAllTransactionsByFamily(response.data.data);
         }
       })
       .catch((error) => {
         console.log(error);
-        setLoading(false);
       });
   };
 
   const fetchTransactionsByDates = async (fromDate, toDate) => {
-    setLoading(true);
     const validateconfig = {
       method: "GET",
       url: `${API_URL}transactions?date_from=${fromDate}&date_to=${toDate}`,
@@ -441,13 +410,11 @@ const AppContext = ({ children }) => {
       .then((response) => {
         // console.log(response.data);
         if (response.data.success === true) {
-          setLoading(false);
           setAllTransactionsByDates(response.data.data);
         }
       })
       .catch((error) => {
         console.log(error);
-        setLoading(false);
       });
   };
 
@@ -470,8 +437,6 @@ const AppContext = ({ children }) => {
         studentData,
         tutorData,
         userId,
-        setLoading,
-        loading,
         allAvailabilityData,
         getAvailabilityData,
         allTutors,

@@ -18,7 +18,6 @@ const DomainRegister = () => {
 
   const { t } = useTranslation();
   const { fetchData, setIsDarkMode } = useUserDataContext();
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [userdetails, setUserdetails] = useState({
     email: "",
@@ -47,7 +46,6 @@ const DomainRegister = () => {
         return response.success;
       } else {
         setErrorMessage(response.data.domain);
-        setLoading(false);
         return false;
 
       }
@@ -59,7 +57,6 @@ const DomainRegister = () => {
 
   const handleSubmit = async () => {
     try {
-        setLoading(true);
         const domainExists = await handleDomainChange();
         if(domainExists) {
           window.location.href = `http://${domain}.${process.env.REACT_APP_DOMAIN}/signin`; 
@@ -68,7 +65,7 @@ const DomainRegister = () => {
     } catch (error) {
       console.error("An error occurred:", error);
       setErrorMessage('An error occurred. Please try again later.');
-    }
+    } 
   };
   
   const handleClick = (e) => {
@@ -86,12 +83,6 @@ const DomainRegister = () => {
   return (
     <div className="d-md-flex justify-content-center align-items-center h-100 primary-bg">
       <ToastContainer />
-
-      { loading ? (
-        <>
-          <Loader />
-        </>
-      ) : (
       <div className="contents">
         <div className="container">
           <div className="row align-items-center justify-content-center">
@@ -139,7 +130,6 @@ const DomainRegister = () => {
           </div>
         </div>
       </div>
-      )}
     </div>
   );
 };
