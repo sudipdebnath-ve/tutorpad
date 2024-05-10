@@ -93,21 +93,9 @@ const FamilyDetails = () => {
     setSelectedFamily(...familySelectedData);
     getFamilyAccountsDetailsHandler();
     getIncomingInvoiceHandler();
-  }, [param, isDisabled]);
+    console.log("TEST....")
+  }, [param.id, isDisabled]);
 
-  console.log(
-    "family----------",
-    family,
-    "family.balance_forward--------",
-    family.balance_forward
-  );
-
-  console.log(
-    "family----------",
-    family,
-    "family.balance_forward--------",
-    family.balance_forward
-  );
 
   return (
     <div className="wrapper">
@@ -205,7 +193,7 @@ const FamilyDetails = () => {
                         </ul>
                       </div>
                     </div>
-                    {console.log("is autoinvoicing------", isAutoInvoicing)}
+                    
                     {/* {  Boolean(0) && <div> Hiiiii welcome</div>} */}
                     {Boolean(isAutoInvoicing) && (
                       <>

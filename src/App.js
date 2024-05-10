@@ -45,28 +45,10 @@ import Loader from "../src/components/Loader.js";
 
 function App() {
   const [subdomain, setSubdomain] = useState("");
-  const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    axios.interceptors.request.use((config) => {
-      setLoading(true);
-      return config;
-    }, (error) => {
-      setLoading(false);
-      return Promise.reject(error);
-    });
-  
-    axios.interceptors.response.use((response) => {
-      setLoading(false);
-      return response;
-    }, (error) => {
-      setLoading(false);
-      return Promise.reject(error);
-    });
-  }, []);
-
+ 
   return (
     <div className="wrapperBody">
-      <Loader show={loading}/>
+      <Loader/>
 
       <Routes basename={"/"}>
         {/* <Route index element={<Register />} /> */}
