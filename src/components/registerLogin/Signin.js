@@ -10,6 +10,8 @@ import LanguageOption from "../LanguageOption.js";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 import { storeToken, checkAuthAndRedirect } from '../../utils/helper.js';
+import { getDomainName } from "../../services/loginService.js";
+
 
 const Signin = () => {
 
@@ -20,8 +22,15 @@ const Signin = () => {
     email: "",
     password: "",
   });
-
+  const [centralPortalDomain, setCentralPortalDomain] = useState("");
   const [error, setError] = useState({});
+
+  const getDomainNameHandler  =  async() => {
+    const res =  await getDomainName();
+    setCentralPortalDomain(res?.data)
+    localStorage.setItem("centralPortalDomain", res?.data);
+  };
+
 
   const handleChange = (e) => {
     e.preventDefault();
@@ -30,30 +39,8 @@ const Signin = () => {
     setUserdetails({ ...userdetails, [name]: value });
   };
 
-  function getDesiredSubdomain(url) {
-    // Handle invalid or non-standard URLs gracefully
-    if (!url || !url.startsWith('http')) {
-      return 'Invalid URL';
-    }
-  
-    // Parse the URL using URL object for robustness
-    const parsedUrl = new URL(url);
-    const hostname = parsedUrl.hostname;
-  
-    // Extract the desired part before localhost (including subdomains)
-    const desiredSubdomainParts = hostname.split('.');
-    desiredSubdomainParts.pop(); // Remove the last part (localhost)
-  
-    // Reconstruct the desired subdomain (including all subdomains)
-    const desiredSubdomain = desiredSubdomainParts.join('.');
-  
-    // Concatenate with .tutorpad.co
-    return `${desiredSubdomain}.${process.env.REACT_APP_DOMAIN}`;
-  }
-
   const handleSubmit = async () => {
-    const currentUrl = window.location.href;
-    const portal = getDesiredSubdomain(currentUrl);
+    const portal = window.location.hostname;
     const config = {
       method: "POST",
       url: `${NON_LOGGED_IN_API_URL}login`,
@@ -92,8 +79,8 @@ const Signin = () => {
     document?.documentElement?.setAttribute("data-theme", "light");
     setIsDarkMode(false);
     localStorage.setItem("theme", "light"); 
+    getDomainNameHandler();
     checkAuthAndRedirect(navigate, 'Signin');
-
   });
 
   return (

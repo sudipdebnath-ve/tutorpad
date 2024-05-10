@@ -6,9 +6,6 @@ import { useNavigate } from "react-router-dom";
 const userDataContext = createContext();
 
 export const useUserDataContext = () => useContext(userDataContext);
-const token = JSON.parse(localStorage.getItem("tutorPad"));
-console.log('token 333 : ',token);
-
 
 const AppContext = ({ children }) => {
   const [userData, setUserData] = useState({});
@@ -37,6 +34,10 @@ const AppContext = ({ children }) => {
   const initialMode = storedMode ? JSON.parse(storedMode) : false;
   const [isDarkMode, setIsDarkMode] = useState(initialMode);
 
+  const token = JSON.parse(localStorage.getItem("tutorPad"));
+  console.log('token 333 : ',token);
+
+
   const toggleTheme = () => {
     setIsDarkMode((prevMode) => {
       const newMode = !prevMode;
@@ -56,7 +57,7 @@ const AppContext = ({ children }) => {
   const navigate = useNavigate();
 
   const fetchData = async () => {
-    // console.log('api token : ',token);
+    console.log('api token : ',token);
     const validateconfig = {
       method: "GET",
       url: `${API_URL}tenant/details`,
