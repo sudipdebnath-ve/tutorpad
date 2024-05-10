@@ -77,7 +77,7 @@ const FamilyDetails = () => {
       setIsDisabled(true);
       setIsAutoInvoicing(false);
       handleCloseModal();
-      // setIsChanged(!isChanged);
+      setIsChanged(!isChanged);
     } catch (error) {
       console.error("Error disabling auto-invoicing:", error);
       setError(error.response.data.message); // Set error message
