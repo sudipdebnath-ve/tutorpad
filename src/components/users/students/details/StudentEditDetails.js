@@ -21,7 +21,6 @@ const StudentEditDetails = () => {
   const {
     sidebarToggle,
     token,
-    setLoading,
     getTutor,
     allTutors,
     fetchCategory,
@@ -51,7 +50,7 @@ const StudentEditDetails = () => {
   };
   console.log("studentFetchData-------", studentFetchData)
   const fetchAssignTutors = async (id) => {
-    setLoading(true);
+    
     console.log(id);
     const validateconfig = {
       method: "GET",
@@ -67,16 +66,16 @@ const StudentEditDetails = () => {
       .then((response) => {
         console.log(response.data);
         setTutors(response.data.data);
-        setLoading(false);
+        
       })
       .catch((error) => {
         console.log(error);
-        setLoading(true);
+        
       });
   };
 
   const fetchStudentDetails = async (id) => {
-    setLoading(true);
+    
     console.log(id);
     const validateconfig = {
       method: "GET",
@@ -92,11 +91,11 @@ const StudentEditDetails = () => {
       .then((response) => {
         console.log(response.data);
         setStudentFetchData(response.data.data);
-        setLoading(false);
+        
       })
       .catch((error) => {
         console.log(error);
-        setLoading(true);
+        
       });
   };
 

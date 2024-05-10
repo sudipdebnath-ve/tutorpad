@@ -27,7 +27,6 @@ const TutorEditDetails = () => {
   const {
     sidebarToggle,
     token,
-    setLoading,
     userData,
     userId,
     fetchData,
@@ -83,7 +82,7 @@ const TutorEditDetails = () => {
   };
 
   const fetchTutorDetails = async (id) => {
-    setLoading(true);
+    
     console.log(id);
     const validateconfig = {
       method: "GET",
@@ -102,12 +101,12 @@ const TutorEditDetails = () => {
         // Parse the privileges string to convert it into an array
         const privilegesArray = JSON.parse(response.data.data.privileges);
         setCheckedPrivileges(privilegesArray);
-        setLoading(false);
+        
         console.log(privilegesArray);
       })
       .catch((error) => {
         console.log(error);
-        setLoading(true);
+        
       });
   };
 
@@ -120,7 +119,7 @@ const TutorEditDetails = () => {
   }, [id]);
 
   const fetchAssignStudents = async (id) => {
-    setLoading(true);
+    
     console.log(id);
     const validateconfig = {
       method: "GET",
@@ -136,11 +135,11 @@ const TutorEditDetails = () => {
       .then((response) => {
         console.log(response.data);
         setStudents(response.data.data);
-        setLoading(false);
+        
       })
       .catch((error) => {
         console.log(error);
-        setLoading(true);
+        
       });
   };
 

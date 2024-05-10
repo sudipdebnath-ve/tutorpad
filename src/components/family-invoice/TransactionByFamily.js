@@ -9,7 +9,7 @@ const TransactionByFamily = ()=>{
     const [chargecat_name,set_chargecat_name] = useState("");
     const [selectedId,setSelectedId] = useState("");
     const param = useParams();
-    console.log(param);
+  
     return <div className="row">
                 <div className="col-12 col-md-12 col-xxl-12 d-flex order-2 order-xxl-3">
                 <div className="card flex-fill w-100">

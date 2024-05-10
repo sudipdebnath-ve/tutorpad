@@ -20,7 +20,7 @@ const FetchFamilyInvoiceDatatable = ({
   setIsEdit,
 }) => {
   const [val, setVal] = useState(false);
-  const { fetchFamilies, userId, setLoading, loading, allFamilies } =
+  const { fetchFamilies, userId, allFamilies } =
     useUserDataContext();
   const [deleteId, setDeleteId] = useState(null);
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
@@ -160,10 +160,8 @@ const FetchFamilyInvoiceDatatable = ({
   }, [allFamilies]);
   if (val) {
     var rows = allFamilies;
-    setLoading(false);
-  } else {
-    setLoading(true);
-  }
+    
+  } 
   return (
     <div>
       <DeleteModel
@@ -176,11 +174,7 @@ const FetchFamilyInvoiceDatatable = ({
       />
       <>
         {rows && allFamilies.length > 0 ? (
-          loading ? (
-            <>
-              <Loader />
-            </>
-          ) : (
+          
             <>
               <div className="py-3">
                 <div className="chart chart-xs">
@@ -233,14 +227,9 @@ const FetchFamilyInvoiceDatatable = ({
                 </div>
               </div>
             </>
-          )
+          
         ) : (
-          <>
-            {loading ? (
-              <>
-                <Loader />
-              </>
-            ) : (
+          
               <>
                 <div className="py-3">
                   <div className="chart chart-xs">
@@ -265,8 +254,6 @@ const FetchFamilyInvoiceDatatable = ({
                   ></div>
                 </div>
               </>
-            )}
-          </>
         )}
       </>
     </div>

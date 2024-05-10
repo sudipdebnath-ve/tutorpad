@@ -27,8 +27,6 @@ const FetchTransactionDatatable = ({
     allTransactionsByDates,
     fetchTransactionsByDates,
     userId,
-    setLoading,
-    loading,
   } = useUserDataContext();
   const [deleteId, setDeleteId] = useState(null);
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
@@ -122,10 +120,8 @@ const FetchTransactionDatatable = ({
   }, [allTransactionsByDates]);
   if (val) {
     var rows = allTransactionsByDates;
-    setLoading(false);
-  } else {
-    setLoading(true);
-  }
+    
+  } 
   return (
     <div>
       <DeleteModel
@@ -138,11 +134,7 @@ const FetchTransactionDatatable = ({
       />
       <>
         {rows && allTransactionsByDates.length > 0 ? (
-          loading ? (
-            <>
-              <Loader />
-            </>
-          ) : (
+          
             <>
               <div className="py-3">
                 <div className="chart chart-xs">
@@ -195,14 +187,10 @@ const FetchTransactionDatatable = ({
                 </div>
               </div>
             </>
-          )
+          
         ) : (
           <>
-            {loading ? (
-              <>
-                <Loader />
-              </>
-            ) : (
+           
               <>
                 <div className="py-3">
                   <div className="chart chart-xs">
@@ -226,7 +214,7 @@ const FetchTransactionDatatable = ({
                   ></div>
                 </div>
               </>
-            )}
+            
           </>
         )}
       </>

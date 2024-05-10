@@ -29,8 +29,6 @@ const FetchAllInvoiceDatatable = ({
 
   const {
     userId,
-    setLoading,
-    loading,
     fetchInvoicesByDate,
     allInvoicesByDate,
   } = useUserDataContext();
@@ -228,10 +226,8 @@ const FetchAllInvoiceDatatable = ({
   }, [allInvoicesByDate]);
   if (val) {
     var rows = allInvoicesByDate;
-    setLoading(false);
-  } else {
-    setLoading(true);
-  }
+    
+  } 
   return (
     <div>
       <DeleteModel
@@ -244,11 +240,7 @@ const FetchAllInvoiceDatatable = ({
       />
       <>
         {rows && allInvoicesByDate.length > 0 ? (
-          loading ? (
-            <>
-              <Loader />
-            </>
-          ) : (
+         
             <>
               <div className="py-3">
                 <div className="chart chart-xs">
@@ -301,14 +293,9 @@ const FetchAllInvoiceDatatable = ({
                 </div>
               </div>
             </>
-          )
+         
         ) : (
-          <>
-            {loading ? (
-              <>
-                <Loader />
-              </>
-            ) : (
+          
               <>
                 <div className="py-3">
                   <div className="chart chart-xs">
@@ -332,8 +319,7 @@ const FetchAllInvoiceDatatable = ({
                   ></div>
                 </div>
               </>
-            )}
-          </>
+            
         )}
       </>
     </div>

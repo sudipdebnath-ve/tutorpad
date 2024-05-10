@@ -12,7 +12,7 @@ import i18next from "i18next";
 import { getDomainName, validateDomainName } from "../../services/loginService.js";
 import "./style.css";
 import { checkAuthAndRedirect } from '../../utils/helper.js';
-
+import Loader from "../Loader.js";
 
 const DomainRegister = () => {
 
@@ -31,15 +31,14 @@ const DomainRegister = () => {
 
   const getDomainNameHandler  =  async() => {
     const res =  await getDomainName();
-    console.log("Domain name ----------", res);
     setCentralPortalDomain(res?.data)
-    console.log("Central portal domain ----------", centralPortalDomain);
+    localStorage.setItem("centralPortalDomain", res?.data);
   };
 
   const handleDomainChange = async () => {
-    var fullDomain = `${domain}.${process.env.REACT_APP_DOMAIN}`;
+    var fullDomain = `${domain}.${centralPortalDomain}`;
     const data = {
-      domain: `${domain}.${process.env.REACT_APP_DOMAIN}`,
+      domain: `${fullDomain}`,
     };
     try {
       const response = await validateDomainName(data);
@@ -49,6 +48,7 @@ const DomainRegister = () => {
       } else {
         setErrorMessage(response.data.domain);
         return false;
+
       }
     } catch (error) {
       console.error("An error occurred:", error);
@@ -60,13 +60,13 @@ const DomainRegister = () => {
     try {
         const domainExists = await handleDomainChange();
         if(domainExists) {
-          window.location.href = `http://${domain}.${process.env.REACT_APP_DOMAIN}/signin`; 
+          window.location.href = `${process.env.REACT_APP_PROTOCOL}://${domain}.${centralPortalDomain}/signin`; 
         }
       
     } catch (error) {
       console.error("An error occurred:", error);
       setErrorMessage('An error occurred. Please try again later.');
-    }
+    } 
   };
   
   const handleClick = (e) => {
@@ -84,7 +84,6 @@ const DomainRegister = () => {
   return (
     <div className="d-md-flex justify-content-center align-items-center h-100 primary-bg">
       <ToastContainer />
-
       <div className="contents">
         <div className="container">
           <div className="row align-items-center justify-content-center">
