@@ -26,6 +26,10 @@ const Dashboard = () => {
     console.log('token 1111: ',JSON.parse(localStorage.getItem('tutorPad')));
 
     getTokenData();
+    var token = JSON.parse(localStorage.getItem(window.location.hostname));
+    if(!token){
+      navigate('/signin');
+    }
   }, []);
 
   const getTokenData = async () => {
@@ -35,10 +39,7 @@ const Dashboard = () => {
 
     // Check if hash fragment is empty or doesn't contain parameters
     if (!hash || hash.indexOf('#') === -1) {
-      console.log('token 222: ',JSON.parse(localStorage.getItem('tutorPad')));
-      // setTimeout(() => {
-        fetchData();
-      // }, 2000);
+      fetchData();
       return; // Exit the function early if parameters are not present
     }
 
@@ -54,9 +55,7 @@ const Dashboard = () => {
 
     //store token in localstorage
     await storeToken(token,domain);
-    // setTimeout(() => {
     await fetchData();
-    // }, 2000);
 
     // Optionally, you may want to clear the hash fragment after reading it
     window.history.replaceState({}, document.title, window.location.pathname);

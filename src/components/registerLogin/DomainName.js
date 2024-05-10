@@ -32,12 +32,13 @@ const DomainRegister = () => {
   const getDomainNameHandler  =  async() => {
     const res =  await getDomainName();
     setCentralPortalDomain(res?.data)
+    localStorage.setItem("centralPortalDomain", res?.data);
   };
 
   const handleDomainChange = async () => {
-    var fullDomain = `${domain}.${process.env.REACT_APP_DOMAIN}`;
+    var fullDomain = `${domain}.${centralPortalDomain}`;
     const data = {
-      domain: `${domain}.${process.env.REACT_APP_DOMAIN}`,
+      domain: `${fullDomain}`,
     };
     try {
       const response = await validateDomainName(data);
@@ -59,7 +60,7 @@ const DomainRegister = () => {
     try {
         const domainExists = await handleDomainChange();
         if(domainExists) {
-          window.location.href = `http://${domain}.${process.env.REACT_APP_DOMAIN}/signin`; 
+          window.location.href = `${process.env.REACT_APP_PROTOCOL}://${domain}.${centralPortalDomain}/signin`; 
         }
       
     } catch (error) {

@@ -2,7 +2,7 @@ import { verifyToken } from "../services/authService.js";
 
 export function storeToken(token, domain) {
     localStorage.setItem("tutorPad", JSON.stringify(token));
-    localStorage.setItem("domain", domain);
+    // localStorage.setItem("domain", domain);
     localStorage.setItem(`${domain}`, JSON.stringify(token));
     return true;
 }
@@ -11,10 +11,12 @@ export function storeToken(token, domain) {
 export const checkAuthAndRedirect = async (navigate,from) => {
 
     const domainFromUrl = window.location.hostname;
-    const expectedDomain = process.env.REACT_APP_DOMAIN;
+    const expectedDomain = localStorage.getItem("centralPortalDomain");
+    console.log('central Portal : ',expectedDomain);
+
     if(from == 'Register'){
         if (domainFromUrl != expectedDomain) {
-            window.location.href = `http://${process.env.REACT_APP_DOMAIN}/`;
+            window.location.href = `${process.env.REACT_APP_PROTOCOL}://${expectedDomain}/`;
         }
     }
 
@@ -49,7 +51,6 @@ export const checkAuthAndRedirect = async (navigate,from) => {
                     localStorage.clear();
                 }
             }else{
-                console.log('3333');
                 localStorage.clear();
             }
         }else{

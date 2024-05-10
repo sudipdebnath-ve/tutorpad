@@ -37,6 +37,8 @@ const Register = ( { subdomain, setSubdomain }) => {
   const getDomainNameHandler  = async () => {
     const res = await getDomainName();
     setCentralPortalDomain(res?.data) 
+    localStorage.setItem("centralPortalDomain", res?.data);
+
   };
 
   const handleChange = (e) => {
@@ -89,9 +91,10 @@ const Register = ( { subdomain, setSubdomain }) => {
         // console.log(response);
         if (response.status === 200) {
           var token = response.data.data.token;
+          // console.log('response.data.data : ',response.data.data);
 
           //store token in localstorage
-          var domain = `${subdomain}.${process.env.REACT_APP_DOMAIN}`;
+          var domain = `${subdomain}.${centralPortalDomain}`;
           await storeToken(token,domain);
 
           toast.success(response.data.message, {
@@ -100,7 +103,7 @@ const Register = ( { subdomain, setSubdomain }) => {
 
           const encodedToken = encodeURIComponent(token);
           const encodedDomain = encodeURIComponent(domain);
-          window.location.href = `http://${subdomain}.${process.env.REACT_APP_DOMAIN}/dashboard#${encodedToken}#${encodedDomain}`;
+          window.location.href = `${process.env.REACT_APP_PROTOCOL}://${subdomain}.${centralPortalDomain}/dashboard#${encodedToken}#${encodedDomain}`;
         }
       })
       .catch((error) => {
