@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 
 const FetchTutorDatatable = () => {
   const [val, setVal] = useState(false);
-  const { fetchTutorData, userId, setLoading, loading, tutorData } =
+  const { fetchTutorData, userId, tutorData } =
     useUserDataContext();
 
   useEffect(() => {
@@ -134,19 +134,13 @@ const FetchTutorDatatable = () => {
   }, [tutorData]);
   if (val) {
     var rows = tutorData;
-    setLoading(false);
-  } else {
-    setLoading(true);
-  }
+    
+  } 
   return (
     <div>
       <>
         {rows && tutorData.length > 0 ? (
-          loading ? (
-            <>
-              <Loader />
-            </>
-          ) : (
+          
             <>
               <div className="py-3">
                 <div className="chart chart-xs">
@@ -199,14 +193,9 @@ const FetchTutorDatatable = () => {
                 </div>
               </div>
             </>
-          )
+          
         ) : (
-          <>
-            {loading ? (
-              <>
-                <Loader />
-              </>
-            ) : (
+          
               <>
                 <div className="py-3">
                   <div className="chart chart-xs">
@@ -231,8 +220,7 @@ const FetchTutorDatatable = () => {
                   ></div>
                 </div>
               </>
-            )}
-          </>
+            
         )}
       </>
     </div>

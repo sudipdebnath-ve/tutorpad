@@ -24,7 +24,7 @@ const FetchLocationDatatable = () => {
   const [deleteId, setDeleteId] = useState(null);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
 
-  const { fetchLocation, userId, allLocation, setLoading, loading } =
+  const { fetchLocation, userId, allLocation } =
     useUserDataContext();
 
   useEffect(() => {
@@ -112,10 +112,8 @@ const FetchLocationDatatable = () => {
   }, [allLocation]);
   if (val) {
     var rows = allLocation;
-    setLoading(false);
-  } else {
-    setLoading(true);
-  }
+    
+  } 
 
   const onDeleteHandler = async (id) => {
     setIsDeleteLoading(true);
@@ -153,11 +151,6 @@ const FetchLocationDatatable = () => {
           onOk={onDeleteHandler}
         />
         {rows && allLocation.length > 0 ? (
-          loading ? (
-            <>
-              <Loader />
-            </>
-          ) : (
             <>
               <div className="py-3">
                 <div className="chart chart-xs">
@@ -207,14 +200,9 @@ const FetchLocationDatatable = () => {
                 </div>
               </div>
             </>
-          )
+          
         ) : (
-          <>
-            {loading ? (
-              <>
-                <Loader />
-              </>
-            ) : (
+          
               <>
                 <div className="py-3">
                   <div className="chart chart-xs">
@@ -239,8 +227,7 @@ const FetchLocationDatatable = () => {
                   ></div>
                 </div>
               </>
-            )}
-          </>
+            
         )}
       </>
     </div>

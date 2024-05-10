@@ -12,7 +12,7 @@ import Loader from "../Loader.js";
 import "../users/assets/css/customDatepicker.css";
 
 const Tutor = () => {
-  const { sidebarToggle, loading } = useUserDataContext();
+  const { sidebarToggle } = useUserDataContext();
   const [addNewDropdown, setAddNewDropdown] = useState(false);
   const [messageDropdown, setMessageDropdown] = useState(false);
   const [searchDropdown, setSearchDropdown] = useState(false);

@@ -1,39 +1,60 @@
-import { useNavigate } from "react-router-dom";
+import { verifyToken } from "../services/authService.js";
 
 export function storeToken(token, domain) {
     localStorage.setItem("tutorPad", JSON.stringify(token));
-    localStorage.setItem("domain", domain);
+    // localStorage.setItem("domain", domain);
     localStorage.setItem(`${domain}`, JSON.stringify(token));
     return true;
 }
 
 //checkAuth and redirect
-export function checkAuthAndRedirect(navigate,from) {
+export const checkAuthAndRedirect = async (navigate,from) => {
 
     const domainFromUrl = window.location.hostname;
-    console.log('domainFromUrl : ',domainFromUrl);
-    const expectedDomain = process.env.REACT_APP_DOMAIN;
+    const expectedDomain = localStorage.getItem("centralPortalDomain");
+    console.log('central Portal : ',expectedDomain);
 
-    if (domainFromUrl != expectedDomain) {
-        var token = localStorage.getItem(domainFromUrl);
-        console.log('1111');
-        // if (token && token.trim() !== '') {
-        //     // Redirect to dashboard if token is present
-        //     console.log('2222');
-        //     //verify token
-        //     navigate('/dashboard');
-        // }else{
-        //     console.log('3333');
-        //     navigate('/signin');
-        // }
-    }else{
-        if(from == "Signin"){
-            navigate('/domain-signin');
+    if(from == 'Register'){
+        if (domainFromUrl != expectedDomain) {
+            window.location.href = `${process.env.REACT_APP_PROTOCOL}://${expectedDomain}/`;
         }
-        var token = localStorage.getItem(domainFromUrl);
-        if (token && token.trim() !== '') {
-            //verify token
-            navigate('/dashboard');
+    }
+
+    if(from == 'DomainName'){
+        if (domainFromUrl != expectedDomain) {
+            var token = localStorage.getItem(domainFromUrl);
+            if (token && token.trim() !== '') {
+                var response = await verifyToken();
+                if (response) {
+                    navigate('/dashboard');
+                } else {
+                    localStorage.clear();
+                    navigate('/signin');
+                }
+            }else{
+                localStorage.clear();
+                navigate('/signin');
+            }
+        }
+    }
+    if(from == 'Signin'){
+        if (domainFromUrl != expectedDomain) {
+            var token = localStorage.getItem(domainFromUrl);
+            if (token && token.trim() !== '') {
+                // Redirect to dashboard if token is present
+                // navigate('/dashboard');
+                var response = await verifyToken();
+                console.log('response :',response);
+                if (response) {
+                    navigate('/dashboard');
+                } else {
+                    localStorage.clear();
+                }
+            }else{
+                localStorage.clear();
+            }
+        }else{
+            navigate('/domain-signin');
         }
     }
 }

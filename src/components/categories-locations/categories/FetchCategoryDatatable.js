@@ -23,7 +23,7 @@ const FetchCategoryDatatable = () => {
   const [deleteId, setDeleteId] = useState(null);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
 
-  const { fetchCategory, userId, allCategory, setLoading, loading } =
+  const { fetchCategory, userId, allCategory } =
     useUserDataContext();
 
   useEffect(() => {
@@ -166,10 +166,8 @@ const FetchCategoryDatatable = () => {
   }, [allCategory]);
   if (val) {
     var rows = allCategory;
-    setLoading(false);
-  } else {
-    setLoading(true);
-  }
+    
+  } 
 
   const onDeleteHandler = async (id) => {
     setIsDeleteLoading(true);
@@ -207,11 +205,7 @@ const FetchCategoryDatatable = () => {
           onOk={onDeleteHandler}
         />
         {rows && allCategory.length > 0 ? (
-          loading ? (
-            <>
-              <Loader />
-            </>
-          ) : (
+          
             <>
               <div className="py-3">
                 <div className="chart chart-xs">
@@ -261,40 +255,34 @@ const FetchCategoryDatatable = () => {
                 </div>
               </div>
             </>
-          )
+          
         ) : (
-          <>
-            {loading ? (
-              <>
-                <Loader />
-              </>
-            ) : (
-              <>
-                <div className="py-3">
-                  <div className="chart chart-xs">
-                    <img src={students}></img>
-                  </div>
+         
+            <>
+              <div className="py-3">
+                <div className="chart chart-xs">
+                  <img src={students}></img>
                 </div>
-                <h4>
-                  <strong>You don't have any students yet</strong>
-                </h4>
-                <p style={{ textAlign: "center" }}>
-                  Add your students so you can take their attendance, and more.
-                </p>
-                <div className="addnewstudent addnew">
-                  <i className="fa fa-plus" aria-hidden="true"></i>
-                  <a className="btn dropdown-toggle" href="#" role="button">
-                    Add New
-                  </a>
+              </div>
+              <h4>
+                <strong>You don't have any students yet</strong>
+              </h4>
+              <p style={{ textAlign: "center" }}>
+                Add your students so you can take their attendance, and more.
+              </p>
+              <div className="addnewstudent addnew">
+                <i className="fa fa-plus" aria-hidden="true"></i>
+                <a className="btn dropdown-toggle" href="#" role="button">
+                  Add New
+                </a>
 
-                  <div
-                    className="dropdown-menu"
-                    aria-labelledby="dropdownMenuLink"
-                  ></div>
-                </div>
-              </>
-            )}
-          </>
+                <div
+                  className="dropdown-menu"
+                  aria-labelledby="dropdownMenuLink"
+                ></div>
+              </div>
+            </>
+            
         )}
       </>
     </div>

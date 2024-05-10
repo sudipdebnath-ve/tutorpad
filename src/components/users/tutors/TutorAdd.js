@@ -203,19 +203,12 @@ const StudentAdd = () => {
     const value = e.target.value;
     if (name === "phone") {
       formData["phone"] = value;
+    } else if (name === "enable_login_access") {
+      var newVal = (value == "on") ? 1 : 0;
+      formData["enable_login_access"] = newVal;
+    } else {
+      setFormData({ ...formData, [name]: value });
     }
-    // } else if (name === "student_status") {
-    //   formData["student_status"] = value;
-    // } else if (name === "studentType") {
-    //   formData["studentType"] = value;
-    // } else if (name === "billing") {
-    //   formData["billing"] = value;
-    // } else if (name === "dob") {
-    //   formData["dob"] = value;
-    //   console.log(value);
-    // }
-    setFormData({ ...formData, [name]: value });
-    // console.log(formData);
   };
   const formSubmit = async (e) => {
     const selectedPrivileges = getSelectedPrivileges();
@@ -238,9 +231,7 @@ const StudentAdd = () => {
         toast.success(response.data.message, {
           position: toast.POSITION.TOP_CENTER,
         });
-        setTimeout(() => {
-          navigate("/tutors");
-        }, 2000);
+        navigate("/tutors");
       })
       .catch((error) => {
         console.log(error);
@@ -387,6 +378,7 @@ const StudentAdd = () => {
                               className="sms"
                               name="enable_login_access"
                               onChange={handleChange}
+                              id="enable_login_access"
                             />
                             <label htmlFor="enable_login_access">
                               {" "}

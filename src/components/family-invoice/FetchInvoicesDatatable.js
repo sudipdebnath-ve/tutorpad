@@ -25,7 +25,7 @@ const FetchInvoicesDatatable = ({
 }) => {
   const [val, setVal] = useState(false);
 
-  const { fetchInvoices, userId, setLoading, loading, accountInvoices } =
+  const { fetchInvoices, userId, accountInvoices } =
     useUserDataContext();
   const [deleteId, setDeleteId] = useState(null);
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
@@ -215,10 +215,8 @@ const FetchInvoicesDatatable = ({
   }, [accountInvoices]);
   if (val) {
     var rows = accountInvoices;
-    setLoading(false);
-  } else {
-    setLoading(true);
-  }
+    
+  } 
   return (
     <div>
       <DeleteModel
@@ -231,11 +229,7 @@ const FetchInvoicesDatatable = ({
       />
       <>
         {rows && accountInvoices.length > 0 ? (
-          loading ? (
-            <>
-              <Loader />
-            </>
-          ) : (
+          
             <>
               <div className="py-3">
                 <div className="chart chart-xs">
@@ -288,14 +282,10 @@ const FetchInvoicesDatatable = ({
                 </div>
               </div>
             </>
-          )
+          
         ) : (
           <>
-            {loading ? (
-              <>
-                <Loader />
-              </>
-            ) : (
+           
               <>
                 <div className="py-3">
                   <div className="chart chart-xs">
@@ -319,7 +309,7 @@ const FetchInvoicesDatatable = ({
                   ></div>
                 </div>
               </>
-            )}
+          
           </>
         )}
       </>
