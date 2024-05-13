@@ -88,7 +88,7 @@ function App() {
         
         <Route path="/online-resources" element={<OnlineResources />} />
         <Route path="/bussiness-settings" element={<BussinessSettings />} />
-        {/* <Route path="/familiies-and-invoices" element={<FamilyInvoice />} /> */}
+        <Route path="/familiies-and-invoices" element={<FamilyInvoice />} />
         <Route path="/familiies-and-invoices/transaction-type/:screen" element={<TransactionDetailType />} />
         <Route path="/familiies-and-invoices/transaction-type/:screen/:family_id" element={<TransactionDetailType />} />
         <Route path="/familiies-and-invoices/transaction-type/:screen/:family_id/:type" element={<TransactionDetailType />} />

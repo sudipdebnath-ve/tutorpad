@@ -13,8 +13,12 @@ import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import { storeToken, checkAuthAndRedirect } from '../../utils/helper.js';
 import { getDomainName } from "../../services/loginService.js";
 import Loader from "../Loader.js";
+import i18next from "i18next";
+import LanguageOption from "../LanguageOption.js";
+import { useTranslation } from "react-i18next";
 
 const Register = ( { subdomain, setSubdomain }) => {
+  const { t } = useTranslation()
   const { fetchData, setIsDarkMode } = useUserDataContext();
   const navigate = useNavigate();
   const [userdetails, setUserdetails] = useState({
@@ -39,6 +43,11 @@ const Register = ( { subdomain, setSubdomain }) => {
     setCentralPortalDomain(res?.data) 
     localStorage.setItem("centralPortalDomain", res?.data);
 
+  };
+
+  const multiLangHandler = (e) => {
+    i18next.changeLanguage(e.target.value);
+    console.log("change language-----------");
   };
 
   const handleChange = (e) => {
@@ -132,6 +141,7 @@ const Register = ( { subdomain, setSubdomain }) => {
         <div className="container">
           <div className="row align-items-center justify-content-center">
             <div className="col-md-12">
+            {/* <LanguageOption onChange={(e) => multiLangHandler(e)} /> */}
               <div className="form-block mx-auto">
                 <div className="text-center mb-5">
                   <h3>
@@ -143,7 +153,7 @@ const Register = ( { subdomain, setSubdomain }) => {
                     <input
                       type="text"
                       className="form-control"
-                      placeholder="First Name"
+                      placeholder={t("first name")}
                       name="firstname"
                       onChange={handleChange}
                       required
@@ -156,7 +166,7 @@ const Register = ( { subdomain, setSubdomain }) => {
                     <input
                       type="text"
                       className="form-control"
-                      placeholder="Last Name"
+                      placeholder={t("last name")}
                       name="lastname"
                       onChange={handleChange}
                       required
@@ -169,7 +179,7 @@ const Register = ( { subdomain, setSubdomain }) => {
                     <input
                       type="email"
                       className="form-control"
-                      placeholder="your-email@gmail.com"
+                      placeholder={t("email placeholder")}
                       name="email"
                       onChange={handleChange}
                       required
@@ -182,7 +192,7 @@ const Register = ( { subdomain, setSubdomain }) => {
                     <input
                       type={type}
                       className="form-control"
-                      placeholder="Your Password"
+                      placeholder={t("password placeholder")}
                       name="password"
                       onChange={handleChange}
                       required
@@ -198,7 +208,7 @@ const Register = ( { subdomain, setSubdomain }) => {
                     <input
                       type="password"
                       className="form-control"
-                      placeholder="Re-enter Password"
+                      placeholder={t("re-enter Password")}
                       name="rpassword"
                       onChange={handleChange}
                       required
@@ -212,7 +222,7 @@ const Register = ( { subdomain, setSubdomain }) => {
                       <input
                         type="text"
                         className="form-control domain"
-                        placeholder="domain"
+                        placeholder={t("domain")}
                         name="domain"
                         onChange={handleChange}
                       />
@@ -228,7 +238,7 @@ const Register = ( { subdomain, setSubdomain }) => {
                     <input
                       type="text"
                       className="form-control"
-                      placeholder="Business Name (Optional)"
+                      placeholder={t("Business Name (Optional)")}
                       name="bname"
                       onChange={handleChange}
                     />
@@ -240,10 +250,10 @@ const Register = ( { subdomain, setSubdomain }) => {
                       onChange={handleChange}
                       required
                     >
-                      <option value="">Business Size</option>
-                      <option value="single">It's just me!</option>
+                      <option value="">{t("Business Size")}</option>
+                      <option value="single">{t("It's just me!")}</option>
                       <option value="multi">
-                        I have a business with multiple tutors
+                        {t("I have a business with multiple tutors")}
                       </option>
                     </select>
                     <small style={{ color: "red" }}>
@@ -258,8 +268,8 @@ const Register = ( { subdomain, setSubdomain }) => {
                     <div className="d-sm-flex align-items-center justify-content-between">
                       <label className="control control--checkbox mb-3 mb-sm-0">
                         <span className="caption">
-                          I agree to the <Link to="/">Terms of Service</Link>{" "}
-                          and <Link to="/">Privacy Policy</Link>
+                          {t("I agree to the")} <Link to="/">{t("Terms of Service")}</Link>{" "}
+                          and <Link to="/">{t("Privacy Policy")}</Link>
                         </span>
                         <input
                           type="checkbox"
@@ -283,13 +293,13 @@ const Register = ( { subdomain, setSubdomain }) => {
 
                   <input
                     type="button"
-                    value="Create My Tutor Account"
+                    value={t("Create My Tutor Account")}
                     className="btn btn-block btn-primary"
                     onClick={handleSubmit}
                   />
                 </form>
                 <br></br>
-                Already have an account?<Link to="/domain-signin"> Sign In</Link>
+                {t("Already have an account?")}<Link to="/domain-signin"> {t("sign in")}</Link>
               </div>
             </div>
           </div>

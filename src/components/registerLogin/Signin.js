@@ -71,9 +71,12 @@ const Signin = () => {
     }
   };
 
-  const handleClick = (e) => {
+  const multiLangHandler = (e) => {
     i18next.changeLanguage(e.target.value);
+    console.log("change language-----------");
   };
+
+
 
   useEffect(() => {
     document?.documentElement?.setAttribute("data-theme", "light");
@@ -91,6 +94,7 @@ const Signin = () => {
           <div className="container">
             <div className="row align-items-center justify-content-center">
               <div className="col-md-12">
+              <LanguageOption onChange={(e) => multiLangHandler(e)} />
                 <div className="form-block mx-auto">
                   <div className="text-center mb-5">
                     <h3>
