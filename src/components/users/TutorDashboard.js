@@ -31,18 +31,6 @@ const TutorDashboard = () => {
         <div className="col-xl-12 col-xxl-12 steps">
           <div className="row">
             <div className="col-auto">
-              <div className="stat text-primary icon1">
-                {/* <i className="fa fa-check" aria-hidden="true"></i> */}
-                <img src={createAccount} alt="create-account-icon" />
-              </div>
-            </div>
-            <div className="col mt-0">
-              <h5 className="card-title">{t("Create Account")}</h5>
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="col-auto">
               <div className="stat text-primary icon2">
                 <Link
                   // className="dropdown-item"
@@ -102,7 +90,7 @@ const TutorDashboard = () => {
         <div className="col-xl-12 col-xxl-12 d-flex">
           <div className="w-100">
             <div className="row">
-              <div className="col-sm-6 pr-2">
+              <div className="col-sm-4 pr-2">
                 <div className="card">
                   <div className="card-body db-card-body">
                     <div className="row">
@@ -126,31 +114,8 @@ const TutorDashboard = () => {
                   </div> */}
                   </div>
                 </div>
-                <div className="card">
-                  <div className="card-body db-card-body">
-                    <div className="row">
-                      <div className="col mt-0">
-                        <div className="square text-primary projectIcon">
-                          <img src={projectIcon} />
-                        </div>
-                        <h5 className="card-title">
-                          {t("Projected revenue this month")}
-                        </h5>
-                      </div>
-                    </div>
-                    <h1 className="mt-1 mb-3">{t("$0.00")}</h1>
-                    {/* <div className="mb-0">
-                    <span className="text-success">
-                      {" "}
-                      <i className="mdi mdi-arrow-bottom-right"></i>{" "}
-                      5.25%{" "}
-                    </span>
-                    <span className="text-muted">Since last week</span>
-                  </div> */}
-                  </div>
-                </div>
               </div>
-              <div className="col-sm-6">
+              <div className="col-sm-4">
                 <div className="card">
                   <div className="card-body db-card-body">
                     <div className="row">
@@ -174,6 +139,8 @@ const TutorDashboard = () => {
                   </div> */}
                   </div>
                 </div>
+              </div>
+              <div className="col-sm-4">
                 <div className="card">
                   <div className="card-body db-card-body">
                     <div className="row">

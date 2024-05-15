@@ -29,33 +29,6 @@ const StudentDashboard = () => {
 
       <div className="row all-step">
         <div className="col-xl-12 col-xxl-12 steps">
-          <div className="row">
-            <div className="col-auto">
-              <div className="stat text-primary icon1">
-                {/* <i className="fa fa-check" aria-hidden="true"></i> */}
-                <img src={createAccount} alt="create-account-icon" />
-              </div>
-            </div>
-            <div className="col mt-0">
-              <h5 className="card-title">{t("Create Account")}</h5>
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="col-auto">
-              <div className="stat text-primary icon2">
-                <Link
-                  // className="dropdown-item"
-                  to={"/students/add"}
-                >
-                  <img src={addStudent} alt="add-student-icon" />
-                </Link>
-              </div>
-            </div>
-            <div className="col mt-0">
-              <h5 className="card-title">{t("Add Student")}</h5>
-            </div>
-          </div>
 
           <div className="row">
             <div className="col-auto">
@@ -66,7 +39,7 @@ const StudentDashboard = () => {
               </div>
             </div>
             <div className="col mt-0">
-              <h5 className="card-title">{t("Schedule Event")}</h5>
+              <h5 className="card-title">{t("Join Class")}</h5>
             </div>
           </div>
 
@@ -77,7 +50,7 @@ const StudentDashboard = () => {
               </div>
             </div>
             <div className="col mt-0">
-              <h5 className="card-title">{t("Create Invoice")}</h5>
+              <h5 className="card-title">{t("Find Your Report Card")}</h5>
             </div>
           </div>
 
@@ -102,7 +75,7 @@ const StudentDashboard = () => {
         <div className="col-xl-12 col-xxl-12 d-flex">
           <div className="w-100">
             <div className="row">
-              <div className="col-sm-6 pr-2">
+              <div className="col-sm-4 pr-2">
                 <div className="card">
                   <div className="card-body db-card-body">
                     <div className="row">
@@ -111,7 +84,7 @@ const StudentDashboard = () => {
                           <img src={eventIcon} className="eventImg" />
                         </div>
                         <h5 className="card-title">
-                          {t("Event left this week")}
+                          {t("Upcoming Class")}
                         </h5>
                       </div>
                     </div>
@@ -126,31 +99,8 @@ const StudentDashboard = () => {
                   </div> */}
                   </div>
                 </div>
-                <div className="card">
-                  <div className="card-body db-card-body">
-                    <div className="row">
-                      <div className="col mt-0">
-                        <div className="square text-primary projectIcon">
-                          <img src={projectIcon} />
-                        </div>
-                        <h5 className="card-title">
-                          {t("Projected revenue this month")}
-                        </h5>
-                      </div>
-                    </div>
-                    <h1 className="mt-1 mb-3">{t("$0.00")}</h1>
-                    {/* <div className="mb-0">
-                    <span className="text-success">
-                      {" "}
-                      <i className="mdi mdi-arrow-bottom-right"></i>{" "}
-                      5.25%{" "}
-                    </span>
-                    <span className="text-muted">Since last week</span>
-                  </div> */}
-                  </div>
-                </div>
               </div>
-              <div className="col-sm-6">
+              <div className="col-sm-4">
                 <div className="card">
                   <div className="card-body db-card-body">
                     <div className="row">
@@ -159,7 +109,7 @@ const StudentDashboard = () => {
                           <img src={paymentIcon} className="paymentImg" />
                         </div>
                         <h5 className="card-title">
-                          {t("Payment recieved this month")}
+                          {t("Total paid amount")}
                         </h5>
                       </div>
                     </div>
@@ -174,6 +124,8 @@ const StudentDashboard = () => {
                   </div> */}
                   </div>
                 </div>
+              </div>
+              <div className="col-sm-4">
                 <div className="card">
                   <div className="card-body db-card-body">
                     <div className="row">
@@ -181,7 +133,7 @@ const StudentDashboard = () => {
                         <div className="square text-primary activeIcon">
                           <img src={activeIcon} />
                         </div>
-                        <h5 className="card-title">{t("Active Students")}</h5>
+                        <h5 className="card-title">{t("Total Attendence")}</h5>
                       </div>
                     </div>
                     <h1 className="mt-1 mb-3">0</h1>
