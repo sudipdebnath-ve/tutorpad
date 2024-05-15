@@ -1,11 +1,16 @@
-import React from "react";
+import React, {useContext} from "react";
 import "../users/assets/css/style.css";
 import { Link, useLocation } from "react-router-dom";
+import { AuthContext } from '../registerLogin/AuthContext';
+
 
 const Sidebar = () => {
   const location = useLocation();
   const { pathname } = location;
   const splitLocation = pathname.split("/");
+  const { role } = useContext(AuthContext);
+
+
   return (
     <nav id="sidebar" className="sidebar js-sidebar">
       <div className="sidebar-content js-simplebar">
@@ -24,16 +29,18 @@ const Sidebar = () => {
             </Link>
           </li>
 
-          <li
-            className={`sidebar-item ${
-              splitLocation[1] === "tutors" ? "active" : ""
-            }`}
-          >
-            <Link className="sidebar-link" to="/tutors">
-              <i className="fa fa-id-badge" aria-hidden="true"></i>
-              <span className="align-middle">Tutors & Staffs</span>
-            </Link>
-          </li>
+          { role === `${process.env.REACT_APP_BUSINESS_ROLE}` &&
+            <li
+              className={`sidebar-item ${
+                splitLocation[1] === "tutors" ? "active" : ""
+              }`}
+            >
+              <Link className="sidebar-link" to="/tutors">
+                <i className="fa fa-id-badge" aria-hidden="true"></i>
+                <span className="align-middle">Tutors & Staffs</span>
+              </Link>
+            </li>
+          }
 
           <li
             className={`sidebar-item ${
