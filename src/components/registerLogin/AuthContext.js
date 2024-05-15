@@ -8,7 +8,7 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     setRole(localStorage.getItem("userRole"));
-  }, []);
+  }, [role]);
 
   return (
     <AuthContext.Provider value={{ role, setRole }}>

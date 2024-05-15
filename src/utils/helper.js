@@ -24,9 +24,19 @@ export const checkAuthAndRedirect = async (navigate,from) => {
     const expectedDomain = localStorage.getItem("centralPortalDomain");
 
     if(from == 'Register'){
-        if(!expectedDomain){
+        if(expectedDomain){
             if (domainFromUrl != expectedDomain) {
-                window.location.href = `${process.env.REACT_APP_PROTOCOL}://${expectedDomain}/`;
+                var token = localStorage.getItem(domainFromUrl);
+                if (token && token.trim() !== '') {
+                    var response = await verifyToken();
+                    if (response) {
+                        navigate('/dashboard');
+                    }else{
+                        localStorage.clear();
+                        navigate('/signin');                    }
+                }else{
+                    window.location.href = `${process.env.REACT_APP_PROTOCOL}://${expectedDomain}/`;
+                }
             }
         }
     }

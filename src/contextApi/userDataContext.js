@@ -55,8 +55,6 @@ const AppContext = ({ children }) => {
   const navigate = useNavigate();
 
   const fetchData = async () => {
-
-    console.log('api token : ',token);
     const validateconfig = {
       method: "GET",
       url: `${API_URL}tenant/details`,
