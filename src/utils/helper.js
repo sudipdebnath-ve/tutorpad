@@ -1,10 +1,20 @@
+import React, { useContext } from 'react';
 import { verifyToken } from "../services/authService.js";
+import { useUserDataContext } from "../contextApi/userDataContext.js";
+import { AuthContext } from '../components/registerLogin/AuthContext.js';
 
-export function storeToken(token, domain) {
-    localStorage.setItem("tutorPad", JSON.stringify(token));
-    // localStorage.setItem("domain", domain);
-    localStorage.setItem(`${domain}`, JSON.stringify(token));
-    return true;
+export function useTokenStorage() {
+    const { setToken } = useUserDataContext();
+    const { setRole } = useContext(AuthContext);
+
+    return function storeToken(token, domain, role="") {
+        localStorage.setItem("tutorPad", JSON.stringify(token));
+        localStorage.setItem(`${domain}`, JSON.stringify(token));
+        localStorage.setItem("userRole", role);
+        setToken(token);
+        setRole(role);
+        return true;
+    };
 }
 
 //checkAuth and redirect
@@ -12,11 +22,12 @@ export const checkAuthAndRedirect = async (navigate,from) => {
 
     const domainFromUrl = window.location.hostname;
     const expectedDomain = localStorage.getItem("centralPortalDomain");
-    console.log('central Portal : ',expectedDomain);
 
     if(from == 'Register'){
-        if (domainFromUrl != expectedDomain) {
-            window.location.href = `${process.env.REACT_APP_PROTOCOL}://${expectedDomain}/`;
+        if(!expectedDomain){
+            if (domainFromUrl != expectedDomain) {
+                window.location.href = `${process.env.REACT_APP_PROTOCOL}://${expectedDomain}/`;
+            }
         }
     }
 

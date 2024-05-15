@@ -37,12 +37,10 @@ const Register = ( { subdomain, setSubdomain }) => {
   const [error, setError] = useState({});
   const [centralPortalDomain, setCentralPortalDomain] = useState("");
 
-
   const getDomainNameHandler  = async () => {
     const res = await getDomainName();
     setCentralPortalDomain(res?.data) 
     localStorage.setItem("centralPortalDomain", res?.data);
-
   };
 
   const multiLangHandler = (e) => {
@@ -100,19 +98,22 @@ const Register = ( { subdomain, setSubdomain }) => {
         // console.log(response);
         if (response.status === 200) {
           var token = response.data.data.token;
-          // console.log('response.data.data : ',response.data.data);
+          var role = response.data.data.role_id;
 
           //store token in localstorage
           var domain = `${subdomain}.${centralPortalDomain}`;
-          await storeToken(token,domain);
-
+          localStorage.setItem("tutorPad", JSON.stringify(token));
+          localStorage.setItem(`${domain}`, JSON.stringify(token));
+          
           toast.success(response.data.message, {
             position: toast.POSITION.TOP_CENTER,
           });
 
           const encodedToken = encodeURIComponent(token);
           const encodedDomain = encodeURIComponent(domain);
-          window.location.href = `${process.env.REACT_APP_PROTOCOL}://${subdomain}.${centralPortalDomain}/dashboard#${encodedToken}#${encodedDomain}`;
+          const encodedRole = encodeURIComponent(role);
+          
+          window.location.href = `${process.env.REACT_APP_PROTOCOL}://${subdomain}.${centralPortalDomain}/dashboard#${encodedToken}#${encodedDomain}#${encodedRole}`;
         }
       })
       .catch((error) => {
