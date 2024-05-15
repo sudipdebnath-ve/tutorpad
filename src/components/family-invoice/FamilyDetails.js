@@ -55,8 +55,8 @@ const FamilyDetails = () => {
 
   const getFamilyAccountsDetailsHandler = async () => {
     const response = await getFamilyAccountsDetails(param.id);
-    console.log("response of a student------------->", response.data.students);
-    console.log("response of a family-------------->", response.data);
+    // console.log("response of a student------------->", response.data.students);
+    // console.log("response of a family-------------->", response.data);
     set_family(response?.data);
     setStudents(response?.data?.students || []);
     setIsAutoInvoicing(response?.data?.auto_invoicing || 0);
