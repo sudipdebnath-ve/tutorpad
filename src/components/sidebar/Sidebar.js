@@ -1,16 +1,21 @@
 import React from "react";
 import "../users/assets/css/style.css";
 import { Link, useLocation } from "react-router-dom";
+import LanguageOption from "../LanguageOption";
+import { useTranslation } from "react-i18next";
+import i18next from "i18next";
+
 
 const Sidebar = () => {
   const location = useLocation();
   const { pathname } = location;
   const splitLocation = pathname.split("/");
+  const { t} = useTranslation()
   return (
     <nav id="sidebar" className="sidebar js-sidebar">
       <div className="sidebar-content js-simplebar">
         <Link className="sidebar-brand" to="/dashboard">
-          <span className="align-middle">TutorPad</span>
+          <span className="align-middle">{t("TutorPad")}</span>
         </Link>
         <ul className="sidebar-nav">
           <li
@@ -20,7 +25,7 @@ const Sidebar = () => {
           >
             <Link className="sidebar-link" to="/dashboard">
               <i className="fa fa-home" aria-hidden="true"></i>
-              <span className="align-middle">Dashboard</span>
+              <span className="align-middle">{t("Dashboard")}</span>
             </Link>
           </li>
 
@@ -31,7 +36,7 @@ const Sidebar = () => {
           >
             <Link className="sidebar-link" to="/tutors">
               <i className="fa fa-id-badge" aria-hidden="true"></i>
-              <span className="align-middle">Tutors & Staffs</span>
+              <span className="align-middle">{t("Tutors & Staffs")}</span>
             </Link>
           </li>
 
@@ -42,7 +47,7 @@ const Sidebar = () => {
           >
             <Link className="sidebar-link" to="/students">
               <i className="fa fa-graduation-cap" aria-hidden="true"></i>
-              <span className="align-middle">Students</span>
+              <span className="align-middle">{t("Students")}</span>
             </Link>
           </li>
 
@@ -53,7 +58,7 @@ const Sidebar = () => {
           >
             <Link className="sidebar-link" to="/calendar">
               <i className="fa fa-calendar" aria-hidden="true"></i>
-              <span className="align-middle">Calendar</span>
+              <span className="align-middle">{t("Calendar")}</span>
             </Link>
           </li>
 
@@ -64,7 +69,7 @@ const Sidebar = () => {
           >
             <Link className="sidebar-link" to="/lending-library">
               <i className="fa fa-book" aria-hidden="true"></i>
-              <span className="align-middle">Lending Library</span>
+              <span className="align-middle">{t("Lending Library")}</span>
             </Link>
           </li>
 
@@ -75,7 +80,7 @@ const Sidebar = () => {
           >
             <Link className="sidebar-link" to="/online-resources">
               <i className="fa fa-cloud-download" aria-hidden="true"></i>
-              <span className="align-middle">Online Resources</span>
+              <span className="align-middle">{t("Online Resources")}</span>
             </Link>
           </li>
 
@@ -86,7 +91,7 @@ const Sidebar = () => {
           >
             <Link className="sidebar-link" to="/familiies-and-invoices">
               <i className="fa fa-credit-card-alt" aria-hidden="true"></i>
-              <span className="align-middle">Families & Invoices</span>
+              <span className="align-middle">{t("Families & Invoices")}</span>
             </Link>
           </li>
 
@@ -97,7 +102,7 @@ const Sidebar = () => {
           >
             <Link className="sidebar-link" to="#">
               <i className="fa fa-calculator" aria-hidden="true"></i>
-              <span className="align-middle">Expenses & other Revenues</span>
+              <span className="align-middle">{t("Expenses & other Revenues")}</span>
             </Link>
           </li>
 
@@ -108,7 +113,7 @@ const Sidebar = () => {
           >
             <Link className="sidebar-link" to="#">
               <i className="fa fa-bar-chart" aria-hidden="true"></i>
-              <span className="align-middle">Mileage</span>
+              <span className="align-middle">{t("Mileage")}</span>
             </Link>
           </li>
 
@@ -119,7 +124,7 @@ const Sidebar = () => {
           >
             <Link className="sidebar-link" to="#">
               <i className="fa fa-window-restore" aria-hidden="true"></i>
-              <span className="align-middle">Website</span>
+              <span className="align-middle">{t("Website")}</span>
             </Link>
           </li>
 
@@ -130,7 +135,7 @@ const Sidebar = () => {
           >
             <Link className="sidebar-link" to="#">
               <i className="fa fa-bullhorn" aria-hidden="true"></i>
-              <span className="align-middle">News & Blog Posts</span>
+              <span className="align-middle">{t("News & Blog Posts")}</span>
             </Link>
           </li>
           <li
@@ -140,7 +145,7 @@ const Sidebar = () => {
           >
             <Link className="sidebar-link" to="#">
               <i className="fa fa-file-text" aria-hidden="true"></i>
-              <span className="align-middle">Bussiness Reports</span>
+              <span className="align-middle">{t("Bussiness Reports")}</span>
             </Link>
           </li>
           <li
@@ -150,7 +155,7 @@ const Sidebar = () => {
           >
             <Link className="sidebar-link" to="/email-templates">
               <i className="fa fa-text-width" aria-hidden="true"></i>
-              <span className="align-middle">Email Templates</span>
+              <span className="align-middle">{t("Email Templates")}</span>
             </Link>
           </li>
         </ul>

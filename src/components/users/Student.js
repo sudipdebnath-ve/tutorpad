@@ -7,12 +7,17 @@ import students from "./assets/images/students.svg";
 import { Link } from "react-router-dom";
 import FetchStudentDatatable from "./students/FetchStudentDatatable.js";
 import Loader from "../Loader.js";
+import LanguageOption from "../LanguageOption.js";
+import i18next from "i18next";
+import { useTranslation } from "react-i18next";
+
 
 const Student = () => {
   const { sidebarToggle, loading } = useUserDataContext();
   const [addNewDropdown, setAddNewDropdown] = useState(false);
   const [messageDropdown, setMessageDropdown] = useState(false);
   const [searchDropdown, setSearchDropdown] = useState(false);
+  const { t } = useTranslation()
 
   const handleClickMessage = (e) => {
     if (messageDropdown == false) {
@@ -67,7 +72,7 @@ const Student = () => {
                       aria-controls="home"
                       aria-selected="true"
                     >
-                      Students
+                      {t("Students")}
                     </button>
                   </li>
                   <li className="nav-item" role="presentation">
@@ -81,7 +86,7 @@ const Student = () => {
                       aria-controls="profile"
                       aria-selected="false"
                     >
-                      Groups
+                      {t("Groups")}
                     </button>
                   </li>
                 </ul>
@@ -113,7 +118,7 @@ const Student = () => {
                                         className="fa fa-plus"
                                         aria-hidden="true"
                                       ></i>
-                                      New Student
+                                      {t("New Student")}
                                     </Link>
                                     <div className="dropdown-divider"></div>
                                     <Link
@@ -124,7 +129,7 @@ const Student = () => {
                                         className="fa fa-cloud-download"
                                         aria-hidden="true"
                                       ></i>
-                                      Import Students
+                                      {t("Import Students")}
                                     </Link>
                                   </div>
                                 </>
@@ -149,14 +154,14 @@ const Student = () => {
                                       className="dropdown-item"
                                       to="/students/message"
                                     >
-                                      New Email
+                                      {t("New Email")}
                                     </Link>
                                     <div className="dropdown-divider"></div>
                                     <Link
                                       className="dropdown-item"
                                       to="/students/message-history"
                                     >
-                                      Go to Message History{" "}
+                                      {t("Go to Message History")}{" "}
                                     </Link>
                                   </div>
                                 </>
@@ -173,7 +178,7 @@ const Student = () => {
                                 aria-haspopup="true"
                                 aria-expanded="false"
                               >
-                                Options
+                                {t("Options")}
                               </a>
 
                               <div
@@ -181,13 +186,13 @@ const Student = () => {
                                 aria-labelledby="dropdownMenuLink"
                               >
                                 <a className="dropdown-item" href="#">
-                                  Action
+                                  {t("Action")}
                                 </a>
                                 <a className="dropdown-item" href="#">
-                                  Another action
+                                  {t("Another action")}
                                 </a>
                                 <a className="dropdown-item" href="#">
-                                  Something else here
+                                  {t("Something else here")}
                                 </a>
                               </div>
                             </div>
@@ -329,7 +334,7 @@ const Student = () => {
                                 aria-haspopup="true"
                                 aria-expanded="true"
                               >
-                                Add Group
+                                {t("Add Group")}
                               </a>
 
                               <div
@@ -337,13 +342,13 @@ const Student = () => {
                                 aria-labelledby="dropdownMenuLink"
                               >
                                 <a className="dropdown-item" href="#">
-                                  Action
+                                  {t("Action")}
                                 </a>
                                 <a className="dropdown-item" href="#">
-                                  Another action
+                                  {t("Another action")}
                                 </a>
                                 <a className="dropdown-item" href="#">
-                                  Something else here
+                                  {t("Something else here")}
                                 </a>
                               </div>
                             </div>
@@ -452,11 +457,10 @@ const Student = () => {
                                 </div>
                               </div>
                               <h4>
-                                <strong>You don't have any Groups yet</strong>
+                                <strong>{t("You don't have any Groups yet")}</strong>
                               </h4>
                               <p style={{ textAlign: "center" }}>
-                                Keep your students organized by assigning them
-                                into groups
+                                {t("Keep your students organized by assigning them into groups")}
                               </p>
                               <div className="addnewstudent">
                                 <i
@@ -468,7 +472,7 @@ const Student = () => {
                                   href="#"
                                   role="button"
                                 >
-                                  Add Group
+                                  {t("Add Group")}
                                 </a>
 
                                 <div

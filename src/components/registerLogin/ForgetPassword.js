@@ -5,6 +5,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { NON_LOGGED_IN_API_URL } from "../../utils/config.js";
 import axios from "axios";
 import "./assets/css/style.css";
+import i18next from "i18next";
+import { useTranslation } from "react-i18next";
+import LanguageOption from "../LanguageOption.js";
+
 
 const ForgetPassword = () => {
   const [email, setEmail] = useState("");
@@ -12,6 +16,7 @@ const ForgetPassword = () => {
   const [error, setError] = useState({});
   const [success, setSuccess] = useState(false);
   const [message, setMessage] = useState("");
+  const { t } = useTranslation();
 
   const handleSubmit = async () => {
     const config = {
@@ -46,6 +51,10 @@ const ForgetPassword = () => {
         }
       });
   };
+
+  const multiLangHandler = (e) => {
+    i18next.changeLanguage(e.target.value);
+  };
   return (
     <div className="d-md-flex half">
       <div className="bg" style={{ backgroundImage: `url(${bgimage})` }}></div>
@@ -53,10 +62,11 @@ const ForgetPassword = () => {
         <div className="container">
           <div className="row align-items-center justify-content-center reset">
             <div className="col-md-12">
+            {/* <LanguageOption onChange={(e) => multiLangHandler(e)} /> */}
               <div className="form-block mx-auto">
                 <div className="text-center mb-4">
                   <h3>
-                    <strong>TutorPad</strong>
+                    <strong>{t("TutorPad")}</strong>
                   </h3>
                 </div>
                 {success ? (
@@ -92,11 +102,11 @@ const ForgetPassword = () => {
                   <>
                     <form>
                       <div className="form-group first">
-                        <label htmlFor="email">Email</label>
+                        <label htmlFor="email">{t("Email")}</label>
                         <input
                           type="email"
                           className="form-control"
-                          placeholder="your-email@gmail.com"
+                          placeholder={t("email placeholder")}
                           name="email"
                           onChange={(e) => setEmail(e.target.value)}
                           required
@@ -109,7 +119,7 @@ const ForgetPassword = () => {
 
                       <input
                         type="button"
-                        value="Reset Password"
+                        value={t("Reset Password")}
                         className="btn btn-block btn-primary"
                         onClick={handleSubmit}
                       />
@@ -117,7 +127,7 @@ const ForgetPassword = () => {
                   </>
                 )}
                 <br></br>
-                Already have an account?<Link to="/signin"> Sign In </Link>here
+                {t("Already have an account?")}<Link to="/signin"> {t("Sign In")} </Link>here
               </div>
             </div>
           </div>

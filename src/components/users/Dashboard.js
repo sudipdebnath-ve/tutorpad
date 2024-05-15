@@ -10,16 +10,20 @@ import eventIcon from "./assets/images/event.svg";
 import paymentIcon from "./assets/images/payment.svg";
 import projectIcon from "./assets/images/project.svg";
 import activeIcon from "./assets/images/active-student.svg";
-
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import MiniSidebar from "../sidebar/MiniSidebar.js";
 import Sidebar from "../sidebar/Sidebar.js";
 import TopBar from "../sidebar/TopBar.js";
 import { storeToken } from '../../utils/helper.js';
+import LanguageOption from "../LanguageOption.js";
+import i18next from "i18next";
+import { useTranslation } from "react-i18next";
+
 
 const Dashboard = () => {
   const { userData, fetchData, sidebarToggle } = useUserDataContext();
   const navigate = useNavigate();
+  const { t } = useTranslation()
 
   useEffect(() => {
     //get token and domain from url and set it into localstorage
@@ -79,7 +83,7 @@ const Dashboard = () => {
         <main className="content">
           <div className="container-fluid p-0">
             <h1 className="h3 mb-3">
-              <strong>Let's get started, {userData?.first_name}!</strong>
+              <strong>{t("Let's get started,")} {userData?.first_name}!</strong>
             </h1>
 
             <div className="row all-step">
@@ -92,7 +96,7 @@ const Dashboard = () => {
                     </div>
                   </div>
                   <div className="col mt-0">
-                    <h5 className="card-title">Create Account</h5>
+                    <h5 className="card-title">{t("Create Account")}</h5>
                   </div>
                 </div>
 
@@ -109,8 +113,7 @@ const Dashboard = () => {
                     </div>
                   </div>
                   <div className="col mt-0">
-                    <h5 className="card-title">Add Student</h5>
-                    
+                    <h5 className="card-title">{t("Add Student")}</h5>
                   </div>
                 </div>
 
@@ -126,7 +129,7 @@ const Dashboard = () => {
                     </div>
                   </div>
                   <div className="col mt-0">
-                    <h5 className="card-title">Schedule Event</h5>
+                    <h5 className="card-title">{t("Schedule Event")}</h5>
                   </div>
                 </div>
 
@@ -137,7 +140,7 @@ const Dashboard = () => {
                     </div>
                   </div>
                   <div className="col mt-0">
-                    <h5 className="card-title">Create Invoice</h5>
+                    <h5 className="card-title">{t("Create Invoice")}</h5>
                   </div>
                 </div>
 
@@ -148,7 +151,7 @@ const Dashboard = () => {
                     </div>
                   </div>
                   <div className="col mt-0">
-                    <h5 className="card-title">You've Got It!</h5>
+                    <h5 className="card-title">{t("You've Got It!")}</h5>
                   </div>
                 </div>
               </div>
@@ -157,7 +160,7 @@ const Dashboard = () => {
 
             <div className="row d-flex box-container">
               <h1 className="h3 mb-4">
-                <strong>Category</strong>
+                <strong>{t("Category")}</strong>
               </h1>
               <div className="col-xl-12 col-xxl-12 d-flex">
                 <div className="w-100">
@@ -171,7 +174,7 @@ const Dashboard = () => {
                                 <img src={eventIcon} className="eventImg" />
                               </div>
                               <h5 className="card-title">
-                                Event left this week
+                                {t("Event left this week")}
                               </h5>
                             </div>
                           </div>
@@ -194,11 +197,11 @@ const Dashboard = () => {
                                 <img src={projectIcon} />
                               </div>
                               <h5 className="card-title">
-                                Projected revenue this month
+                                {t("Projected revenue this month")}
                               </h5>
                             </div>
                           </div>
-                          <h1 className="mt-1 mb-3">$0.00</h1>
+                          <h1 className="mt-1 mb-3">{t("$0.00")}</h1>
                           {/* <div className="mb-0">
                             <span className="text-success">
                               {" "}
@@ -219,7 +222,7 @@ const Dashboard = () => {
                                 <img src={paymentIcon} className="paymentImg" />
                               </div>
                               <h5 className="card-title">
-                                Payment recieved this month
+                                {t("Payment recieved this month")}
                               </h5>
                             </div>
                           </div>
@@ -241,7 +244,7 @@ const Dashboard = () => {
                               <div className="square text-primary activeIcon">
                                 <img src={activeIcon} />
                               </div>
-                              <h5 className="card-title">Active Students</h5>
+                              <h5 className="card-title">{t("Active Students")}</h5>
                             </div>
                           </div>
                           <h1 className="mt-1 mb-3">0</h1>
