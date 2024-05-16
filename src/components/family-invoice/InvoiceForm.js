@@ -167,7 +167,7 @@ const InvoiceForm = () => {
     const responseFamilies = await getFamilyAccounts();
     set_familiies(responseFamilies?.data || []);
 
-    const selectedFamilies = responseFamilies.data.map((e) => {
+    const selectedFamilies = responseFamilies?.data.map((e) => {
       return { value: e.id, label: e.name };
     });
     console.log(selectedFamilies);

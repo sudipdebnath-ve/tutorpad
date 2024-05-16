@@ -27,11 +27,8 @@ const FetchAllInvoiceDatatable = ({
 }) => {
   const [val, setVal] = useState(false);
 
-  const {
-    userId,
-    fetchInvoicesByDate,
-    allInvoicesByDate,
-  } = useUserDataContext();
+  const { userId, fetchInvoicesByDate, allInvoicesByDate } =
+    useUserDataContext();
   const [deleteId, setDeleteId] = useState(null);
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
@@ -226,8 +223,7 @@ const FetchAllInvoiceDatatable = ({
   }, [allInvoicesByDate]);
   if (val) {
     var rows = allInvoicesByDate;
-    
-  } 
+  }
   return (
     <div>
       <DeleteModel
@@ -240,86 +236,91 @@ const FetchAllInvoiceDatatable = ({
       />
       <>
         {rows && allInvoicesByDate.length > 0 ? (
-         
-            <>
-              <div className="py-3">
-                <div className="chart chart-xs">
-                  <Box
-                    sx={{
-                      height: 400,
-                      width: "100%",
-                      // "& .super-app-theme--header": {
-                      //   backgroundColor: "rgba(255, 7, 0, 0.55)",
-                      // },
+          <>
+            <div className="py-3">
+              <div className="chart chart-xs">
+                <Box
+                  sx={{
+                    height: 400,
+                    width: "100%",
+                    // "& .super-app-theme--header": {
+                    //   backgroundColor: "rgba(255, 7, 0, 0.55)",
+                    // },
+                  }}
+                >
+                  <DataGrid
+                    rows={rows}
+                    columns={columns}
+                    initialState={{
+                      columns: {
+                        columnVisibilityModel: {
+                          id: false,
+                          referrer: false,
+                          skill: false,
+                          gender: false,
+                          dob: false,
+                          skype: false,
+                          parentfirstname: false,
+                          studentsince: false,
+                          facetime: false,
+                          price: false,
+                          subjects: false,
+                          school: false,
+                        },
+                      },
+                      pagination: {
+                        paginationModel: {
+                          pageSize: 10,
+                        },
+                      },
                     }}
-                  >
-                    <DataGrid
-                      rows={rows}
-                      columns={columns}
-                      initialState={{
-                        columns: {
-                          columnVisibilityModel: {
-                            id: false,
-                            referrer: false,
-                            skill: false,
-                            gender: false,
-                            dob: false,
-                            skype: false,
-                            parentfirstname: false,
-                            studentsince: false,
-                            facetime: false,
-                            price: false,
-                            subjects: false,
-                            school: false,
-                          },
-                        },
-                        pagination: {
-                          paginationModel: {
-                            pageSize: 10,
-                          },
-                        },
-                      }}
-                      pageSizeOptions={[20]}
-                      checkboxSelection
-                      disableRowSelectionOnClick
-                      slots={{ toolbar: GridToolbar }}
-                      slotProps={{
-                        toolbar: {
-                          showQuickFilter: true,
-                        },
-                      }}
-                    />
-                  </Box>
-                </div>
+                    pageSizeOptions={[20]}
+                    checkboxSelection
+                    disableRowSelectionOnClick
+                    slots={{ toolbar: GridToolbar }}
+                    slotProps={{
+                      toolbar: {
+                        showQuickFilter: true,
+                      },
+                    }}
+                  />
+                </Box>
               </div>
-            </>
-         
+            </div>
+          </>
         ) : (
-          
-              <>
-                <div className="py-3">
-                  <div className="chart chart-xs">
-                    <img src={Families_Invoices}></img>
-                  </div>
-                </div>
-                <h4>
-                  <strong>You don't have any invoices yet</strong>
-                </h4>
-                <div className="addnewstudent addnew">
-                  <div>
+          <>
+            <div className="py-3">
+              <div className="chart chart-xs">
+                <img src={Families_Invoices}></img>
+              </div>
+            </div>
+            <h4>
+              <strong>You don't have any invoices yet</strong>
+            </h4>
+            <div className="addnewstudent addnew">
+              {/* <div>
                     <i className="fa fa-plus" aria-hidden="true"></i>
                     <a className="btn dropdown-toggle" href="#" role="button">
-                      Add New
+                      Add New outside family group
                     </a>
-                  </div>
+                  </div> */}
 
-                  <div
-                    className="dropdown-menu"
-                    aria-labelledby="dropdownMenuLink"
-                  ></div>
+              <Link to="/familiies-and-invoices/invoice/1" >
+                <div>
+                  <i className="fa fa-plus" aria-hidden="true"></i>
+                  <a className="btn dropdown-toggle" href="#" role="button">
+                    Add New
+                  </a>
                 </div>
-              </>
-            
+              </Link>
+
+              <div
+                className="dropdown-menu"
+                aria-labelledby="dropdownMenuLink"
+              ></div>
+            </div>
+          </>
         )}
       </>
     </div>

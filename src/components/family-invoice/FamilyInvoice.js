@@ -148,7 +148,7 @@ const FamilyInvoice = () => {
                       aria-controls="invoice"
                       aria-selected="true"
                     >
-                      Invoice
+                      Invoice outside family
                     </button>
                   </li>
                 </ul>

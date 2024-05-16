@@ -402,7 +402,7 @@ const FamilyDetails = () => {
                       aria-controls="invoice"
                       aria-selected="true"
                     >
-                      Invoice
+                      Invoice within family group
                     </button>
                   </li>
                 </ul>
@@ -445,7 +445,7 @@ const FamilyDetails = () => {
                                 aria-haspopup="true"
                                 aria-expanded="true"
                               >
-                                Add Group
+                                Add Group cvvddbdd
                               </a>
 
                               <div
