@@ -46,7 +46,7 @@ const BusinessDashboard = () => {
                   to={"/students/add"}
             >
             
-              <img src={addStudent} alt="add-student-icon" />
+              <img src={addStudent} alt="add-student-icon" style={{left: 22}}/>
               </Link>
             </div>
           </div>
@@ -62,7 +62,7 @@ const BusinessDashboard = () => {
                   className="dropdown-item"
                   to={"/calendar"}
             >
-              <img src={scheduleEvent} alt="schedule-event-icon" />
+              <img src={scheduleEvent} alt="schedule-event-icon" style={{left: 22}}/>
               </Link>
             </div>
           </div>

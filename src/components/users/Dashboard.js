@@ -84,7 +84,7 @@ const Dashboard = () => {
         <main className="content">
           { role === `${process.env.REACT_APP_BUSINESS_ROLE}` ?
             <BusinessDashboard /> : role === `${process.env.REACT_APP_TUTOR_ROLE}` ?  
-            <TutorDashboard /> : role === `${process.env.REACT_APP_TUTOR_ROLE}` ?  
+            <TutorDashboard /> : role === `${process.env.REACT_APP_STUDENT_ROLE}` ?  
             <StudentDashboard /> : 'User Not Found!'
           }
         </main>

@@ -30,6 +30,7 @@ const StudentAdd = () => {
     facetime: "",
     school: "",
     studentsince: "",
+    enable_login_access: "",
     referrer: "",
     subjects: "",
     skill: "",
@@ -195,9 +196,12 @@ const StudentAdd = () => {
         }
       }
     }
-
-    setFormData({ ...formData, [name]: value });
-    // console.log(formData);
+    if (name === "enable_login_access") {
+      var newVal = (value == "on") ? 1 : 0;
+      formData["enable_login_access"] = newVal;
+    }else{
+      setFormData({ ...formData, [name]: value });
+    }
   };
   const formSubmit = async (e) => {
     e.preventDefault();
@@ -903,6 +907,26 @@ const StudentAdd = () => {
                             </div>
                             <span>
                               Will only be sent if SMS messaging is allowed
+                            </span>
+                          </div>
+                        </div>
+                        <div className="formbold-input-flex diff">
+                          <div>
+                            <input
+                              type="checkbox"
+                              className="sms"
+                              name="enable_login_access"
+                              onChange={handleChange}
+                              id="enable_login_access"
+                            />
+                            <label htmlFor="enable_login_access">
+                              {" "}
+                              Enable login access
+                            </label>
+                            <br />
+                            <span>
+                              An email will be sent with a link to set up their
+                              password
                             </span>
                           </div>
                         </div>

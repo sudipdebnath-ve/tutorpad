@@ -41,6 +41,7 @@ const StudentEditDetails = () => {
   const [assignTutor, setAssignTutor] = useState({});
   const [tutors, setTutors] = useState([]);
   const [defaultBilling, setDefaultBilling] = useState("per_lesson_charge");
+  const [checked, setChecked] = React.useState(false);
 
   let { id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -48,10 +49,8 @@ const StudentEditDetails = () => {
   const getTutorById = (id) => {
     return allTutors.find((tutor) => tutor.id === id);
   };
-  console.log("studentFetchData-------", studentFetchData)
   const fetchAssignTutors = async (id) => {
     
-    console.log(id);
     const validateconfig = {
       method: "GET",
       url: `${API_URL}assigned-tutors/${id}`,
@@ -76,7 +75,6 @@ const StudentEditDetails = () => {
 
   const fetchStudentDetails = async (id) => {
     
-    console.log(id);
     const validateconfig = {
       method: "GET",
       url: `${API_URL}student/details/${id}`,
@@ -89,7 +87,7 @@ const StudentEditDetails = () => {
     };
     await axios(validateconfig)
       .then((response) => {
-        console.log(response.data);
+        setChecked(response.data.data.enable_login_access);
         setStudentFetchData(response.data.data);
         
       })
@@ -231,9 +229,36 @@ const StudentEditDetails = () => {
     setStartDate(date);
     console.log(date);
   };
+
   const handleClick = (e) => {
     e.preventDefault();
     setIsOpen(!isOpen);
+  };
+
+  const handleToggle = async () => {
+    const val = checked ? 0 : 1;
+    setChecked(val === 1);
+
+    const validateconfig = {
+      method: "POST",
+      url: `${API_URL}student/${id}/send-login-access`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: {
+        enable_login_access: val,
+      },
+    };
+    await axios(validateconfig)
+      .then((response) => {
+        console.log(response.data);
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const handleEditChange = async (e) => {
@@ -1602,7 +1627,20 @@ const StudentEditDetails = () => {
                         <div className="accordion-body">
                           <div className="access">
                             <h3>Student Access</h3>
-                            <span>Disabled</span>
+                              <input
+                                checked={checked}
+                                onChange={handleToggle}
+                                className="switch-checkbox"
+                                id={`switch`}
+                                type="checkbox"
+                              />
+                              <label
+                                style={{ background: (checked == 1 ) ? "#06D6A0" : "#EF476F" }}
+                                className="switch-label"
+                                htmlFor={`switch`}
+                              >
+                                <span className={`switch-button`} />
+                              </label>
                           </div>
                           <p>Set up Student Portal access for this student</p>
 

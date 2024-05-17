@@ -36,7 +36,7 @@ const TutorDashboard = () => {
                   // className="dropdown-item"
                   to={"/students/add"}
                 >
-                  <img src={addStudent} alt="add-student-icon" />
+                  <img src={addStudent} alt="add-student-icon" style={{left: 22}}/>
                 </Link>
               </div>
             </div>
@@ -49,7 +49,7 @@ const TutorDashboard = () => {
             <div className="col-auto">
               <div className="stat text-primary icon3">
                 <Link className="dropdown-item" to={"/calendar"}>
-                  <img src={scheduleEvent} alt="schedule-event-icon" />
+                  <img src={scheduleEvent} alt="schedule-event-icon" style={{left: 22}}/>
                 </Link>
               </div>
             </div>
