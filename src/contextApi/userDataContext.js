@@ -59,8 +59,7 @@ const AppContext = ({ children }) => {
       method: "GET",
       url: `${API_URL}tenant/details`,
       headers: {
-        // Authorization: `Bearer ${token}`,
-        Authorization: "Bearer token"
+        Authorization: `Bearer ${token}`,
       },
     };
     await axios(validateconfig)
