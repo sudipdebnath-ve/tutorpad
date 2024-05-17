@@ -388,7 +388,7 @@ const FamilyDetails = () => {
                       aria-controls="transaction"
                       aria-selected="true"
                     >
-                      Transaction
+                      Transaction within family group
                     </button>
                   </li>
                   <li className="nav-item" role="presentation">
@@ -402,7 +402,7 @@ const FamilyDetails = () => {
                       aria-controls="invoice"
                       aria-selected="true"
                     >
-                      Invoice within family group
+                      Invoice
                     </button>
                   </li>
                 </ul>

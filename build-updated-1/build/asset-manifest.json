@@ -1,0 +1,32 @@
+{
+  "files": {
+    "main.css": "/static/css/main.fa3dfbe2.css",
+    "main.js": "/static/js/main.64549392.js",
+    "static/media/study.png": "/static/media/study.ee7e72ad1fc7b504ee41.png",
+    "static/media/loader.gif": "/static/media/loader.bbe100e37b023ed8857f.gif",
+    "static/media/Instructors.svg": "/static/media/Instructors.14cd6d98a7b539d42b55eebb90fc8b25.svg",
+    "static/media/attendance.svg": "/static/media/attendance.d49210ec491aaf70ea7080aed497d420.svg",
+    "static/media/students.svg": "/static/media/students.bdac1d7858119c50c3e3dee6f21f6ce3.svg",
+    "static/media/transactions.svg": "/static/media/transactions.799abe0d867c2924008fd4c4f0f2b46c.svg",
+    "static/media/lending.svg": "/static/media/lending.754816ea52c3e0ccf92e0bde1686abb2.svg",
+    "static/media/Families_Invoices.svg": "/static/media/Families_Invoices.a23b3ed9c2e5c8063d86754282b8324c.svg",
+    "static/media/payroll.svg": "/static/media/payroll.5c7f0cdd2f7996f5bfbc35ace6bc8a22.svg",
+    "static/media/avatar.jpg": "/static/media/avatar.432abd57e2845dd74538.jpg",
+    "static/media/bg.jpg": "/static/media/bg.896a8b18252f8621be98.jpg",
+    "static/media/event.svg": "/static/media/event.4fe15648f1ad13327f5f77b3eb7923d3.svg",
+    "static/media/project.svg": "/static/media/project.d147f72cbd744fbda56491401181c55b.svg",
+    "static/media/payment.svg": "/static/media/payment.f929a027672e9324ac469b4ca13a6453.svg",
+    "static/media/InvoiceFormatExpanded.svg": "/static/media/InvoiceFormatExpanded.d0279d0e3d8984f95338e6886faccd50.svg",
+    "static/media/InvoiceFormatNormal.svg": "/static/media/InvoiceFormatNormal.785962fe502c82640211a5f261a129f8.svg",
+    "static/media/InvoiceFormatCondensed.svg": "/static/media/InvoiceFormatCondensed.381a1c4e263de45190d88481078b07e6.svg",
+    "static/media/active-student.svg": "/static/media/active-student.e81172a81842fe76e7bc14c04e5fe151.svg",
+    "index.html": "/index.html",
+    "static/media/getFetch.cjs": "/static/media/getFetch.40f37ddea2378391108f.cjs",
+    "main.fa3dfbe2.css.map": "/static/css/main.fa3dfbe2.css.map",
+    "main.64549392.js.map": "/static/js/main.64549392.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.fa3dfbe2.css",
+    "static/js/main.64549392.js"
+  ]
+}

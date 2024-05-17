@@ -142,7 +142,8 @@ const navigate = useNavigate();
 
   return  <> 
         <ToastContainer />
-         <Link to={"/familiies-and-invoices"}><Icon icon={chevronLeft} /> Back To Family Account</Link>
+        <div className="sectionWrapper" > <Link to={"/familiies-and-invoices"}><Icon icon={chevronLeft}  /> Back To Family Account</Link></div>
+        
           <div className="payment-type-box">
               <div className="card card-body form-area">
                   <div className="row">

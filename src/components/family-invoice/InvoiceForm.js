@@ -240,7 +240,7 @@ const InvoiceForm = () => {
   return (
     <>
     <ToastContainer />
-        <Link to={"/familiies-and-invoices/"}>
+        <Link to={"/familiies-and-invoices/"} className="sectionWrapper">
           <Icon icon={chevronLeft} /> Back To Family Account
         </Link>
       {!show_form2 ? (
