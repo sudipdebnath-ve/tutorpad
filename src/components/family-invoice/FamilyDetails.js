@@ -402,7 +402,7 @@ const FamilyDetails = () => {
                       aria-controls="invoice"
                       aria-selected="true"
                     >
-                      Invoice within family group
+                      Invoice
                     </button>
                   </li>
                 </ul>
