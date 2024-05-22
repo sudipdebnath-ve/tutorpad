@@ -14,6 +14,8 @@ const TopBar = () => {
   const [profileToggle, setProfileToggle] = useState(false);
   const [notificationToggle, setNotificationToggle] = useState(false);
 
+  const user_first_name = localStorage.getItem('user_name');
+
   useEffect(() => {
     let name = window.location.pathname;
     var new_str = name.replace("/", "");
@@ -135,7 +137,7 @@ const TopBar = () => {
               </div>
             </Link> */}
             <span className="text-color" style={{ fontFamily: "Poppins" }}>
-              Hi, {userData.first_name}
+              Hi, { (userData?.first_name) ? userData.first_name : user_first_name}
             </span>
             <div
               className="dropdown-menu dropdown-menu-lg dropdown-menu-end py-0"

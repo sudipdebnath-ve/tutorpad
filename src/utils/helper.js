@@ -1,11 +1,53 @@
-import React, { useContext } from 'react';
+import React, { useContext,useEffect, useState } from 'react';
 import { verifyToken } from "../services/authService.js";
 import { useUserDataContext } from "../contextApi/userDataContext.js";
 import { AuthContext } from '../components/registerLogin/AuthContext.js';
+import axios from "axios";
+import { API_URL } from "../utils/config.js";
+import { useNavigate } from "react-router-dom";
 
 export function useTokenStorage() {
-    const { setToken } = useUserDataContext();
+    const { setToken, setUserData, setUserId, token } = useUserDataContext();
     const { setRole } = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = JSON.parse(localStorage.getItem("tutorPad"));
+
+        const fetchData = () => {
+            const validateconfig = {
+                method: "GET",
+                url: `${API_URL}tenant/details`,
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            };
+            axios(validateconfig)
+                .then((response) => {
+                    if (response.status === 200) {
+                        if (response.data.success === true) {
+                            setUserData(response.data.data);
+                            setUserId(response.data.data.id);
+                            localStorage.setItem("user_id",response.data.data.id);
+                            localStorage.setItem("user_name",response.data.data.first_name);
+                        }
+                    }
+                })
+                .catch((error) => {
+                    console.log('Error occurred:', error);
+                    if (error.response && error.response.status === 404) {
+                        console.log('Token not found');
+                        if (!token) {
+                            navigate('/signin');
+                        }
+                    } else {
+                        console.log('Other error occurred:', error);
+                        // Handle other errors if needed
+                    }
+                });
+        };
+        fetchData();
+    }, [token]);
 
     return function storeToken(token, domain, role="") {
         localStorage.setItem("tutorPad", JSON.stringify(token));

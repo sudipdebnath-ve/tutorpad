@@ -65,8 +65,12 @@ const Signin = () => {
       }
     } catch (error)  {
       console.log(error);
-      if (error.response.data.success === false) {
-        setError(error.response.data);
+      if (error?.response?.data?.success === false) {
+        setError(error.response.data.data);
+        
+        toast.error(error.response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
       }
     }
   };
