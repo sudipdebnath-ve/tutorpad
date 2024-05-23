@@ -112,7 +112,7 @@
 }
 
 .sub-text-display-invoice{
-    color: azure !important;
+    color: azure ;
     font-size: small !important;
 }
 
@@ -135,7 +135,6 @@ a.alignA {
     margin: 20px auto;
 }
  
-
 /* .recurring{
     background-color: var(--card-bg-color);
 } */

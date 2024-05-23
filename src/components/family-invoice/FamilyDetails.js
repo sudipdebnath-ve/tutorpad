@@ -201,7 +201,6 @@ const FamilyDetails = () => {
                           <div className="col-md-12">
                             <label>
                               <Icon icon={ic_receipt_outline} /> Next Invoice
-                              XYZ
                             </label>
                             <div style={{ lineHeight: "1.2", fontSize: 10 }}>
                               <p>
@@ -445,7 +444,7 @@ const FamilyDetails = () => {
                                 aria-haspopup="true"
                                 aria-expanded="true"
                               >
-                                Add Group cvvddbdd
+                                Add Group 
                               </a>
 
                               <div

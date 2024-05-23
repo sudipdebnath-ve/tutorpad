@@ -14,23 +14,26 @@ const TransactionType = () => {
   const param = useParams();
   const navigate = useNavigate();
   return  <> 
-          <Link to={"/familiies-and-invoices"}><Icon icon={chevronLeft} /> Back To Family Account</Link>
-          <div  className="payment-type-box">
-              <div onClick={()=>navigate('/familiies-and-invoices/transaction-type/2/'+param.family_id+'/'+1)} className="type-box">
-                <p><Icon icon={money} /> <strong>Payment</strong> Use when a family pays you money. Any time you receive a check, cash, PayPal or any other form of payment.</p>
-            </div>
-            <div onClick={()=>navigate('/familiies-and-invoices/transaction-type/2/'+param.family_id+'/'+2)} className="type-box">
-                <p><Icon icon={creditCardAlt} /> <strong>Refund</strong> Use when you physically give money back to a family. Typically, only issued in the case of overpayment.</p>
-            </div>
-          </div>
-          <div className="payment-type-box">
-            <div onClick={()=>navigate('/familiies-and-invoices/transaction-type/2/'+param.family_id+'/'+3)} className="type-box">
-                <p><Icon icon={listAlt} /> <strong>Charge</strong> Use when you want to increase a family's amount owing to you, but you haven't received any form of money.</p>
-            </div>
-            <div onClick={()=>navigate('/familiies-and-invoices/transaction-type/2/'+param.family_id+'/'+4)} className="type-box">
-                <p><Icon icon={tag} /> <strong>Discount</strong> Use when you want to reduce a family's amount owing to you, but you haven't received any form of money.</p>
-            </div>
-          </div>
+          <Link className="alignA" to={"/familiies-and-invoices"}><Icon icon={chevronLeft} /> Back To Family Account</Link>
+          {/* <div className="" > */}
+              <div  className="payment-type-box">
+                  <div onClick={()=>navigate('/familiies-and-invoices/transaction-type/2/'+param.family_id+'/'+1)} className="type-box">
+                    <p><Icon icon={money} /> <strong>Payment</strong> Use when a family pays you money. Any time you receive a check, cash, PayPal or any other form of payment.</p>
+                </div>
+                <div onClick={()=>navigate('/familiies-and-invoices/transaction-type/2/'+param.family_id+'/'+2)} className="type-box">
+                    <p><Icon icon={creditCardAlt} /> <strong>Refund</strong> Use when you physically give money back to a family. Typically, only issued in the case of overpayment.</p>
+                </div>
+              </div>
+              <div className="payment-type-box">
+                <div onClick={()=>navigate('/familiies-and-invoices/transaction-type/2/'+param.family_id+'/'+3)} className="type-box">
+                    <p><Icon icon={listAlt} /> <strong>Charge</strong> Use when you want to increase a family's amount owing to you, but you haven't received any form of money.</p>
+                </div>
+                <div onClick={()=>navigate('/familiies-and-invoices/transaction-type/2/'+param.family_id+'/'+4)} className="type-box">
+                    <p><Icon icon={tag} /> <strong>Discount</strong> Use when you want to reduce a family's amount owing to you, but you haven't received any form of money.</p>
+                </div>
+              </div>
+          {/* </div> */}
+          
           </> 
 };
 

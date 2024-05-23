@@ -26,7 +26,7 @@ const TransactionByFamily = ()=>{
                             </div>
                         </Link>
                         <div style={{lineHeight:'5px',marginTop:'22px'}}>
-                            <p><strong>You're owed ₹ 100.00 as of</strong> 31-03-2024 </p>
+                            <p><strong>You're owed ₹ 100.00 as of</strong> 31-03-2025 </p>
                         </div>
                     </div>
                     </div>

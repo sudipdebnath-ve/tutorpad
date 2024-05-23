@@ -17,11 +17,8 @@ import transaction from "../../assets/images/transactions.svg";
 const FetchFamilyTransactionDatatable = () => {
   const param = useParams();
   const [val, setVal] = useState(false);
-  const {
-    allTransactionsByFamily,
-    fetchTransactionsByFamily,
-    userId,
-  } = useUserDataContext();
+  const { allTransactionsByFamily, fetchTransactionsByFamily, userId } =
+    useUserDataContext();
   const [deleteId, setDeleteId] = useState(null);
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
@@ -152,8 +149,7 @@ const FetchFamilyTransactionDatatable = () => {
   }, [allTransactionsByFamily]);
   if (val) {
     var rows = allTransactionsByFamily;
-    
-  } 
+  }
   return (
     <div>
       <DeleteModel
@@ -166,87 +162,85 @@ const FetchFamilyTransactionDatatable = () => {
       />
       <>
         {rows && allTransactionsByFamily.length > 0 ? (
-         
+          <>
+            <div className="py-3">
+              <div className="chart chart-xs">
+                <Box
+                  sx={{
+                    height: 400,
+                    width: "100%",
+                    // "& .super-app-theme--header": {
+                    //   backgroundColor: "rgba(255, 7, 0, 0.55)",
+                    // },
+                  }}
+                >
+                  <DataGrid
+                    rows={rows}
+                    columns={columns}
+                    initialState={{
+                      columns: {
+                        columnVisibilityModel: {
+                          id: false,
+                          referrer: false,
+                          skill: false,
+                          gender: false,
+                          dob: false,
+                          skype: false,
+                          parentfirstname: false,
+                          studentsince: false,
+                          facetime: false,
+                          price: false,
+                          subjects: false,
+                          school: false,
+                        },
+                      },
+                      pagination: {
+                        paginationModel: {
+                          pageSize: 10,
+                        },
+                      },
+                    }}
+                    pageSizeOptions={[20]}
+                    checkboxSelection
+                    disableRowSelectionOnClick
+                    slots={{ toolbar: GridToolbar }}
+                    slotProps={{
+                      toolbar: {
+                        showQuickFilter: true,
+                      },
+                    }}
+                  />
+                </Box>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
             <>
               <div className="py-3">
                 <div className="chart chart-xs">
-                  <Box
-                    sx={{
-                      height: 400,
-                      width: "100%",
-                      // "& .super-app-theme--header": {
-                      //   backgroundColor: "rgba(255, 7, 0, 0.55)",
-                      // },
-                    }}
-                  >
-                    <DataGrid
-                      rows={rows}
-                      columns={columns}
-                      initialState={{
-                        columns: {
-                          columnVisibilityModel: {
-                            id: false,
-                            referrer: false,
-                            skill: false,
-                            gender: false,
-                            dob: false,
-                            skype: false,
-                            parentfirstname: false,
-                            studentsince: false,
-                            facetime: false,
-                            price: false,
-                            subjects: false,
-                            school: false,
-                          },
-                        },
-                        pagination: {
-                          paginationModel: {
-                            pageSize: 10,
-                          },
-                        },
-                      }}
-                      pageSizeOptions={[20]}
-                      checkboxSelection
-                      disableRowSelectionOnClick
-                      slots={{ toolbar: GridToolbar }}
-                      slotProps={{
-                        toolbar: {
-                          showQuickFilter: true,
-                        },
-                      }}
-                    />
-                  </Box>
+                  <img src={transaction}></img>
                 </div>
               </div>
-            </>
-          
-        ) : (
-          <>
-          
-              <>
-                <div className="py-3">
-                  <div className="chart chart-xs">
-                    <img src={transaction}></img>
-                  </div>
-                </div>
-                <h4>
-                  <strong>
-                    There aren't any transactions for this date range
-                  </strong>
-                </h4>
-                <div className="addnewstudent addnew">
+              <h4>
+                <strong>
+                  There aren't any transactions for this date range
+                </strong>
+              </h4>
+              <div className="addnewstudent addnew">
+                <Link to={"/familiies-and-invoices/transaction-type/1/" + param.id} >
                   <i className="fa fa-plus" aria-hidden="true"></i>
                   <a className="btn dropdown-toggle" href="#" role="button">
                     Add New
                   </a>
+                </Link>
 
-                  <div
-                    className="dropdown-menu"
-                    aria-labelledby="dropdownMenuLink"
-                  ></div>
-                </div>
-              </>
-            
+                <div
+                  className="dropdown-menu"
+                  aria-labelledby="dropdownMenuLink"
+                ></div>
+              </div>
+            </>
           </>
         )}
       </>

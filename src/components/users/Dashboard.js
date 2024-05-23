@@ -44,7 +44,12 @@ const Dashboard = () => {
 
     // Check if hash fragment is empty or doesn't contain parameters
     if (!hash || hash.indexOf('#') === -1) {
-      return; // Exit the function early if parameters are not present
+      const token = localStorage.getItem('tutorPad');
+      if (!token) {
+        navigate("/signin");
+      }else{
+        return; // Exit the function early if parameters are not present
+      } 
     }
 
     // Remove the '#' character
