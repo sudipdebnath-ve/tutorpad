@@ -55,39 +55,8 @@ const AppContext = ({ children }) => {
   const navigate = useNavigate();
 
   const fetchData = async () => {
-    const validateconfig = {
-      method: "GET",
-      url: `${API_URL}tenant/details`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    await axios(validateconfig)
-      .then((response) => {
-        if (response.status === 200) {
-          if (response.data.success === true) {
-            setUserData(response.data.data);
-            setUserId(response.data.id);
-          }
-        }
-      })
-      .catch((error) => {
-        console.log('Error occurred:', error);
-        if (error.response && error.response.status === 404) {
-          console.log('Token not found');
-          if (!token) {
-            navigate('/signin');
-          }
-        } else {
-          console.log('Other error occurred:', error);
-          // Handle other errors if needed
-        }
-      });
+    console.log('call fetch data');
   };
-
-  useEffect(() => {
-    fetchData();
-  }, [token]);
 
   const logOut = () => {
     localStorage.clear();
@@ -431,6 +400,7 @@ const AppContext = ({ children }) => {
       value={{
         fetchData,
         userData,
+        setUserData,
         logOut,
         sidebarToggle,
         setSidebarToggle,
@@ -446,6 +416,7 @@ const AppContext = ({ children }) => {
         studentData,
         tutorData,
         userId,
+        setUserId,
         allAvailabilityData,
         getAvailabilityData,
         allTutors,

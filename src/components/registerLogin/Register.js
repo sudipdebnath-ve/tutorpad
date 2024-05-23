@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import bgimage from "../../assets/images/bg.jpg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
@@ -9,17 +8,16 @@ import axios from "axios";
 import { Icon } from "react-icons-kit";
 import { eyeOff } from "react-icons-kit/feather/eyeOff";
 import { eye } from "react-icons-kit/feather/eye";
+import { checkAuthAndRedirect } from '../../utils/helper.js';
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
-import { storeToken, checkAuthAndRedirect } from '../../utils/helper.js';
 import { getDomainName } from "../../services/loginService.js";
-import Loader from "../Loader.js";
 import i18next from "i18next";
 import LanguageOption from "../LanguageOption.js";
 import { useTranslation } from "react-i18next";
 
 const Register = ( { subdomain, setSubdomain }) => {
   const { t } = useTranslation()
-  const { fetchData, setIsDarkMode } = useUserDataContext();
+  const { setIsDarkMode } = useUserDataContext();
   const navigate = useNavigate();
   const [userdetails, setUserdetails] = useState({
     firstname: "",
@@ -44,8 +42,7 @@ const Register = ( { subdomain, setSubdomain }) => {
   };
 
   const multiLangHandler = (e) => {
-    i18next.changeLanguage(e.target.value);
-    console.log("change language-----------");
+    // i18next.changeLanguage(e.target.value);
   };
 
   const handleChange = (e) => {
@@ -54,7 +51,6 @@ const Register = ( { subdomain, setSubdomain }) => {
     const value = e.target.value;
 
     setUserdetails({ ...userdetails, [name]: value });
-    console.log(name, value);
   };
 
   const handleToggle = () => {
@@ -66,6 +62,7 @@ const Register = ( { subdomain, setSubdomain }) => {
       setType("password");
     }
   };
+
   const handleSubmit = async () => {
     const subdomain = userdetails.domain;
     const formData = {
@@ -120,9 +117,9 @@ const Register = ( { subdomain, setSubdomain }) => {
         if (error?.response?.data?.success === false) {
           setError(error.response.data.data);
           
-          // toast.error(error.response.data.message, {
-          //   position: toast.POSITION.TOP_CENTER,
-          // });
+          toast.error(error.response.data.message, {
+            position: toast.POSITION.TOP_CENTER,
+          });
         }
       })
   };
