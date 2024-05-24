@@ -87,7 +87,7 @@ const getFrequency = (freq)=>{
         }
         
     }else{
-        const dataFamilies =  responseFamilies.data.map((e)=>{return {value:e.id,label:e.name}});
+        const dataFamilies =  responseFamilies?.data.map((e)=>{return {value:e.id,label:e.name}});
         const selectedFamilies = dataFamilies.filter((f)=>f.value==param.family_id);
         const accountDetailsResponse = await getFamilyAccountsDetails(selectedFamilies[0]?.value);
         set_students(accountDetailsResponse?.data?.students||[]);

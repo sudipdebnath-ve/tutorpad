@@ -10,6 +10,8 @@ import Loader from "../src/components/Loader.js";
 import { AuthProvider } from '../src/components/registerLogin/AuthContext.js';
 import Dashboard from "./components/users/Dashboard";
 import AuthenticatedRoutes from './AuthenticatedRoutes.js';
+import ForgetPassword from "./components/registerLogin/ForgetPassword.js";
+import ResetPasswordSetup from "./components/users/students/ResetPassword.js";
 
 
 function App() {
@@ -26,6 +28,8 @@ function App() {
             <Route path ="/domain-signin" element={<DomainRegister />} />
             <Route path="/starting/:token" element={<Starting />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/forget-password" element={<ForgetPassword />} />
+            <Route path ="/reset-password" element={<ResetPasswordSetup />} />
             <Route path="*" element={<AuthenticatedRoutes />} />
 
           </Routes>

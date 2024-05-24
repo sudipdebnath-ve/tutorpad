@@ -2,7 +2,6 @@
 import "./App.css";
 import { Routes, Route, Navigate } from "react-router-dom";
 import MyPreferences from "./components/users/MyPreferences";
-import ForgetPassword from "./components/registerLogin/ForgetPassword";
 import EmailTemplates from "./components/users/EmailTemplates";
 import Student from "./components/users/Student";
 import StudentAdd from "./components/users/students/StudentAdd";
@@ -40,6 +39,7 @@ import { AuthProvider } from '../src/components/registerLogin/AuthContext.js';
 
 
 
+
 const AuthenticatedRoutes = () => {
     const token = localStorage.getItem('tutorPad');
 
@@ -61,7 +61,7 @@ const AuthenticatedRoutes = () => {
                 <Route path="/tutors/details/:id" element={<TutorEditDetails />} />
                 <Route path="/tutors/addStaff" element={<StaffAdd />} />
                 <Route path="/my-preferences" element={<MyPreferences />} />
-                <Route path="/forget-password" element={<ForgetPassword />} />
+                
                 <Route path="/email-templates" element={<EmailTemplates />} />
                 <Route path="/students/add" element={<StudentAdd />} />
                 <Route path="students/details/:id" element={<StudentEditDetails />} />
