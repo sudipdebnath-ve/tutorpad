@@ -15,6 +15,7 @@ const TopBar = () => {
   const [notificationToggle, setNotificationToggle] = useState(false);
 
   const user_first_name = localStorage.getItem('user_name');
+  const user_profile = localStorage.getItem('user_profile');
 
   useEffect(() => {
     let name = window.location.pathname;
@@ -137,7 +138,7 @@ const TopBar = () => {
               </div>
             </Link> */}
             <span className="text-color" style={{ fontFamily: "Poppins" }}>
-              Hi, { (userData?.first_name) ? userData.first_name : user_first_name}
+              Hi, { (user_first_name) ? user_first_name : userData.first_name }
             </span>
             <div
               className="dropdown-menu dropdown-menu-lg dropdown-menu-end py-0"
@@ -241,10 +242,10 @@ const TopBar = () => {
               to="#"
               onClick={handleProfileToggle}
             >
-              {userData?.business_data?.dp_url ? (
+              { (user_profile) ? (
                 <>
                   <img
-                    src={userData?.business_data?.dp_url}
+                    src={user_profile}
                     alt=""
                     className="avatar img-fluid  me-1"
                   />

@@ -30,6 +30,7 @@ export function useTokenStorage() {
                             setUserId(response.data.data.id);
                             localStorage.setItem("user_id",response.data.data.id);
                             localStorage.setItem("user_name",response.data.data.first_name);
+                            localStorage.setItem("user_profile",response.data.data.business_data.dp_url);
                         }
                     }
                 })
