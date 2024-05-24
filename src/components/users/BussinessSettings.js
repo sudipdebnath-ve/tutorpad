@@ -11,11 +11,16 @@ import { ToastContainer, toast } from "react-toastify";
 import payroll from "../users/assets/images/payroll.svg";
 import Select from "react-select";
 import countryList from "react-select-country-list";
+import LanguageOption from "../LanguageOption.js";
+import i18next from "i18next";
+import { useTranslation } from "react-i18next";
+
 
 const BussinessSettings = () => {
   const { userData, fetchData, sidebarToggle, token, userId } =
     useUserDataContext();
   const navigate = useNavigate();
+  const { t } = useTranslation()
   const [modalIsOpen, setIsOpen] = useState(false);
   const [attendFlag, setAttendFlag] = useState(false);
   const [availFlag, setAvailFlag] = useState(false);
@@ -174,7 +179,7 @@ const BussinessSettings = () => {
         >
           <div className="mypreference-modal">
             <div className="close-h">
-              <h4>Edit Profile</h4>
+              <h4>{t("Edit Profile")}</h4>
               <button className="closeModal" onClick={closeModal}>
                 X
               </button>
@@ -189,11 +194,11 @@ const BussinessSettings = () => {
                         className="formbold-form-label"
                         id="photo"
                       >
-                        Photo <span>Optional</span>
+                        {t("Photo")} <span>{t("Optional")}</span>
                       </label>
                       <div className="initials py-3">
                         <div className="image-user">
-                          <h2>SD</h2>
+                          <h2>{t("SD")}</h2>
                         </div>
                       </div>
                       <input
@@ -210,7 +215,7 @@ const BussinessSettings = () => {
                     <div className="formbold-input-flex diff">
                       <div>
                         <label htmlFor="title" className="formbold-form-label">
-                          Title
+                          {("Title")}
                         </label>
 
                         <input
@@ -228,7 +233,7 @@ const BussinessSettings = () => {
                           className="formbold-form-label"
                           id="first_name"
                         >
-                          First name
+                          {t("First name")}
                         </label>
                         <input
                           type="text"
@@ -244,7 +249,7 @@ const BussinessSettings = () => {
                           className="formbold-form-label"
                           id="last_name"
                         >
-                          Last name
+                          {t("Last name")}
                         </label>
                         <input
                           type="text"
@@ -262,7 +267,7 @@ const BussinessSettings = () => {
                           className="formbold-form-label"
                           id="email"
                         >
-                          Email Address
+                          {t("Email Address")}
                         </label>
                         <input
                           type="email"
@@ -278,7 +283,7 @@ const BussinessSettings = () => {
                             className="formbold-form-label"
                             id="phone"
                           >
-                            Phone Number <span>Optional</span>
+                            {t("Phone Number")} <span>{t("Optional")}</span>
                           </label>
                           <input
                             type="text"
@@ -295,7 +300,7 @@ const BussinessSettings = () => {
                           htmlFor="parentaddress"
                           className="formbold-form-label"
                         >
-                          Address <span>Optional</span>
+                          {t("Address")} <span>{t("Optional")}</span>
                         </label>
                         <br></br>
 
@@ -312,11 +317,10 @@ const BussinessSettings = () => {
                           htmlFor="parentaddress"
                           className="formbold-form-label"
                         >
-                          Virtual Meeting <span>Optional</span>
+                          {t("Virtual Meeting")} <span>{t("Optional")}</span>
                           <br></br>
                           <span>
-                            Share a link to Zoom, Google Meet, or any other
-                            video conferencing application.
+                            {t("Share a link to Zoom, Google Meet, or any other video conferencing application.")}
                           </span>
                         </label>
                         <br></br>
@@ -335,11 +339,10 @@ const BussinessSettings = () => {
                           htmlFor="subject"
                           className="formbold-form-label"
                         >
-                          Subjects <span>Optional</span>
+                          {t("Subjects")} <span>{t("Optional")}</span>
                           <br></br>
                           <span>
-                            Use a semicolon or press the Enter key to separate
-                            entries
+                            {t("Use a semicolon or press the Enter key to separate entries")}
                           </span>
                         </label>
                         <br></br>
@@ -358,14 +361,14 @@ const BussinessSettings = () => {
                           htmlFor="location"
                           className="formbold-form-label"
                         >
-                          Preferred Location
+                          {t("Preferred Location")}
                         </label>
                         <select
                           name="location"
                           className="form-control"
                           onChange={handleChange}
                         >
-                          <option>First Available Location</option>
+                          <option>{t("First Available Location")}</option>
                         </select>
                       </div>
                     </div>
@@ -375,11 +378,11 @@ const BussinessSettings = () => {
                 <div className="formbold-form-btn-wrapper">
                   <div className="btn-end">
                     <Link className="cancel" onClick={closeModal}>
-                      Cancel
+                      {t("Cancel")}
                     </Link>
 
                     <button className="formbold-btn" onClick={formSubmit}>
-                      Submit
+                      {t("Submit")}
                     </button>
                   </div>
                 </div>
@@ -396,7 +399,7 @@ const BussinessSettings = () => {
         >
           <div className="mypreference-modal">
             <div className="close-h">
-              <h4>Change Password</h4>
+              <h4>{t("Change Password")}</h4>
               <button className="closeModal" onClick={closeModal}>
                 X
               </button>
@@ -412,7 +415,7 @@ const BussinessSettings = () => {
                           className="formbold-form-label"
                           id="current_password"
                         >
-                          First name
+                          {t("First name")}
                         </label>
                         <input
                           type="password"
@@ -428,7 +431,7 @@ const BussinessSettings = () => {
                           className="formbold-form-label"
                           id="new_password"
                         >
-                          New Password
+                          {t("New Password")}
                         </label>
                         <input
                           type="password"
@@ -443,7 +446,7 @@ const BussinessSettings = () => {
                             className="formbold-form-label"
                             id="change_new_password"
                           >
-                            Change New Password
+                            {t("Change New Password")}
                           </label>
                           <input
                             type="text"
@@ -459,11 +462,11 @@ const BussinessSettings = () => {
                 <div className="formbold-form-btn-wrapper">
                   <div className="btn-end">
                     <Link className="cancel" onClick={closeModal}>
-                      Cancel
+                      {t("Cancel")}
                     </Link>
 
                     <button className="formbold-btn" onClick={formSubmit}>
-                      Submit
+                      {t("Submit")}
                     </button>
                   </div>
                 </div>
@@ -495,12 +498,10 @@ const BussinessSettings = () => {
                       {userData.first_name} {userData.last_name}
                     </div>
                     <div className="email-user">
-                      <i class="fa fa-globe" aria-hidden="true"></i> India -
-                      English
+                      <i class="fa fa-globe" aria-hidden="true"></i> {t("India-English")}
                     </div>
                     <div className="location-user">
-                      <i class="fa fa-clock" aria-hidden="true"></i> (UTC+05:30)
-                      Chennai, Kolkata, Mumbai, New Delhi
+                      <i class="fa fa-clock" aria-hidden="true"></i> {t("(UTC+05:30) Chennai, Kolkata, Mumbai, New Delhi")}
                     </div>
                   </div>
                 </div>
@@ -521,7 +522,7 @@ const BussinessSettings = () => {
                           aria-expanded="false"
                           aria-controls="flush-collapseOne"
                         >
-                          <strong>General</strong>
+                          <strong>{t("General")}</strong>
                         </button>
                       </h2>
                       <div
@@ -532,7 +533,7 @@ const BussinessSettings = () => {
                       >
                         <div className="accordion-body">
                           <div className="student-properties-edit sec-acc">
-                            <h3>Event Scheduling</h3>
+                            <h3>{t("Event Scheduling")}</h3>
 
                             <div
                               className="student-edit-user"
@@ -550,7 +551,7 @@ const BussinessSettings = () => {
                                 htmlFor="preferences"
                                 className="formbold-form-label"
                               >
-                                Scheduling Conflicts
+                                {t("Scheduling Conflicts")}
                               </label>
                               <br></br>
                               <div
@@ -561,8 +562,7 @@ const BussinessSettings = () => {
                                   type="checkbox"
                                   name="overdue_attendence"
                                 />
-                                Check for scheduling conflicts when
-                                adding/editing calendar events
+                                {t("Check for scheduling conflicts when adding/editing calendar events")}
                               </div>
                             </div>
                           </div>
@@ -573,7 +573,7 @@ const BussinessSettings = () => {
                                 htmlFor="preferences"
                                 className="formbold-form-label"
                               >
-                                'Not Specified' Location in Events
+                                {t("('Not Specified') Location in Events")}
                               </label>
                               <br></br>
                               <div
@@ -584,8 +584,7 @@ const BussinessSettings = () => {
                                   type="checkbox"
                                   name="automatically_copy_lesson"
                                 />
-                                Allow 'Not Specified' as a location option in
-                                calendar events
+                                {t("Allow 'Not Specified' as a location option in calendar events")}
                               </div>
                             </div>
                           </div>

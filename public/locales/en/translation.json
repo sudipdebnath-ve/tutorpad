@@ -7,5 +7,20 @@
   "forgot password": "Forgot Password",
   "sign in": "Sign In",
   "don't have an account?": "Don't have an account?",
-  "register here": "Register Here"
+  "register here": "Register Here",
+
+  "first name":"First Name",
+  "last name":"Last Name",
+  "re-enter Password":"Re-enter Password",
+  "domain":"domain",
+  "Business Name (Optional)":"Business Name (Optional)",
+  "Business Size":"Business Size",
+  "I have a business with multiple tutors":"I have a business with multiple tutors",
+  "I agree to the":"I agree to the",
+  "Terms of Service":"Terms of Service",
+  "Privacy Policy":"Privacy Policy",
+  "Create My Tutor Account":"Create My Tutor Account",
+  "Already have an account?":"Already have an account?",
+
+  "It's just me!":"It's just me!"
 }

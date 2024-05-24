@@ -48,7 +48,7 @@ const FetchAttendanceLog = () => {
 
   useEffect(() => {
     setVal(true);
-    console.log(studentData);
+    // console.log(studentData);
   }, [studentData]);
   if (val) {
     var rows = studentData;

@@ -69,7 +69,7 @@ const DomainRegister = () => {
     } 
   };
   
-  const handleClick = (e) => {
+  const multiLangHandler = (e) => {
     i18next.changeLanguage(e.target.value);
   };
 
@@ -88,10 +88,11 @@ const DomainRegister = () => {
         <div className="container">
           <div className="row align-items-center justify-content-center">
             <div className="col-md-12">
+            {/* <LanguageOption onChange={(e) => multiLangHandler(e)} /> */}
               <div className="form-block mx-auto">
                 <div className="text-center mb-5">
                   <h3>
-                    <strong>TutorPad</strong>
+                    <strong>{t("TutorPad")}</strong>
                   </h3>
                 </div>
                 {errorMessage && <div className="error-message">{errorMessage}</div>}
@@ -101,17 +102,14 @@ const DomainRegister = () => {
                       <input
                         type="text"
                         className="form-control domain"
-                        placeholder="domain"
+                        placeholder={t("domain")}
                         value = {domain}
                         name="domain"
                         onChange={(e) =>
                             setDomain(e.target.value)
                           }
-                        // value={centralPortalDomain}
-                        // onChange={handleChange}
                       />
                       <span style={{ fontSize: "16px" , paddingLeft:"10px" }}>{centralPortalDomain}</span>
-                      {/* <span style={{ fontSize: "16px" , paddingLeft:"10px" }}>tutorpad.co</span> */}
                     </div>
                     <small style={{ color: "red" }}>
                       {error?.domain?.length ? error.domain[0] : <></>}
@@ -120,7 +118,7 @@ const DomainRegister = () => {
 
                   <input
                     type="button"
-                    value="Submit"
+                    value={t("Submit")}
                     className="btn btn-block btn-primary"
                     onClick={handleSubmit}
                   />

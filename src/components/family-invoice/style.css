@@ -112,10 +112,29 @@
 }
 
 .sub-text-display-invoice{
-    color: azure !important;
+    color: azure ;
     font-size: small !important;
 }
 
+.card-header.alignC {
+    /* display: flex; */
+    width: 60%;
+    margin: 0 auto;
+    padding: 20px 0 10px 10px;
+}
+
+span.sectionWrapper{
+    /* display: flex; */
+    width: 60%;
+    margin: 0 auto;
+}
+
+a.alignA {
+    display: block;
+    width: 60%;
+    margin: 20px auto;
+}
+ 
 /* .recurring{
     background-color: var(--card-bg-color);
 } */

@@ -24,7 +24,8 @@ const MyPreferences = () => {
   } = useUserDataContext();
   const navigate = useNavigate();
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [profilePhoto, setProfilePhoto] = useState({});
+  const [profilePhoto, setProfilePhoto] = useState('');
+  const [profilePicData, setProfilePicData] = useState({});
   const [attendFlag, setAttendFlag] = useState(false);
   const [attendDisabled, setAttenddisabled] = useState(true);
   const [emailDisabled, setEmaildisabled] = useState(true);
@@ -126,6 +127,7 @@ const MyPreferences = () => {
     formData.last_name = userData?.last_name;
     formData.email = userData?.email;
     formData.phone = userData?.phone;
+    setProfilePhoto(userData?.business_data?.dp_url);
     formData.title = userData?.business_data?.business_name;
     tenantData.address = userData?.business_data?.address;
     tenantData.virtual_meeting = userData?.business_data?.virtual_meeting;
@@ -194,10 +196,8 @@ const MyPreferences = () => {
     }
 
     if (name === "file") {
-      setProfilePhoto(e.target.files[0]);
-      // console.log(e.target.files[0]);
-      profilePhoto["file"] = e.target.files[0];
-      profilePhoto["user_id"] = userId;
+      profilePicData["file"] = e.target.files[0];
+      profilePicData["user_id"] = userId;
       const config = {
         method: "POST",
         url: `${API_URL}update-dp`,
@@ -205,11 +205,12 @@ const MyPreferences = () => {
           "content-type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
         },
-        data: profilePhoto,
+        data: profilePicData,
       };
       await axios(config)
         .then((response) => {
-          console.log(response);
+          localStorage.setItem("user_profile",response.data.data.dp_url);
+          setProfilePhoto(response.data.data.dp_url);
         })
         .catch((error) => {
           console.log(error);
@@ -244,6 +245,7 @@ const MyPreferences = () => {
         toast.success(response.data.message, {
           position: toast.POSITION.TOP_CENTER,
         });
+        localStorage.setItem("user_name",response.data.data.userinfo.first_name);
         setAttendFlag(false);
         setAvailFlag(false);
         setAttenddisabled(true);
@@ -493,10 +495,10 @@ const MyPreferences = () => {
                       </label>
                       <div className="initials py-3">
                         <div className="image-user">
-                          {userData?.business_data?.dp_url ? (
+                          {profilePhoto ? (
                             <>
                               <img
-                                src={userData?.business_data?.dp_url}
+                                src={profilePhoto}
                                 alt=""
                               />
                             </>

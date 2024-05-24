@@ -32,7 +32,8 @@ const StudentEditDetails = () => {
   const [studentFetchData, setStudentFetchData] = useState({});
   const [modalIsOpen, setIsOpens] = useState(false);
   const [formData, setFormData] = useState({});
-  const [profilePhoto, setProfilePhoto] = useState({});
+  const [profilePhoto, setProfilePhoto] = useState("");
+  const [profilePicData, setProfilePicData] = useState({});
   const [error, setError] = useState({});
   const [defaultLessonCat, setDefaultLessonCat] = useState("");
   const [defaultLessonLength, setDefaultLessonLength] = useState("30");
@@ -41,6 +42,12 @@ const StudentEditDetails = () => {
   const [assignTutor, setAssignTutor] = useState({});
   const [tutors, setTutors] = useState([]);
   const [defaultBilling, setDefaultBilling] = useState("per_lesson_charge");
+  const [checked, setChecked] = React.useState(false);
+  const [attendFlag, setAttendFlag] = useState(false);
+  const [preferenceDisabled, setPreferenceDisabled] = useState(true);
+  const [familyDetailFlag, setFamilyDetailFlag] = useState(false);
+  const [familyDetailDisabled, setFamilyDetailDisabled] = useState(true);
+  
 
   let { id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -48,10 +55,8 @@ const StudentEditDetails = () => {
   const getTutorById = (id) => {
     return allTutors.find((tutor) => tutor.id === id);
   };
-  console.log("studentFetchData-------", studentFetchData)
   const fetchAssignTutors = async (id) => {
     
-    console.log(id);
     const validateconfig = {
       method: "GET",
       url: `${API_URL}assigned-tutors/${id}`,
@@ -76,7 +81,6 @@ const StudentEditDetails = () => {
 
   const fetchStudentDetails = async (id) => {
     
-    console.log(id);
     const validateconfig = {
       method: "GET",
       url: `${API_URL}student/details/${id}`,
@@ -89,7 +93,7 @@ const StudentEditDetails = () => {
     };
     await axios(validateconfig)
       .then((response) => {
-        console.log(response.data);
+        setChecked(response.data.data.enable_login_access);
         setStudentFetchData(response.data.data);
         
       })
@@ -195,8 +199,8 @@ const StudentEditDetails = () => {
   };
 
   useEffect(() => {
-    var name = `${studentFetchData.first_name}${" "}${
-      studentFetchData.last_name
+    var name = `${formData.first_name}${" "}${
+      formData.last_name
     }`;
 
     var parts = name.split(" ");
@@ -215,6 +219,24 @@ const StudentEditDetails = () => {
       "-" +
       today.getFullYear();
     setStartDate(date);
+
+    formData.first_name = studentFetchData?.first_name;
+    formData.last_name = studentFetchData?.last_name;
+    formData.email = studentFetchData?.email;
+    formData.phone = studentFetchData?.phone;
+
+    setProfilePhoto(studentFetchData?.dp_url);
+    
+    formData.parentfirstname = studentFetchData?.parentfirstname;
+    formData.parentlastname = studentFetchData?.parentlastname;
+    formData.parentemail = studentFetchData?.parentemail;
+    formData.parentmobile = studentFetchData?.parentmobile;
+    formData.parentaddress = studentFetchData?.parentaddress;
+
+    formData.parentemailpreference = studentFetchData?.parentemailpreference;
+    formData.parentsmspreference = studentFetchData?.parentsmspreference;
+    formData.setPreferredInvoiceRecipient = studentFetchData?.setPreferredInvoiceRecipient;
+    formData.showStudentPortalContact = studentFetchData?.showStudentPortalContact;
   }, [studentFetchData]);
 
   const handleChange = (e) => {
@@ -231,32 +253,71 @@ const StudentEditDetails = () => {
     setStartDate(date);
     console.log(date);
   };
+
   const handleClick = (e) => {
     e.preventDefault();
     setIsOpen(!isOpen);
   };
 
+  const handleToggle = async () => {
+    const val = checked ? 0 : 1;
+    setChecked(val === 1);
+
+    const validateconfig = {
+      method: "POST",
+      url: `${API_URL}student/${id}/send-login-access`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: {
+        enable_login_access: val,
+      },
+    };
+    await axios(validateconfig)
+      .then((response) => {
+        console.log(response.data);
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handlePreferenceEdit = (e) => {
+    setAttendFlag(!e.target.value);
+    setPreferenceDisabled(false);
+  };
+
+  const handleFamilyDetailEdit = (e) => {
+    setFamilyDetailFlag(!e.target.value);
+    setFamilyDetailDisabled(false);
+  };
+
+  const handleCancelAttendFlag = (e) => {
+    setAttendFlag(false);
+    setFamilyDetailFlag(false);
+  };
+
   const handleEditChange = async (e) => {
     const name = e.target.name;
     let value = e.target.value;
-    // console.log(name, value);
+    console.log('form : ',name, value);
     if (
-      name === "title" ||
       name === "first_name" ||
       name === "last_name" ||
       name === "email" ||
-      name === "phone"
+      name === "phone" ||
+      name === "parentaddress"
     ) {
       setFormData({ ...formData, [name]: value });
     } else {
       if (
-        name === "overdue_attendence" ||
-        name === "automatically_copy_lesson" ||
-        name === "student_register_lesson" ||
-        name === "student_cancel_lesson" ||
-        name === "parent_student_disable_email_reminder" ||
-        name === "allow_student_email_studylog" ||
-        name === "parent_student_signup"
+        name === "parentemailpreference" ||
+        name === "parentsmspreference" ||
+        name === "setPreferredInvoiceRecipient" ||
+        name === "showStudentPortalContact"
       ) {
         if (e.target.checked) {
           value = "true";
@@ -264,14 +325,13 @@ const StudentEditDetails = () => {
           value = null;
         }
       }
-      // setTenantData({ ...tenantData, [name]: value });
+      setFormData({ ...formData, [name]: value });
     }
 
     if (name === "file") {
-      setProfilePhoto(e.target.files[0]);
-      // console.log(e.target.files[0]);
-      profilePhoto["file"] = e.target.files[0];
-      profilePhoto["student_id"] = id;
+      console.log(e.target.files[0]);
+      profilePicData["file"] = e.target.files[0];
+      profilePicData["student_id"] = id;
       const config = {
         method: "POST",
         url: `${API_URL}student/update-dp`,
@@ -279,11 +339,15 @@ const StudentEditDetails = () => {
           "content-type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
         },
-        data: profilePhoto,
+        data: profilePicData,
       };
       await axios(config)
         .then((response) => {
-          console.log(response);
+          setProfilePhoto(response.data.data.dp_url);
+          // toast.success(response.data.message, {
+          //   position: toast.POSITION.TOP_CENTER,
+          // });
+
         })
         .catch((error) => {
           console.log(error);
@@ -292,6 +356,36 @@ const StudentEditDetails = () => {
           }
         });
     }
+  };
+
+  const formSubmit = async (e) => {
+    formData["student_id"] = id;
+    console.log(formData);
+
+    e.preventDefault();
+    const config = {
+      method: "PATCH",
+      url: `${API_URL}update-student`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: formData,
+    };
+    await axios(config)
+      .then((response) => {
+        // console.log(response);
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        setIsOpens(false);
+        setPreferenceDisabled(true);
+        setAttendFlag(false)
+        setFamilyDetailDisabled(true)
+        setFamilyDetailFlag(false)
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   // console.log(userData);
@@ -342,7 +436,6 @@ const StudentEditDetails = () => {
     setIsOpens(e);
   }
 
-  console.log(modalIsOpen);
   return (
     <div className="wrapper student-details">
       {sidebarToggle ? (
@@ -382,9 +475,9 @@ const StudentEditDetails = () => {
                       </label>
                       <div className="initials py-3">
                         <div className="image-user">
-                          {studentFetchData?.dp_url ? (
+                          {profilePhoto ? (
                             <>
-                              <img src={studentFetchData?.dp_url} alt="" />
+                              <img src={profilePhoto} alt="" />
                             </>
                           ) : (
                             <h2>{initial}</h2>
@@ -402,20 +495,6 @@ const StudentEditDetails = () => {
                 </div>
                 <div className="col-xl-8 col-xxl-8">
                   <div className="formbold-form-step-1 active">
-                    <div className="formbold-input-flex diff">
-                      <div>
-                        <label htmlFor="title" className="formbold-form-label">
-                          Title
-                        </label>
-
-                        <input
-                          type="text"
-                          name="title"
-                          className="form-control"
-                          onChange={handleEditChange}
-                        />
-                      </div>
-                    </div>
                     <div className="formbold-input-flex">
                       <div>
                         <label
@@ -429,6 +508,7 @@ const StudentEditDetails = () => {
                           type="text"
                           name="first_name"
                           className="form-control"
+                          value={formData.first_name}
                           onChange={handleEditChange}
                           required
                         />
@@ -445,6 +525,7 @@ const StudentEditDetails = () => {
                           type="text"
                           name="last_name"
                           className="form-control"
+                          value={formData.last_name}
                           onChange={handleEditChange}
                           required
                         />
@@ -463,7 +544,9 @@ const StudentEditDetails = () => {
                           type="email"
                           name="email"
                           className="form-control"
+                          value={formData.email}
                           onChange={handleEditChange}
+                          required
                         />
                       </div>
                       <div>
@@ -479,89 +562,10 @@ const StudentEditDetails = () => {
                             type="text"
                             name="phone"
                             className="form-control"
+                            value={formData.phone}
                             onChange={handleEditChange}
                           />
                         </div>
-                      </div>
-                    </div>
-                    <div className="formbold-input-flex diff">
-                      <div>
-                        <label
-                          htmlFor="parentaddress"
-                          className="formbold-form-label"
-                        >
-                          Address <span>Optional</span>
-                        </label>
-                        <br></br>
-
-                        <textarea
-                          name="parentaddress"
-                          className="form-control"
-                          onChange={handleEditChange}
-                        />
-                      </div>
-                    </div>
-                    <div className="formbold-input-flex diff">
-                      <div>
-                        <label
-                          htmlFor="parentaddress"
-                          className="formbold-form-label"
-                        >
-                          Virtual Meeting <span>Optional</span>
-                          <br></br>
-                          <span>
-                            Share a link to Zoom, Google Meet, or any other
-                            video conferencing application.
-                          </span>
-                        </label>
-                        <br></br>
-
-                        <input
-                          type="text"
-                          name="virtual_meeting"
-                          className="form-control"
-                          onChange={handleEditChange}
-                        />
-                      </div>
-                    </div>
-                    <div className="formbold-input-flex diff">
-                      <div>
-                        <label
-                          htmlFor="subject"
-                          className="formbold-form-label"
-                        >
-                          Subjects <span>Optional</span>
-                          <br></br>
-                          <span>
-                            Use a semicolon or press the Enter key to separate
-                            entries
-                          </span>
-                        </label>
-                        <br></br>
-
-                        <input
-                          type="text"
-                          name="subject"
-                          className="form-control"
-                          onChange={handleEditChange}
-                        />
-                      </div>
-                    </div>
-                    <div className="formbold-input-flex diff">
-                      <div>
-                        <label
-                          htmlFor="location"
-                          className="formbold-form-label"
-                        >
-                          Preferred Location
-                        </label>
-                        <select
-                          name="location"
-                          className="form-control"
-                          onChange={handleEditChange}
-                        >
-                          <option>First Available Location</option>
-                        </select>
                       </div>
                     </div>
                   </div>
@@ -573,7 +577,7 @@ const StudentEditDetails = () => {
                       Cancel
                     </Link>
 
-                    <button className="formbold-btn">Submit</button>
+                    <button className="formbold-btn" onClick={formSubmit}>Submit</button>
                   </div>
                 </div>
               </div>
@@ -957,7 +961,7 @@ const StudentEditDetails = () => {
                         <div className="accordion-body">
                           <div className="student-properties-edit">
                             <h3>Student Overview</h3>
-                            <div className="student-edit-user">
+                            <div className="student-edit-user" onClick={handlePreferenceEdit}>
                               <i
                                 className="fa fa-pencil"
                                 aria-hidden="true"
@@ -974,18 +978,83 @@ const StudentEditDetails = () => {
                               </label>
                               <br></br>
                               <div className="preference">
-                                <input type="checkbox" name="emailpreference" />
+                                <input type="checkbox" 
+                                        name="parentemailpreference"
+                                        disabled={preferenceDisabled}
+                                        onChange={handleEditChange}
+                                        checked={
+                                          formData?.parentemailpreference !== null
+                                            ? true
+                                            : false
+                                        }
+                                   />
                                 Send email lesson reminders
                               </div>
                               <div className="preference">
-                                <input type="checkbox" name="smspreference" />
+                                <input type="checkbox" 
+                                        name="parentsmspreference"
+                                        disabled={preferenceDisabled}
+                                        onChange={handleEditChange}
+                                        checked={
+                                          formData?.parentsmspreference !== null
+                                            ? true
+                                            : false
+                                        }
+                                />
                                 Send SMS lesson reminders
+                              </div>
+                              <div className="preference">
+                                <input type="checkbox" 
+                                        name="setPreferredInvoiceRecipient"
+                                        disabled={preferenceDisabled}
+                                        onChange={handleEditChange}
+                                        checked={
+                                          formData?.setPreferredInvoiceRecipient !== null
+                                            ? true
+                                            : false
+                                        }
+                                />
+                                Set as the preferred invoice recipient
+                              </div>
+                              <div className="preference">
+                                <input type="checkbox" 
+                                        name="showStudentPortalContact"
+                                        disabled={preferenceDisabled}
+                                        onChange={handleEditChange}
+                                        checked={
+                                          formData?.showStudentPortalContact !== null
+                                            ? true
+                                            : false
+                                        }
+                                />
+                                Show in Student Portal contacts
                               </div>
                               <span style={{ paddingLeft: "23px" }}>
                                 Will only be sent if SMS messaging is allowed
                               </span>
                             </div>
                           </div>
+                          {attendFlag && (
+                            <>
+                              <div className="formbold-form-btn-wrapper justify-content-end">
+                                <div className="btn-end">
+                                  <Link
+                                    className="cancel"
+                                    onClick={handleCancelAttendFlag}
+                                  >
+                                    Cancel
+                                  </Link>
+
+                                  <button
+                                    className="formbold-btn"
+                                    onClick={formSubmit}
+                                  >
+                                    Save
+                                  </button>
+                                </div>
+                              </div>
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -1026,11 +1095,11 @@ const StudentEditDetails = () => {
                               </>
                             ) : (
                               <>
-                                <strong>Parents Name not submitted</strong>
+                                <strong>Parents Details Not Exists</strong>
                               </>
                             )}
 
-                            <div className="student-edit-user">
+                            <div className="student-edit-user" onClick={handleFamilyDetailEdit}>
                               <i
                                 className="fa fa-pencil"
                                 aria-hidden="true"
@@ -1038,37 +1107,126 @@ const StudentEditDetails = () => {
                             </div>
                           </div>
                           <div className="formbold-input-flex">
-                            <div>
-                              <label
-                                htmlFor="preferences"
-                                className="formbold-form-label"
-                              >
-                                Preferences
-                              </label>
-                              <br></br>
-                              <div className="preference">
-                                <input type="checkbox" name="emailpreference" />
-                                Set as the preferred invoice recipient
+                            <div className="row">
+                              <div className="col-xl-12 col-xxl-12">
+                                <div className="formbold-form-step-1 active">
+                                    <div>
+                                      <label
+                                        htmlFor="parentfirstname"
+                                        className="formbold-form-label"
+                                        id="parentfirstname"
+                                      >
+                                        First name
+                                      </label>
+                                      <input
+                                        type="text"
+                                        name="parentfirstname"
+                                        className="form-control"
+                                        value={formData.parentfirstname}
+                                        onChange={handleEditChange}
+                                        disabled={familyDetailDisabled}
+                                        required
+                                      />
+                                    </div>
+                                    <div className="pt-2">
+                                      <label
+                                        htmlFor="parentlastname"
+                                        className="formbold-form-label"
+                                        id="parentlastname"
+                                      >
+                                        Last name
+                                      </label>
+                                      <input
+                                        type="text"
+                                        name="parentlastname"
+                                        className="form-control"
+                                        value={formData.parentlastname}
+                                        onChange={handleEditChange}
+                                        disabled={familyDetailDisabled}
+                                        required
+                                      />
+                                    </div>
+                                    <div className="pt-2">
+                                      <label
+                                        htmlFor="parentemail"
+                                        className="formbold-form-label"
+                                        id="parentemail"
+                                      >
+                                        Email Address
+                                      </label>
+                                      <input
+                                        type="parentemail"
+                                        name="parentemail"
+                                        className="form-control"
+                                        value={formData.parentemail}
+                                        onChange={handleEditChange}
+                                        disabled={familyDetailDisabled}
+                                        required
+                                      />
+                                    </div>
+                                    <div className="pt-2">
+                                      <div>
+                                        <label
+                                          htmlFor="parentmobile"
+                                          className="formbold-form-label"
+                                          id="parentmobile"
+                                        >
+                                          Phone Number <span>Optional</span>
+                                        </label>
+                                        <input
+                                          type="text"
+                                          name="parentmobile"
+                                          className="form-control"
+                                          value={formData.parentmobile}
+                                          disabled={familyDetailDisabled}
+                                          onChange={handleEditChange}
+                                        />
+                                      </div>
+                                    </div>
+                                    <div className="pt-2">
+                                      <label
+                                        htmlFor="parentaddress"
+                                        className="formbold-form-label"
+                                      >
+                                        Address <span>Optional</span>
+                                      </label>
+                                      <br></br>
+
+                                      <textarea
+                                        name="parentaddress"
+                                        className="form-control"
+                                        value={formData.parentaddress}
+                                        disabled={familyDetailDisabled}
+                                        onChange={handleEditChange}
+                                      />
+                                    </div>
+                                </div>
                               </div>
-                              <div className="preference">
-                                <input type="checkbox" name="smspreference" />
-                                Show in Student Portal contacts
-                              </div>
-                              <div className="preference">
-                                <input type="checkbox" name="emailpreference" />
-                                Send email lesson reminders
-                              </div>
-                              <div className="preference">
-                                <input type="checkbox" name="smspreference" />
-                                Send SMS lesson reminders
-                              </div>
-                              <span style={{ paddingLeft: "23px" }}>
-                                Will only be sent if SMS messaging is allowed
-                              </span>
                             </div>
                           </div>
                           <hr></hr>
-                          <div className="formbold-form-btn-wrapper">
+                          { familyDetailFlag && (
+                            <>
+                              <div className="formbold-form-btn-wrapper justify-content-end">
+                                <div className="btn-end">
+                                  <Link
+                                    className="cancel"
+                                    onClick={handleCancelAttendFlag}
+                                  >
+                                    Cancel
+                                  </Link>
+
+                                  <button
+                                    className="formbold-btn"
+                                    onClick={formSubmit}
+                                  >
+                                    Save
+                                  </button>
+                                </div>
+                              </div>
+                            </>
+                          )}
+                          {/* <div className="formbold-form-btn-wrapper">
                             <div className="btn-end">
                               <Link className="cancel" to="/students">
                                 <i
@@ -1087,7 +1245,7 @@ const StudentEditDetails = () => {
                                 Add Another Contact
                               </button>
                             </div>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                     </div>
@@ -1602,7 +1760,20 @@ const StudentEditDetails = () => {
                         <div className="accordion-body">
                           <div className="access">
                             <h3>Student Access</h3>
-                            <span>Disabled</span>
+                              <input
+                                checked={checked}
+                                onChange={handleToggle}
+                                className="switch-checkbox"
+                                id={`switch`}
+                                type="checkbox"
+                              />
+                              <label
+                                style={{ background: (checked == 1 ) ? "#06D6A0" : "#EF476F" }}
+                                className="switch-label"
+                                htmlFor={`switch`}
+                              >
+                                <span className={`switch-button`} />
+                              </label>
                           </div>
                           <p>Set up Student Portal access for this student</p>
 

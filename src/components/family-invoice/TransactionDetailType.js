@@ -34,7 +34,7 @@ const TransactionDetailType = () => {
             <div className="row d-flex">
               <div className="col-xl-12 col-xxl-12">
                 <div className={`card`}>
-                  <div className="card-header">
+                  <div className="card-header alignC">
                     <h5>Add Transaction</h5>
                   </div>
                   <div
@@ -42,7 +42,7 @@ const TransactionDetailType = () => {
                       param.screen == 1 ? "contaner-area" : "contaner-area-min"
                     }`}
                   >
-                    <span>Step {param.screen == 1 ? "1/2" : "2/2"}</span>
+                    <span className="sectionWrapper">Step {param.screen == 1 ? "1/2" : "2/2"}</span>
                     {param.screen == 1 && <TransactionType />}
                     {param.screen == 2 &&
                       (param.type == 1 || param.type == 2) && (

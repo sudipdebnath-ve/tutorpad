@@ -9,7 +9,7 @@ import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import LanguageOption from "../LanguageOption.js";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
-import { storeToken, checkAuthAndRedirect } from '../../utils/helper.js';
+import { useTokenStorage, checkAuthAndRedirect } from '../../utils/helper.js';
 import { getDomainName } from "../../services/loginService.js";
 
 
@@ -24,6 +24,7 @@ const Signin = () => {
   });
   const [centralPortalDomain, setCentralPortalDomain] = useState("");
   const [error, setError] = useState({});
+  const storeToken = useTokenStorage();
 
   const getDomainNameHandler  =  async() => {
     const res =  await getDomainName();
@@ -57,23 +58,30 @@ const Signin = () => {
     try{
       const response = await axios(config);
       if (response.status === 200) {
-        await storeToken(response.data.data.token, portal);
+        storeToken(response.data.data.token, portal, response.data.data.role_id)
         toast.success(response.data.message, {
           position: toast.POSITION.TOP_CENTER,
         });
-        await navigate('/dashboard');
+        navigate('/dashboard');    
       }
     } catch (error)  {
       console.log(error);
-      if (error.response.data.success === false) {
-        setError(error.response.data);
+      if (error?.response?.data?.success === false) {
+        setError(error.response.data.data);
+        
+        toast.error(error.response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
       }
     }
   };
 
-  const handleClick = (e) => {
+  const multiLangHandler = (e) => {
     i18next.changeLanguage(e.target.value);
+    console.log("change language-----------");
   };
+
+
 
   useEffect(() => {
     document?.documentElement?.setAttribute("data-theme", "light");
@@ -91,6 +99,7 @@ const Signin = () => {
           <div className="container">
             <div className="row align-items-center justify-content-center">
               <div className="col-md-12">
+              {/* <LanguageOption onChange={(e) => multiLangHandler(e)} /> */}
                 <div className="form-block mx-auto">
                   <div className="text-center mb-5">
                     <h3>

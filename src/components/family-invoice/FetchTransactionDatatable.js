@@ -190,7 +190,6 @@ const FetchTransactionDatatable = ({
           
         ) : (
           <>
-           
               <>
                 <div className="py-3">
                   <div className="chart chart-xs">
@@ -202,7 +201,7 @@ const FetchTransactionDatatable = ({
                     There aren't any transactions for this date range
                   </strong>
                 </h4>
-                <div className="addnewstudent addnew">
+                {/* <div className="addnewstudent addnew">
                   <i className="fa fa-plus" aria-hidden="true"></i>
                   <a className="btn dropdown-toggle" href="#" role="button">
                     Add New
@@ -212,7 +211,7 @@ const FetchTransactionDatatable = ({
                     className="dropdown-menu"
                     aria-labelledby="dropdownMenuLink"
                   ></div>
-                </div>
+                </div> */}
               </>
             
           </>

@@ -5,7 +5,9 @@ import { Sidebar, MiniSidebar, TopBar } from "../sidebar";
 import TinyMCE from "../TinyMCE.js";
 import axios from "axios";
 import { API_URL } from "../../utils/config.js";
-
+import LanguageOption from "../LanguageOption.js";
+import i18next from "i18next";
+import { useTranslation } from "react-i18next";
 const EmailTemplates = () => {
   const {
     sidebarToggle,
@@ -18,6 +20,7 @@ const EmailTemplates = () => {
   } = useUserDataContext();
 
   const navigate = useNavigate();
+  const { t }= useTranslation()
 
   useEffect(() => {
     if (!token) {
@@ -67,9 +70,9 @@ const EmailTemplates = () => {
           <div className="container-fluid p-0">
             <div className="row d-flex">
               <div className="col-xl-12 col-xxl-12 choose-template">
-                <h5>Choose Template</h5>
+                <h5>{t("Choose Template")}</h5>
                 <select onChange={handleEmailTemplate}>
-                  <option value="0">Select an Option</option>
+                  <option value="0">{t("Select an Option")}</option>
                   {emailTemplateData.map((item) => {
                     const { id, template_name } = item;
                     return (

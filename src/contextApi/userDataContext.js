@@ -34,9 +34,7 @@ const AppContext = ({ children }) => {
   const initialMode = storedMode ? JSON.parse(storedMode) : false;
   const [isDarkMode, setIsDarkMode] = useState(initialMode);
 
-  const token = JSON.parse(localStorage.getItem("tutorPad"));
-  console.log('token 333 : ',token);
-
+  const [token, setToken] = useState(JSON.parse(localStorage.getItem("tutorPad")));
 
   const toggleTheme = () => {
     setIsDarkMode((prevMode) => {
@@ -57,30 +55,8 @@ const AppContext = ({ children }) => {
   const navigate = useNavigate();
 
   const fetchData = async () => {
-    console.log('api token : ',token);
-    const validateconfig = {
-      method: "GET",
-      url: `${API_URL}tenant/details`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    await axios(validateconfig)
-      .then((response) => {
-        console.log('RRRR : ',response);
-        if (response.data.success === true) {
-          setUserData(response.data.data);
-          setUserId(response.data.id);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    console.log('call fetch data');
   };
-
-  useEffect(() => {
-    // fetchData();
-  }, []);
 
   const logOut = () => {
     localStorage.clear();
@@ -424,6 +400,7 @@ const AppContext = ({ children }) => {
       value={{
         fetchData,
         userData,
+        setUserData,
         logOut,
         sidebarToggle,
         setSidebarToggle,
@@ -434,10 +411,12 @@ const AppContext = ({ children }) => {
         emailData,
         setEmailData,
         token,
+        setToken,
         fetchStudentData,
         studentData,
         tutorData,
         userId,
+        setUserId,
         allAvailabilityData,
         getAvailabilityData,
         allTutors,

@@ -48,12 +48,13 @@ const AllInvoice = ()=>{
                             </div>
                         </div>
                         <div style={{lineHeight:'5px',marginTop:'22px'}}>
-                            <p><strong>You're owed ₹ 100.00 as of</strong> 31-03-2024 </p>
+                            <p><strong>You're owed ₹ 100.00 as of</strong> 31-03-2025 </p>
                         </div>
                     </div>
                     </div>
                     <div className="card-body d-flex">
                     <div className="align-self-center w-100">
+                        
                         <FetchAllInvoiceDatatable fromDate={fromDate} toDate={toDate} setIsEdit={setIsEdit} setModalIsOpen={setModalIsOpen} set_chargecat_name={set_chargecat_name} setSelectedId={setSelectedId} />
                     </div>
                     </div>

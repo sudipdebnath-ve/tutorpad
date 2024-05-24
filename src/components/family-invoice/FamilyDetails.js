@@ -55,8 +55,8 @@ const FamilyDetails = () => {
 
   const getFamilyAccountsDetailsHandler = async () => {
     const response = await getFamilyAccountsDetails(param.id);
-    console.log("response of a student------------->", response.data.students);
-    console.log("response of a family-------------->", response.data);
+    // console.log("response of a student------------->", response.data.students);
+    // console.log("response of a family-------------->", response.data);
     set_family(response?.data);
     setStudents(response?.data?.students || []);
     setIsAutoInvoicing(response?.data?.auto_invoicing || 0);
@@ -201,7 +201,6 @@ const FamilyDetails = () => {
                           <div className="col-md-12">
                             <label>
                               <Icon icon={ic_receipt_outline} /> Next Invoice
-                              XYZ
                             </label>
                             <div style={{ lineHeight: "1.2", fontSize: 10 }}>
                               <p>
@@ -388,7 +387,7 @@ const FamilyDetails = () => {
                       aria-controls="transaction"
                       aria-selected="true"
                     >
-                      Transaction
+                      Transaction within family group
                     </button>
                   </li>
                   <li className="nav-item" role="presentation">
@@ -445,7 +444,7 @@ const FamilyDetails = () => {
                                 aria-haspopup="true"
                                 aria-expanded="true"
                               >
-                                Add Group
+                                Add Group 
                               </a>
 
                               <div

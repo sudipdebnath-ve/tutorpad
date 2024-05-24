@@ -4,7 +4,7 @@ import { DataGrid, GridToolbar, GridValueGetterParams } from "@mui/x-data-grid";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import students from "../users/assets/images/students.svg";
 import Loader from "../Loader.js";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Icon } from "react-icons-kit";
 import { edit2 } from "react-icons-kit/feather/edit2";
 import { trash2 } from "react-icons-kit/feather/trash2";
@@ -37,6 +37,7 @@ const FetchInvoicesDatatable = ({
   const [is_deleted, set_is_deleted] = useState(false);
 
   const [isMenuOpenId, setIsMenuOpenId] = useState(0);
+  const param = useParams();
   const navigate = useNavigate();
   useEffect(() => {
     fetchInvoices(id);
@@ -296,13 +297,14 @@ const FetchInvoicesDatatable = ({
                   <strong>You don't have any invoices yet</strong>
                 </h4>
                 <div className="addnewstudent addnew">
-                  <div>
+                  <Link to={param.id ? `/familiies-and-invoices/invoice/1/${param.id}` : "/familiies-and-invoices/invoice/1"}>
+                    <div>
                     <i className="fa fa-plus" aria-hidden="true"></i>
                     <a className="btn dropdown-toggle" href="#" role="button">
                       Add New
                     </a>
                   </div>
-
+                  </Link>
                   <div
                     className="dropdown-menu"
                     aria-labelledby="dropdownMenuLink"

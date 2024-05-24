@@ -1657,7 +1657,7 @@ legend + * {
   cursor: pointer;
 }
 .form-control:focus {
-  background-color: #fff;
+  /* background-color: #fff; */      /*  for disable auto-invocing color issue fixed */
   border-color: #9dbeee;
   box-shadow: 0 0 0 0.25rem rgba(59, 125, 221, 0.25);
   color: #495057;

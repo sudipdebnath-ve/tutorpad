@@ -65,6 +65,8 @@ const TutorEditDetails = () => {
   const [assignStudent, setAssignStudent] = useState({});
   const [students, setStudents] = useState([]);
   const [updateTutor, setUpdateTutor] = useState({});
+  const [profilePicData, setProfilePicData] = useState({});
+  
 
   let { id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -168,9 +170,9 @@ const TutorEditDetails = () => {
     formData.phone = tutorFetchData?.phone;
     formData.title = tutorFetchData?.title;
     formData.address = tutorFetchData?.address;
-    formData.virtual_meeting = tutorFetchData?.virtual_meeting;
+    setProfilePhoto(tutorFetchData?.dp_url);
+    formData.virtual_meeting_link = tutorFetchData?.virtual_meeting_link;
     formData.subjects = tutorFetchData?.subjects;
-    formData.dp_url = tutorFetchData?.dp_url;
     formData.privileges = tutorFetchData?.privileges;
     tenantData.overdue_attendence =
       tutorFetchData?.business_data?.overdue_attendence;
@@ -203,7 +205,9 @@ const TutorEditDetails = () => {
       name === "last_name" ||
       name === "email" ||
       name === "phone" ||
-      name === "address"
+      name === "address" ||
+      name === "virtual_meeting_link" ||
+      name === "subjects"
     ) {
       setFormData({ ...formData, [name]: value });
     } else {
@@ -226,10 +230,8 @@ const TutorEditDetails = () => {
     }
 
     if (name === "file") {
-      setProfilePhoto(e.target.files[0]);
-      // console.log(e.target.files[0]);
-      profilePhoto["file"] = e.target.files[0];
-      profilePhoto["tutor_id"] = id;
+      profilePicData["file"] = e.target.files[0];
+      profilePicData["tutor_id"] = id;
       const config = {
         method: "POST",
         url: `${API_URL}tutor/update-dp`,
@@ -237,11 +239,12 @@ const TutorEditDetails = () => {
           "content-type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
         },
-        data: profilePhoto,
+        data: profilePicData,
       };
       await axios(config)
         .then((response) => {
           console.log(response);
+          setProfilePhoto(response.data.data.dp_url);
         })
         .catch((error) => {
           console.log(error);
@@ -292,8 +295,6 @@ const TutorEditDetails = () => {
     e.preventDefault();
     formData["tutor_id"] = id;
 
-    console.log(formData);
-
     const config = {
       method: "PATCH",
       url: `${API_URL}update-tutor`,
@@ -304,10 +305,12 @@ const TutorEditDetails = () => {
     };
     await axios(config)
       .then((response) => {
-        // console.log(response);
+        console.log(response);
         toast.success(response.data.message, {
           position: toast.POSITION.TOP_CENTER,
         });
+        setProfilePhoto(response.data.data.dp_url);
+
         setAttendFlag(false);
         setAvailFlag(false);
         setEditPrivileges(false);
@@ -682,9 +685,9 @@ const TutorEditDetails = () => {
                       </label>
                       <div className="initials py-3">
                         <div className="image-user">
-                          {formData?.dp_url ? (
+                          {profilePhoto ? (
                             <>
-                              <img src={formData?.dp_url} alt="" />
+                              <img src={profilePhoto} alt="" />
                             </>
                           ) : (
                             <h2>{initial}</h2>
@@ -792,7 +795,7 @@ const TutorEditDetails = () => {
                     <div className="formbold-input-flex diff">
                       <div>
                         <label
-                          htmlFor="parentaddress"
+                          htmlFor="address"
                           className="formbold-form-label"
                         >
                           Address <span>Optional</span>
@@ -800,7 +803,7 @@ const TutorEditDetails = () => {
                         <br></br>
 
                         <textarea
-                          name="parentaddress"
+                          name="address"
                           className="form-control"
                           onChange={handleChange}
                           value={formData?.address}
@@ -810,7 +813,7 @@ const TutorEditDetails = () => {
                     <div className="formbold-input-flex diff">
                       <div>
                         <label
-                          htmlFor="parentaddress"
+                          htmlFor="virtual_meeting_link"
                           className="formbold-form-label"
                         >
                           Virtual Meeting <span>Optional</span>
@@ -824,16 +827,17 @@ const TutorEditDetails = () => {
 
                         <input
                           type="text"
-                          name="virtual_meeting"
+                          name="virtual_meeting_link"
                           className="form-control"
                           onChange={handleChange}
+                          value={formData?.virtual_meeting_link}
                         />
                       </div>
                     </div>
                     <div className="formbold-input-flex diff">
                       <div>
                         <label
-                          htmlFor="subject"
+                          htmlFor="subjects"
                           className="formbold-form-label"
                         >
                           Subjects <span>Optional</span>
@@ -847,9 +851,10 @@ const TutorEditDetails = () => {
 
                         <input
                           type="text"
-                          name="subject"
+                          name="subjects"
                           className="form-control"
                           onChange={handleChange}
+                          value={formData?.subjects}
                         />
                       </div>
                     </div>
@@ -1437,9 +1442,9 @@ const TutorEditDetails = () => {
                   <div className="card-body">
                     <div className="initials">
                       <div className="image-user">
-                        {formData?.dp_url ? (
+                        {profilePhoto ? (
                           <>
-                            <img src={formData?.dp_url} alt="" />
+                            <img src={profilePhoto} alt="" />
                           </>
                         ) : (
                           <h2>{initial && initial.toLocaleUpperCase()}</h2>
