@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import bgimage  from "../../../assets/images/bg.jpg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -8,40 +8,51 @@ import axios from "axios";
 import { useUserDataContext } from "../../../contextApi/userDataContext.js";
 import LanguageOption from "../../LanguageOption.js";
 import { useTranslation } from "react-i18next";
-import i18next from "i18next";
+// import i18next from "i18next";
 import { useTokenStorage, checkAuthAndRedirect } from '../../../utils/helper.js';
-import { getDomainName } from "../../../services/loginService.js";
+import { getDomainName, passwordSetupPortal } from "../../../services/loginService.js";
 import "./style.css"
 
 const ResetPasswordSetup = () => {
 
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [userdetails, setUserdetails] = useState({
-    email: "",
-    password: "",
-  });
+  const location = useLocation();
   const [error, setError] = useState({});
+  const [portal, setPortal] = useState("");
+  const [password, setPassword] = useState("");
+  const [c_password, setC_password] = useState("");
+  const [key, setKey] = useState("");
 
 
-  const handleChange = (e) => {
-    e.preventDefault();
-    const name = e.target.name;
-    const value = e.target.value;
-    setUserdetails({ ...userdetails, [name]: value });
-  };
+//   const multiLangHandler = (e) => {
+//     i18next.changeLanguage(e.target.value);
+//     console.log("change language-----------");
+//   };
+   const resetPassword = async () =>{
 
+    if(userdetails.password !== userdetails.rpassword){
 
-  const multiLangHandler = (e) => {
-    i18next.changeLanguage(e.target.value);
-    console.log("change language-----------");
-  };
+    }
 
+   }
 
 
   useEffect(() => {
-    // checkAuthAndRedirect(navigate, 'Signin');
-  });
+    // Extract the key from the URL
+    const queryParams = new URLSearchParams(location.search);
+    const key = queryParams.get('key');
+    const portal = window.location.hostname;
+    if (key) {
+        data: {
+            email: userdetails.email,
+            password: userdetails.password,
+            portal: portal,
+          }, 
+        passwordSetupPortal()
+      }
+
+  }, [location]);
 
   return (
     

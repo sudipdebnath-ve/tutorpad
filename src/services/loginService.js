@@ -27,3 +27,33 @@ export const validateDomainName = async (data) => {
       }
     });
 };
+
+
+export const passwordSetupPortal = async (data) =>{
+  return loginApi.post ("student/verify/password-setup-portal", data).then((response) =>{
+    return response.data;
+
+  })
+  .catch((error) => {
+    if (error.response && error.response.data) {
+      return error.response.data;
+    } else {
+      return "An unknown error occurred.";
+    }
+  });
+}
+
+
+export const newPasswordSetup = async (data) =>{
+  return loginApi.post ("student/setup-password", data).then((response) =>{
+    return response.data;
+
+  })
+  .catch((error) => {
+    if (error.response && error.response.data) {
+      return error.response.data;
+    } else {
+      return "An unknown error occurred.";
+    }
+  });
+}
