@@ -5,7 +5,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { NON_LOGGED_IN_API_URL } from "../../../utils/config.js";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
-// import i18next from "i18next";
+import i18next from "i18next";
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import "./style.css"
 
 const ResetPasswordSetup = () => {
@@ -19,6 +20,7 @@ const ResetPasswordSetup = () => {
   const [c_password, setC_password] = useState("");
   const [key, setKey] = useState("");
   const [getAllow, setAllow] = useState(false);
+  const [passwordChanged, setPasswordChanged] = useState(false);
 
   const handleSubmit = async () => {
     if (password !== c_password) {
@@ -37,10 +39,11 @@ const ResetPasswordSetup = () => {
     loginApi.post ("student/setup-password", data).then((response) =>{
       console.log('response : ',response);
       if (response && response.data.success) {
+        setPasswordChanged(true);
         toast.success(response.data.message, {
           position: toast.POSITION.TOP_CENTER,
         });
-        navigate('/signin');  
+        // navigate('/signin');  
       }
     })
     .catch((error) => {
@@ -103,104 +106,115 @@ const ResetPasswordSetup = () => {
   }, []);
 
   return (
-    
     <div className="d-md-flex justify-content-center align-items-center h-100 primary-bg">
       <ToastContainer />
-        <div className="contents">
-          { (getAllow) ?
-          <div className="container">
+      <div className="container">
+        {passwordChanged ? (
+          <div className="row align-items-center justify-content-center">
+          <div className="col-md-12">
+            <div className="form-block mx-auto">
+              <div className="text-center mb-5">
+                <h3><strong>TutorPad</strong></h3>
+              </div>
+              <div className="text-center mb-5">
+                <h3><strong>Password Setup</strong></h3>
+              </div>
+
+              <div className="container text-center">
             <div className="row align-items-center justify-content-center">
               <div className="col-md-12">
-              {/* <LanguageOption onChange={(e) => multiLangHandler(e)} /> */}
-                <div className="form-block mx-auto">
-                  <div className="text-center mb-5">
-                    <h3>
-                      <strong>TutorPad</strong>
-                    </h3>
-                  </div>
-                  <div className="text-center mb-5">
-                    <h3>
-                      <strong>Password Setup</strong>
-                    </h3>
-                  </div>
-                  <div>
-                  <p>Please enter and confirm your new password below:</p>
-                  </div>
-                  <form>
-                    <div className="form-group last mb-3">
-                      {/* <label htmlFor="password">{t("password")}</label> */}
-                      <input
-                        type="password"
-                        className="form-control"
-                        placeholder={t("New Password")}
-                        name="password"
-                        onChange={handleChange}
-                        required
-                      />
+                <i className="fas fa-check" style={{ color: 'green', fontSize: '48px' }}></i>
+                <h3>Your password has been changed successfully.</h3>
+                <Link to="/signin">Back to login</Link>
+              </div>
+            </div>
+          </div>
+              </div>
+              </div>
+              </div>
+          
+        ) : (
+          <div className="container">
+            {getAllow ? (
+              <div className="row align-items-center justify-content-center">
+                <div className="col-md-12">
+                  <div className="form-block mx-auto">
+                    <div className="text-center mb-5">
+                      <h3><strong>TutorPad</strong></h3>
                     </div>
-                    
-
-                    <div className="form-group last mb-3">
-                    <input
-                      type="password"
-                      className="form-control"
-                      placeholder={t("Confirm Password")}
-                      name="rpassword"
-                      onChange={handleChange}
-                      required
-                    />
-                    <small style={{ color: "red" }}>
-                      {getError?.length ? getError : <></>}
-                    </small>
-                  </div>
-                  
-
-                  <div className="form-group  last mb-5">
-                    <div className="d-sm-flex align-items-center justify-content-between">
-                      <label className="control control--checkbox mb-3 mb-sm-0">
-                        <span className="caption">
-                          {t("I agree to the")} <Link to="/">{t("Terms of Service")}</Link>{" "}
-                          and <Link to="/">{t("Privacy Policy")}</Link>
-                        </span>
+                    <div className="text-center mb-5">
+                      <h3><strong>Password Setup</strong></h3>
+                    </div>
+                    <div>
+                      <p>Please enter and confirm your new password below:</p>
+                    </div>
+                    <form>
+                      <div className="form-group last mb-3">
                         <input
-                          type="checkbox"
-                          name="terms"
+                          type="password"
+                          className="form-control"
+                          placeholder={t("New Password")}
+                          name="password"
+                          onChange={handleChange}
                           required
-                        //   checked={isTermsChecked}
-                        //   onChange={() => setIsTermsChecked(!isTermsChecked)}
                         />
-                        <div className="control__indicator"></div>
-                      </label>
-                    </div>
-                    <small style={{ color: "red" }}>
-                      {getError?.terms?.length ? getError.terms[0] : <></>}
-                    </small>
+                      </div>
+                      <div className="form-group last mb-3">
+                        <input
+                          type="password"
+                          className="form-control"
+                          placeholder={t("Confirm Password")}
+                          name="rpassword"
+                          onChange={handleChange}
+                          required
+                        />
+                        <small style={{ color: "red" }}>
+                          {getError?.length ? getError : <></>}
+                        </small>
+                      </div>
+                      <div className="form-group last mb-5">
+                        <div className="d-sm-flex align-items-center justify-content-between">
+                          <label className="control control--checkbox mb-3 mb-sm-0">
+                            <span className="caption">
+                              {t("I agree to the")} <Link to="/">{t("Terms of Service")}</Link>{" "}
+                              and <Link to="/">{t("Privacy Policy")}</Link>
+                            </span>
+                            <input
+                              type="checkbox"
+                              name="terms"
+                              required
+                            />
+                            <div className="control__indicator"></div>
+                          </label>
+                        </div>
+                        <small style={{ color: "red" }}>
+                          {getError?.terms?.length ? getError.terms[0] : <></>}
+                        </small>
+                      </div>
+                      <input
+                        type="button"
+                        value="Save Password"
+                        className="btn btn-block btn-primary save-password"
+                        onClick={handleSubmit}
+                      />
+                    </form>
+                    <br />
+                    <Link to="/">{t("back to login")}</Link>
                   </div>
-                    <input
-                      type="button"
-                      value="Save Password"
-                      className="btn btn-block btn-primary save-password"
-                      onClick={handleSubmit}
-                    />
-                  </form>
-                  <br></br>
-                  <Link to="/"> {t("back to login")}</Link>
                 </div>
               </div>
-            </div>
-          </div>
-          : 
-          <div className="container">
-            <div className="row align-items-center justify-content-center">
-              <div className="col-md-12">
-                <small style={{ color: "red" }}>
-                  {getError?.length ? getError : 'Loding ...'}
-                </small> 
+            ) : (
+              <div className="row align-items-center justify-content-center">
+                <div className="col-md-12">
+                  <small style={{ color: "red" }}>
+                    {getError?.length ? getError : 'Loading ...'}
+                  </small>
+                </div>
               </div>
-            </div>
+            )}
           </div>
-          }
-        </div>
+        )}
+      </div>
     </div>
   );
 };
