@@ -8,16 +8,20 @@ import { useNavigate } from "react-router-dom";
 
 export function useTokenStorage() {
     const { setToken, setUserData, setUserId, token } = useUserDataContext();
-    const { setRole } = useContext(AuthContext);
+    const { role, setRole } = useContext(AuthContext);
     const navigate = useNavigate();
 
     useEffect(() => {
         const token = JSON.parse(localStorage.getItem("tutorPad"));
 
         const fetchData = () => {
+            var url = `${API_URL}tenant/details`;
+            if(role == process.env.REACT_APP_STUDENT_ROLE){
+                url = `${API_URL}student/profile`;
+            }
             const validateconfig = {
                 method: "GET",
-                url: `${API_URL}tenant/details`,
+                url: url,
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -30,7 +34,11 @@ export function useTokenStorage() {
                             setUserId(response.data.data.id);
                             localStorage.setItem("user_id",response.data.data.id);
                             localStorage.setItem("user_name",response.data.data.first_name);
-                            localStorage.setItem("user_profile",response.data.data.business_data.dp_url);
+                            if(response.data.data.business_data.dp_url){
+                                localStorage.setItem("user_profile",response.data.data.business_data.dp_url);
+                            }else{
+                                localStorage.setItem("user_profile",response.data.data.dp_url);
+                            }
                         }
                     }
                 })

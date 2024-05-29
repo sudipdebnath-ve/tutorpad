@@ -36,7 +36,7 @@ const ResetPasswordSetup = () => {
       password: password,
       c_password: c_password,
     };
-    loginApi.post ("student/setup-password", data).then((response) =>{
+    loginApi.post ("user/setup-password", data).then((response) =>{
       console.log('response : ',response);
       if (response && response.data.success) {
         setPasswordChanged(true);
@@ -68,7 +68,7 @@ const ResetPasswordSetup = () => {
       const loginApi = axios.create({
         baseURL: NON_LOGGED_IN_API_URL,
       });
-      loginApi.post ("student/verify/password-setup-portal", data).then((response) =>{
+      loginApi.post ("user/verify/password-setup-portal", data).then((response) =>{
         console.log('response.data.success : ',response.data.success);
         if (response && response.data.success) {
           console.log('gsdsd : ', response.data.success);

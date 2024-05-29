@@ -32,36 +32,40 @@ const StudentDashboard = () => {
 
           <div className="row">
             <div className="col-auto">
-              <div className="stat text-primary icon3">
-                <Link className="dropdown-item" to={"/calendar"}>
-                  <img src={scheduleEvent} alt="schedule-event-icon" />
+              <div className="stat text-primary icon1">
+                <Link className="dropdown-item" to={"/study-logs"}>
+                  <img src={scheduleEvent} alt="study-logs" style={{left: 22}}/>
                 </Link>
               </div>
             </div>
             <div className="col mt-0">
-              <h5 className="card-title">{t("Join Class")}</h5>
+              <h5 className="card-title">{t("Hours studied this week")}</h5>
             </div>
           </div>
 
           <div className="row">
             <div className="col-auto">
-              <div className="stat text-primary icon4">
-                <img src={createInvoice} alt="create-invoice-icon" />
+              <div className="stat text-primary icon2">
+                <Link className="dropdown-item" to={"/attendance-notes"}>
+                  <img src={youGotIt} alt="attendance-notes" style={{left: 22}}/>
+                </Link>
               </div>
             </div>
             <div className="col mt-0">
-              <h5 className="card-title">{t("Find Your Report Card")}</h5>
+              <h5 className="card-title">{t("Events were scheduled in the last 90 days")}</h5>
             </div>
           </div>
 
           <div className="row">
             <div className="col-auto">
-              <div className="stat text-primary icon5">
-                <img src={youGotIt} alt="you've got it" />
+              <div className="stat text-primary icon3">
+                <Link className="dropdown-item" to={"/attendance-notes"}>
+                  <img src={createInvoice} alt="invoice" style={{left: 22}} />
+                </Link>
               </div>
             </div>
             <div className="col mt-0">
-              <h5 className="card-title">{t("You've Got It!")}</h5>
+              <h5 className="card-title">{t("Invoice: Unpaid")}</h5>
             </div>
           </div>
         </div>
@@ -70,12 +74,12 @@ const StudentDashboard = () => {
 
       <div className="row d-flex box-container">
         <h1 className="h3 mb-4">
-          <strong>{t("Category")}</strong>
+          <strong>{t("Here's What's Scheduled This Week")}</strong>
         </h1>
         <div className="col-xl-12 col-xxl-12 d-flex">
           <div className="w-100">
             <div className="row">
-              <div className="col-sm-4 pr-2">
+              <div className="">
                 <div className="card">
                   <div className="card-body db-card-body">
                     <div className="row">
@@ -84,7 +88,7 @@ const StudentDashboard = () => {
                           <img src={eventIcon} className="eventImg" />
                         </div>
                         <h5 className="card-title">
-                          {t("Upcoming Class")}
+                          {t("0 Scheduled Events")}
                         </h5>
                       </div>
                     </div>
@@ -100,7 +104,9 @@ const StudentDashboard = () => {
                   </div>
                 </div>
               </div>
-              <div className="col-sm-4">
+            </div>
+            <div className="row">
+              <div className="">
                 <div className="card">
                   <div className="card-body db-card-body">
                     <div className="row">
@@ -109,7 +115,7 @@ const StudentDashboard = () => {
                           <img src={paymentIcon} className="paymentImg" />
                         </div>
                         <h5 className="card-title">
-                          {t("Total paid amount")}
+                          {t("Recent News")}
                         </h5>
                       </div>
                     </div>
@@ -119,29 +125,6 @@ const StudentDashboard = () => {
                       {" "}
                       <i className="mdi mdi-arrow-bottom-right"></i>{" "}
                       6.65%{" "}
-                    </span>
-                    <span className="text-muted">Since last week</span>
-                  </div> */}
-                  </div>
-                </div>
-              </div>
-              <div className="col-sm-4">
-                <div className="card">
-                  <div className="card-body db-card-body">
-                    <div className="row">
-                      <div className="col mt-0">
-                        <div className="square text-primary activeIcon">
-                          <img src={activeIcon} />
-                        </div>
-                        <h5 className="card-title">{t("Total Attendence")}</h5>
-                      </div>
-                    </div>
-                    <h1 className="mt-1 mb-3">0</h1>
-                    {/* <div className="mb-0">
-                    <span className="text-danger">
-                      {" "}
-                      <i className="mdi mdi-arrow-bottom-right"></i>{" "}
-                      -2.25%{" "}
                     </span>
                     <span className="text-muted">Since last week</span>
                   </div> */}
