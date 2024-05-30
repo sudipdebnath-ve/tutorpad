@@ -10430,14 +10430,16 @@ a.sidebar-link svg {
   box-shadow: 3px 3px 0px rgba(0, 0, 0, 1);
 }
 .stat img {
-  /* stroke-width: 1.5;
-  color: #3b7ddd !important; */
+  
 
   width: 50%;
-  position: absolute;
-  top: 50%; /* Allows precise positioning */
-  /* Aligns the left edge of the image with the circle */
-  transform: translate(0, -50%);
+  /* position: absolute;
+  top: 50%; 
+  transform: translate(0, -50%); */
+}
+.stat  a{
+  display: block;
+  text-align: center;
 }
 
 .square {
@@ -12328,3 +12330,28 @@ button.closeModal {
   margin-bottom: 20px;
 }
 /******************* Calendar End ********************/
+
+
+#sidebar{
+  position: fixed;
+}
+.main {
+  position: fixed;
+  left: 270px;
+  width: calc(100% - 270px);
+  height: 100%;
+  overflow: scroll;
+}
+nav.navbar.navbar-expand {
+  position: fixed;
+  width: 80%;
+  background: var(--bg-color);
+  top: 10px;
+  border-radius: 25px;
+  /* padding-top: 19px; */
+}
+.wrapper {
+  height: 100vh;
+  overflow: scroll;
+
+}
