@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import bgimage from "../../assets/images/bg.jpg";
 import "react-toastify/dist/ReactToastify.css";
 import { NON_LOGGED_IN_API_URL } from "../../utils/config.js";
@@ -8,6 +8,10 @@ import "./assets/css/style.css";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 import LanguageOption from "../LanguageOption.js";
+import { checkAuthAndRedirect } from '../../utils/helper.js';
+import { getDomainName } from "../../services/loginService.js";
+import { ToastContainer, toast } from "react-toastify";
+
 
 
 const ForgetPassword = () => {
@@ -16,18 +20,22 @@ const ForgetPassword = () => {
   const [error, setError] = useState({});
   const [success, setSuccess] = useState(false);
   const [message, setMessage] = useState("");
+  const [centralPortalDomain, setCentralPortalDomain] = useState("");
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const handleSubmit = async () => {
+    const portal = window.location.hostname;
     const config = {
       method: "POST",
       url: `${NON_LOGGED_IN_API_URL}forgetpass`,
       headers: {
         "Content-Type": "application/json",
       },
-      data: JSON.stringify({
-        email,
-      }),
+      data: {
+        email: email,
+        portal: portal,
+      },
       // validateStatus: (status) => status !== 404,
     };
     await axios(config)
@@ -55,9 +63,21 @@ const ForgetPassword = () => {
   const multiLangHandler = (e) => {
     i18next.changeLanguage(e.target.value);
   };
+
+  const getDomainNameHandler  =  async() => {
+    const res =  await getDomainName();
+    setCentralPortalDomain(res?.data)
+    localStorage.setItem("centralPortalDomain", res?.data);
+  };
+
+  useEffect(() => {
+    getDomainNameHandler();
+    checkAuthAndRedirect(navigate, 'ForgotPass');
+  });
+
   return (
-    <div className="d-md-flex half">
-      <div className="bg" style={{ backgroundImage: `url(${bgimage})` }}></div>
+    <div className="d-md-flex justify-content-center align-items-center h-100 primary-bg">
+      <ToastContainer />
       <div className="contents">
         <div className="container">
           <div className="row align-items-center justify-content-center reset">
@@ -112,11 +132,11 @@ const ForgetPassword = () => {
                           required
                         />
                       </div>
-
-                      <small style={{ color: "red" }}>
-                        {error?.email?.length ? error.email[0] : <></>}
-                      </small>
-
+                      <div className="pb-2">
+                        <small style={{ color: "red" }}>
+                          {error?.email?.length ? error.email[0] : <></>}
+                        </small>
+                      </div>
                       <input
                         type="button"
                         value={t("Reset Password")}

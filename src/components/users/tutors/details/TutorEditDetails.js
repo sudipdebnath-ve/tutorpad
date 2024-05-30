@@ -66,7 +66,7 @@ const TutorEditDetails = () => {
   const [students, setStudents] = useState([]);
   const [updateTutor, setUpdateTutor] = useState({});
   const [profilePicData, setProfilePicData] = useState({});
-  
+  const [checkedLogin, setCheckedLogin] = React.useState(false);
 
   let { id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -103,7 +103,8 @@ const TutorEditDetails = () => {
         // Parse the privileges string to convert it into an array
         const privilegesArray = JSON.parse(response.data.data.privileges);
         setCheckedPrivileges(privilegesArray);
-        
+        setCheckedLogin(response.data.data.enable_login_access);
+
         console.log(privilegesArray);
       })
       .catch((error) => {
@@ -193,6 +194,7 @@ const TutorEditDetails = () => {
     tenantData.allow_student_email_studylog =
       tutorFetchData?.business_data?.allow_student_email_studylog;
     tenantData.daily_agenda = userData?.business_data?.daily_agenda;
+
   }, [tutorFetchData]);
 
   const handleChange = async (e) => {
@@ -257,6 +259,8 @@ const TutorEditDetails = () => {
 
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
+    console.log('name : ',name, "value : ",checked);
+    console.log('checkedPrivileges : ',checkedPrivileges);
     if (editPrivileges) {
       const updatedPrivileges = checkedPrivileges || []; // Initialize as empty array if null or undefined
       if (checked) {
@@ -268,11 +272,38 @@ const TutorEditDetails = () => {
       }
     }
     setFormData({ ...formData, ["privileges"]: checkedPrivileges });
+    console.log('formData : ',formData?.privileges);
   };
 
   const handleClick = (e) => {
     e.preventDefault();
     setIsOpen(!isOpen);
+  };
+
+  const handleToggle = async () => {
+    const val = checkedLogin ? 0 : 1;
+    setCheckedLogin(val === 1);
+
+    const validateconfig = {
+      method: "POST",
+      url: `${API_URL}tutor/${id}/send-login-access`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: {
+        enable_login_access: val,
+      },
+    };
+    await axios(validateconfig)
+      .then((response) => {
+        console.log(response.data);
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const handleAttendEdit = (e) => {
@@ -578,7 +609,6 @@ const TutorEditDetails = () => {
         }
       });
   };
-  console.log(allCategory);
 
   // console.log(userData);
   const customStyles = {
@@ -645,7 +675,6 @@ const TutorEditDetails = () => {
     setIsOpens(e);
   }
 
-  console.log(modalIsOpen);
   return (
     <div className="wrapper student-details">
       {sidebarToggle ? (
@@ -2943,7 +2972,7 @@ const TutorEditDetails = () => {
                                     // checked={privileges.update_online_resources}
                                     checked={
                                       checkedPrivileges?.includes(
-                                        "add_expenses"
+                                        "update_online_resources"
                                       )
                                         ? true
                                         : false
@@ -3036,6 +3065,67 @@ const TutorEditDetails = () => {
                               </div>
                             </div>
                           </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="card">
+                  <div
+                    className="accordion accordion-flush"
+                    id="accordionFlushExample"
+                  >
+                    <div className="accordion-item">
+                      <h2 className="accordion-header" id="flush-headingEight">
+                        <button
+                          className="accordion-button collapsed"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#flush-collapseEight"
+                          aria-expanded="false"
+                          aria-controls="flush-collapseEight"
+                        >
+                          <strong>Tutor Portal</strong>
+                        </button>
+                      </h2>
+                      <div
+                        id="flush-collapseEight"
+                        className="accordion-collapse collapse"
+                        aria-labelledby="flush-headingEight"
+                        data-bs-parent="#accordionFlushExample"
+                      >
+                        <div className="accordion-body">
+                          <div className="access">
+                            <h3>Tutor Access</h3>
+                              <input
+                                checked={checkedLogin}
+                                onChange={handleToggle}
+                                className="switch-checkbox"
+                                id={`switch`}
+                                type="checkbox"
+                              />
+                              <label
+                                style={{ background: (checkedLogin == 1 ) ? "#06D6A0" : "#EF476F" }}
+                                className="switch-label"
+                                htmlFor={`switch`}
+                              >
+                                <span className={`switch-button`} />
+                              </label>
+                          </div>
+                          <p>Set up Tutor Portal access for this tutor</p>
+
+                          <div className="student-access">
+                            <i
+                              class="fa fa-exclamation-triangle"
+                              aria-hidden="true"
+                            ></i>
+
+                            <strong>
+                              If you'd like this tutor to have their own
+                              access to the Portal, you'll first need to provide
+                              an email address in their profile.
+                            </strong>
+                          </div>
                         </div>
                       </div>
                     </div>

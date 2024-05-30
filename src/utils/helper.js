@@ -99,7 +99,7 @@ export const checkAuthAndRedirect = async (navigate,from) => {
             }
         }
     }
-    if(from == 'Signin'){
+    if(from == 'Signin' || from == 'ForgotPass'){
         if (domainFromUrl != expectedDomain) {
             var token = localStorage.getItem(domainFromUrl);
             if (token && token.trim() !== '') {
