@@ -13,10 +13,11 @@ export function useTokenStorage() {
 
     useEffect(() => {
         const token = JSON.parse(localStorage.getItem("tutorPad"));
+        const userRole = localStorage.getItem("userRole");
 
         const fetchData = () => {
             var url = `${API_URL}tenant/details`;
-            if(role == process.env.REACT_APP_STUDENT_ROLE){
+            if(userRole == process.env.REACT_APP_STUDENT_ROLE){
                 url = `${API_URL}student/profile`;
             }
             const validateconfig = {
@@ -34,31 +35,20 @@ export function useTokenStorage() {
                             setUserId(response.data.data.id);
                             localStorage.setItem("user_id",response.data.data.id);
                             localStorage.setItem("user_name",response.data.data.first_name);
-                            if(response.data.data.business_data.dp_url){
-                                localStorage.setItem("user_profile",response.data.data.business_data.dp_url);
-                            }else{
-                                localStorage.setItem("user_profile",response.data.data.dp_url);
-                            }
+                            const dpUrl = response.data.data.business_data?.dp_url || response.data.data.dp_url;
+                            localStorage.setItem("user_profile", dpUrl);
                         }
                     }
                 })
                 .catch((error) => {
                     console.log('Error occurred:', error);
-                    if (error.response && error.response.status === 404) {
-                        console.log('Token not found');
-                        if (!token) {
-                            navigate('/signin');
-                        }
-                    } else {
-                        console.log('Other error occurred:', error);
-                        // Handle other errors if needed
-                    }
                 });
         };
         fetchData();
     }, [token]);
 
     return function storeToken(token, domain, role="") {
+        console.log('storetoken');
         localStorage.setItem("tutorPad", JSON.stringify(token));
         localStorage.setItem(`${domain}`, JSON.stringify(token));
         localStorage.setItem("userRole", role);
@@ -109,7 +99,7 @@ export const checkAuthAndRedirect = async (navigate,from) => {
             }
         }
     }
-    if(from == 'Signin'){
+    if(from == 'Signin' || from == 'ForgotPass'){
         if (domainFromUrl != expectedDomain) {
             var token = localStorage.getItem(domainFromUrl);
             if (token && token.trim() !== '') {

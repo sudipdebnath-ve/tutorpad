@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUserDataContext } from "../../../contextApi/userDataContext.js";
 import MiniSidebar from "../../sidebar/MiniSidebar.js";
@@ -9,6 +9,8 @@ import { API_URL } from "../../../utils/config.js";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { useTokenStorage } from '../../../utils/helper.js';
+import { AuthContext } from '../../registerLogin/AuthContext.js';
+
 
 const MyPreferences = () => {
   const {
@@ -16,15 +18,34 @@ const MyPreferences = () => {
     sidebarToggle,
     token,
     userId,
+    logOut
   } = useUserDataContext();
+  const { role, setRole } = useContext(AuthContext);
   const navigate = useNavigate();
   const [modalIsOpen, setIsOpen] = useState(false);
   const [profilePhoto, setProfilePhoto] = useState('');
   const [initial, setInitial] = useState("");
   const [updatePass, setUpdatePass] = useState({});
   const [error, setError] = useState({});
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const storeToken = useTokenStorage();
 
+  const customStyles = {
+    content: {
+      width: "35%",
+      minHeight: "35%",
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+    },
+    overlay: {
+      background: "#6c5a5669",
+      zIndex: 9999, // Ensure the modal overlay has a higher z-index
+    },
+  };
 
   const passwordStyles = {
     content: {
@@ -55,15 +76,6 @@ const MyPreferences = () => {
   function closeModal(e) {
     setIsOpen(e);
   }
-
-  useEffect(() => {
-    const token = JSON.parse(localStorage.getItem("tutorPad"));
-    if (token) {
-      storeToken();
-    } else {
-      navigate("/signin");
-    }
-  }, []);
   
   useEffect(() => {
     var name = `${userData.first_name}${" "}${userData.last_name}`;
@@ -101,10 +113,14 @@ const MyPreferences = () => {
     };
     await axios(config)
       .then((response) => {
+        closeModal();
         toast.success(response.data.message, {
           position: toast.POSITION.TOP_CENTER,
         });
-        closeModal();
+        if (response && response.status === 200) {
+          logOut();
+        }
+        
       })
       .catch((error) => {
         //console.log(error);
@@ -112,6 +128,33 @@ const MyPreferences = () => {
           setError(error.response.data.data.error);
         }
         // console.log(error.response.data.data.error);
+      });
+  };
+
+  const logOutFromAllDevices = async (e) => {
+    e.preventDefault();
+    const config = {
+      method: "POST",
+      url: `${API_URL}logout-all-devices`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(config)
+      .then((response) => {
+        closeModal();
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        if (response && response.status === 200) {
+          logOut();
+        }
+        
+      })
+      .catch((error) => {
+        if (error.response.data.success === false) {
+          setError(error.response.data.data.error);
+        }
       });
   };
 
@@ -243,7 +286,58 @@ const MyPreferences = () => {
             </form>
           </div>
         </ReactModal>
-
+        <ReactModal
+          isOpen={showDeleteModal}
+          onAfterOpen={afterOpenModal}
+          onRequestClose={() => setShowDeleteModal(false)}
+          style={customStyles}
+          contentLabel="Delete Invoice Modal"
+        >
+          <div className="calendar-modal">
+            <div
+              className="close-h"
+              style={{ position: "absolute", top: "10px", right: "10px" }}
+            >
+              <button
+                className="closeModal"
+                style={{
+                  backgroundColor: "transparent",
+                  fontSize: "25px",
+                  color: "red",
+                }}
+                onClick={()=>setShowDeleteModal(false)}
+              >
+                X
+              </button>
+            </div>
+            <div className="calendar-date-time">
+              <h3 className="fw-bold">Confirm Logout</h3>
+              <div className="formbold-input-flex">
+                <p>
+                Are you sure you want to logout from all devices?
+                </p>
+              </div>
+              <hr />
+              <div className="formbold-form-btn-wrapper">
+                <div className="btn-end">
+                  <button
+                    onClick={() => setShowDeleteModal(false)}
+                    className="cancel"
+                  >
+                    No
+                  </button>
+                  <button
+                    onClick={(e) => logOutFromAllDevices(e)}
+                    className="formbold-btn"
+                    style={{backgroundColor:'red'}}
+                  >
+                    Yes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ReactModal>
         <main className="content">
           <ToastContainer />
           <div className="container-fluid p-0">
@@ -274,7 +368,7 @@ const MyPreferences = () => {
                       First Available Location
                     </div>
                     <div className="logout-user">
-                      <Link to="#" className="logout">
+                      <Link className="logout" onClick={()=>setShowDeleteModal(true)}>
                         Log Out of All Devices
                       </Link>
                       <Link onClick={(e) => openModal("password")}>

@@ -34,7 +34,7 @@ const StudentDashboard = () => {
             <div className="col-auto">
               <div className="stat text-primary icon1">
                 <Link className="dropdown-item" to={"/study-logs"}>
-                  <img src={scheduleEvent} alt="study-logs" style={{left: 22}}/>
+                  <img src={scheduleEvent} alt="study-logs"/>
                 </Link>
               </div>
             </div>

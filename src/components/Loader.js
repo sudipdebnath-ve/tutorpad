@@ -17,23 +17,8 @@ const Loader = () => {
       setLoading(true);
       return config;
     }, (error) => {
+      console.log('Request error occurred:', error);
       setLoading(false);
-      console.log('Error occurred:', error);
-      if (error.response && error.response.status === 401) {
-        console.log('Unauthrnticated User');
-        localStorage.clear();
-        navigate('/signin');
-      } else if (error.response && error.response.status === 404) {
-        console.log('Token not found');
-        // var isToken = JSON.parse(localStorage.getItem("tutorPad"));
-        // if(isToken == ''){
-        //   localStorage.clear();
-        //   navigate('/signin');
-        // }
-      } else {
-        console.log('Other error occurred:', error);
-        // Handle other errors if needed
-      }
       return Promise.reject(error);
     });
   
@@ -42,6 +27,18 @@ const Loader = () => {
       return response;
     }, (error) => {
       setLoading(false);
+      if (error.response && error.response.status === 401) {
+        localStorage.clear();
+        navigate('/signin');
+      } else if (error.response && error.response.status === 404) {
+        var isToken = JSON.parse(localStorage.getItem("tutorPad"));
+        if(isToken == ''){
+          localStorage.clear();
+          navigate('/signin');
+        }
+      } else {
+        console.log('Other error occurred:', error);
+      }
       return Promise.reject(error);
     });
   }
