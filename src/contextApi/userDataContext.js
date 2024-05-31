@@ -175,11 +175,12 @@ const AppContext = ({ children }) => {
   };
 
   const fetchFamilies = async () => {
+    const familyToken = JSON.parse(localStorage.getItem("tutorPad"));
     const validateconfig = {
       method: "GET",
       url: `${API_URL}family-accounts`,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${familyToken}`,
       },
     };
     await axios(validateconfig)

@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import DeleteModel from "../form/delete-model/DeleteModel.js";
 import { ToastContainer, toast } from "react-toastify";
 import { deleteChargeCategories } from "../../services/categoriesService.js";
+import { deleteTransactionById } from "../../services/categoriesService.js";
 import transactions from "../../assets/images/transactions.svg";
 const FetchTransactionDatatable = ({
   setSelectedId,
@@ -97,7 +98,9 @@ const FetchTransactionDatatable = ({
 
   const onDeleteHandler = async (id) => {
     setIsDeleteLoading(true);
-    const response = await deleteChargeCategories(id);
+    // const response = await deleteChargeCategories(id);
+    const response = await deleteTransactionById(id);
+    console.log("response------------", response);
     if (response.success == true) {
       fetchTransactionsByDates(fromDate, toDate);
       toast.success(response.message, {

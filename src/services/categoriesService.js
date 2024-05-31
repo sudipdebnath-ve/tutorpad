@@ -94,3 +94,13 @@ export const deleteChargeCategories = async (id) => {
       return error;
     });
 };
+
+export const deleteTransactionById = async (id ) =>{
+  return categoriesApi.delete('delete-transaction/'+id).then((response) =>{
+    console.log("aaaaaaaaaaaaaaaaa----------", response);
+    return response.data;
+  })
+  .catch((error) => {
+    return error
+  });
+}
