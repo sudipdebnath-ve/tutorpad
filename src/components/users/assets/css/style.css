@@ -12359,3 +12359,8 @@ nav.navbar.navbar-expand {
 .content{
   padding-top: 105px;
 }
+
+.sidebar-nav{
+  height: 100vh;
+  overflow: scroll; 
+}
