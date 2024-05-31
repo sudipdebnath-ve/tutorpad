@@ -1026,7 +1026,7 @@ const StudentAdd = () => {
                               Price <span>per hour</span>
                             </label>
                             <input
-                              type="text"
+                              type="number"
                               name="price"
                               className="form-control"
                               onChange={handleChange}
