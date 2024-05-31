@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import 'react-datepicker/dist/react-datepicker.css';
-
+import DatePicker from "react-datepicker";
 import "../users/assets/css/customDatepicker.css";
 import { Link, useParams } from "react-router-dom";
 import FetchAllInvoiceDatatable from "./FetchAllInvoiceDatatable";
+import { getOwedBalance } from "../../services/invoiceService";
+import { useEffect } from "react";
 
 
 const AllInvoice = ()=>{
@@ -15,6 +17,27 @@ const AllInvoice = ()=>{
     const param = useParams();
     const [fromDate,setFromDate] = useState(getTodayDate());
     const [toDate,setToDate] = useState(getTodayDate());
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [owedBalance, setOwedBalance] = useState("");
+
+    const handleDateChange = (date) => {
+        setSelectedDate(date);
+      };
+
+
+    const owedBalanceHandler = async ( ) => {
+        const response = await getOwedBalance();
+        console.table("owed balance response: by table------", response)
+        if (response?.success) {
+            setOwedBalance(response.data.amount);
+          } else {
+            // Handle error or set a default value
+            setOwedBalance(0);
+          }
+    }
+
+
+
     function getTodayDate() {
         const today = new Date();
         const year = today.getFullYear();
@@ -32,6 +55,10 @@ const AllInvoice = ()=>{
         return `${year}-${month}-${day}`;
       }
 
+    useEffect(()=>{
+        owedBalanceHandler();
+    } , [])
+
     return <div className="row">
                 <div className="col-12 col-md-12 col-xxl-12 d-flex order-2 order-xxl-3">
                 <div className="card flex-fill w-100">
@@ -48,7 +75,19 @@ const AllInvoice = ()=>{
                             </div>
                         </div>
                         <div style={{lineHeight:'5px',marginTop:'22px'}}>
-                            <p><strong>You're owed ₹ 100.00 as of</strong> 31-03-2025 </p>
+                            <div className = "datepicker-wrapper">
+                                <p><strong>You're owed ₹ {owedBalance} as of</strong>
+                                    <div className="custom-datepicker-container">
+                                        <DatePicker
+                                            selected={selectedDate}
+                                            onChange={handleDateChange}
+                                            dateFormat="dd/MM/yyyy"
+                                            className="custom_datepicker"
+                                        />
+                                        {/* <span className="down-arrow">&#9660;</span> */}
+                                        </div>
+                                </p>
+                            </div>
                         </div>
                     </div>
                     </div>

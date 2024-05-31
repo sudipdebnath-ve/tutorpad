@@ -1,15 +1,39 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
 import FetchFamilyTransactionDatatable from "./FetchFamilyTransactionDatatable.js";
 import "../users/assets/css/customDatepicker.css";
 import { Link, useParams } from "react-router-dom";
+import { getOwedBalance } from "../../services/invoiceService.js";
 const TransactionByFamily = ()=>{
     const [modalIsOpen,setModalIsOpen] = useState(false);
     const [isEdit,setIsEdit] = useState(false);
     const [chargecat_name,set_chargecat_name] = useState("");
     const [selectedId,setSelectedId] = useState("");
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [owedBalance, setOwedBalance] = useState("");
     const param = useParams();
-  
+
+    const handleDateChange = (date) => {
+        setSelectedDate(date);
+      };
+    
+    const owedBalanceHandler = async ( ) => {
+        const response = await getOwedBalance();
+        console.table("owed balance response: by table------", response)
+        if (response?.success) {
+            setOwedBalance(response.data.amount);
+          } else {
+            // Handle error or set a default value
+            setOwedBalance(0);
+          }
+    }
+
+    useEffect(()=>{
+        owedBalanceHandler();
+    }, [])
+
+    
     return <div className="row">
                 <div className="col-12 col-md-12 col-xxl-12 d-flex order-2 order-xxl-3">
                 <div className="card flex-fill w-100">
@@ -26,7 +50,18 @@ const TransactionByFamily = ()=>{
                             </div>
                         </Link>
                         <div style={{lineHeight:'5px',marginTop:'22px'}}>
-                            <p><strong>You're owed ₹ 100.00 as of</strong> 31-03-2025 </p>
+                            <p><strong>You're owed ₹ {owedBalance} as of</strong> 
+                            
+                            <div className="custom-datepicker-container">
+                                <DatePicker
+                                    selected={selectedDate}
+                                    onChange={handleDateChange}
+                                    dateFormat="dd/MM/yyyy"
+                                    className="custom_datepicker"
+                                />
+                                {/* <span className="down-arrow">&#9660;</span> */}
+                                </div>
+                             </p>
                         </div>
                     </div>
                     </div>

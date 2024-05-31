@@ -173,3 +173,33 @@ export const getAllInvoiceByDate = async (date_from,date_to) => {
     console.log(err);
   })
 }
+
+export const deleteTransactionById = async (id ) =>{
+  return invoicesApi.delete('delete-transaction/'+id).then((response) =>{
+    return response.data;
+  })
+  .catch((error) => {
+    return error
+  });
+}
+
+export const getPrepaidBalance = async() =>{
+  return invoicesApi.get('prepaid-balance').then ((response)=>{
+    console.log("prepaid-balance-------------", response);
+    return response.data;
+  })
+  .catch((error) => {
+     console.log(error);
+     return error;
+   });
+}
+
+ export const getOwedBalance = async () =>{
+  return invoicesApi.get('owed-balance').then ((response)=>{
+    console.table(response)
+    return response.data;
+  })
+  .catch((error) => {
+     return error;
+   });
+ }

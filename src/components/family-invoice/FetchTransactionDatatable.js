@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import DeleteModel from "../form/delete-model/DeleteModel.js";
 import { ToastContainer, toast } from "react-toastify";
 import { deleteChargeCategories } from "../../services/categoriesService.js";
-import { deleteTransactionById } from "../../services/categoriesService.js";
+import { deleteTransactionById } from "../../services/invoiceService.js"; 
 import transactions from "../../assets/images/transactions.svg";
 const FetchTransactionDatatable = ({
   setSelectedId,
