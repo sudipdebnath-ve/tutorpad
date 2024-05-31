@@ -23,11 +23,11 @@ const Tutor = () => {
   };
 
   const handleClickMessage = (e) => {
-    if (messageDropdown == false) {
-      setMessageDropdown(true);
-    } else {
-      setMessageDropdown(false);
-    }
+    // if (messageDropdown == false) {
+    //   setMessageDropdown(true);
+    // } else {
+    //   setMessageDropdown(false);
+    // }
   };
   const handleClickAddNew = (e) => {
     if (addNewDropdown == false) {
@@ -153,7 +153,7 @@ const Tutor = () => {
                               )}
                             </div>
                             <div
-                              className="dropdown addnew"
+                              className="dropdown addnew options"
                               onClick={handleClickMessage}
                             >
                               <i

@@ -52,6 +52,33 @@ const AppContext = ({ children }) => {
     localStorage.setItem("theme", theme);
   }, [isDarkMode]);
 
+  
+  // manageSidebar navbar navbar-expand
+  useEffect(() => {
+    if(sidebarToggle){
+      const element = document.querySelector('.wrapperBody');
+      if (element) {
+        element.classList.add('manageSidebar');
+      }
+  
+      const navbar = document.querySelector('.navbar');
+      if (navbar) {
+        navbar.classList.add('manageNavbar');
+      }
+    }else{
+      const element = document.querySelector('.wrapperBody');
+      if (element) {
+        element.classList.remove('manageSidebar');
+      }
+
+      const navbar = document.querySelector('.navbar');
+      if (navbar) {
+        navbar.classList.remove('manageNavbar');
+      }
+    }
+    
+  }, [sidebarToggle]);
+
   const navigate = useNavigate();
 
   const fetchData = async () => {

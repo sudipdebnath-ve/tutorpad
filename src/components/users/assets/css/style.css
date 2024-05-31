@@ -12364,3 +12364,14 @@ nav.navbar.navbar-expand {
   height: 100vh;
   overflow: scroll; 
 }
+
+.wrapperBody.manageSidebar .main {
+  left: 98px;
+  width: calc(100% - 99px);
+  height: 95%!important;
+  min-height: 96.5vh!important;
+}
+
+.manageNavbar {
+  width: 93% !important;
+}

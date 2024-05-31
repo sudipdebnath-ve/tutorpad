@@ -48,7 +48,7 @@ const AuthenticatedRoutes = () => {
         return <Navigate to="/signin" />;
     }
     return (
-        <div className="wrapperBody">
+        <div>
         <Loader/>
             <AuthProvider>
             <Routes basename={"/"}>
