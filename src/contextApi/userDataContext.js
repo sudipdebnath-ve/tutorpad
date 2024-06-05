@@ -14,6 +14,7 @@ const AppContext = ({ children }) => {
   const [emailTemplateData, setEmailTemplateData] = useState([]);
   const [emailOnchange, setEmailOnchange] = useState(false);
   const [studentData, setStudentData] = useState(false);
+  const [studentGroupData, setStudentGroupData] = useState(false);
   const [tutorData, setTutorData] = useState(false);
   const [allChargeCategory, setAllChargeCategory] = useState([]);
   const [allFamilies, setAllFamilies] = useState([]);
@@ -154,6 +155,27 @@ const AppContext = ({ children }) => {
         // console.log(response.data);
         if (response.data.success === true) {
           setStudentData(response.data.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const fetchStudentGroupData = async () => {
+    const validateconfig = {
+      method: "GET",
+      url: `${API_URL}student-groups`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(validateconfig)
+      .then((response) => {
+        // console.log(response.data);
+        if (response.data.success === true) {
+          console.log('setstudentGroupData : ',response.data.data)
+          setStudentGroupData(response.data.data);
         }
       })
       .catch((error) => {
@@ -443,6 +465,8 @@ const AppContext = ({ children }) => {
         token,
         setToken,
         fetchStudentData,
+        fetchStudentGroupData,
+        studentGroupData,
         studentData,
         tutorData,
         userId,

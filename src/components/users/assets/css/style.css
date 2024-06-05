@@ -12348,7 +12348,6 @@ nav.navbar.navbar-expand {
   background: var(--bg-color);
   top: 10px;
   border-radius: 40px;
-  /* padding-top: 19px; */
   z-index: 1000;
 }
 .wrapper {
@@ -12374,4 +12373,30 @@ nav.navbar.navbar-expand {
 
 .manageNavbar {
   width: 93% !important;
+}
+
+.selected-students-list {
+  list-style-type: none;
+  padding: 0;
+}
+.selected-student-tag {
+  display: inline-block;
+  background-color: #e0e0e0;
+  padding: 5px 10px;
+  margin: 5px;
+  border-radius: 15px;
+  font-size: 14px;
+  position: relative;
+}
+.remove-button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  margin-left: 10px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(50%, -50%);
+  color: #ff0000;
 }
