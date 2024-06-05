@@ -11,9 +11,10 @@ import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { getParentDetailsList } from "../../../services/calenderService.js";
 const StudentAdd = () => {
-  const { fetchData, sidebarToggle, token, userId } = useUserDataContext();
+  const { fetchData, sidebarToggle, token, userId, fetchFamilies, allFamilies } = useUserDataContext();
   const [studentType, setStudentType] = useState("Child");
   const [showParentDetails, setShowParentDetails] = useState(true);
+  const [getAllfamiliesDetails, showAllfamiliesDetails] = useState(false);
   const [additionalDetails, setAdditionalDetails] = useState(false);
   const [parentList, setParentList] = useState([]);
   const navigate = useNavigate();
@@ -54,24 +55,14 @@ const StudentAdd = () => {
     family_account_id: null,
   });
 
-  useEffect(() => {
-    const token = JSON.parse(localStorage.getItem("tutorPad"));
-    if (!token) {
-      navigate("/signin");
-    } else {
-      fetchData(token);
-    }
-  }, []);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const name = `${formData.parentfirstname} ${formData.parentlastname}`;
 
-    if (formData.studentType == "Child") {
+    if (formData.studentType == "Child" && formData.studentFamily == "New Family") {
       const parentInfo = await getParentDetailsList(name);
       setParentList(parentInfo.data);
-      console.log("DATA=>", formData);
     }
     const stepMenuOne = document.querySelector(".formbold-step-menu1");
     const stepMenuTwo = document.querySelector(".formbold-step-menu2");
@@ -175,11 +166,13 @@ const StudentAdd = () => {
   const handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
+    console.log('studentFamily : ',value);
 
     if (name === "student_status") {
       setSelectedStatus(value);
     }
     if (name === "studentType") {
+      console.log('name : studentType ,',value);
       setStudentType(value);
       if (value === "Adult") {
         setShowParentDetails(false);
@@ -194,6 +187,16 @@ const StudentAdd = () => {
             label?.classList?.remove("text-danger");
           }
         }
+      }
+    }
+    if(name == 'studentFamily'){
+      console.log('value :',value);
+      if (value === "New Family") {
+        setShowParentDetails(true);
+      } else {
+        setShowParentDetails(false);
+        fetchFamilies();
+        showAllfamiliesDetails(true);
       }
     }
     if (name === "enable_login_access") {
@@ -248,7 +251,6 @@ const StudentAdd = () => {
     }
   };
 
-  console.log("error", error);
   return (
     <div className="wrapper">
       {sidebarToggle ? (
@@ -745,6 +747,7 @@ const StudentAdd = () => {
                                   type="radio"
                                   className="status"
                                   name="studentFamily"
+                                  value="New Family"
                                   onChange={handleChange}
                                 />
                                 New Family
@@ -756,6 +759,7 @@ const StudentAdd = () => {
                                   type="radio"
                                   className="status"
                                   name="studentFamily"
+                                  value="Existing Family"
                                   onChange={handleChange}
                                 />
                                 Existing Family
@@ -859,6 +863,41 @@ const StudentAdd = () => {
                                   name="sms"
                                 />
                                 SMS Capable
+                              </div>
+                            </div>
+                          </>
+                        )}
+                        {getAllfamiliesDetails && (
+                          <>
+                            <div className="formbold-input-flex">
+                              <div>
+                                <label
+                                  htmlFor="family_account_id"
+                                  className="formbold-form-label"
+                                  id="family_account_id"
+                                >
+                                  Select Family
+                                </label>
+                                <select
+                                  className="form-control"
+                                  name="family_account_id"
+                                  onChange={handleChange}
+                                >
+
+                                  <option>Select Family</option>
+                                  {allFamilies.map((item) => {
+                                    return (
+                                      <option value={item.id}>{item.name}</option>
+                                    );
+                                  })}
+                                </select>
+                                <small style={{ color: "red" }}>
+                                  {error?.family_account_id?.length ? (
+                                    error.family_account_id
+                                  ) : (
+                                    <></>
+                                  )}
+                                </small>
                               </div>
                             </div>
                           </>
