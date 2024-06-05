@@ -14,6 +14,7 @@ import DeleteModel from "../form/delete-model/DeleteModel.js";
 import { ToastContainer, toast } from "react-toastify";
 import { deleteChargeCategories } from "../../services/categoriesService.js";
 import transaction from "../../assets/images/transactions.svg";
+import { deleteTransactionById } from "../../services/invoiceService.js";
 const FetchFamilyTransactionDatatable = () => {
   const param = useParams();
   const [val, setVal] = useState(false);
@@ -24,8 +25,10 @@ const FetchFamilyTransactionDatatable = () => {
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
+    console.log("param from FetchFamilyTransactionDatatable-----------", param);
     fetchTransactionsByFamily(param.id);
   }, [userId, param]);
+
 
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
@@ -98,7 +101,8 @@ const FetchFamilyTransactionDatatable = () => {
       renderCell: (params) => (
         <div style={{ display: "flex", gap: 5 }}>
           <Icon
-            onClick={() =>
+            onClick={() =>{
+              console.log("params-------------", params);
               navigate(
                 "/familiies-and-invoices/transaction-type/2/" +
                   param.id +
@@ -106,7 +110,8 @@ const FetchFamilyTransactionDatatable = () => {
                   params.row.transaction_type +
                   "/" +
                   params.row.id
-              )
+              )}
+              
             }
             icon={edit2}
           />
@@ -124,14 +129,16 @@ const FetchFamilyTransactionDatatable = () => {
     setDeleteModalIsOpen(true);
   };
 
-  const onDeleteHandler = async (id) => {
+ const onDeleteHandler = async (id) => {
     setIsDeleteLoading(true);
-    const response = await deleteChargeCategories(id);
+    const response = await deleteTransactionById(id);
+    // const response = await deleteChargeCategories(id);
     if (response.success == true) {
       fetchTransactionsByFamily(param.id);
       toast.success(response.message, {
         position: toast.POSITION.TOP_CENTER,
       });
+      // fetchTransactionsByFamily(param.id);
       setDeleteModalIsOpen(false);
       setIsDeleteLoading(false);
     } else {
@@ -141,7 +148,7 @@ const FetchFamilyTransactionDatatable = () => {
         position: toast.POSITION.TOP_CENTER,
       });
     }
-  };
+  };  
 
   useEffect(() => {
     setVal(true);
@@ -152,6 +159,7 @@ const FetchFamilyTransactionDatatable = () => {
   }
   return (
     <div>
+      <ToastContainer />
       <DeleteModel
         isLoading={isDeleteLoading}
         setIsLoading={setIsDeleteLoading}

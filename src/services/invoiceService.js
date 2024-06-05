@@ -41,8 +41,10 @@ export const saveTransaction= async (data) => {
     })
     .catch((error) => {
       console.log(error);
+      return error;
     });
 };
+
 export const updateTransaction= async (data,id) => {
   return invoicesApi.patch('update-transaction/'+id,data).then((response) => {
       return response.data;
@@ -196,7 +198,7 @@ export const getPrepaidBalance = async() =>{
 
  export const getOwedBalance = async () =>{
   return invoicesApi.get('owed-balance').then ((response)=>{
-    console.table(response)
+    // console.table(response)
     return response.data;
   })
   .catch((error) => {

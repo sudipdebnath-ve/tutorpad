@@ -14,13 +14,15 @@ const TransactionByFamily = ()=>{
     const [owedBalance, setOwedBalance] = useState("");
     const param = useParams();
 
+    console.log("from transaction by family------------", param);
+
     const handleDateChange = (date) => {
         setSelectedDate(date);
       };
     
     const owedBalanceHandler = async ( ) => {
         const response = await getOwedBalance();
-        console.table("owed balance response: by table------", response)
+        // console.table("owed balance response: by table------", response)
         if (response?.success) {
             setOwedBalance(response.data.amount);
           } else {

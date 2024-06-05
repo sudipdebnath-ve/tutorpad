@@ -4,7 +4,7 @@ import { DataGrid, GridToolbar, GridValueGetterParams } from "@mui/x-data-grid";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import students from "../users/assets/images/students.svg";
 import Loader from "../Loader.js";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Icon } from "react-icons-kit";
 import { edit2 } from "react-icons-kit/feather/edit2";
 import { trash2 } from "react-icons-kit/feather/trash2";
@@ -23,19 +23,25 @@ const FetchTransactionDatatable = ({
   fromDate,
   toDate,
 }) => {
+  const param = useParams();
   const [val, setVal] = useState(false);
   const {
     allTransactionsByDates,
     fetchTransactionsByDates,
+    fetchTransactionsByFamily,
     userId,
   } = useUserDataContext();
   const [deleteId, setDeleteId] = useState(null);
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const navigate = useNavigate();
+  
+
   useEffect(() => {
     fetchTransactionsByDates(fromDate, toDate);
-  }, [userId, fromDate, toDate]);
+    console.log("param from FetchTransactionDatatable-----------", param);
+    fetchTransactionsByFamily(param.id);
+  }, [userId, fromDate, toDate, param]);
 
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
@@ -71,11 +77,15 @@ const FetchTransactionDatatable = ({
       headerName: "Edit",
       width: 150,
       renderCell: (params) => (
+        
         <div style={{ display: "flex", gap: 5 }}>
+          
           <Icon
             onClick={() =>
               navigate(
                 "/familiies-and-invoices/transaction-type/2/" +
+                  // param.id +
+                  // "/" +
                   params.row.transaction_type +
                   "/" +
                   params.row.id
@@ -91,6 +101,7 @@ const FetchTransactionDatatable = ({
       ),
     },
   ];
+
   const onDeleteModelHandler = (id) => {
     setDeleteId(id);
     setDeleteModalIsOpen(true);
@@ -103,6 +114,7 @@ const FetchTransactionDatatable = ({
     console.log("response------------", response);
     if (response.success == true) {
       fetchTransactionsByDates(fromDate, toDate);
+      fetchTransactionsByFamily(param.id);
       toast.success(response.message, {
         position: toast.POSITION.TOP_CENTER,
       });
@@ -127,6 +139,7 @@ const FetchTransactionDatatable = ({
   } 
   return (
     <div>
+      <ToastContainer />
       <DeleteModel
         isLoading={isDeleteLoading}
         setIsLoading={setIsDeleteLoading}

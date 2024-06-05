@@ -16,6 +16,7 @@ const navigate = useNavigate();
  const [description,set_description] = useState();
  const [familiies,set_familiies] = useState([]);
  const [students,set_students] = useState([]);
+ const [errors, setErrors] = useState({});
  const param = useParams();
 
  const getFamilyAccountsHandler = async ()=>{
@@ -59,54 +60,90 @@ const navigate = useNavigate();
  }
 
 
- const saveTransactionHandler = async ()=>{
-    const data = {
-        family_account_id:family_account_id?.value||"",
-        transaction_amount:transaction_amount,
-        transaction_date:transaction_date,
-        student_id:student_id?.value||"",
-        transaction_type:param.type,
-        description:description,
-    }
-    if(param?.id)
-    {
-        const response = await updateTransaction(data,param.id);
-        if (response?.success == true) {
-            set_family_account_id("");
-            set_transaction_amount("");
-            set_transaction_date("");
-            set_student_id("");
-            set_description("");
-            toast.success(response?.message, {
-                position: toast.POSITION.TOP_CENTER,
-            });
-            navigate("/familiies-and-invoices/family/"+param.family_id);
-        }else{
-            toast.error("something went wrong !", {
-                position: toast.POSITION.TOP_CENTER,
-            });
-        }
-    }else{
-        const response = await saveTransaction(data);
-        if (response?.success == true) {
-            set_family_account_id("");
-            set_transaction_amount("");
-            set_transaction_date("");
-            set_student_id("");
-            set_description("");
-            toast.success(response?.message, {
-                position: toast.POSITION.TOP_CENTER,
-            });
-            navigate("/familiies-and-invoices/family/"+param.family_id);
-        }else{
-            toast.error("something went wrong !", {
-                position: toast.POSITION.TOP_CENTER,
-            });
-        }
-    }
+//  const saveTransactionHandler = async ()=>{
+//     const data = {
+//         family_account_id:family_account_id?.value||"",
+//         transaction_amount:transaction_amount,
+//         transaction_date:transaction_date,
+//         student_id:student_id?.value||"",
+//         transaction_type:param.type,
+//         description:description,
+//     }
+//     if(param?.id)
+//     {
+//         const response = await updateTransaction(data,param.id);
+//         if (response?.success == true) {
+//             set_family_account_id("");
+//             set_transaction_amount("");
+//             set_transaction_date("");
+//             set_student_id("");
+//             set_description("");
+//             toast.success(response?.message, {
+//                 position: toast.POSITION.TOP_CENTER,
+//             });
+//             navigate("/familiies-and-invoices/family/"+param.family_id);
+//         }else{
+//             toast.error("something went wrong !", {
+//                 position: toast.POSITION.TOP_CENTER,
+//             });
+//         }
+//     }else{
+//         const response = await saveTransaction(data);
+//         if (response?.success == true) {
+//             set_family_account_id("");
+//             set_transaction_amount("");
+//             set_transaction_date("");
+//             set_student_id("");
+//             set_description("");
+//             toast.success(response?.message, {
+//                 position: toast.POSITION.TOP_CENTER,
+//             });
+//             navigate("/familiies-and-invoices/family/"+param.family_id);
+//         }else{
+//             toast.error("something went wrong from refund !", {
+//                 position: toast.POSITION.TOP_CENTER,
+//             });
+//         }
+//     }
     
  
- }
+//  }
+
+
+const saveTransactionHandler = async () => {
+    const data = {
+        family_account_id: family_account_id?.value || "",
+        transaction_amount: transaction_amount,
+        transaction_date: transaction_date,
+        student_id: student_id?.value || "",
+        transaction_type: param.type,
+        description: description,
+    }
+    let response;
+    
+    if (param?.id) {
+        response = await updateTransaction(data, param.id);
+    } else {
+        response = await saveTransaction(data);
+    }
+    // console.log("Response:", response.response.data.data);
+    if (response?.success) {
+        set_family_account_id("");
+        set_transaction_amount("");
+        set_transaction_date("");
+        set_student_id("");
+        set_description("");
+        setErrors({});
+        toast.success(response?.message, {
+            position: toast.POSITION.TOP_CENTER,
+        });
+        navigate("/familiies-and-invoices/family/" + param.family_id);
+    } else {
+        setErrors(response?.response.data.data || {});
+        console.log("set errors-------------", response?.data)
+        
+    }
+}
 
  const saveAndTransactionHandler = async ()=>{
     const data = {
@@ -162,13 +199,16 @@ const navigate = useNavigate();
                       </div>
                   </div>
                   <div className="row">
-                      <div className="col-md-6">
-                          <label>Date</label>
-                          <input type="date" value={transaction_date}  onChange={(e)=>set_transaction_date(e.target.value)} className="form-control" name="" /> 
-                      </div>
+                    <div className="col-md-6">
+                        <label>Date</label>
+                        <input type="date" value={transaction_date} onChange={(e) => set_transaction_date(e.target.value)} className="form-control" name="" />
+                        {errors.transaction_date && <small style={{ color: "red" }}>{errors.transaction_date[0]}</small>}
+                    </div>
+                      
                       <div className="col-md-6">
                           <label>Amount</label>
-                          <input type="number" value={transaction_amount} onChange={(e)=>set_transaction_amount(e.target.value)} className="form-control" name="" /> 
+                          <input type="number" value={transaction_amount} onChange={(e)=>set_transaction_amount(e.target.value)} className="form-control" name="" />
+                          {errors.transaction_amount && <small style={{ color: "red" }}>{errors.transaction_amount[0]}</small>} 
                       </div>
                   </div>
                   <div className="row">

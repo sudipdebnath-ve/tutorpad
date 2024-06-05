@@ -203,6 +203,7 @@ const AppContext = ({ children }) => {
 
   const fetchFamilies = async () => {
     const familyToken = JSON.parse(localStorage.getItem("tutorPad"));
+    console.log("token:.................", familyToken);
     const validateconfig = {
       method: "GET",
       url: `${API_URL}family-accounts`,
@@ -395,6 +396,7 @@ const AppContext = ({ children }) => {
       .then((response) => {
         // console.log(response.data);
         if (response.data.success === true) {
+          console.log("response-----------", response);
           setAllTransactionsByFamily(response.data.data);
         }
       })

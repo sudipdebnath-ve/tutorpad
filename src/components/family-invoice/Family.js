@@ -23,7 +23,7 @@ const Family = ()=>{
     const prepaidInvocieHandler = async ( ) => {
         const response = await getPrepaidBalance();
         console.log("prepaid balance response: ", JSON.stringify(response));
-        console.table("prepaid balance response: by table------", response)
+        // console.table("prepaid balance response: by table------", response)
         if (response?.success) {
             setPrepaidBalance(response.data.amount);
           } else {
@@ -35,7 +35,7 @@ const Family = ()=>{
 
     const owedBalanceHandler = async ( ) => {
         const response = await getOwedBalance();
-        console.table("owed balance response: by table------", response)
+        // console.table("owed balance response: by table------", response)
         if (response?.success) {
             setOwedBalance(response.data.amount);
           } else {

@@ -3,7 +3,7 @@ import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
 import FetchTransactionDatatable from "./FetchTransactionDatatable.js";
 import "../users/assets/css/customDatepicker.css";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getOwedBalance } from "../../services/invoiceService.js";
 
 const Transaction = ()=>{
@@ -15,14 +15,15 @@ const Transaction = ()=>{
     const [toDate,setToDate] = useState(getTodayDate());
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [owedBalance, setOwedBalance] = useState("");
-
+    const param = useParams();
+    console.log("from transaction ------------", param);
     const handleDateChange = (date) => {
         setSelectedDate(date);
       };
 
     const owedBalanceHandler = async ( ) => {
         const response = await getOwedBalance();
-        console.table("owed balance response: by table------", response)
+        // console.table("owed balance response: by table------", response)
         if (response?.success) {
             setOwedBalance(response.data.amount);
           } else {
@@ -57,6 +58,16 @@ const Transaction = ()=>{
                 <div className="card flex-fill w-100">
                 <div className="card-header">
                     <div style={{display:'flex',flexDirection:'column',}}>
+                    <Link to={"/familiies-and-invoices/transaction-type/1/"+param.id}>
+                            {/* <div
+                            style={{width:'fit-content'}}
+                                className="dropdown addnew"
+                                onClick={()=>{}}
+                            >
+                                <i className="fa fa-plus" aria-hidden="true"></i>
+                                <a className="btn">New Transaction</a>
+                            </div> */}
+                        </Link>
                         <div className="row">
                             <div className="col-md-6">
                                 <label>From Date</label>

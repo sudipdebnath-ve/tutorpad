@@ -27,7 +27,7 @@ const AllInvoice = ()=>{
 
     const owedBalanceHandler = async ( ) => {
         const response = await getOwedBalance();
-        console.table("owed balance response: by table------", response)
+        // console.table("owed balance response: by table------", response)
         if (response?.success) {
             setOwedBalance(response.data.amount);
           } else {
