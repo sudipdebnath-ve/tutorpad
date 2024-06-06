@@ -40,7 +40,6 @@ const Student = () => {
 
   useEffect(() => {
     fetchStudentData();
-    fetchStudentGroupData();
   }, []);
 
   const handleClickMessage = (e) => {
@@ -305,7 +304,7 @@ const Student = () => {
                     <div className="formbold-input-flex">
                       <div>
                         <label htmlFor="tutor" className="formbold-form-label">
-                          Tutor
+                          Students
                         </label>
                         <div>
                           <select
@@ -318,7 +317,7 @@ const Student = () => {
                             onChange={handleSelectChange}
                             multiple
                           >
-                            <option disabled>Select Tutor</option>
+                            <option disabled>Select Student</option>
                             { studentData.length > 0 && (
                               <>
                                 {studentData?.map((item) => {

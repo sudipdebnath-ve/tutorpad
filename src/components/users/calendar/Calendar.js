@@ -86,6 +86,8 @@ const Calendars = () => {
     allEvents,
     studentData,
     fetchStudentData,
+    fetchStudentGroupData,
+    studentGroupData,
     fetchLocation,
     allLocation,
     isDarkMode,
@@ -170,6 +172,11 @@ const Calendars = () => {
   const [notes, set_notes] = useState("");
   const [delete_all, set_delete_all] = useState(false);
   const [attendees_info, set_attendees_info] = useState([]);
+  const [selectedGroups, setSelectedGroups] = useState([]);
+  const [selectedStudents, setSelectedStudents] = useState([]);
+  const [selectedStudentNames, setSelectedStudentNames] = useState([]);
+  const [val, setVal] = useState(false);
+
 
   const colourStyles = {
     control: (styles) => ({
@@ -215,6 +222,7 @@ const Calendars = () => {
     // set_end_date(formatDate(new Date()));
     set_end_time("");
   };
+
   const resetDeleteForm = () => {
     set_email_students(false);
     set_email_parents(false);
@@ -380,18 +388,55 @@ const Calendars = () => {
   }, [allTutors]); // Make sure to include allTutors as a dependency
 
   useEffect(() => {
-    var token = JSON.parse(localStorage.getItem("tutorPad"));
-    if (!token) {
-      navigate("/signin");
-    } else {
-      setTimeout(() => {
-        fetchData(token);
-        fetchStudentData();
-      }, 2000);
+      fetchData(token);
+      fetchStudentData();
+      fetchStudentGroupData();
       getTutor();
       fetchEventsForVisibleRange(visibleRange);
-    }
   }, []);
+
+  useEffect(() => {
+    studentGroupData != false &&  setVal(true);
+  }, [studentGroupData]);
+
+  const transformData = (data) => {
+    console.log('data : ',data);
+    return data.map((group) => ({
+      ...group,
+      students_name: group.students.map(student => student.name).join(', '),
+      students_id: group.students.map(student => student.id).join(', '),
+    }));
+  };
+
+  const groupStudents = val ? transformData(studentGroupData) : [];
+
+  
+  const handleGroupChange = (id, students) => {
+    setSelectedGroups(prev =>
+      prev.includes(id)
+        ? prev.filter(groupId => groupId !== id)
+        : [...prev, id]
+    );
+    const selectedValues = [];
+    const selectedTextValues = [];
+    for (let i = 0; i < students.length; i++) {
+      selectedValues.push(students[i].id);
+      selectedTextValues.push({ id: students[i].id, value: students[i].name });
+  }
+    setSelectedStudents(selectedValues);
+    setSelectedStudentNames(selectedTextValues);
+  };
+
+  console.log('selectedStudents : ',selectedStudents);
+  console.log('selectedStudents : ',selectedStudentNames);
+
+  // Handler to remove a selected student
+  const handleRemoveStudent = (id) => {
+    const updatedSelectedStudents = selectedStudents.filter(student => student !== id);
+    const updatedSelectedTextStudents = selectedStudentNames.filter(student => student.id !== id);
+    setSelectedStudents(updatedSelectedStudents);
+    setSelectedStudentNames(updatedSelectedTextStudents);
+  };
 
   const getStudentsByTutorIdHandler = async (id) => {
     set_event_tutor(id);
@@ -630,6 +675,7 @@ const Calendars = () => {
     setEventEndTime(endTimeString);
     setEventDesc({ ...e, start: startDateString, end: endDateString });
   };
+
   const openNewAppointmentModal = (e) => {
     // Convert start and end dates to string format
     set_start_date(formatDate(e.start));
@@ -670,7 +716,7 @@ const Calendars = () => {
     setIsEditForm(false);
     openModal("newNonTutoringEvent");
   };
-
+  
   return (
     <div className="wrapper">
       {sidebarToggle ? (
@@ -1413,12 +1459,9 @@ const Calendars = () => {
                       Allow students to register through the Student Portal
                     </div>
                     <hr></hr>
-                    <div className="formbold-input-flex">
-                      <div>
-                        <label
-                          htmlFor="attendees"
-                          className="formbold-form-label"
-                        >
+                    <div className="formbold-input-flex diff">
+                      <div style={{ position: 'relative' }}>
+                        <label htmlFor="attendees" className="formbold-form-label">
                           Attendees
                         </label>
                         <div>
@@ -1430,91 +1473,44 @@ const Calendars = () => {
                             styles={colourStyles}
                           />
                         </div>
-                      </div>
-                      <div>
-                        <div>
-                          <label
-                            htmlFor="start_date"
-                            className="formbold-form-label"
-                          >
-                            Date
-                          </label>
-                          <input
-                            type="date"
-                            name="start_date"
-                            className="form-control"
-                            value={formatDate(start_date)}
-                            onChange={(e) =>
-                              set_start_date(formatDate(e.target.value))
-                            }
-                          />
+                        <div className="mt-2">
+                            <label>Selected Students:</label>
+                              <ul className="selected-students-list">
+                                {selectedStudentNames.map((selected) => (
+                                  <li key={selected.id} className="selected-student-tag">
+                                    {selected.value}
+                                    <button 
+                                      className="remove-button" 
+                                      onClick={() => handleRemoveStudent(selected.id)}
+                                    >
+                                      &times;
+                                    </button>
+                                  </li>
+                                ))}
+                              </ul>
+                          </div>
+                        <div className="rightDropdown">
+                          <div className="dropdown">
+                            <button className="dropbtn" type="button">
+                              Groups <i className="fas fa-chevron-down"></i>
+                            </button>
+                            <div className="dropdown-content">
+                              { groupStudents.map(item=> (
+                                    <label
+                                    key={item.id}
+                                    value={item.name}
+                                    onClick={() => handleGroupChange(item.id, item.students, item.students_id)}
+                                    className={selectedGroups.includes(item.id) ? 'selected' : ''}
+                                  >
+                                    {item.name}
+                                  </label>
+                              ))}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                    <div className="formbold-input-flex">
-                      <div>
-                        <label
-                          htmlFor="address"
-                          className="formbold-form-label"
-                        >
-                          Time
-                        </label>
-                        <br></br>
 
-                        <input
-                          type="time"
-                          name="time"
-                          id="time"
-                          className="form-control"
-                          value={start_time}
-                          onChange={(e) => set_start_time(e.target.value)}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="address"
-                          className="formbold-form-label"
-                        >
-                          Duration
-                        </label>
-                        <br></br>
-
-                        <input
-                          type="text"
-                          name="duration"
-                          className="form-control"
-                          placeholder="30 min"
-                          value={duration}
-                          onChange={(e) => {
-                            calculateEndDateTimeByDuration(
-                              e.target.value != "" ? e.target.value : 0
-                            );
-                            setDuration(e.target.value);
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <div className="formbold-input-flex">
-                      <div></div>
-                      <div>
-                        <div
-                          className="preference"
-                          style={{ fontSize: "15px" }}
-                        >
-                          <input
-                            type="checkbox"
-                            name="all_day"
-                            value="All day"
-                            checked={event_all_day}
-                            onChange={(e) =>
-                              set_event_all_day(e.target.checked)
-                            }
-                          />
-                          All Day
-                        </div>
-                      </div>
-                    </div>
                     <div className="formbold-input-flex">
                       <div>
                         <label
@@ -1564,6 +1560,89 @@ const Calendars = () => {
                         </select>
                       </div>
                     </div>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <div>
+                          <label
+                            htmlFor="start_date"
+                            className="formbold-form-label"
+                          >
+                            Date
+                          </label>
+                          <input
+                            type="date"
+                            name="start_date"
+                            className="form-control"
+                            value={formatDate(start_date)}
+                            onChange={(e) =>
+                              set_start_date(formatDate(e.target.value))
+                            }
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="address"
+                          className="formbold-form-label"
+                        >
+                          Time
+                        </label>
+                        <br></br>
+
+                        <input
+                          type="time"
+                          name="time"
+                          id="time"
+                          className="form-control"
+                          value={start_time}
+                          onChange={(e) => set_start_time(e.target.value)}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label
+                            htmlFor="address"
+                            className="formbold-form-label"
+                          >
+                            Duration
+                          </label>
+                          <br></br>
+
+                          <input
+                            type="text"
+                            name="duration"
+                            className="form-control"
+                            placeholder="30 min"
+                            value={duration}
+                            onChange={(e) => {
+                              calculateEndDateTimeByDuration(
+                                e.target.value != "" ? e.target.value : 0
+                              );
+                              setDuration(e.target.value);
+                            }}
+                          />
+                      </div>
+                      <div>
+                        <div
+                          className="preference"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="all_day"
+                            value="All day"
+                            checked={event_all_day}
+                            onChange={(e) =>
+                              set_event_all_day(e.target.checked)
+                            }
+                          />
+                          All Day
+                        </div>
+                      </div>
+                    </div>
+                    
                     <div className="formbold-input-flex">
                       <div>
                         <div
