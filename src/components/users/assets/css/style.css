@@ -120,6 +120,7 @@
   --card-bg-color: #fff;
   --hover-bg-color: #f7f5ed;
   --secondary-card-bg-color: #ededed;
+  --selected-bg-color:var(--bs-blue);
 }
 
 [data-theme="dark"] {
@@ -129,6 +130,7 @@
   --hover-bg-color: rgba(255, 255, 255, 0.5);
   --hover-text-color: #000;
   --secondary-card-bg-color: rgba(0, 0, 0, 0.2);
+  --selected-text-color: #fff;
 }
 
 body {
@@ -12399,4 +12401,103 @@ nav.navbar.navbar-expand {
   right: 0;
   transform: translate(50%, -50%);
   color: #ff0000;
+}
+
+.rightDropdown .dropbtn {
+  color: var(--text-color) important;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1;
+  border: none;
+  cursor: pointer;
+  background-color: var(--bs-btn-active-bg);
+  padding: 2px;
+  font-family: var(--bs-body-font-family);
+  font-size: var(--bs-body-font-size);
+  font-weight: var(--bs-body-font-weight);
+  line-height: var(--bs-body-line-height);
+}
+
+.rightDropdown .dropdown-content {
+  padding: 10px;
+  display: none;
+  position: absolute;
+  background-color: var(--bg-color);
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1000;
+}
+
+.rightDropdown .dropdown-content label {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  padding: 5px;
+}
+
+.rightDropdown .dropdown-content label:hover {
+  background-color: var(--hover-bg-color);
+}
+
+.rightDropdown .dropdown:hover .dropdown-content {
+  display: block;
+  right: 0;
+}
+
+.rightDropdown button.dropbtn i {
+  font-size: 13px;
+  padding-left: 5px;
+}
+
+.rightDropdown  .dropdown-content label input{
+  margin-right: 5px;
+  position: relative;
+  top:2px;
+}
+.rightDropdown .dropdown:hover .dropbtn {
+  border-radius: 5px;
+  background-color: var(--hover-bg-color);
+}
+
+.rightDropdown button.dropbtn {
+  font-size: 13px;
+}
+
+.rightDropdown .dropdown {
+  position: absolute;
+  top: -1px;
+  right: 0;
+  /* border: 1px solid; */
+  padding: 2px;
+  
+}
+.rightDropdown .dropdown:hover .dropdown-content {
+  display: block;
+  right: 0;
+  top: 28px;
+  border: 1px solid #eee;
+}
+
+.rightDropdown .dropdown-content label {
+  color: black;
+  padding: 5px 0;
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
+}
+
+.rightDropdown .dropdown-content label:hover {
+  background-color: var(--selected-bg-color);
+  color: var(--selected-text-color);
+}
+
+.rightDropdown .dropdown-content label.selected {
+  background-color: var(--selected-bg-color);
+  color: var(--selected-text-color);
+}
+
+
+.rbc-day-bg{
+  cursor: pointer;
 }
