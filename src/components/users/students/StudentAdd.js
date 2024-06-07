@@ -13,6 +13,7 @@ import { getParentDetailsList } from "../../../services/calenderService.js";
 const StudentAdd = () => {
   const { fetchData, sidebarToggle, token, userId, fetchFamilies, allFamilies } = useUserDataContext();
   const [studentType, setStudentType] = useState("Child");
+  const [studentFamily, setStudentFamily] = useState("New Family");
   const [showParentDetails, setShowParentDetails] = useState(true);
   const [getAllfamiliesDetails, showAllfamiliesDetails] = useState(false);
   const [additionalDetails, setAdditionalDetails] = useState(false);
@@ -54,6 +55,10 @@ const StudentAdd = () => {
     invoicing: "",
     family_account_id: null,
   });
+
+  useEffect(() => {
+    fetchFamilies();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -172,12 +177,20 @@ const StudentAdd = () => {
       setSelectedStatus(value);
     }
     if (name === "studentType") {
-      console.log('name : studentType ,',value);
       setStudentType(value);
       if (value === "Adult") {
         setShowParentDetails(false);
+        if(studentFamily === "New Family"){
+          showAllfamiliesDetails(false);
+        }
       } else {
-        setShowParentDetails(true);
+        if(studentFamily === "New Family"){
+          setShowParentDetails(true);
+          showAllfamiliesDetails(false);
+        }else{
+          setShowParentDetails(false);
+          showAllfamiliesDetails(true);
+        }
         let emailfield = document?.querySelectorAll("input[type=email]");
         for (let [key, value] of Object.entries(emailfield)) {
           console.log("value", value.name);
@@ -190,12 +203,17 @@ const StudentAdd = () => {
       }
     }
     if(name == 'studentFamily'){
-      console.log('value :',value);
+      setStudentFamily(value);
       if (value === "New Family") {
-        setShowParentDetails(true);
+        if(studentType === "Child"){
+          showAllfamiliesDetails(false);
+          setShowParentDetails(true);
+        }else{
+          showAllfamiliesDetails(false);
+          setShowParentDetails(false);
+        }
       } else {
         setShowParentDetails(false);
-        fetchFamilies();
         showAllfamiliesDetails(true);
       }
     }
@@ -749,6 +767,7 @@ const StudentAdd = () => {
                                   name="studentFamily"
                                   value="New Family"
                                   onChange={handleChange}
+                                  checked={studentFamily === "New Family"}
                                 />
                                 New Family
                                 <br />
@@ -761,6 +780,7 @@ const StudentAdd = () => {
                                   name="studentFamily"
                                   value="Existing Family"
                                   onChange={handleChange}
+                                  checked={studentFamily === "Existing Family"}
                                 />
                                 Existing Family
                               </div>
@@ -884,7 +904,7 @@ const StudentAdd = () => {
                                   onChange={handleChange}
                                 >
 
-                                  <option>Select Family</option>
+                                  <option value={""}>Select Family</option>
                                   {allFamilies.map((item) => {
                                     return (
                                       <option value={item.id}>{item.name}</option>
