@@ -16,9 +16,11 @@ import { API_URL } from "../../utils/config.js";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import Select from "react-select";
 
 const Student = () => {
-  const { sidebarToggle, loading, fetchStudentData, fetchStudentGroupData, userId, studentData, token } = useUserDataContext();
+  const { isDarkMode, sidebarToggle, loading, fetchStudentData, 
+    fetchStudentGroupData, userId, studentData, token } = useUserDataContext();
   const [addNewDropdown, setAddNewDropdown] = useState(false);
   const [messageDropdown, setMessageDropdown] = useState(false);
   const [searchDropdown, setSearchDropdown] = useState(false);
@@ -27,7 +29,6 @@ const Student = () => {
   const [editRow, setEditRow] = useState(false);
   const [get_group_name, set_group_name] = useState("");
   const [selectedStudents, setSelectedStudents] = useState([]);
-  const [selectedTextStudents, setSelectedTextStudents] = useState([]);
   const [error, setError] = useState({});
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteRow, setDeleteRow] = useState();
@@ -37,10 +38,40 @@ const Student = () => {
     group_name: "",
     student_ids: "",
   });
+  const [studentsList, setStudentsList] = useState([]);
+
+  const colourStyles = {
+    control: (styles) => ({
+      ...styles,
+      backgroundColor: isDarkMode ? "#363636" : "white",
+    }),
+    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+      return {
+        ...styles,
+        backgroundColor: isDarkMode ? "#363636" : "white",
+        color: isDarkMode ? "#FFF" : "black",
+        cursor: isDisabled ? "not-allowed" : "default",
+      };
+    },
+  };
 
   useEffect(() => {
     fetchStudentData();
   }, []);
+
+  useEffect(() => {
+    if (studentData) {
+      const transformData = (data) => {
+        const students = data.map((e) => ({
+          value: e.id,
+          label: e.name,
+        }));
+        setStudentsList(students);
+      };
+      transformData(studentData);
+    }
+  }, [studentData]);
+
 
   const handleClickMessage = (e) => {
     // if (messageDropdown == false) {
@@ -49,6 +80,7 @@ const Student = () => {
     //   setMessageDropdown(false);
     // }
   };
+
   const handleClickAddNew = (e) => {
     if (addNewDropdown == false) {
       setAddNewDropdown(true);
@@ -56,6 +88,7 @@ const Student = () => {
       setAddNewDropdown(false);
     }
   };
+
   const handleClickSearch = (e) => {
     console.log(searchDropdown);
     if (searchDropdown == false) {
@@ -107,7 +140,6 @@ const Student = () => {
     setError('');
     set_group_name("");
     setSelectedStudents([]);
-    setSelectedTextStudents([]);
     setIsEditForm(false);
     setEditRow('');
     setDeleteRow('');
@@ -116,7 +148,7 @@ const Student = () => {
   const saveStudentGroup = async (e) => {
     e.preventDefault();
     formData["group_name"] = get_group_name;
-    formData["student_ids"] = selectedStudents;
+    formData["student_ids"] = selectedStudents.map((e) => e.value) || [];
     var config = {};
     if (isEditForm) {
       // Edit Form
@@ -148,7 +180,6 @@ const Student = () => {
       });
       set_group_name("");
       setSelectedStudents([]);
-      setSelectedTextStudents([]);
       setIsEditForm(false);
       setEditRow('');
       setDeleteRow('');
@@ -164,29 +195,6 @@ const Student = () => {
     });
   };
 
-  const handleSelectChange = (e) => {
-    const options = e.target.options;
-    const selectedValues = [];
-    const selectedTextValues = [];
-    for (let i = 0; i < options.length; i++) {
-      if (options[i].selected) {
-        selectedValues.push(options[i].value);
-        selectedTextValues.push({ id: options[i].value, value: options[i].text });
-        console.log('selectedValues : ',selectedValues);
-        console.log('selectedValues : ',selectedTextValues);
-      }
-    }
-    setSelectedStudents(selectedValues);
-    setSelectedTextStudents(selectedTextValues);
-  };
-
-  // Handler to remove a selected student
-  const handleRemoveStudent = (id) => {
-    const updatedSelectedStudents = selectedStudents.filter(student => student !== id);
-    const updatedSelectedTextStudents = selectedTextStudents.filter(student => student.id !== id);
-    setSelectedStudents(updatedSelectedStudents);
-    setSelectedTextStudents(updatedSelectedTextStudents);
-  };
 
   const handleEdit = (row) => {
     console.log("Edit clicked for id:", row);
@@ -198,15 +206,10 @@ const Student = () => {
     const selectedValues = [];
     const selectedTextValues = [];
     const studentArr = row.students;
-    console.log('starr : ',studentArr);
     for (let i = 0; i < studentArr.length; i++) {
-        selectedValues.push(studentArr[i].id);
-        selectedTextValues.push({ id: studentArr[i].id, value: studentArr[i].name });
-        console.log('selectedValues : ',selectedValues);
-        console.log('selectedValues : ',selectedTextValues);
+        selectedTextValues.push({ value: studentArr[i].id, label: studentArr[i].name });
     }
-    setSelectedStudents(selectedValues);
-    setSelectedTextStudents(selectedTextValues);
+    setSelectedStudents(selectedTextValues);
     // Add your edit logic here
   };
 
@@ -306,7 +309,17 @@ const Student = () => {
                         <label htmlFor="tutor" className="formbold-form-label">
                           Students
                         </label>
+                        {/* Rushita */}
                         <div>
+                          <Select
+                            value={selectedStudents}
+                            onChange={(e) => setSelectedStudents(e)}
+                            isMulti={true}
+                            options={studentsList}
+                            styles={colourStyles}
+                          />
+                        </div>
+                        {/* <div>
                           <select
                             name="student_ids"
                             className="form-control"
@@ -354,7 +367,7 @@ const Student = () => {
                                 ))}
                               </ul>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </div>
