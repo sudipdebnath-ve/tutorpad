@@ -288,7 +288,7 @@ const Calendars = () => {
     await getStudentsByTutorIdHandler(result.data.event_tutor);
     set_event_attendees_value([
       ...studentsList.filter((e) => {
-        console.log(e);
+        console.log("students list.......................", e);
         let verify = attendees_ids.find((f) => f == e.value);
         return verify != undefined;
       }),
@@ -1336,8 +1336,10 @@ const Calendars = () => {
                             onChange={(e) =>
                               getStudentsByTutorIdHandler(e.target.value)
                             }
-                            id="tutor"
+                            value={event_tutor}
                           >
+                            <option>Select Tutor</option>
+
                             {allTutors && allTutors.length > 0 ? (
                               allTutors.map((item) => (
                                 <option key={item.id} value={item.id}>
@@ -1619,7 +1621,9 @@ const Calendars = () => {
                               );
                               setDuration(e.target.value);
                             }}
+                            
                           />
+                          
                       </div>
                       <div>
                         <div
