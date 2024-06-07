@@ -154,16 +154,8 @@ const FamilyDetails = () => {
                           {students.map((e) => {
                             return (
                               <li>
-                                <Link to={"/"}>
-                                  <Icon icon={user} /> {e?.name || ""}{" "}
-                                </Link>
-                                <span
-                                  style={{
-                                    background: `${e?.status_color}`,
-                                    padding: "2px 5px",
-                                    color: "white",
-                                  }}
-                                >
+                                <Link to={"/"}><Icon icon={user} /> {e?.name || ""}{" "}</Link>
+                                <span style={{background: `${e?.status_color}`,padding: "2px 5px", color: "white"}} >
                                   {e?.status_label}
                                 </span>
                               </li>
@@ -213,18 +205,9 @@ const FamilyDetails = () => {
                                 {incoming_invoice.invoice_end_date}
                               </p>
                               <p>
-                                Invoice Date:{" "}
-                                {incoming_invoice?.invoice_create_date}
-                              </p>
-                              <p>
                                 Total Due:{" "}
                                 <span
-                                  style={{
-                                    background: "red",
-                                    padding: "2px 5px",
-                                    color: "white",
-                                  }}
-                                >
+                                  style={{background: "red",padding: "2px 5px",color: "white",}}>
                                   ₹{incoming_invoice?.amount}.00 balance owing
                                 </span>
                               </p>
