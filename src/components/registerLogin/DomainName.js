@@ -125,7 +125,8 @@ const DomainRegister = () => {
                   />
                 </form>
                 <br></br>
-              </div>
+                {t("don't have an account?")}
+                <Link to="/"> {t("register here")}</Link>              </div>
             </div>
           </div>
         </div>

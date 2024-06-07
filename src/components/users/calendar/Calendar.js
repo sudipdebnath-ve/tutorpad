@@ -399,36 +399,32 @@ const Calendars = () => {
     studentGroupData != false &&  setVal(true);
   }, [studentGroupData]);
 
-  const transformData = (data) => {
-    console.log('data : ',data);
-    return data.map((group) => ({
-      ...group,
-      students_name: group.students.map(student => student.name).join(', '),
-      students_id: group.students.map(student => student.id).join(', '),
-    }));
-  };
+  const groupStudents = val ? studentGroupData : [];
 
-  const groupStudents = val ? transformData(studentGroupData) : [];
-
-  
   const handleGroupChange = (id, students) => {
+
     setSelectedGroups(prev =>
       prev.includes(id)
         ? prev.filter(groupId => groupId !== id)
         : [...prev, id]
     );
-    const selectedValues = [];
-    const selectedTextValues = [];
-    for (let i = 0; i < students.length; i++) {
-      selectedValues.push(students[i].id);
-      selectedTextValues.push({ id: students[i].id, value: students[i].name });
-  }
-    setSelectedStudents(selectedValues);
-    setSelectedStudentNames(selectedTextValues);
-  };
 
-  console.log('selectedStudents : ',selectedStudents);
-  console.log('selectedStudents : ',selectedStudentNames);
+    // Prepare the new students and attendees to add
+    const newAttendeesList = students.filter(
+      student => !event_attendees.some(existingStudent => existingStudent.value === student.id)
+    ).map(student => ({
+      value: student.id,
+      label: student.name
+    }));
+
+    // Update eventAttendees
+    set_event_attendees(prevEventAttendees => [
+      ...prevEventAttendees,
+      ...newAttendeesList
+    ]);  
+    console.log('event_attendees_value :',newAttendeesList);
+
+  };
 
   // Handler to remove a selected student
   const handleRemoveStudent = (id) => {
@@ -1467,6 +1463,7 @@ const Calendars = () => {
                         <div>
                           <Select
                             defaultValue={event_attendees_value}
+                            value={event_attendees}
                             onChange={(e) => set_event_attendees(e)}
                             isMulti={true}
                             options={studentsList}
@@ -1488,7 +1485,7 @@ const Calendars = () => {
                                   </li>
                                 ))}
                               </ul>
-                          </div>
+                        </div>
                         <div className="rightDropdown">
                           <div className="dropdown">
                             <button className="dropbtn" type="button">
@@ -1499,7 +1496,7 @@ const Calendars = () => {
                                     <label
                                     key={item.id}
                                     value={item.name}
-                                    onClick={() => handleGroupChange(item.id, item.students, item.students_id)}
+                                    onClick={() => handleGroupChange(item.id, item.students)}
                                     className={selectedGroups.includes(item.id) ? 'selected' : ''}
                                   >
                                     {item.name}

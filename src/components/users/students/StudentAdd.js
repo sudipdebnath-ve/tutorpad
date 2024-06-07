@@ -884,7 +884,7 @@ const StudentAdd = () => {
                                   onChange={handleChange}
                                 >
 
-                                  <option>Select Family</option>
+                                  <option disabled>Select Family</option>
                                   {allFamilies.map((item) => {
                                     return (
                                       <option value={item.id}>{item.name}</option>
