@@ -102,7 +102,7 @@ const FetchFamilyTransactionDatatable = () => {
         <div>
           <IconButton size="small" onClick={() =>{
               console.log("params-------------", params);
-              navigate("/familiies-and-invoices/transaction-type/2/" + param.id + "/" + params.row.transaction_type + "/" + params.row.id )}}>
+              navigate("/familiies-and-invoices/transaction-type/2/" + params.row.transaction_type + "/" + param.id + "/" + params.row.id )}}>
                 <EditIcon fontSize="small"/>
           </IconButton>
             

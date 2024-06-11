@@ -92,6 +92,7 @@ export const updateVoidStatus = async (data,id) => {
 
 export const getTransactionById = async (id) => {
   return invoicesApi.get('transaction/'+id).then((response) => {
+    console.log("response from transactionById------------->",response.data);
       return response.data;
     })
     .catch((error) => {
