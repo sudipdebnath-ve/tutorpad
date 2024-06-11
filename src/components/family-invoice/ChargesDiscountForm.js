@@ -180,13 +180,12 @@ const getFrequency = (freq)=>{
         set_transaction_amount("");
         set_transaction_date("");
         set_description("");
+        setErrors({});
         toast.success(response?.message, {
             position: toast.POSITION.TOP_CENTER,
         });
     }else{
-        toast.error("something went wrong !", {
-            position: toast.POSITION.TOP_CENTER,
-        });
+        setErrors(response?.response.data.data || {});
     }
  }
 

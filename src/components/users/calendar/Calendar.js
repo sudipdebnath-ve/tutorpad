@@ -176,6 +176,8 @@ const Calendars = () => {
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [selectedStudentNames, setSelectedStudentNames] = useState([]);
   const [val, setVal] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [isOpenErrors, setIsOpenErrors] = useState(false);
 
 
   const colourStyles = {
@@ -476,6 +478,8 @@ const Calendars = () => {
 
   function openModal(e) {
     setIsOpen(e);
+    setErrors({}); // Clear errors when opening the modal
+    setIsOpenErrors(true);
   }
 
   function afterOpenModal() {
@@ -485,6 +489,8 @@ const Calendars = () => {
 
   function closeModal(e) {
     setIsOpen(e);
+    setErrors({}); // Clear errors when closing the modal
+    setIsOpenErrors(false);
   }
 
   const handleNewEventChange = (e) => {
@@ -589,10 +595,12 @@ const Calendars = () => {
     };
     console.log("update_all=>", update_all_status);
     console.log("Test=>", formData);
+    setErrors({})
     // return ;
+    let response
     if (isEditForm) {
       // Edit Form
-      const response = await updateEvents(formData, selectedEventId);
+      response = await updateEvents(formData, selectedEventId);
       console.log("Response=>", response);
       if (response.success) {
         toast.success(response.message, {
@@ -601,14 +609,12 @@ const Calendars = () => {
         fetchEventsForVisibleRange(visibleRange);
         setIsOpen(false);
       } else {
-        toast.error(response.message, {
-          position: toast.POSITION.TOP_CENTER,
-        });
+        setErrors(response?.response.data.data || {});
       }
     } else {
       // Add Form
-      const response = await createEvents(formData);
-      console.log("Response=>", response);
+      response = await createEvents(formData);
+      console.log("Response----------------------=>", response);
       if (response.success) {
         toast.success(response.message, {
           position: toast.POSITION.TOP_CENTER,
@@ -616,9 +622,7 @@ const Calendars = () => {
         fetchEventsForVisibleRange(visibleRange);
         setIsOpen(false);
       } else {
-        toast.error(response.message, {
-          position: toast.POSITION.TOP_CENTER,
-        });
+        setErrors(response?.response.data.data || {});
       }
     }
   };
@@ -892,6 +896,7 @@ const Calendars = () => {
                             value={event_name}
                             onChange={(e) => set_event_name(e.target.value)}
                           />
+                          {errors.event_name && <small style={{ color: "red" }}>{errors.event_name[0]}</small>}
                         </div>
                       </div>
                     </div>
@@ -1007,6 +1012,7 @@ const Calendars = () => {
                           value={start_time}
                           onChange={(e) => set_start_time(e.target.value)}
                         />
+                        {errors.start_time && <small style={{ color: "red" }}>{errors.start_time[0]}</small>}
                       </div>
                       <div>
                         <label
@@ -1024,6 +1030,7 @@ const Calendars = () => {
                           value={end_time}
                           onChange={(e) => set_end_time(e.target.value)}
                         />
+                        {errors.end_time && <small style={{ color: "red" }}>{errors.end_time[0]}</small>}
                       </div>
                     </div>
                     <div className="formbold-input-flex">
@@ -1321,6 +1328,7 @@ const Calendars = () => {
                             value={event_name}
                             onChange={(e) => set_event_name(e.target.value)}
                           />
+                          {errors.event_name && <small style={{ color: "red" }}>{errors.event_name[0]}</small>}
                         </div>
                       </div>
                     </div>
@@ -1597,6 +1605,7 @@ const Calendars = () => {
                           onChange={(e) => set_start_time(e.target.value)}
                           required
                         />
+                        {errors.start_time && <small style={{ color: "red" }}>{errors.start_time[0]}</small>}
                       </div>
                     </div>
                     <div className="formbold-input-flex">
@@ -1623,7 +1632,7 @@ const Calendars = () => {
                             }}
                             
                           />
-                          
+                          {errors.end_time && <small style={{ color: "red" }}>{errors.end_time[0]}</small>}
                       </div>
                       <div>
                         <div
@@ -2009,6 +2018,7 @@ const Calendars = () => {
                             value={event_name}
                             onChange={(e) => set_event_name(e.target.value)}
                           />
+                          {errors.event_name && <small style={{ color: "red" }}>{errors.event_name[0]}</small>}
                         </div>
                       </div>
                     </div>
@@ -2120,6 +2130,7 @@ const Calendars = () => {
                           value={start_time}
                           onChange={(e) => set_start_time(e.target.value)}
                         />
+                        {errors.start_time && <small style={{ color: "red" }}>{errors.start_time[0]}</small>}
                       </div>
                       <div>
                         <label
@@ -2144,6 +2155,7 @@ const Calendars = () => {
                           }}
                           disabled={disableTimeDuration}
                         />
+                        {errors.end_time && <small style={{ color: "red" }}>{errors.end_time[0]}</small>}
                       </div>
                     </div>
                     <div className="formbold-input-flex">

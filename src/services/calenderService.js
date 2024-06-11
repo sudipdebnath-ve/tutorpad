@@ -13,6 +13,7 @@ export const createEvents = async (data) => {
         return response.data;
       })
       .catch((error) => {
+        console.log("Error creating event------------------", error);
         return error;
       });
 };

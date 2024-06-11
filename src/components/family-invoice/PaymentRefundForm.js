@@ -162,13 +162,12 @@ const saveTransactionHandler = async () => {
         set_transaction_date("");
         set_student_id("");
         set_description("");
+        setErrors({});
         toast.success(response?.message, {
             position: toast.POSITION.TOP_CENTER,
         });
     }else{
-        toast.error("something went wrong !", {
-            position: toast.POSITION.TOP_CENTER,
-        });
+        setErrors(response?.response.data.data || {});
     }
  }
 
