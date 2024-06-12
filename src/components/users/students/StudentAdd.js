@@ -369,7 +369,7 @@ const StudentAdd = () => {
                             >
                               Email Address
                               {formData?.studentType == "Child" && (
-                                <span>Optional</span>
+                                <span> Optional</span>
                               )}
                             </label>
                             <input
@@ -390,13 +390,12 @@ const StudentAdd = () => {
                                 className="formbold-form-label"
                                 id="phone"
                               >
-                                Phone Number
+                                Phone Number <span> Optional</span>
                               </label>
                               <input
-                                type="text"
+                                type="number"
                                 name="phone"
                                 className="form-control"
-                                required
                                 onChange={handleChange}
                               />
                               <small style={{ color: "red" }}>
@@ -995,7 +994,7 @@ const StudentAdd = () => {
                               htmlFor="lessoncat"
                               className="formbold-form-label"
                             >
-                              Default Lesson Category
+                              Default Lesson Category <span> Optional</span>
                             </label>
                             <select
                               name="lessoncat"
@@ -1012,7 +1011,7 @@ const StudentAdd = () => {
                               htmlFor="lessonlen"
                               className="formbold-form-label"
                             >
-                              Default Lesson Length
+                              Default Lesson Length <span> Optional</span>
                             </label>
                             <input
                               type="text"
