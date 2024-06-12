@@ -34,11 +34,37 @@ const Register = ( { subdomain, setSubdomain }) => {
   const [icon, setIcon] = useState(eyeOff);
   const [error, setError] = useState({});
   const [centralPortalDomain, setCentralPortalDomain] = useState("");
+  const [countryDetail, setCountryDetail] = useState({});
 
   const getDomainNameHandler  = async () => {
     const res = await getDomainName();
     setCentralPortalDomain(res?.data) 
     localStorage.setItem("centralPortalDomain", res?.data);
+
+    try {
+      // First, get the IP address
+      const ipResponse = await fetch('https://api.ipify.org?format=json');
+      const ipData = await ipResponse.json();
+
+      // Then, get the geolocation details using the IP
+      const geoResponse = await fetch(`http://ip-api.com/json/${ipData.ip}`);
+      const geoData = await geoResponse.json();
+
+      const data = {
+        ip: ipData.ip,
+        city: geoData.city,
+        country: geoData.country,
+        countryCode: geoData.countryCode,
+        region: geoData.region,
+        regionName: geoData.regionName,
+        status: geoData.status,
+        timezone: geoData.timezone,
+        zip: geoData.zip,
+      };
+      setCountryDetail(data);
+    } catch (error) {
+        console.error('Error fetching IP and country:', error);
+    }
   };
 
   const multiLangHandler = (e) => {
@@ -74,6 +100,7 @@ const Register = ( { subdomain, setSubdomain }) => {
       domain: subdomain,
       bname: userdetails.bname,
       business_size: userdetails.business_size,
+      country_detail: countryDetail,
     };
 
     if (isTermsChecked) {
