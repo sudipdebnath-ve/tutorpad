@@ -61,7 +61,9 @@ const TutorDashboard = () => {
           <div className="row">
             <div className="col-auto">
               <div className="stat text-primary icon4">
-                <img src={createInvoice} alt="create-invoice-icon" />
+              <Link to="/familiies-and-invoices/invoice/1" >
+                  <img src={createInvoice} alt="create-invoice-icon" />
+              </Link>
               </div>
             </div>
             <div className="col mt-0">

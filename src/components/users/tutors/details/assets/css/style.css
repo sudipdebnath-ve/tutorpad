@@ -28,6 +28,16 @@
   line-height: 1;
   padding: 5px;
 }
+
+.student-details .active-user .adult {
+  color: rgb(24, 121, 11);
+  background-color: #cbfef9;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1;
+  padding: 5px;
+}
 .student-details .link-to-family a {
   color: #fb771a;
   font-weight: 600;
