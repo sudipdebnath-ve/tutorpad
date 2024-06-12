@@ -1,6 +1,7 @@
 import axios from "axios";
 import { API_URL } from "../utils/config";
 const token = JSON.parse(localStorage.getItem("tutorPad"));
+console.log("token from invoice service--------------------", token);
 const invoicesApi = axios.create({
     baseURL: API_URL,
     headers: {
