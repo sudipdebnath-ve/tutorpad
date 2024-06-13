@@ -30,6 +30,7 @@ import {
 } from "../../services/invoiceService.js";
 import { Modal as BootstrapModal, Button } from "react-bootstrap";
 import { Icon as ReactIcon } from "react-icons";
+import './style.css';
 
 const FamilyDetails = () => {
   const { sidebarToggle, allFamilies } = useUserDataContext();
@@ -115,13 +116,15 @@ const FamilyDetails = () => {
           <div className="container-fluid p-0">
             <div className="row d-flex">
               <div className="col-xl-4 col-xxl-4">
+              <Link to={"/familiies-and-invoices"} className="link">
+                          {`<`} Back To family & Invoice
+                        </Link>
+
                 <div className="card">
                   <div className="card-body">
                     <div className="row">
                       <div className="col-md-12">
-                        <Link to={"/familiies-and-invoices"}>
-                          {`<`} Back To family & Invoice
-                        </Link>
+                       
                         <Select
                           value={selectedFamily}
                           onChange={(e) => onChangeSelectFamiliyHandler(e)}
