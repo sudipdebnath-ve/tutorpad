@@ -51,10 +51,10 @@ const TransactionByFamily = ()=>{
                                 <a className="btn">New Transaction</a>
                             </div>
                         </Link>
-                        <div style={{lineHeight:'5px',marginTop:'22px'}}>
-                            <p><strong>You're owed ₹ {owedBalance} as of</strong> 
-                            
-                            <div className="custom-datepicker-container">
+                        <div style={{lineHeight:'5px',marginTop:'22px', width:'350px'}}>
+                            <div className="row">
+                                <div className="col-6"><strong className="txt">You're owed  ₹ {owedBalance} as of</strong></div>
+                                <div className="col-6">  <div className="custom-datepicker-container">
                                 <DatePicker
                                     selected={selectedDate}
                                     onChange={handleDateChange}
@@ -62,8 +62,12 @@ const TransactionByFamily = ()=>{
                                     className="custom_datepicker"
                                 />
                                 {/* <span className="down-arrow">&#9660;</span> */}
-                                </div>
-                             </p>
+                                </div></div>
+                            
+                          
+                            </div>
+                           
+                             
                         </div>
                     </div>
                     </div>
