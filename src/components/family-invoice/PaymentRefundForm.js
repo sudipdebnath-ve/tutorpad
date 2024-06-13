@@ -7,6 +7,9 @@ import {chevronLeft} from 'react-icons-kit/feather/chevronLeft';
 import { Icon } from 'react-icons-kit';
 import { ToastContainer, toast } from "react-toastify";
 import { getFamilyAccounts,getFamilyAccountsDetails,saveTransaction,getTransactionById,updateTransaction } from "../../services/invoiceService";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+
+
 const PaymentRefundForm = () => {
 const navigate = useNavigate();
  const [family_account_id,set_family_account_id] = useState();
@@ -178,13 +181,14 @@ const saveTransactionHandler = async () => {
 
   return  <> 
         <ToastContainer />
-        <div className="sectionWrapper" > <Link to={"/familiies-and-invoices"}><Icon icon={chevronLeft}  /> Back To Family Account</Link></div>
+        <span className="sectionWrapper pb-3" > <Link to={"/familiies-and-invoices"}><Icon icon={chevronLeft}  /> Back To Family Account</Link></span>
         
           <div className="payment-type-box">
               <div className="card card-body form-area">
                   <div className="row">
                       <div className="col-md-12">
-                          <h4 style={{textAlign:'left'}}>{param.type==1?"Payment":"Refund"} Details</h4>
+                        {/* <span className="sectionWrapper-charge-details">Step {param.screen == 1 ? "1/2" : "2/2"}</span> */}
+                          <h4 className="pt-3 pb-3" style={{textAlign:'left'}}>{param.type==1?"Payment":"Refund"} Details</h4>
                       </div>
                   </div>
                   <div className="row">
@@ -224,12 +228,15 @@ const saveTransactionHandler = async () => {
                   </div>
                   <div className="row">
                       <div className="col-md-12">
-                      <div className="formbold-form-btn-wrapper">
-                          <div className="btn-end">
-                              <Link className="cancel" to={'/familiies-and-invoices/transaction-type/'+1+'/'+param.family_id}>
-                              Back
+                      <div className="col-md-12">
+                          <div className="row pt-3">
+                            <div className="col-3">
+                                <Link className="cancel" to={'/familiies-and-invoices/transaction-type/'+1+'/'+param.family_id}>
+                                <ArrowBackIosIcon/> Back
                               </Link>
-                              <Link className="cancel" to={"/familiies-and-invoices"}>
+                            </div>
+                              <div className="col-9 rightBt">
+                                <Link className="cancel" to={"/familiies-and-invoices"}>
                               Cancel
                               </Link>
                               {
@@ -240,10 +247,10 @@ const saveTransactionHandler = async () => {
                                                     Save & Add Another
                                                 </button>
                               }
-                              
                               <button onClick={()=>saveTransactionHandler()} className="formbold-btn">
                               Save
                               </button>
+                              </div>
                           </div>
                           </div>
                       </div>
