@@ -15,7 +15,7 @@ import LanguageOption from "../LanguageOption.js";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 
-const StudentDashboard = () => {
+const StudentDashboard = ({ dashboardData }) => {
   const { userData } = useUserDataContext();
   const { t } = useTranslation();
 
