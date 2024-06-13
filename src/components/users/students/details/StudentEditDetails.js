@@ -913,7 +913,7 @@ const StudentEditDetails = () => {
                     )}
 
                     <div className="link-to-family">
-                      <Link to={"/"}>View Family Account</Link>
+                      <Link to={"/familiies-and-invoices/family/"+studentFetchData?.family_account_id}>View Family Account</Link>
                     </div>
                   </div>
                 </div>
