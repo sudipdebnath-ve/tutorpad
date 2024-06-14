@@ -153,7 +153,7 @@ const Register = ( { subdomain, setSubdomain }) => {
     localStorage.setItem("theme", "light");
     getDomainNameHandler()
     checkAuthAndRedirect(navigate, 'Register');
-  });
+  } ,[]);
 
   function validateInput(event) {
     console.log('test : ',event);
