@@ -19,7 +19,7 @@ const StudentAdd = () => {
   const [additionalDetails, setAdditionalDetails] = useState(false);
   const [parentList, setParentList] = useState([]);
   const navigate = useNavigate();
-  const [selectedStatus, setSelectedStatus] = useState("active");
+  const [selectedStatus, setSelectedStatus] = useState("Active");
   const [error, setError] = useState({});
   const [formData, setFormData] = useState({
     first_name: "",
@@ -608,47 +608,29 @@ const StudentAdd = () => {
                               </label>
                             </div>
                             <div className="studentStatus">
-                              <div>
+                              <div className="student-status">
                                 <input
                                   type="radio"
                                   className="status"
                                   name="student_status"
                                   onChange={handleChange}
-                                  value="active"
-                                  checked={selectedStatus === "active"}
+                                  value="Active"
+                                  checked={selectedStatus === "Active"}
                                 />
-                                <span
-                                  className="bg-design"
-                                  style={{
-                                    color: "#18790b",
-                                    backgroundColor: "#b3f3b3bd",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  Active
-                                </span>
+                                <span className="active"> Active </span>
                               </div>
-                              <div>
+                              <div className="student-status">
                                 <input
                                   type="radio"
                                   className="status"
                                   name="student_status"
                                   onChange={handleChange}
-                                  value="trial"
-                                  checked={selectedStatus === "trial"}
+                                  value="Trial"
+                                  checked={selectedStatus === "Trial"}
                                 />
-                                <span
-                                  className="bg-design"
-                                  style={{
-                                    color: "#005c5c",
-                                    backgroundColor: "rgb(179 210 243 / 74%)",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  Trial
-                                </span>
+                                <span className="trial"> Trial </span>
                               </div>
-                              <div>
+                              <div className="student-status">
                                 <input
                                   type="radio"
                                   className="status"
@@ -657,18 +639,9 @@ const StudentAdd = () => {
                                   value="Waiting"
                                   checked={selectedStatus === "Waiting"}
                                 />
-                                <span
-                                  className="bg-design"
-                                  style={{
-                                    color: "#e34c00",
-                                    backgroundColor: "rgb(253 232 222 / 74%)",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  Waiting
-                                </span>
+                                <span className="waiting"> Waiting </span>
                               </div>
-                              <div>
+                              <div className="student-status">
                                 <input
                                   type="radio"
                                   className="status"
@@ -677,18 +650,9 @@ const StudentAdd = () => {
                                   value="Lead"
                                   checked={selectedStatus === "Lead"}
                                 />
-                                <span
-                                  className="bg-design"
-                                  style={{
-                                    color: "#604274",
-                                    backgroundColor: "rgb(238 205 249 / 74%)",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  Lead
-                                </span>
+                                <span className="lead"> Lead </span>
                               </div>
-                              <div>
+                              <div className="student-status">
                                 <input
                                   type="radio"
                                   className="status"
@@ -697,16 +661,7 @@ const StudentAdd = () => {
                                   value="Inactive"
                                   checked={selectedStatus === "Inactive"}
                                 />
-                                <span
-                                  className="bg-design"
-                                  style={{
-                                    color: "#344242",
-                                    backgroundColor: "rgb(208 219 231 / 74%)",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  Inactive
-                                </span>
+                                <span className="inactive"> Inactive </span>
                               </div>
                             </div>
                           </div>

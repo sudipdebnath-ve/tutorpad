@@ -490,7 +490,7 @@ const MyPreferences = () => {
               <div className="row d-flex">
                 <div className="col-xl-4 col-xxl-4">
                   <div className="formbold-input-flex justify-content-center">
-                    <div>
+                    <div className="student-profile-view">
                       <label htmlFor="photo" className="formbold-form-label">
                         Photo <span>Optional</span>
                       </label>
@@ -504,7 +504,7 @@ const MyPreferences = () => {
                               />
                             </>
                           ) : (
-                            <h2>{initial}</h2>
+                            <h2>{initial && initial.toLocaleUpperCase()}</h2>
                           )}
                         </div>
                       </div>
@@ -1071,12 +1071,12 @@ const MyPreferences = () => {
                   <div className="card-body">
                     <div className="initials">
                       <div className="image-user">
-                        {userData?.business_data?.dp_url ? (
+                        {profilePhoto ? (
                           <>
-                            <img src={userData?.business_data?.dp_url} alt="" />
+                            <img src={profilePhoto} alt="" />
                           </>
                         ) : (
-                          <h2>{initial}</h2>
+                          <h2>{initial && initial.toLocaleUpperCase()}</h2>
                         )}
                       </div>
                     </div>

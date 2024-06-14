@@ -427,3 +427,7 @@
 input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(var(--date-filter-percentage));
 }
+
+.student-profile-view{
+  width: 100% !important;
+}

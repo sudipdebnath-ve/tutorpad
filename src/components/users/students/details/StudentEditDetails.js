@@ -47,7 +47,7 @@ const StudentEditDetails = () => {
   const [preferenceDisabled, setPreferenceDisabled] = useState(true);
   const [familyDetailFlag, setFamilyDetailFlag] = useState(false);
   const [familyDetailDisabled, setFamilyDetailDisabled] = useState(true);
-  
+  const [selectedStatus, setSelectedStatus] = useState("");
 
   let { id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -226,6 +226,7 @@ const StudentEditDetails = () => {
     formData.phone = studentFetchData?.phone;
 
     setProfilePhoto(studentFetchData?.dp_url);
+    setSelectedStatus(studentFetchData?.status_label);
     
     formData.parentfirstname = studentFetchData?.parentfirstname;
     formData.parentlastname = studentFetchData?.parentlastname;
@@ -360,6 +361,7 @@ const StudentEditDetails = () => {
 
   const formSubmit = async (e) => {
     formData["student_id"] = id;
+    formData["student_status"] = selectedStatus;
     console.log(formData);
 
     e.preventDefault();
@@ -436,7 +438,13 @@ const StudentEditDetails = () => {
     setIsOpens(e);
   }
 
-  console.log("students fetched data----------", studentFetchData);
+  const handleChangeStatus = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    if (name === "student_status") {
+      setSelectedStatus(value);
+    }
+  }
 
   return (
     <div className="wrapper student-details">
@@ -471,7 +479,7 @@ const StudentEditDetails = () => {
               <div className="row d-flex">
                 <div className="col-xl-4 col-xxl-4">
                   <div className="formbold-input-flex justify-content-center">
-                    <div>
+                    <div className="student-profile-view">
                       <label htmlFor="file" className="formbold-form-label">
                         Photo <span>Optional</span>
                       </label>
@@ -482,7 +490,7 @@ const StudentEditDetails = () => {
                               <img src={profilePhoto} alt="" />
                             </>
                           ) : (
-                            <h2>{initial}</h2>
+                            <h2>{initial && initial.toLocaleUpperCase()}</h2>
                           )}
                         </div>
                       </div>
@@ -567,6 +575,75 @@ const StudentEditDetails = () => {
                             value={formData.phone}
                             onChange={handleEditChange}
                           />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex diff">
+                      <div>
+                        <div>
+                          <label
+                            htmlFor="student_status"
+                            className="formbold-form-label"
+                          >
+                            Student Status
+                          </label>
+                        </div>
+                        <div className="studentStatus">
+                          <div className="student-status">
+                            <input
+                              type="radio"
+                              className="status"
+                              name="student_status"
+                              onChange={handleChangeStatus}
+                              value="Active"
+                              checked={selectedStatus === "Active"}
+                            />
+                            <span className="active"> Active </span>
+                          </div>
+                          <div className="student-status">
+                            <input
+                              type="radio"
+                              className="status"
+                              name="student_status"
+                              onChange={handleChangeStatus}
+                              value="Trial"
+                              checked={selectedStatus === "Trial"}
+                            />
+                            <span className="trial"> Trial </span>
+                          </div>
+                          <div className="student-status">
+                            <input
+                              type="radio"
+                              className="status"
+                              name="student_status"
+                              onChange={handleChangeStatus}
+                              value="Waiting"
+                              checked={selectedStatus === "Waiting"}
+                            />
+                            <span className="waiting"> Waiting </span>
+                          </div>
+                          <div className="student-status">
+                            <input
+                              type="radio"
+                              className="status"
+                              name="student_status"
+                              onChange={handleChangeStatus}
+                              value="Lead"
+                              checked={selectedStatus === "Lead"}
+                            />
+                            <span className="lead"> Lead </span>
+                          </div>
+                          <div className="student-status">
+                            <input
+                              type="radio"
+                              className="status"
+                              name="student_status"
+                              onChange={handleChangeStatus}
+                              value="Inactive"
+                              checked={selectedStatus === "Inactive"}
+                            />
+                            <span className="inactive"> Inactive </span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -875,9 +952,9 @@ const StudentEditDetails = () => {
                   <div className="card-body">
                     <div className="initials">
                       <div className="image-user">
-                        {studentFetchData?.dp_url ? (
+                        {profilePhoto ? (
                           <>
-                            <img src={studentFetchData?.dp_url} alt="" />
+                            <img src={profilePhoto} alt="" />
                           </>
                         ) : (
                           <h2>{initial && initial.toLocaleUpperCase()}</h2>
@@ -893,22 +970,25 @@ const StudentEditDetails = () => {
 
                     <div className="title-user">
                       {studentFetchData?.first_name}{" "}
-                      {studentFetchData?.last_name}
+                      {studentFetchData?.last_name} 
+                      <br></br>
+                      <span className="student-type-span">[ {studentFetchData?.studentType} ]</span>
                     </div>
                     {studentFetchData?.student_status && studentFetchData?.studentType && (
                       <>
                       <div className="studentstatus-wrapper">
-                        <div className="active-user">
-                          <span className="active">
-                            {studentFetchData?.status_label}
-                          </span>
+                        <div className="student-status">
+                          <span className={
+                                studentFetchData?.status_label === "Active" ? "active" : 
+                                studentFetchData?.status_label === "Trial" ? "trial" : 
+                                studentFetchData?.status_label === "Waiting" ? "waiting" : 
+                                studentFetchData?.status_label === "Lead" ? "lead" : 
+                                studentFetchData?.status_label === "Inactive" ? "inactive" : 
+                                ""
+                              }>
+                            {studentFetchData?.status_label}</span>
                         </div>
-                        <div className="active-user">
-                          <span className="adult">
-                            {studentFetchData?.studentType   }
-                          </span>
-                        </div>
-                        </div>
+                      </div>
                       </>
                     )}
 

@@ -435,4 +435,9 @@
 .position-set {
   position: relative;
 }
+
+.student-profile-view{
+  width: 100% !important;
+}
+
 /*************************** Student Message History Start **************************/

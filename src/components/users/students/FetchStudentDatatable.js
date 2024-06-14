@@ -77,7 +77,7 @@ const FetchStudentDatatable = () => {
       width: 150,
     },
     {
-      field: "student_status",
+      field: "status_label",
       headerName: "Status",
       width: 140,
     },
