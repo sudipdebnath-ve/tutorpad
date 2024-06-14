@@ -25,6 +25,8 @@ const StudentEditDetails = () => {
     allTutors,
     fetchCategory,
     allCategory,
+    getStudentStatus,
+    statusList,
   } = useUserDataContext();
   const [initial, setInitial] = useState("");
   const [todayDate, setTodayDate] = useState(new Date());
@@ -48,6 +50,9 @@ const StudentEditDetails = () => {
   const [familyDetailFlag, setFamilyDetailFlag] = useState(false);
   const [familyDetailDisabled, setFamilyDetailDisabled] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedStatusVal, setSelectedStatusVal] = useState("");
+  const [selectedStatusColor, setSelectedStatusColor] = useState("");
+  const [selectedStatusBgColor, setSelectedStatusBgColor] = useState("");
 
   let { id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -108,6 +113,7 @@ const StudentEditDetails = () => {
     fetchCategory();
     getTutor();
     fetchAssignTutors(id);
+    getStudentStatus();
   }, [id]);
 
   const handleAssignTutor = (e) => {
@@ -226,7 +232,10 @@ const StudentEditDetails = () => {
     formData.phone = studentFetchData?.phone;
 
     setProfilePhoto(studentFetchData?.dp_url);
-    setSelectedStatus(studentFetchData?.status_label);
+    setSelectedStatus(studentFetchData?.student_status);
+    setSelectedStatusVal(studentFetchData?.status_label);
+    setSelectedStatusColor(studentFetchData?.status_color);
+    setSelectedStatusBgColor(studentFetchData?.bg_color);
     
     formData.parentfirstname = studentFetchData?.parentfirstname;
     formData.parentlastname = studentFetchData?.parentlastname;
@@ -443,6 +452,12 @@ const StudentEditDetails = () => {
     const value = e.target.value;
     if (name === "student_status") {
       setSelectedStatus(value);
+      const text = e.target.getAttribute('data-status-text');
+      const color = e.target.getAttribute('data-status-color');
+      const bgcolor = e.target.getAttribute('data-status-bgcolor');
+      setSelectedStatusVal(text);
+      setSelectedStatusColor(color);
+      setSelectedStatusBgColor(bgcolor);
     }
   }
 
@@ -589,61 +604,24 @@ const StudentEditDetails = () => {
                           </label>
                         </div>
                         <div className="studentStatus">
-                          <div className="student-status">
-                            <input
-                              type="radio"
-                              className="status"
-                              name="student_status"
-                              onChange={handleChangeStatus}
-                              value="Active"
-                              checked={selectedStatus === "Active"}
-                            />
-                            <span className="active"> Active </span>
-                          </div>
-                          <div className="student-status">
-                            <input
-                              type="radio"
-                              className="status"
-                              name="student_status"
-                              onChange={handleChangeStatus}
-                              value="Trial"
-                              checked={selectedStatus === "Trial"}
-                            />
-                            <span className="trial"> Trial </span>
-                          </div>
-                          <div className="student-status">
-                            <input
-                              type="radio"
-                              className="status"
-                              name="student_status"
-                              onChange={handleChangeStatus}
-                              value="Waiting"
-                              checked={selectedStatus === "Waiting"}
-                            />
-                            <span className="waiting"> Waiting </span>
-                          </div>
-                          <div className="student-status">
-                            <input
-                              type="radio"
-                              className="status"
-                              name="student_status"
-                              onChange={handleChangeStatus}
-                              value="Lead"
-                              checked={selectedStatus === "Lead"}
-                            />
-                            <span className="lead"> Lead </span>
-                          </div>
-                          <div className="student-status">
-                            <input
-                              type="radio"
-                              className="status"
-                              name="student_status"
-                              onChange={handleChangeStatus}
-                              value="Inactive"
-                              checked={selectedStatus === "Inactive"}
-                            />
-                            <span className="inactive"> Inactive </span>
-                          </div>
+                          {statusList.map((status) => {
+                            return (
+                            <div className="student-status">
+                              <input
+                                type="radio"
+                                className="status"
+                                name="student_status"
+                                onChange={handleChangeStatus}
+                                value={status.id}
+                                checked={selectedStatus == status.id}
+                                data-status-text={status.status_title}
+                                data-status-color={status.status_color}
+                                data-status-bgcolor={status.bg_color}
+                              />
+                              <span style={{color: status.status_color, backgroundColor: status.bg_color}}> {status.status_title} </span>
+                            </div>
+                            );
+                          })}
                         </div>
                       </div>
                     </div>
@@ -972,21 +950,15 @@ const StudentEditDetails = () => {
                       {studentFetchData?.first_name}{" "}
                       {studentFetchData?.last_name} 
                       <br></br>
-                      <span className="student-type-span">[ {studentFetchData?.studentType} ]</span>
+                      { studentFetchData?.studentType &&
+                      <span className="student-type-span">[ {studentFetchData?.studentType} ]</span> }
                     </div>
-                    {studentFetchData?.student_status && studentFetchData?.studentType && (
+                    {studentFetchData?.student_status && (
                       <>
                       <div className="studentstatus-wrapper">
                         <div className="student-status">
-                          <span className={
-                                studentFetchData?.status_label === "Active" ? "active" : 
-                                studentFetchData?.status_label === "Trial" ? "trial" : 
-                                studentFetchData?.status_label === "Waiting" ? "waiting" : 
-                                studentFetchData?.status_label === "Lead" ? "lead" : 
-                                studentFetchData?.status_label === "Inactive" ? "inactive" : 
-                                ""
-                              }>
-                            {studentFetchData?.status_label}</span>
+                          <span style={{color: selectedStatusColor, backgroundColor: selectedStatusBgColor}}>
+                            {selectedStatusVal}</span>
                         </div>
                       </div>
                       </>

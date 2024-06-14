@@ -11,7 +11,9 @@ import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { getParentDetailsList } from "../../../services/calenderService.js";
 const StudentAdd = () => {
-  const { fetchData, sidebarToggle, token, userId, fetchFamilies, allFamilies } = useUserDataContext();
+  const { fetchData, sidebarToggle, token, userId, fetchFamilies, allFamilies,  
+    getStudentStatus,
+    statusList, } = useUserDataContext();
   const [studentType, setStudentType] = useState("Child");
   const [studentFamily, setStudentFamily] = useState("New Family");
   const [showParentDetails, setShowParentDetails] = useState(true);
@@ -19,7 +21,7 @@ const StudentAdd = () => {
   const [additionalDetails, setAdditionalDetails] = useState(false);
   const [parentList, setParentList] = useState([]);
   const navigate = useNavigate();
-  const [selectedStatus, setSelectedStatus] = useState("Active");
+  const [selectedStatus, setSelectedStatus] = useState("1");
   const [error, setError] = useState({});
   const [formData, setFormData] = useState({
     first_name: "",
@@ -58,6 +60,7 @@ const StudentAdd = () => {
 
   useEffect(() => {
     fetchFamilies();
+    getStudentStatus();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -171,7 +174,6 @@ const StudentAdd = () => {
   const handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
-    console.log('studentFamily : ',value);
 
     if (name === "student_status") {
       setSelectedStatus(value);
@@ -608,61 +610,21 @@ const StudentAdd = () => {
                               </label>
                             </div>
                             <div className="studentStatus">
-                              <div className="student-status">
-                                <input
-                                  type="radio"
-                                  className="status"
-                                  name="student_status"
-                                  onChange={handleChange}
-                                  value="Active"
-                                  checked={selectedStatus === "Active"}
-                                />
-                                <span className="active"> Active </span>
-                              </div>
-                              <div className="student-status">
-                                <input
-                                  type="radio"
-                                  className="status"
-                                  name="student_status"
-                                  onChange={handleChange}
-                                  value="Trial"
-                                  checked={selectedStatus === "Trial"}
-                                />
-                                <span className="trial"> Trial </span>
-                              </div>
-                              <div className="student-status">
-                                <input
-                                  type="radio"
-                                  className="status"
-                                  name="student_status"
-                                  onChange={handleChange}
-                                  value="Waiting"
-                                  checked={selectedStatus === "Waiting"}
-                                />
-                                <span className="waiting"> Waiting </span>
-                              </div>
-                              <div className="student-status">
-                                <input
-                                  type="radio"
-                                  className="status"
-                                  name="student_status"
-                                  onChange={handleChange}
-                                  value="Lead"
-                                  checked={selectedStatus === "Lead"}
-                                />
-                                <span className="lead"> Lead </span>
-                              </div>
-                              <div className="student-status">
-                                <input
-                                  type="radio"
-                                  className="status"
-                                  name="student_status"
-                                  onChange={handleChange}
-                                  value="Inactive"
-                                  checked={selectedStatus === "Inactive"}
-                                />
-                                <span className="inactive"> Inactive </span>
-                              </div>
+                              {statusList.map((status) => {
+                                return (
+                                <div className="student-status">
+                                  <input
+                                    type="radio"
+                                    className="status"
+                                    name="student_status"
+                                    onChange={handleChange}
+                                    value={status.id}
+                                    checked={selectedStatus == status.id}
+                                  />
+                                  <span style={{color: status.status_color, backgroundColor: status.bg_color}}> {status.status_title} </span>
+                                </div>
+                                );
+                              })}
                             </div>
                           </div>
                         </div>
