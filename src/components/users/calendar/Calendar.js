@@ -86,6 +86,8 @@ const Calendars = () => {
     allEvents,
     studentData,
     fetchStudentData,
+    fetchStudentGroupData,
+    studentGroupData,
     fetchLocation,
     allLocation,
     isDarkMode,
@@ -170,6 +172,13 @@ const Calendars = () => {
   const [notes, set_notes] = useState("");
   const [delete_all, set_delete_all] = useState(false);
   const [attendees_info, set_attendees_info] = useState([]);
+  const [selectedGroups, setSelectedGroups] = useState([]);
+  const [selectedStudents, setSelectedStudents] = useState([]);
+  const [selectedStudentNames, setSelectedStudentNames] = useState([]);
+  const [val, setVal] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [isOpenErrors, setIsOpenErrors] = useState(false);
+
 
   const colourStyles = {
     control: (styles) => ({
@@ -215,6 +224,7 @@ const Calendars = () => {
     // set_end_date(formatDate(new Date()));
     set_end_time("");
   };
+
   const resetDeleteForm = () => {
     set_email_students(false);
     set_email_parents(false);
@@ -280,7 +290,7 @@ const Calendars = () => {
     await getStudentsByTutorIdHandler(result.data.event_tutor);
     set_event_attendees_value([
       ...studentsList.filter((e) => {
-        console.log(e);
+        console.log("students list.......................", e);
         let verify = attendees_ids.find((f) => f == e.value);
         return verify != undefined;
       }),
@@ -380,18 +390,51 @@ const Calendars = () => {
   }, [allTutors]); // Make sure to include allTutors as a dependency
 
   useEffect(() => {
-    var token = JSON.parse(localStorage.getItem("tutorPad"));
-    if (!token) {
-      navigate("/signin");
-    } else {
-      setTimeout(() => {
-        fetchData(token);
-        fetchStudentData();
-      }, 2000);
+      fetchData(token);
+      fetchStudentData();
+      fetchStudentGroupData();
       getTutor();
       fetchEventsForVisibleRange(visibleRange);
-    }
   }, []);
+
+  useEffect(() => {
+    studentGroupData != false &&  setVal(true);
+  }, [studentGroupData]);
+
+  const groupStudents = val ? studentGroupData : [];
+
+  const handleGroupChange = (id, students) => {
+
+    setSelectedGroups(prev =>
+      prev.includes(id)
+        ? prev.filter(groupId => groupId !== id)
+        : [...prev, id]
+    );
+
+    // Prepare the new students and attendees to add
+    const newAttendeesList = students.filter(
+      student => !event_attendees.some(existingStudent => existingStudent.value === student.id)
+    ).map(student => ({
+      value: student.id,
+      label: student.name
+    }));
+
+    // Update eventAttendees
+    set_event_attendees(prevEventAttendees => [
+      ...prevEventAttendees,
+      ...newAttendeesList
+    ]);  
+    console.log('event_attendees_value :',newAttendeesList);
+
+  };
+
+  // Handler to remove a selected student
+  const handleRemoveStudent = (id) => {
+    const updatedSelectedStudents = selectedStudents.filter(student => student !== id);
+    const updatedSelectedTextStudents = selectedStudentNames.filter(student => student.id !== id);
+    setSelectedStudents(updatedSelectedStudents);
+    setSelectedStudentNames(updatedSelectedTextStudents);
+  };
 
   const getStudentsByTutorIdHandler = async (id) => {
     set_event_tutor(id);
@@ -435,6 +478,8 @@ const Calendars = () => {
 
   function openModal(e) {
     setIsOpen(e);
+    setErrors({}); // Clear errors when opening the modal
+    setIsOpenErrors(true);
   }
 
   function afterOpenModal() {
@@ -444,6 +489,8 @@ const Calendars = () => {
 
   function closeModal(e) {
     setIsOpen(e);
+    setErrors({}); // Clear errors when closing the modal
+    setIsOpenErrors(false);
   }
 
   const handleNewEventChange = (e) => {
@@ -548,10 +595,12 @@ const Calendars = () => {
     };
     console.log("update_all=>", update_all_status);
     console.log("Test=>", formData);
+    setErrors({})
     // return ;
+    let response
     if (isEditForm) {
       // Edit Form
-      const response = await updateEvents(formData, selectedEventId);
+      response = await updateEvents(formData, selectedEventId);
       console.log("Response=>", response);
       if (response.success) {
         toast.success(response.message, {
@@ -560,14 +609,12 @@ const Calendars = () => {
         fetchEventsForVisibleRange(visibleRange);
         setIsOpen(false);
       } else {
-        toast.error(response.message, {
-          position: toast.POSITION.TOP_CENTER,
-        });
+        setErrors(response?.response.data.data || {});
       }
     } else {
       // Add Form
-      const response = await createEvents(formData);
-      console.log("Response=>", response);
+      response = await createEvents(formData);
+      console.log("Response----------------------=>", response);
       if (response.success) {
         toast.success(response.message, {
           position: toast.POSITION.TOP_CENTER,
@@ -575,9 +622,7 @@ const Calendars = () => {
         fetchEventsForVisibleRange(visibleRange);
         setIsOpen(false);
       } else {
-        toast.error(response.message, {
-          position: toast.POSITION.TOP_CENTER,
-        });
+        setErrors(response?.response.data.data || {});
       }
     }
   };
@@ -630,6 +675,7 @@ const Calendars = () => {
     setEventEndTime(endTimeString);
     setEventDesc({ ...e, start: startDateString, end: endDateString });
   };
+
   const openNewAppointmentModal = (e) => {
     // Convert start and end dates to string format
     set_start_date(formatDate(e.start));
@@ -670,7 +716,7 @@ const Calendars = () => {
     setIsEditForm(false);
     openModal("newNonTutoringEvent");
   };
-
+  
   return (
     <div className="wrapper">
       {sidebarToggle ? (
@@ -850,6 +896,7 @@ const Calendars = () => {
                             value={event_name}
                             onChange={(e) => set_event_name(e.target.value)}
                           />
+                          {errors.event_name && <small style={{ color: "red" }}>{errors.event_name[0]}</small>}
                         </div>
                       </div>
                     </div>
@@ -965,6 +1012,7 @@ const Calendars = () => {
                           value={start_time}
                           onChange={(e) => set_start_time(e.target.value)}
                         />
+                        {errors.start_time && <small style={{ color: "red" }}>{errors.start_time[0]}</small>}
                       </div>
                       <div>
                         <label
@@ -982,6 +1030,7 @@ const Calendars = () => {
                           value={end_time}
                           onChange={(e) => set_end_time(e.target.value)}
                         />
+                        {errors.end_time && <small style={{ color: "red" }}>{errors.end_time[0]}</small>}
                       </div>
                     </div>
                     <div className="formbold-input-flex">
@@ -1279,6 +1328,7 @@ const Calendars = () => {
                             value={event_name}
                             onChange={(e) => set_event_name(e.target.value)}
                           />
+                          {errors.event_name && <small style={{ color: "red" }}>{errors.event_name[0]}</small>}
                         </div>
                       </div>
                     </div>
@@ -1294,8 +1344,10 @@ const Calendars = () => {
                             onChange={(e) =>
                               getStudentsByTutorIdHandler(e.target.value)
                             }
-                            id="tutor"
+                            value={event_tutor}
                           >
+                            <option>Select Tutor</option>
+
                             {allTutors && allTutors.length > 0 ? (
                               allTutors.map((item) => (
                                 <option key={item.id} value={item.id}>
@@ -1413,108 +1465,59 @@ const Calendars = () => {
                       Allow students to register through the Student Portal
                     </div>
                     <hr></hr>
-                    <div className="formbold-input-flex">
-                      <div>
-                        <label
-                          htmlFor="attendees"
-                          className="formbold-form-label"
-                        >
+                    <div className="formbold-input-flex diff">
+                      <div style={{ position: 'relative' }}>
+                        <label htmlFor="attendees" className="formbold-form-label">
                           Attendees
                         </label>
                         <div>
                           <Select
                             defaultValue={event_attendees_value}
+                            value={event_attendees}
                             onChange={(e) => set_event_attendees(e)}
                             isMulti={true}
                             options={studentsList}
                             styles={colourStyles}
                           />
                         </div>
-                      </div>
-                      <div>
-                        <div>
-                          <label
-                            htmlFor="start_date"
-                            className="formbold-form-label"
-                          >
-                            Date
-                          </label>
-                          <input
-                            type="date"
-                            name="start_date"
-                            className="form-control"
-                            value={formatDate(start_date)}
-                            onChange={(e) =>
-                              set_start_date(formatDate(e.target.value))
-                            }
-                          />
+                        <div className="mt-2">
+                            <label>Selected Students:</label>
+                              <ul className="selected-students-list">
+                                {selectedStudentNames.map((selected) => (
+                                  <li key={selected.id} className="selected-student-tag">
+                                    {selected.value}
+                                    <button 
+                                      className="remove-button" 
+                                      onClick={() => handleRemoveStudent(selected.id)}
+                                    >
+                                      &times;
+                                    </button>
+                                  </li>
+                                ))}
+                              </ul>
+                        </div>
+                        <div className="rightDropdown">
+                          <div className="dropdown">
+                            <button className="dropbtn" type="button">
+                              Groups <i className="fas fa-chevron-down"></i>
+                            </button>
+                            <div className="dropdown-content">
+                              { groupStudents.map(item=> (
+                                    <label
+                                    key={item.id}
+                                    value={item.name}
+                                    onClick={() => handleGroupChange(item.id, item.students)}
+                                    className={selectedGroups.includes(item.id) ? 'selected' : ''}
+                                  >
+                                    {item.name}
+                                  </label>
+                              ))}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                    <div className="formbold-input-flex">
-                      <div>
-                        <label
-                          htmlFor="address"
-                          className="formbold-form-label"
-                        >
-                          Time
-                        </label>
-                        <br></br>
 
-                        <input
-                          type="time"
-                          name="time"
-                          id="time"
-                          className="form-control"
-                          value={start_time}
-                          onChange={(e) => set_start_time(e.target.value)}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="address"
-                          className="formbold-form-label"
-                        >
-                          Duration
-                        </label>
-                        <br></br>
-
-                        <input
-                          type="text"
-                          name="duration"
-                          className="form-control"
-                          placeholder="30 min"
-                          value={duration}
-                          onChange={(e) => {
-                            calculateEndDateTimeByDuration(
-                              e.target.value != "" ? e.target.value : 0
-                            );
-                            setDuration(e.target.value);
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <div className="formbold-input-flex">
-                      <div></div>
-                      <div>
-                        <div
-                          className="preference"
-                          style={{ fontSize: "15px" }}
-                        >
-                          <input
-                            type="checkbox"
-                            name="all_day"
-                            value="All day"
-                            checked={event_all_day}
-                            onChange={(e) =>
-                              set_event_all_day(e.target.checked)
-                            }
-                          />
-                          All Day
-                        </div>
-                      </div>
-                    </div>
                     <div className="formbold-input-flex">
                       <div>
                         <label
@@ -1564,6 +1567,92 @@ const Calendars = () => {
                         </select>
                       </div>
                     </div>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <div>
+                          <label
+                            htmlFor="start_date"
+                            className="formbold-form-label"
+                          >
+                            Date
+                          </label>
+                          <input
+                            type="date"
+                            name="start_date"
+                            className="form-control"
+                            value={formatDate(start_date)}
+                            onChange={(e) =>
+                              set_start_date(formatDate(e.target.value))
+                            }
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="address"
+                          className="formbold-form-label"
+                        >
+                          Time
+                        </label>
+                        <br></br>
+
+                        <input
+                          type="time"
+                          name="time"
+                          id="time"
+                          className="form-control"
+                          value={start_time}
+                          onChange={(e) => set_start_time(e.target.value)}
+                          required
+                        />
+                        {errors.start_time && <small style={{ color: "red" }}>{errors.start_time[0]}</small>}
+                      </div>
+                    </div>
+                    <div className="formbold-input-flex">
+                      <div>
+                        <label
+                            htmlFor="address"
+                            className="formbold-form-label"
+                          >
+                            Duration
+                          </label>
+                          <br></br>
+
+                          <input
+                            type="text"
+                            name="duration"
+                            className="form-control"
+                            placeholder="30 min"
+                            value={duration}
+                            onChange={(e) => {
+                              calculateEndDateTimeByDuration(
+                                e.target.value != "" ? e.target.value : 0
+                              );
+                              setDuration(e.target.value);
+                            }}
+                            
+                          />
+                          {errors.end_time && <small style={{ color: "red" }}>{errors.end_time[0]}</small>}
+                      </div>
+                      <div>
+                        <div
+                          className="preference"
+                          style={{ fontSize: "15px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="all_day"
+                            value="All day"
+                            checked={event_all_day}
+                            onChange={(e) =>
+                              set_event_all_day(e.target.checked)
+                            }
+                          />
+                          All Day
+                        </div>
+                      </div>
+                    </div>
+                    
                     <div className="formbold-input-flex">
                       <div>
                         <div
@@ -1929,6 +2018,7 @@ const Calendars = () => {
                             value={event_name}
                             onChange={(e) => set_event_name(e.target.value)}
                           />
+                          {errors.event_name && <small style={{ color: "red" }}>{errors.event_name[0]}</small>}
                         </div>
                       </div>
                     </div>
@@ -2040,6 +2130,7 @@ const Calendars = () => {
                           value={start_time}
                           onChange={(e) => set_start_time(e.target.value)}
                         />
+                        {errors.start_time && <small style={{ color: "red" }}>{errors.start_time[0]}</small>}
                       </div>
                       <div>
                         <label
@@ -2064,6 +2155,7 @@ const Calendars = () => {
                           }}
                           disabled={disableTimeDuration}
                         />
+                        {errors.end_time && <small style={{ color: "red" }}>{errors.end_time[0]}</small>}
                       </div>
                     </div>
                     <div className="formbold-input-flex">

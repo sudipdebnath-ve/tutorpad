@@ -30,6 +30,7 @@ import {
 } from "../../services/invoiceService.js";
 import { Modal as BootstrapModal, Button } from "react-bootstrap";
 import { Icon as ReactIcon } from "react-icons";
+import './style.css';
 
 const FamilyDetails = () => {
   const { sidebarToggle, allFamilies } = useUserDataContext();
@@ -115,13 +116,15 @@ const FamilyDetails = () => {
           <div className="container-fluid p-0">
             <div className="row d-flex">
               <div className="col-xl-4 col-xxl-4">
+              <Link to={"/familiies-and-invoices"} className="link">
+                          {`<`} Back To family & Invoice
+                        </Link>
+
                 <div className="card">
                   <div className="card-body">
                     <div className="row">
                       <div className="col-md-12">
-                        <Link to={"/familiies-and-invoices"}>
-                          {`<`} Back To family & Invoice
-                        </Link>
+                       
                         <Select
                           value={selectedFamily}
                           onChange={(e) => onChangeSelectFamiliyHandler(e)}
@@ -154,16 +157,8 @@ const FamilyDetails = () => {
                           {students.map((e) => {
                             return (
                               <li>
-                                <Link to={"/"}>
-                                  <Icon icon={user} /> {e?.name || ""}{" "}
-                                </Link>
-                                <span
-                                  style={{
-                                    background: `${e?.status_color}`,
-                                    padding: "2px 5px",
-                                    color: "white",
-                                  }}
-                                >
+                                <Link to={"/"}><Icon icon={user} /> {e?.name || ""}{" "}</Link>
+                                <span style={{background: `${e?.status_color}`,padding: "2px 5px", color: "white"}} >
                                   {e?.status_label}
                                 </span>
                               </li>
@@ -213,18 +208,9 @@ const FamilyDetails = () => {
                                 {incoming_invoice.invoice_end_date}
                               </p>
                               <p>
-                                Invoice Date:{" "}
-                                {incoming_invoice?.invoice_create_date}
-                              </p>
-                              <p>
                                 Total Due:{" "}
                                 <span
-                                  style={{
-                                    background: "red",
-                                    padding: "2px 5px",
-                                    color: "white",
-                                  }}
-                                >
+                                  style={{background: "red",padding: "2px 5px",color: "white",}}>
                                   ₹{incoming_invoice?.amount}.00 balance owing
                                 </span>
                               </p>

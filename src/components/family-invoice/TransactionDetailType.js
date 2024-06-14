@@ -11,10 +11,28 @@ import PaymentRefundForm from "./PaymentRefundForm.js";
 import { useParams, useNavigate } from "react-router-dom";
 import ChargesDiscountForm from "./ChargesDiscountForm.js";
 import AddTransactionForm from "./AddTransactionForm.js";
+import { getTransactionById } from "../../services/invoiceService.js";
 
 const TransactionDetailType = () => {
   const param = useParams();
   const { sidebarToggle } = useUserDataContext();
+  const [transactionData, setTransactionData] = useState(null);
+  const isEditMode = !!param.id;    // Check if param.id exists
+
+  const fetchTransactionData = async () => {
+    const data = await getTransactionById(param.id);
+    console.log("Transaction data: ", data);
+    setTransactionData(data);
+  };
+
+  useEffect(() => {
+    if (isEditMode){
+      fetchTransactionData();
+    }
+    
+  }, [isEditMode, param.id]);
+
+  console.log("param passed to TransactionDetailType----------", param );
   return (
     <div className="wrapper">
       {sidebarToggle ? (
@@ -35,14 +53,15 @@ const TransactionDetailType = () => {
               <div className="col-xl-12 col-xxl-12">
                 <div className={`card`}>
                   <div className="card-header alignC">
-                    <h5>Add Transaction</h5>
+                    <h5>{isEditMode ? "Edit Transaction" : "Add Transaction"}</h5>
                   </div>
+                  <span className="sectionWrapper ps-3">Step {param.screen == 1 ? "1/2" : "2/2"}</span>
                   <div
                     className={`card-body ${
                       param.screen == 1 ? "contaner-area" : "contaner-area-min"
                     }`}
                   >
-                    <span className="sectionWrapper">Step {param.screen == 1 ? "1/2" : "2/2"}</span>
+                    
                     {param.screen == 1 && <TransactionType />}
                     {param.screen == 2 &&
                       (param.type == 1 || param.type == 2) && (

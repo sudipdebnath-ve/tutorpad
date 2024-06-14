@@ -12,13 +12,24 @@
     --hover-bg-color: rgba(255, 255, 255, 0.5);
     --hover-text-color: #000;
   }
-.payment-type-box{
+
+  .payment-type-box1{
     width: 100%;
-    height: 400px;
+    height: 112px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 10px;
+    padding: 0 20%;
+}
+
+.payment-type-box{
+    width: 100%;
+    /* height: 112px; */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
     padding: 0 20%;
 }
 .type-box{
@@ -43,10 +54,10 @@
     /* height: 100%; */
     overflow-y: scroll;
 }
-.contaner-area{
+.contaner-area {
     display: flex;
     flex-direction: column;
-    height: 300px;
+    height: 344px;
     /* background-color: yellow; */
 }
 .contaner-area-min{
@@ -134,7 +145,61 @@ a.alignA {
     width: 60%;
     margin: 20px auto;
 }
+
+input{
+    margin-left: -1px!important;
+    grid-area: 1 / 1!important;
+}
  
+.card-body ul {
+    margin-left: 5px;
+    padding-left: 5px;
+    margin-bottom: 31px;
+}
+
+.card-body h6{
+    margin-top: 20px!important;
+}
+.card{
+    padding-top: 20px;
+}
+a.link {
+    
+    position: relative;
+    top: -18px;
+}
+
+strong.txt {
+    display: inline-block;
+    padding-top: 7px;
+}
+
+.type-box {
+    width: 40%;
+    height: 100px;
+    flex: 1 1;
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: none;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    margin: 0;
+}
+.col-9.rightBt {
+    display: flex;
+    justify-content: space-between;
+}
+a.cancel svg {
+    width: 15px;
+}
+.formbold-form {
+    display: flex;
+    justify-content: end;
+}
 /* .recurring{
     background-color: var(--card-bg-color);
 } */

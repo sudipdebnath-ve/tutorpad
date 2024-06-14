@@ -26,6 +26,7 @@ const AddTransactionForm = () => {
   const [description, set_description] = useState();
   const [familiies, set_familiies] = useState([]);
   const [students, set_students] = useState([]);
+  const [errors, setErrors] = useState({});
   const { sidebarToggle } = useUserDataContext();
   const param = useParams();
   console.log(param);
@@ -89,6 +90,7 @@ const AddTransactionForm = () => {
       set_transaction_date("");
       set_student_id("");
       set_description("");
+      setErrors({});
       toast.success(response?.message, {
         position: toast.POSITION.TOP_CENTER,
       });
@@ -96,9 +98,7 @@ const AddTransactionForm = () => {
         navigate("/familiies-and-invoices/family/" + param.family_id);
       }, 2000);
     } else {
-      toast.error("something went wrong !", {
-        position: toast.POSITION.TOP_CENTER,
-      });
+      setErrors(response?.response.data.data || {});
     }
   };
 
@@ -118,13 +118,12 @@ const AddTransactionForm = () => {
       set_transaction_date("");
       set_student_id("");
       set_description("");
+      setErrors({});
       toast.success(response?.message, {
         position: toast.POSITION.TOP_CENTER,
       });
     } else {
-      toast.error("something went wrong !", {
-        position: toast.POSITION.TOP_CENTER,
-      });
+      setErrors(response?.response.data.data || {});
     }
   };
 
@@ -206,6 +205,7 @@ const AddTransactionForm = () => {
                                 className="form-control"
                                 name=""
                               />
+                              {errors.transaction_date && <small style={{ color: "red" }}>{errors.transaction_date[0]}</small>}
                             </div>
                             <div className="col-md-6">
                               <label>Amount</label>
@@ -218,6 +218,7 @@ const AddTransactionForm = () => {
                                 className="form-control"
                                 name=""
                               />
+                              {errors.transaction_amount && <small style={{ color: "red" }}>{errors.transaction_amount[0]}</small>}
                             </div>
                           </div>
                           <div className="row">

@@ -1,6 +1,8 @@
 import axios from "axios";
 import { API_URL } from "../utils/config";
 const token = JSON.parse(localStorage.getItem("tutorPad"));
+console.log("token from calender service--------------------", token);
+
 const calenderApi = axios.create({
     baseURL: API_URL,
     headers: {
@@ -13,6 +15,7 @@ export const createEvents = async (data) => {
         return response.data;
       })
       .catch((error) => {
+        console.log("Error creating event------------------", error);
         return error;
       });
 };

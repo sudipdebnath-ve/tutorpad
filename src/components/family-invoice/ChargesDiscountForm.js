@@ -9,6 +9,9 @@ import { ToastContainer, toast } from "react-toastify";
 import { getFamilyAccounts,getFamilyAccountsDetails,saveTransaction,getTransactionById,updateTransaction } from "../../services/invoiceService";
 import RepeatBox from "../RepeatBox";
 import { useUserDataContext } from "../../contextApi/userDataContext";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+
+
 const ChargesDiscountForm = () => {
 const student_id_ref = useRef(null);
 const navigate = useNavigate();
@@ -63,6 +66,7 @@ const getFrequency = (freq)=>{
  const [event_frequency_val,set_event_frequency_val] = useState("");
  const [event_repeat_indefinitely,set_event_repeat_indefinitely] = useState(true);
  const [event_repeat_until,set_event_repeat_until] = useState("");
+ const [errors, setErrors] = useState({});
 
  const getFamilyAccountsHandler = async ()=>{
     const responseFamilies = await getFamilyAccounts();
@@ -128,14 +132,13 @@ const getFrequency = (freq)=>{
             set_transaction_date("");
             set_student_id("");
             set_description("");
+            setErrors({});
             toast.success(response?.message, {
                 position: toast.POSITION.TOP_CENTER,
             });
             navigate("/familiies-and-invoices/family/"+param.family_id);
         }else{
-            toast.error("something went wrong !", {
-                position: toast.POSITION.TOP_CENTER,
-            });
+            setErrors(response?.response.data.data || {});
         }
     }else{
         const response = await saveTransaction(data);
@@ -145,14 +148,13 @@ const getFrequency = (freq)=>{
             set_transaction_date("");
             set_student_id("");
             set_description("");
+            setErrors({});
             toast.success(response?.message, {
                 position: toast.POSITION.TOP_CENTER,
             });
             navigate("/familiies-and-invoices/family/"+param.family_id);
         }else{
-            toast.error("something went wrong !", {
-                position: toast.POSITION.TOP_CENTER,
-            });
+            setErrors(response?.response.data.data || {});
         }
     }
     
@@ -181,13 +183,12 @@ const getFrequency = (freq)=>{
         set_transaction_amount("");
         set_transaction_date("");
         set_description("");
+        setErrors({});
         toast.success(response?.message, {
             position: toast.POSITION.TOP_CENTER,
         });
     }else{
-        toast.error("something went wrong !", {
-            position: toast.POSITION.TOP_CENTER,
-        });
+        setErrors(response?.response.data.data || {});
     }
  }
 
@@ -198,12 +199,13 @@ const getFrequency = (freq)=>{
 
   return  <> 
         <ToastContainer />
-         <Link to={"/familiies-and-invoices"}><Icon icon={chevronLeft} /> Back To Family Account</Link>
+        <span className="sectionWrapper pb-3" > <Link to={"/familiies-and-invoices"}><Icon icon={chevronLeft}  /> Back To Family Account</Link></span>
           <div className="payment-type-box">
               <div className="card card-body form-area">
                   <div className="row">
                       <div className="col-md-12">
-                          <h4 style={{textAlign:'left'}}>{param.type==3?"Charge":"Discount"} Details</h4>
+                        {/* <span className="sectionWrapper-charge-details">Step {param.screen == 1 ? "1/2" : "2/2"}</span> */}
+                          <h4 className="pt-3 pb-3" style={{textAlign:'left'}}>{param.type==3?"Charge":"Discount"} Details</h4>
                       </div>
                   </div>
                   <div className="row">
@@ -219,11 +221,13 @@ const getFrequency = (freq)=>{
                   <div className="row">
                       <div className="col-md-6">
                           <label>Date</label>
-                          <input type="date" value={transaction_date}  onChange={(e)=>set_transaction_date(e.target.value)} className="form-control" name="" /> 
+                          <input type="date" value={transaction_date}  onChange={(e)=>set_transaction_date(e.target.value)} className="form-control" name="" />
+                          {errors.transaction_date && <small style={{ color: "red" }}>{errors.transaction_date[0]}</small>} 
                       </div>
                       <div className="col-md-6">
                           <label>Amount</label>
-                          <input type="number" value={transaction_amount} onChange={(e)=>set_transaction_amount(e.target.value)} className="form-control" name="" /> 
+                          <input type="number" value={transaction_amount} onChange={(e)=>set_transaction_amount(e.target.value)} className="form-control" name="" />
+                          {errors.transaction_amount && <small style={{ color: "red" }}>{errors.transaction_amount[0]}</small>}
                       </div>
                   </div>
                   <div className="row">
@@ -271,12 +275,15 @@ const getFrequency = (freq)=>{
                   </div>
                   <div className="row">
                       <div className="col-md-12">
-                      <div className="formbold-form-btn-wrapper">
-                          <div className="btn-end">
-                              <Link className="cancel" to={'/familiies-and-invoices/transaction-type/'+1+'/'+param.family_id}>
-                              Back
+                      <div className="col-md-12">
+                          <div className="row pt-3">
+                            <div className="col-3">
+                                <Link className="cancel" to={'/familiies-and-invoices/transaction-type/'+1+'/'+param.family_id}>
+                                <ArrowBackIosIcon/> Back
                               </Link>
-                              <Link className="cancel" to={"/familiies-and-invoices"}>
+                            </div>
+                              <div className="col-9 rightBt">
+                                <Link className="cancel" to={"/familiies-and-invoices"}>
                               Cancel
                               </Link>
                               {
@@ -287,10 +294,10 @@ const getFrequency = (freq)=>{
                                                     Save & Add Another
                                                 </button>
                               }
-                              
                               <button onClick={()=>saveTransactionHandler()} className="formbold-btn">
                               Save
                               </button>
+                              </div>
                           </div>
                           </div>
                       </div>

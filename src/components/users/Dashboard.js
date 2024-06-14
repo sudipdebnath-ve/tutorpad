@@ -26,7 +26,7 @@ import StudentDashboard from './StudentDashboard.js';
 
 
 const Dashboard = () => {
-  const { userData, fetchData, sidebarToggle } = useUserDataContext();
+  const { sidebarToggle, getDashboardData, dashboardData } = useUserDataContext();
   const { role, setRole } = useContext(AuthContext);
   const navigate = useNavigate();
   const { t } = useTranslation()
@@ -35,6 +35,7 @@ const Dashboard = () => {
   useEffect(() => {
     //get token and domain from url and set it into localstorage
       getTokenData();
+      getDashboardData();
   }, []);
 
   const getTokenData = async () => {
@@ -88,9 +89,9 @@ const Dashboard = () => {
 
         <main className="content">
           { role === `${process.env.REACT_APP_BUSINESS_ROLE}` ?
-            <BusinessDashboard /> : role === `${process.env.REACT_APP_TUTOR_ROLE}` ?  
-            <TutorDashboard /> : role === `${process.env.REACT_APP_STUDENT_ROLE}` ?  
-            <StudentDashboard /> : 'User Not Found!'
+            <BusinessDashboard dashboardData={dashboardData}/> : role === `${process.env.REACT_APP_TUTOR_ROLE}` ?  
+            <TutorDashboard dashboardData={dashboardData}/> : role === `${process.env.REACT_APP_STUDENT_ROLE}` ?  
+            <StudentDashboard dashboardData={dashboardData}/> : 'User Not Found!'
           }
         </main>
       </div>

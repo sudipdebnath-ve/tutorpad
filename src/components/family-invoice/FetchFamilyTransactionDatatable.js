@@ -5,15 +5,16 @@ import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import students from "../users/assets/images/students.svg";
 import Loader from "../Loader.js";
 import { Link, useParams } from "react-router-dom";
-import { Icon } from "react-icons-kit";
-import { edit2 } from "react-icons-kit/feather/edit2";
-import { trash2 } from "react-icons-kit/feather/trash2";
 import { chevronRight } from "react-icons-kit/feather/chevronRight";
 import { useNavigate } from "react-router-dom";
 import DeleteModel from "../form/delete-model/DeleteModel.js";
 import { ToastContainer, toast } from "react-toastify";
 import { deleteChargeCategories } from "../../services/categoriesService.js";
 import transaction from "../../assets/images/transactions.svg";
+import { deleteTransactionById } from "../../services/invoiceService.js";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton';
 const FetchFamilyTransactionDatatable = () => {
   const param = useParams();
   const [val, setVal] = useState(false);
@@ -24,8 +25,10 @@ const FetchFamilyTransactionDatatable = () => {
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
+    console.log("param from FetchFamilyTransactionDatatable-----------", param);
     fetchTransactionsByFamily(param.id);
   }, [userId, param]);
+
 
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
@@ -92,28 +95,20 @@ const FetchFamilyTransactionDatatable = () => {
       ),
     },
     {
-      field: "edit",
-      headerName: "Edit",
+      field: "actions",
+      headerName: "Actions",
       width: 150,
       renderCell: (params) => (
-        <div style={{ display: "flex", gap: 5 }}>
-          <Icon
-            onClick={() =>
-              navigate(
-                "/familiies-and-invoices/transaction-type/2/" +
-                  param.id +
-                  "/" +
-                  params.row.transaction_type +
-                  "/" +
-                  params.row.id
-              )
-            }
-            icon={edit2}
-          />
-          <Icon
-            onClick={() => onDeleteModelHandler(params.row.id)}
-            icon={trash2}
-          />
+        <div>
+          <IconButton size="small" onClick={() =>{
+              console.log("params-------------", params);
+              navigate("/familiies-and-invoices/transaction-type/2/" + params.row.transaction_type + "/" + param.id + "/" + params.row.id )}}>
+                <EditIcon fontSize="small"/>
+          </IconButton>
+            
+          <IconButton size="small" onClick={() => onDeleteModelHandler(params.row.id)}>
+            <DeleteIcon fontSize="small"/>
+          </IconButton>
         </div>
       ),
     },
@@ -124,9 +119,10 @@ const FetchFamilyTransactionDatatable = () => {
     setDeleteModalIsOpen(true);
   };
 
-  const onDeleteHandler = async (id) => {
+ const onDeleteHandler = async (id) => {
     setIsDeleteLoading(true);
-    const response = await deleteChargeCategories(id);
+    const response = await deleteTransactionById(id);
+    // const response = await deleteChargeCategories(id);
     if (response.success == true) {
       fetchTransactionsByFamily(param.id);
       toast.success(response.message, {
@@ -141,7 +137,7 @@ const FetchFamilyTransactionDatatable = () => {
         position: toast.POSITION.TOP_CENTER,
       });
     }
-  };
+  };  
 
   useEffect(() => {
     setVal(true);
@@ -152,6 +148,7 @@ const FetchFamilyTransactionDatatable = () => {
   }
   return (
     <div>
+      <ToastContainer />
       <DeleteModel
         isLoading={isDeleteLoading}
         setIsLoading={setIsDeleteLoading}

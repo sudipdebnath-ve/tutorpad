@@ -11,9 +11,11 @@ import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { getParentDetailsList } from "../../../services/calenderService.js";
 const StudentAdd = () => {
-  const { fetchData, sidebarToggle, token, userId } = useUserDataContext();
+  const { fetchData, sidebarToggle, token, userId, fetchFamilies, allFamilies } = useUserDataContext();
   const [studentType, setStudentType] = useState("Child");
+  const [studentFamily, setStudentFamily] = useState("New Family");
   const [showParentDetails, setShowParentDetails] = useState(true);
+  const [getAllfamiliesDetails, showAllfamiliesDetails] = useState(false);
   const [additionalDetails, setAdditionalDetails] = useState(false);
   const [parentList, setParentList] = useState([]);
   const navigate = useNavigate();
@@ -55,12 +57,7 @@ const StudentAdd = () => {
   });
 
   useEffect(() => {
-    const token = JSON.parse(localStorage.getItem("tutorPad"));
-    if (!token) {
-      navigate("/signin");
-    } else {
-      fetchData(token);
-    }
+    fetchFamilies();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -68,10 +65,9 @@ const StudentAdd = () => {
 
     const name = `${formData.parentfirstname} ${formData.parentlastname}`;
 
-    if (formData.studentType == "Child") {
+    if (formData.studentType == "Child" && formData.studentFamily == "New Family") {
       const parentInfo = await getParentDetailsList(name);
       setParentList(parentInfo.data);
-      console.log("DATA=>", formData);
     }
     const stepMenuOne = document.querySelector(".formbold-step-menu1");
     const stepMenuTwo = document.querySelector(".formbold-step-menu2");
@@ -175,6 +171,7 @@ const StudentAdd = () => {
   const handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
+    console.log('studentFamily : ',value);
 
     if (name === "student_status") {
       setSelectedStatus(value);
@@ -183,8 +180,17 @@ const StudentAdd = () => {
       setStudentType(value);
       if (value === "Adult") {
         setShowParentDetails(false);
+        if(studentFamily === "New Family"){
+          showAllfamiliesDetails(false);
+        }
       } else {
-        setShowParentDetails(true);
+        if(studentFamily === "New Family"){
+          setShowParentDetails(true);
+          showAllfamiliesDetails(false);
+        }else{
+          setShowParentDetails(false);
+          showAllfamiliesDetails(true);
+        }
         let emailfield = document?.querySelectorAll("input[type=email]");
         for (let [key, value] of Object.entries(emailfield)) {
           console.log("value", value.name);
@@ -194,6 +200,21 @@ const StudentAdd = () => {
             label?.classList?.remove("text-danger");
           }
         }
+      }
+    }
+    if(name == 'studentFamily'){
+      setStudentFamily(value);
+      if (value === "New Family") {
+        if(studentType === "Child"){
+          showAllfamiliesDetails(false);
+          setShowParentDetails(true);
+        }else{
+          showAllfamiliesDetails(false);
+          setShowParentDetails(false);
+        }
+      } else {
+        setShowParentDetails(false);
+        showAllfamiliesDetails(true);
       }
     }
     if (name === "enable_login_access") {
@@ -248,7 +269,6 @@ const StudentAdd = () => {
     }
   };
 
-  console.log("error", error);
   return (
     <div className="wrapper">
       {sidebarToggle ? (
@@ -349,7 +369,7 @@ const StudentAdd = () => {
                             >
                               Email Address
                               {formData?.studentType == "Child" && (
-                                <span>Optional</span>
+                                <span> Optional</span>
                               )}
                             </label>
                             <input
@@ -370,13 +390,12 @@ const StudentAdd = () => {
                                 className="formbold-form-label"
                                 id="phone"
                               >
-                                Phone Number
+                                Phone Number <span> Optional</span>
                               </label>
                               <input
-                                type="text"
+                                type="number"
                                 name="phone"
                                 className="form-control"
-                                required
                                 onChange={handleChange}
                               />
                               <small style={{ color: "red" }}>
@@ -745,7 +764,9 @@ const StudentAdd = () => {
                                   type="radio"
                                   className="status"
                                   name="studentFamily"
+                                  value="New Family"
                                   onChange={handleChange}
+                                  checked={studentFamily === "New Family"}
                                 />
                                 New Family
                                 <br />
@@ -756,7 +777,9 @@ const StudentAdd = () => {
                                   type="radio"
                                   className="status"
                                   name="studentFamily"
+                                  value="Existing Family"
                                   onChange={handleChange}
+                                  checked={studentFamily === "Existing Family"}
                                 />
                                 Existing Family
                               </div>
@@ -863,6 +886,41 @@ const StudentAdd = () => {
                             </div>
                           </>
                         )}
+                        {getAllfamiliesDetails && (
+                          <>
+                            <div className="formbold-input-flex">
+                              <div>
+                                <label
+                                  htmlFor="family_account_id"
+                                  className="formbold-form-label"
+                                  id="family_account_id"
+                                >
+                                  Select Family
+                                </label>
+                                <select
+                                  className="form-control"
+                                  name="family_account_id"
+                                  onChange={handleChange}
+                                >
+
+                                  <option value={""}>Select Family</option>
+                                  {allFamilies.map((item) => {
+                                    return (
+                                      <option value={item.id}>{item.name}</option>
+                                    );
+                                  })}
+                                </select>
+                                <small style={{ color: "red" }}>
+                                  {error?.family_account_id?.length ? (
+                                    error.family_account_id
+                                  ) : (
+                                    <></>
+                                  )}
+                                </small>
+                              </div>
+                            </div>
+                          </>
+                        )}
                         <div className="formbold-input-flex diff">
                           <div>
                             <label
@@ -936,7 +994,7 @@ const StudentAdd = () => {
                               htmlFor="lessoncat"
                               className="formbold-form-label"
                             >
-                              Default Lesson Category
+                              Default Lesson Category <span> Optional</span>
                             </label>
                             <select
                               name="lessoncat"
@@ -953,7 +1011,7 @@ const StudentAdd = () => {
                               htmlFor="lessonlen"
                               className="formbold-form-label"
                             >
-                              Default Lesson Length
+                              Default Lesson Length <span> Optional</span>
                             </label>
                             <input
                               type="text"
@@ -1026,7 +1084,7 @@ const StudentAdd = () => {
                               Price <span>per hour</span>
                             </label>
                             <input
-                              type="text"
+                              type="number"
                               name="price"
                               className="form-control"
                               onChange={handleChange}

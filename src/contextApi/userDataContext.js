@@ -13,7 +13,10 @@ const AppContext = ({ children }) => {
   const [sidebarToggle, setSidebarToggle] = useState(false);
   const [emailTemplateData, setEmailTemplateData] = useState([]);
   const [emailOnchange, setEmailOnchange] = useState(false);
-  const [studentData, setStudentData] = useState(false);
+  const [studentData, setStudentData] = useState([]);
+  const [dashboardData, setDashboardData] = useState([]);
+  const [privileges, setPrivileges] = useState([]);
+  const [studentGroupData, setStudentGroupData] = useState(false);
   const [tutorData, setTutorData] = useState(false);
   const [allChargeCategory, setAllChargeCategory] = useState([]);
   const [allFamilies, setAllFamilies] = useState([]);
@@ -52,10 +55,79 @@ const AppContext = ({ children }) => {
     localStorage.setItem("theme", theme);
   }, [isDarkMode]);
 
+  
+  // manageSidebar navbar navbar-expand
+  useEffect(() => {
+    if(sidebarToggle){
+      const element = document.querySelector('.wrapperBody');
+      if (element) {
+        element.classList.add('manageSidebar');
+      }
+  
+      const navbar = document.querySelector('.navbar');
+      if (navbar) {
+        navbar.classList.add('manageNavbar');
+      }
+    }else{
+      const element = document.querySelector('.wrapperBody');
+      if (element) {
+        element.classList.remove('manageSidebar');
+      }
+
+      const navbar = document.querySelector('.navbar');
+      if (navbar) {
+        navbar.classList.remove('manageNavbar');
+      }
+    }
+    
+  }, [sidebarToggle]);
+
   const navigate = useNavigate();
 
   const fetchData = async () => {
     console.log('call fetch data');
+  };
+
+  // getDashboardData
+  const getDashboardData = async () => {
+    const validateconfig = {
+      method: "GET",
+      url: `${API_URL}data`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(validateconfig)
+      .then((response) => {
+        // console.log(response.data);
+        if (response.data.success === true) {
+          setDashboardData(response.data.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  //getPrivileges
+  const getPrivileges = async () => {
+    const validateconfig = {
+      method: "GET",
+      url: `${API_URL}all-permissions`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(validateconfig)
+      .then((response) => {
+        // console.log(response.data);
+        if (response.data.success === true) {
+          setPrivileges(response.data.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const logOut = () => {
@@ -134,6 +206,27 @@ const AppContext = ({ children }) => {
       });
   };
 
+  const fetchStudentGroupData = async () => {
+    const validateconfig = {
+      method: "GET",
+      url: `${API_URL}student-groups`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(validateconfig)
+      .then((response) => {
+        // console.log(response.data);
+        if (response.data.success === true) {
+          console.log('setstudentGroupData : ',response.data.data)
+          setStudentGroupData(response.data.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const fetchTutorData = async () => {
     const validateconfig = {
       method: "GET",
@@ -175,11 +268,13 @@ const AppContext = ({ children }) => {
   };
 
   const fetchFamilies = async () => {
+    const familyToken = JSON.parse(localStorage.getItem("tutorPad"));
+    console.log("token:.................", familyToken);
     const validateconfig = {
       method: "GET",
       url: `${API_URL}family-accounts`,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${familyToken}`,
       },
     };
     await axios(validateconfig)
@@ -367,6 +462,7 @@ const AppContext = ({ children }) => {
       .then((response) => {
         // console.log(response.data);
         if (response.data.success === true) {
+          console.log("response-----------", response);
           setAllTransactionsByFamily(response.data.data);
         }
       })
@@ -413,12 +509,16 @@ const AppContext = ({ children }) => {
         token,
         setToken,
         fetchStudentData,
+        fetchStudentGroupData,
+        studentGroupData,
         studentData,
         tutorData,
         userId,
         setUserId,
         allAvailabilityData,
         getAvailabilityData,
+        privileges,
+        getPrivileges,
         allTutors,
         getTutor,
         fetchEvent,
@@ -434,6 +534,8 @@ const AppContext = ({ children }) => {
         setAllFamilies,
         fetchFamilies,
         fetchInvoices,
+        dashboardData,
+        getDashboardData,
         accountInvoices,
         allTransactionsByFamily,
         fetchTransactionsByFamily,

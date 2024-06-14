@@ -8,16 +8,21 @@ import { useNavigate } from "react-router-dom";
 
 export function useTokenStorage() {
     const { setToken, setUserData, setUserId, token } = useUserDataContext();
-    const { setRole } = useContext(AuthContext);
+    const { role, setRole } = useContext(AuthContext);
     const navigate = useNavigate();
 
     useEffect(() => {
         const token = JSON.parse(localStorage.getItem("tutorPad"));
+        const userRole = localStorage.getItem("userRole");
 
         const fetchData = () => {
+            var url = `${API_URL}tenant/details`;
+            if(userRole == process.env.REACT_APP_STUDENT_ROLE){
+                url = `${API_URL}student/profile`;
+            }
             const validateconfig = {
                 method: "GET",
-                url: `${API_URL}tenant/details`,
+                url: url,
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -30,27 +35,20 @@ export function useTokenStorage() {
                             setUserId(response.data.data.id);
                             localStorage.setItem("user_id",response.data.data.id);
                             localStorage.setItem("user_name",response.data.data.first_name);
-                            localStorage.setItem("user_profile",response.data.data.business_data.dp_url);
+                            const dpUrl = response.data.data.business_data?.dp_url || response.data.data.dp_url;
+                            localStorage.setItem("user_profile", dpUrl);
                         }
                     }
                 })
                 .catch((error) => {
                     console.log('Error occurred:', error);
-                    if (error.response && error.response.status === 404) {
-                        console.log('Token not found');
-                        if (!token) {
-                            navigate('/signin');
-                        }
-                    } else {
-                        console.log('Other error occurred:', error);
-                        // Handle other errors if needed
-                    }
                 });
         };
         fetchData();
     }, [token]);
 
     return function storeToken(token, domain, role="") {
+        console.log('storetoken');
         localStorage.setItem("tutorPad", JSON.stringify(token));
         localStorage.setItem(`${domain}`, JSON.stringify(token));
         localStorage.setItem("userRole", role);
@@ -101,7 +99,7 @@ export const checkAuthAndRedirect = async (navigate,from) => {
             }
         }
     }
-    if(from == 'Signin'){
+    if(from == 'Signin' || from == 'ForgotPass'){
         if (domainFromUrl != expectedDomain) {
             var token = localStorage.getItem(domainFromUrl);
             if (token && token.trim() !== '') {

@@ -31,7 +31,6 @@ function App() {
             <Route path="/forget-password" element={<ForgetPassword />} />
             <Route path ="/reset-password" element={<ResetPasswordSetup />} />
             <Route path="*" element={<AuthenticatedRoutes />} />
-
           </Routes>
         </AuthProvider>
     </div>

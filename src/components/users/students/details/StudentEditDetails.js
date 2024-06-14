@@ -436,6 +436,8 @@ const StudentEditDetails = () => {
     setIsOpens(e);
   }
 
+  console.log("students fetched data----------", studentFetchData);
+
   return (
     <div className="wrapper student-details">
       {sidebarToggle ? (
@@ -893,18 +895,25 @@ const StudentEditDetails = () => {
                       {studentFetchData?.first_name}{" "}
                       {studentFetchData?.last_name}
                     </div>
-                    {studentFetchData?.student_status && (
+                    {studentFetchData?.student_status && studentFetchData?.studentType && (
                       <>
+                      <div className="studentstatus-wrapper">
                         <div className="active-user">
                           <span className="active">
                             {studentFetchData?.status_label}
                           </span>
                         </div>
+                        <div className="active-user">
+                          <span className="adult">
+                            {studentFetchData?.studentType   }
+                          </span>
+                        </div>
+                        </div>
                       </>
                     )}
 
                     <div className="link-to-family">
-                      <Link to={"/"}>View Family Account</Link>
+                      <Link to={"/familiies-and-invoices/family/"+studentFetchData?.family_account_id}>View Family Account</Link>
                     </div>
                   </div>
                 </div>

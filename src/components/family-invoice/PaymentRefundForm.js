@@ -7,6 +7,9 @@ import {chevronLeft} from 'react-icons-kit/feather/chevronLeft';
 import { Icon } from 'react-icons-kit';
 import { ToastContainer, toast } from "react-toastify";
 import { getFamilyAccounts,getFamilyAccountsDetails,saveTransaction,getTransactionById,updateTransaction } from "../../services/invoiceService";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+
+
 const PaymentRefundForm = () => {
 const navigate = useNavigate();
  const [family_account_id,set_family_account_id] = useState();
@@ -16,6 +19,7 @@ const navigate = useNavigate();
  const [description,set_description] = useState();
  const [familiies,set_familiies] = useState([]);
  const [students,set_students] = useState([]);
+ const [errors, setErrors] = useState({});
  const param = useParams();
 
  const getFamilyAccountsHandler = async ()=>{
@@ -59,54 +63,90 @@ const navigate = useNavigate();
  }
 
 
- const saveTransactionHandler = async ()=>{
-    const data = {
-        family_account_id:family_account_id?.value||"",
-        transaction_amount:transaction_amount,
-        transaction_date:transaction_date,
-        student_id:student_id?.value||"",
-        transaction_type:param.type,
-        description:description,
-    }
-    if(param?.id)
-    {
-        const response = await updateTransaction(data,param.id);
-        if (response?.success == true) {
-            set_family_account_id("");
-            set_transaction_amount("");
-            set_transaction_date("");
-            set_student_id("");
-            set_description("");
-            toast.success(response?.message, {
-                position: toast.POSITION.TOP_CENTER,
-            });
-            navigate("/familiies-and-invoices/family/"+param.family_id);
-        }else{
-            toast.error("something went wrong !", {
-                position: toast.POSITION.TOP_CENTER,
-            });
-        }
-    }else{
-        const response = await saveTransaction(data);
-        if (response?.success == true) {
-            set_family_account_id("");
-            set_transaction_amount("");
-            set_transaction_date("");
-            set_student_id("");
-            set_description("");
-            toast.success(response?.message, {
-                position: toast.POSITION.TOP_CENTER,
-            });
-            navigate("/familiies-and-invoices/family/"+param.family_id);
-        }else{
-            toast.error("something went wrong !", {
-                position: toast.POSITION.TOP_CENTER,
-            });
-        }
-    }
+//  const saveTransactionHandler = async ()=>{
+//     const data = {
+//         family_account_id:family_account_id?.value||"",
+//         transaction_amount:transaction_amount,
+//         transaction_date:transaction_date,
+//         student_id:student_id?.value||"",
+//         transaction_type:param.type,
+//         description:description,
+//     }
+//     if(param?.id)
+//     {
+//         const response = await updateTransaction(data,param.id);
+//         if (response?.success == true) {
+//             set_family_account_id("");
+//             set_transaction_amount("");
+//             set_transaction_date("");
+//             set_student_id("");
+//             set_description("");
+//             toast.success(response?.message, {
+//                 position: toast.POSITION.TOP_CENTER,
+//             });
+//             navigate("/familiies-and-invoices/family/"+param.family_id);
+//         }else{
+//             toast.error("something went wrong !", {
+//                 position: toast.POSITION.TOP_CENTER,
+//             });
+//         }
+//     }else{
+//         const response = await saveTransaction(data);
+//         if (response?.success == true) {
+//             set_family_account_id("");
+//             set_transaction_amount("");
+//             set_transaction_date("");
+//             set_student_id("");
+//             set_description("");
+//             toast.success(response?.message, {
+//                 position: toast.POSITION.TOP_CENTER,
+//             });
+//             navigate("/familiies-and-invoices/family/"+param.family_id);
+//         }else{
+//             toast.error("something went wrong from refund !", {
+//                 position: toast.POSITION.TOP_CENTER,
+//             });
+//         }
+//     }
     
  
- }
+//  }
+
+
+const saveTransactionHandler = async () => {
+    const data = {
+        family_account_id: family_account_id?.value || "",
+        transaction_amount: transaction_amount,
+        transaction_date: transaction_date,
+        student_id: student_id?.value || "",
+        transaction_type: param.type,
+        description: description,
+    }
+    let response;
+    
+    if (param?.id) {
+        response = await updateTransaction(data, param.id);
+    } else {
+        response = await saveTransaction(data);
+    }
+    // console.log("Response:", response.response.data.data);
+    if (response?.success) {
+        set_family_account_id("");
+        set_transaction_amount("");
+        set_transaction_date("");
+        set_student_id("");
+        set_description("");
+        setErrors({});
+        toast.success(response?.message, {
+            position: toast.POSITION.TOP_CENTER,
+        });
+        navigate("/familiies-and-invoices/family/" + param.family_id);
+    } else {
+        setErrors(response?.response.data.data || {});
+        console.log("set errors-------------", response?.data)
+        
+    }
+}
 
  const saveAndTransactionHandler = async ()=>{
     const data = {
@@ -125,13 +165,12 @@ const navigate = useNavigate();
         set_transaction_date("");
         set_student_id("");
         set_description("");
+        setErrors({});
         toast.success(response?.message, {
             position: toast.POSITION.TOP_CENTER,
         });
     }else{
-        toast.error("something went wrong !", {
-            position: toast.POSITION.TOP_CENTER,
-        });
+        setErrors(response?.response.data.data || {});
     }
  }
 
@@ -142,13 +181,14 @@ const navigate = useNavigate();
 
   return  <> 
         <ToastContainer />
-        <div className="sectionWrapper" > <Link to={"/familiies-and-invoices"}><Icon icon={chevronLeft}  /> Back To Family Account</Link></div>
+        <span className="sectionWrapper pb-3" > <Link to={"/familiies-and-invoices"}><Icon icon={chevronLeft}  /> Back To Family Account</Link></span>
         
           <div className="payment-type-box">
               <div className="card card-body form-area">
                   <div className="row">
                       <div className="col-md-12">
-                          <h4 style={{textAlign:'left'}}>{param.type==1?"Payment":"Refund"} Details</h4>
+                        {/* <span className="sectionWrapper-charge-details">Step {param.screen == 1 ? "1/2" : "2/2"}</span> */}
+                          <h4 className="pt-3 pb-3" style={{textAlign:'left'}}>{param.type==1?"Payment":"Refund"} Details</h4>
                       </div>
                   </div>
                   <div className="row">
@@ -162,13 +202,16 @@ const navigate = useNavigate();
                       </div>
                   </div>
                   <div className="row">
-                      <div className="col-md-6">
-                          <label>Date</label>
-                          <input type="date" value={transaction_date}  onChange={(e)=>set_transaction_date(e.target.value)} className="form-control" name="" /> 
-                      </div>
+                    <div className="col-md-6">
+                        <label>Date</label>
+                        <input type="date" value={transaction_date} onChange={(e) => set_transaction_date(e.target.value)} className="form-control" name="" />
+                        {errors.transaction_date && <small style={{ color: "red" }}>{errors.transaction_date[0]}</small>}
+                    </div>
+                      
                       <div className="col-md-6">
                           <label>Amount</label>
-                          <input type="number" value={transaction_amount} onChange={(e)=>set_transaction_amount(e.target.value)} className="form-control" name="" /> 
+                          <input type="number" value={transaction_amount} onChange={(e)=>set_transaction_amount(e.target.value)} className="form-control" name="" />
+                          {errors.transaction_amount && <small style={{ color: "red" }}>{errors.transaction_amount[0]}</small>} 
                       </div>
                   </div>
                   <div className="row">
@@ -185,12 +228,15 @@ const navigate = useNavigate();
                   </div>
                   <div className="row">
                       <div className="col-md-12">
-                      <div className="formbold-form-btn-wrapper">
-                          <div className="btn-end">
-                              <Link className="cancel" to={'/familiies-and-invoices/transaction-type/'+1+'/'+param.family_id}>
-                              Back
+                      <div className="col-md-12">
+                          <div className="row pt-3">
+                            <div className="col-3">
+                                <Link className="cancel" to={'/familiies-and-invoices/transaction-type/'+1+'/'+param.family_id}>
+                                <ArrowBackIosIcon/> Back
                               </Link>
-                              <Link className="cancel" to={"/familiies-and-invoices"}>
+                            </div>
+                              <div className="col-9 rightBt">
+                                <Link className="cancel" to={"/familiies-and-invoices"}>
                               Cancel
                               </Link>
                               {
@@ -201,10 +247,10 @@ const navigate = useNavigate();
                                                     Save & Add Another
                                                 </button>
                               }
-                              
                               <button onClick={()=>saveTransactionHandler()} className="formbold-btn">
                               Save
                               </button>
+                              </div>
                           </div>
                           </div>
                       </div>

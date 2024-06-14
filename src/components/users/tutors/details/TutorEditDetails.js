@@ -66,7 +66,8 @@ const TutorEditDetails = () => {
   const [students, setStudents] = useState([]);
   const [updateTutor, setUpdateTutor] = useState({});
   const [profilePicData, setProfilePicData] = useState({});
-  
+  const [checkedLogin, setCheckedLogin] = React.useState(false);
+  const [privileges, setPrivileges] = useState([]);
 
   let { id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -100,15 +101,33 @@ const TutorEditDetails = () => {
       .then((response) => {
         console.log(response.data);
         setTutorFetchData(response.data.data);
-        // Parse the privileges string to convert it into an array
+
         const privilegesArray = JSON.parse(response.data.data.privileges);
         setCheckedPrivileges(privilegesArray);
-        
+        setCheckedLogin(response.data.data.enable_login_access);
+
         console.log(privilegesArray);
       })
       .catch((error) => {
         console.log(error);
         
+      });
+  };
+
+  const fetchTutorPrivilegeDetails = async (id) => {
+    const validateconfig = {
+      method: "GET",
+      url: `${API_URL}all-permissions/${id}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(validateconfig)
+      .then((response) => {
+        setPrivileges(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
       });
   };
 
@@ -118,6 +137,7 @@ const TutorEditDetails = () => {
     fetchStudentData();
     fetchCategory();
     fetchAssignStudents(id);
+    fetchTutorPrivilegeDetails(id);
   }, [id]);
 
   const fetchAssignStudents = async (id) => {
@@ -193,6 +213,7 @@ const TutorEditDetails = () => {
     tenantData.allow_student_email_studylog =
       tutorFetchData?.business_data?.allow_student_email_studylog;
     tenantData.daily_agenda = userData?.business_data?.daily_agenda;
+
   }, [tutorFetchData]);
 
   const handleChange = async (e) => {
@@ -255,24 +276,59 @@ const TutorEditDetails = () => {
     }
   };
 
-  const handleCheckboxChange = (event) => {
+  const handlePrivilegesChange = (event) => {
     const { name, checked } = event.target;
-    if (editPrivileges) {
-      const updatedPrivileges = checkedPrivileges || []; // Initialize as empty array if null or undefined
+  
+    if (name === "all") {
       if (checked) {
-        setCheckedPrivileges([...updatedPrivileges, name]);
+        // Add all permission IDs to checkedPrivileges
+        const allPrivileges = privileges.flatMap(group => group.permissions.map(permission => permission.id));
+        setCheckedPrivileges(allPrivileges);
       } else {
-        setCheckedPrivileges(
-          updatedPrivileges.filter((privilege) => privilege !== name)
-        );
+        // Clear all privileges
+        setCheckedPrivileges([]);
       }
+    } else {
+      const id = parseInt(name, 10);
+      setCheckedPrivileges((prevChecked) => {
+        if (checked) {
+          return [...prevChecked, id];
+        } else {
+          return prevChecked.filter((privilegeId) => privilegeId !== id);
+        }
+      });
     }
-    setFormData({ ...formData, ["privileges"]: checkedPrivileges });
   };
 
   const handleClick = (e) => {
     e.preventDefault();
     setIsOpen(!isOpen);
+  };
+
+  const handleToggle = async () => {
+    const val = checkedLogin ? 0 : 1;
+    setCheckedLogin(val === 1);
+
+    const validateconfig = {
+      method: "POST",
+      url: `${API_URL}tutor/${id}/send-login-access`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: {
+        enable_login_access: val,
+      },
+    };
+    await axios(validateconfig)
+      .then((response) => {
+        console.log(response.data);
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const handleAttendEdit = (e) => {
@@ -294,6 +350,7 @@ const TutorEditDetails = () => {
   const formSubmit = async (e) => {
     e.preventDefault();
     formData["tutor_id"] = id;
+    formData["privileges"] = checkedPrivileges;
 
     const config = {
       method: "PATCH",
@@ -578,7 +635,6 @@ const TutorEditDetails = () => {
         }
       });
   };
-  console.log(allCategory);
 
   // console.log(userData);
   const customStyles = {
@@ -645,7 +701,6 @@ const TutorEditDetails = () => {
     setIsOpens(e);
   }
 
-  console.log(modalIsOpen);
   return (
     <div className="wrapper student-details">
       {sidebarToggle ? (
@@ -2576,23 +2631,22 @@ const TutorEditDetails = () => {
                             <div>
                               <div className="formbold-input-flex diff">
                                 <div>
-                                  <input
+                                <input
                                     type="checkbox"
                                     className="administrator"
-                                    name="administrator"
-                                    disabled={!editPrivileges}
-                                    onChange={handleCheckboxChange}
+                                    name="all"
+                                    id="administrator-privileges"
+                                    onChange={handlePrivilegesChange}
                                     checked={
-                                      checkedPrivileges?.includes(
-                                        "administrator"
-                                      )
-                                        ? true
-                                        : false
+                                      checkedPrivileges.length === privileges.flatMap(group => group.permissions.map(permission => permission.id)).length
                                     }
+                                    style={{ cursor: 'pointer'}}
+                                    disabled={!editPrivileges}
                                   />
                                   <label
-                                    htmlFor="administrator"
+                                    htmlFor="administrator-privileges"
                                     className="form-form-label"
+                                    style={{ cursor: 'pointer', paddingLeft: 5 }}
                                   >
                                     {" "}
                                     Administrator (all privileges)
@@ -2604,415 +2658,42 @@ const TutorEditDetails = () => {
                                   </span>
                                 </div>
                               </div>
-                              <h6 className="formbold-form-label">
-                                Manage Self
-                              </h6>
-                              <div className="formbold-input-flex diff">
-                                <div>
-                                  <input
-                                    type="checkbox"
-                                    className="manage"
-                                    name="manage_self_take_attendance"
-                                    disabled={true}
-                                    onChange={handleCheckboxChange}
-                                    checked={
-                                      checkedPrivileges?.includes(
-                                        "manage_self_take_attendance"
-                                      )
-                                        ? true
-                                        : true
-                                    }
-                                  />
-                                  <label
-                                    htmlFor="manage_self_take_attendance"
-                                    className="form-form-label"
-                                  >
-                                    {" "}
-                                    Take attendance
-                                  </label>
-                                  <br></br>
-                                  <input
-                                    type="checkbox"
-                                    className="manage"
-                                    name="manage_self_record_payments"
-                                    disabled={!editPrivileges}
-                                    onChange={handleCheckboxChange}
-                                    checked={
-                                      checkedPrivileges?.includes(
-                                        "manage_self_record_payments"
-                                      )
-                                        ? true
-                                        : false
-                                    }
-                                  />
-                                  <label
-                                    htmlFor="manage_self_record_payments"
-                                    className="form-form-label"
-                                  >
-                                    {" "}
-                                    Record payments with attendance
-                                  </label>
 
-                                  <br></br>
-                                  <input
-                                    type="checkbox"
-                                    className="manage"
-                                    name="manage_self_edit"
-                                    onChange={handleCheckboxChange}
-                                    //  checked={privileges.manage_self_edit}
-                                    checked={
-                                      checkedPrivileges?.includes(
-                                        "manage_self_edit"
-                                      )
-                                        ? true
-                                        : false
-                                    }
-                                    disabled={true}
-                                  />
-                                  <label
-                                    htmlFor="manage_self_edit"
-                                    className="form-form-label"
-                                  >
-                                    {" "}
-                                    Edit own lessons/events
-                                  </label>
+                              {privileges.map((group) => {
+                                  return (
+                                  <div>
+                                    <h6 className="formbold-form-label">{ group.group_label }</h6>
+                                    <div className="formbold-input-flex diff" style={{ display: 'flex', flexWrap: 'wrap' }}>
+                                      { group.permissions.map((permission) => {
+                                        return (
+                                          <div>
+                                            <input
+                                              type="checkbox"
+                                              className="manage"
+                                              name={permission.id.toString()}
+                                              id={`permission-${permission.id}`}
+                                              onChange={handlePrivilegesChange}
+                                              checked={checkedPrivileges.includes(permission.id)}
+                                              disabled={!permission.status}
+                                              style={{ cursor: 'pointer'}}
+                                              disabled={!editPrivileges}
+                                            />
+                                            <label
+                                              htmlFor={`permission-${permission.id}`}
+                                              className="form-form-label"
+                                              style={{ cursor: 'pointer', paddingLeft: 5 }}
+                                            >
+                                              {"  "}
+                                              {permission.label}
+                                            </label>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                  );
+                              })}
 
-                                  <br></br>
-                                  <input
-                                    type="checkbox"
-                                    className="manage"
-                                    name="manage_self_payroll"
-                                    disabled={!editPrivileges}
-                                    onChange={handleCheckboxChange}
-                                    checked={
-                                      checkedPrivileges?.includes(
-                                        "manage_self_payroll"
-                                      )
-                                        ? true
-                                        : false
-                                    }
-                                  />
-                                  <label
-                                    htmlFor="manage_self_payroll"
-                                    className="form-form-label"
-                                  >
-                                    {" "}
-                                    View own payroll privileges
-                                  </label>
-
-                                  <br></br>
-                                  <input
-                                    type="checkbox"
-                                    className="manage"
-                                    name="manage_self_mileage"
-                                    disabled={!editPrivileges}
-                                    onChange={handleCheckboxChange}
-                                    // checked={privileges.manage_self_mileage}
-                                    checked={
-                                      checkedPrivileges?.includes(
-                                        "manage_self_mileage"
-                                      )
-                                        ? true
-                                        : false
-                                    }
-                                  />
-                                  <label
-                                    htmlFor="manage_self_mileage"
-                                    className="form-form-label"
-                                  >
-                                    {" "}
-                                    Add/edit mileage
-                                  </label>
-                                </div>
-                              </div>
-
-                              <h6 className="formbold-form-label">
-                                Manage Other Tutors
-                              </h6>
-                              <div className="formbold-input-flex diff">
-                                <div>
-                                  <input
-                                    type="checkbox"
-                                    className="manage"
-                                    name="manage_view_tutor"
-                                    disabled={!editPrivileges}
-                                    onChange={handleCheckboxChange}
-                                    //  checked={privileges.manage_view_tutor}
-                                    checked={
-                                      checkedPrivileges?.includes(
-                                        "manage_view_tutor"
-                                      )
-                                        ? true
-                                        : false
-                                    }
-                                  />
-                                  <label
-                                    htmlFor="manage_view_tutor"
-                                    className="form-form-label"
-                                  >
-                                    {" "}
-                                    View other tutor and user contact info
-                                  </label>
-                                  <br></br>
-                                  <input
-                                    type="checkbox"
-                                    className="manage"
-                                    name="manage_student_tutor"
-                                    disabled={!editPrivileges}
-                                    onChange={handleCheckboxChange}
-                                    // checked={privileges.manage_student_tutor}
-                                    checked={
-                                      checkedPrivileges?.includes(
-                                        "manage_student_tutor"
-                                      )
-                                        ? true
-                                        : false
-                                    }
-                                  />
-                                  <label
-                                    htmlFor="manage_student_tutor"
-                                    className="form-form-label"
-                                  >
-                                    {" "}
-                                    Manage students and other tutors'
-                                    lesson/events
-                                  </label>
-
-                                  <br></br>
-                                  <input
-                                    type="checkbox"
-                                    className="manage"
-                                    name="manage_tutor_lesson"
-                                    disabled={!editPrivileges}
-                                    onChange={handleCheckboxChange}
-                                    // checked={privileges.manage_tutor_lesson}
-                                    checked={
-                                      checkedPrivileges?.includes(
-                                        "manage_tutor_lesson"
-                                      )
-                                        ? true
-                                        : false
-                                    }
-                                  />
-                                  <label
-                                    htmlFor="manage_tutor_lesson"
-                                    className="form-form-label"
-                                  >
-                                    {" "}
-                                    View other tutors' lesson/events
-                                  </label>
-                                </div>
-                              </div>
-
-                              <h6 className="formbold-form-label">
-                                Manage Student and Parents
-                              </h6>
-                              <div className="formbold-input-flex diff">
-                                <div>
-                                  <input
-                                    type="checkbox"
-                                    className="manage"
-                                    name="manage_student_parent"
-                                    disabled={!editPrivileges}
-                                    onChange={handleCheckboxChange}
-                                    // checked={privileges.manage_student_parent}
-                                    checked={
-                                      checkedPrivileges?.includes(
-                                        "manage_student_parent"
-                                      )
-                                        ? true
-                                        : false
-                                    }
-                                  />
-                                  <label
-                                    htmlFor="manage_student_parent"
-                                    className="form-form-label"
-                                  >
-                                    {" "}
-                                    View student/parent addresses and phone
-                                    numbers
-                                  </label>
-                                  <br></br>
-                                  <input
-                                    type="checkbox"
-                                    className="manage"
-                                    name="manage_student_parent_email"
-                                    disabled={!editPrivileges}
-                                    onChange={handleCheckboxChange}
-                                    //  checked={privileges.manage_student_parent_email}
-                                    checked={
-                                      checkedPrivileges?.includes(
-                                        "manage_student_parent_email"
-                                      )
-                                        ? true
-                                        : false
-                                    }
-                                  />
-                                  <label
-                                    htmlFor="manage_student_parent_email"
-                                    className="form-form-label"
-                                  >
-                                    {" "}
-                                    View student/parent email addresses
-                                  </label>
-
-                                  <br></br>
-                                  <input
-                                    type="checkbox"
-                                    className="manage"
-                                    name="download_student_profile"
-                                    disabled={!editPrivileges}
-                                    onChange={handleCheckboxChange}
-                                    // checked={privileges.download_student_profile}
-                                    checked={
-                                      checkedPrivileges?.includes(
-                                        "download_student_profile"
-                                      )
-                                        ? true
-                                        : false
-                                    }
-                                  />
-                                  <label
-                                    htmlFor="download_student_profile"
-                                    className="form-form-label"
-                                  >
-                                    {" "}
-                                    View/download student profile attachments
-                                  </label>
-                                </div>
-                              </div>
-
-                              <h6 className="formbold-form-label">
-                                Other Privileges
-                              </h6>
-                              <div className="formbold-input-flex diff">
-                                <div>
-                                  <input
-                                    type="checkbox"
-                                    className="manage"
-                                    name="add_invoices"
-                                    disabled={!editPrivileges}
-                                    onChange={handleCheckboxChange}
-                                    // checked={privileges.add_invoices}
-                                    checked={
-                                      checkedPrivileges?.includes(
-                                        "add_invoices"
-                                      )
-                                        ? true
-                                        : false
-                                    }
-                                  />
-                                  <label
-                                    htmlFor="add_invoices"
-                                    className="form-form-label"
-                                  >
-                                    {" "}
-                                    Add/view invoices and accounts
-                                  </label>
-                                  <br></br>
-                                  <input
-                                    type="checkbox"
-                                    className="manage"
-                                    name="add_expenses"
-                                    disabled={!editPrivileges}
-                                    onChange={handleCheckboxChange}
-                                    //  checked={privileges.add_expenses}
-                                    checked={
-                                      checkedPrivileges?.includes(
-                                        "add_expenses"
-                                      )
-                                        ? true
-                                        : false
-                                    }
-                                  />
-                                  <label
-                                    htmlFor="add_expenses"
-                                    className="form-form-label"
-                                  >
-                                    {" "}
-                                    Add/edit expenses and other revenue
-                                  </label>
-
-                                  <br></br>
-                                  <input
-                                    type="checkbox"
-                                    className="manage"
-                                    name="update_online_resources"
-                                    disabled={!editPrivileges}
-                                    onChange={handleCheckboxChange}
-                                    // checked={privileges.update_online_resources}
-                                    checked={
-                                      checkedPrivileges?.includes(
-                                        "add_expenses"
-                                      )
-                                        ? true
-                                        : false
-                                    }
-                                  />
-                                  <label
-                                    htmlFor="update_online_resources"
-                                    className="form-form-label"
-                                  >
-                                    {" "}
-                                    Can add/edit/delete online resources from
-                                    the school space
-                                  </label>
-
-                                  <br></br>
-                                  <input
-                                    type="checkbox"
-                                    className="manage"
-                                    name="edit_website"
-                                    disabled={!editPrivileges}
-                                    onChange={handleCheckboxChange}
-                                    // checked={privileges.edit_website}
-                                    checked={
-                                      checkedPrivileges?.includes(
-                                        "edit_website"
-                                      )
-                                        ? true
-                                        : false
-                                    }
-                                  />
-                                  <label
-                                    htmlFor="edit_website"
-                                    className="form-form-label"
-                                  >
-                                    {" "}
-                                    Edit website and post news
-                                  </label>
-
-                                  <br></br>
-                                  <input
-                                    type="checkbox"
-                                    className="manage"
-                                    name="view_reports"
-                                    disabled={!editPrivileges}
-                                    onChange={handleCheckboxChange}
-                                    // checked={privileges.view_reports}
-                                    checked={
-                                      checkedPrivileges?.includes(
-                                        "view_reports"
-                                      )
-                                        ? true
-                                        : false
-                                    }
-                                  />
-                                  <label
-                                    htmlFor="view_reports"
-                                    className="form-form-label"
-                                  >
-                                    {" "}
-                                    Create/View reports
-                                  </label>
-                                  <br></br>
-                                  <span>
-                                    Gives access to reports created by other
-                                    tutors/admins in the business (may contain
-                                    sensitive data).
-                                  </span>
-                                </div>
-                              </div>
                               <div className="formbold-form-btn-wrapper">
                                 {editPrivileges && (
                                   <>
@@ -3036,6 +2717,67 @@ const TutorEditDetails = () => {
                               </div>
                             </div>
                           </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="card">
+                  <div
+                    className="accordion accordion-flush"
+                    id="accordionFlushExample"
+                  >
+                    <div className="accordion-item">
+                      <h2 className="accordion-header" id="flush-headingEight">
+                        <button
+                          className="accordion-button collapsed"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#flush-collapseEight"
+                          aria-expanded="false"
+                          aria-controls="flush-collapseEight"
+                        >
+                          <strong>Tutor Portal</strong>
+                        </button>
+                      </h2>
+                      <div
+                        id="flush-collapseEight"
+                        className="accordion-collapse collapse"
+                        aria-labelledby="flush-headingEight"
+                        data-bs-parent="#accordionFlushExample"
+                      >
+                        <div className="accordion-body">
+                          <div className="access">
+                            <h3>Tutor Access</h3>
+                              <input
+                                checked={checkedLogin}
+                                onChange={handleToggle}
+                                className="switch-checkbox"
+                                id={`switch`}
+                                type="checkbox"
+                              />
+                              <label
+                                style={{ background: (checkedLogin == 1 ) ? "#06D6A0" : "#EF476F" }}
+                                className="switch-label"
+                                htmlFor={`switch`}
+                              >
+                                <span className={`switch-button`} />
+                              </label>
+                          </div>
+                          <p>Set up Tutor Portal access for this tutor</p>
+
+                          <div className="student-access">
+                            <i
+                              class="fa fa-exclamation-triangle"
+                              aria-hidden="true"
+                            ></i>
+
+                            <strong>
+                              If you'd like this tutor to have their own
+                              access to the Portal, you'll first need to provide
+                              an email address in their profile.
+                            </strong>
+                          </div>
                         </div>
                       </div>
                     </div>

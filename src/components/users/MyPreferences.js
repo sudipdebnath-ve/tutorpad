@@ -112,6 +112,7 @@ const MyPreferences = () => {
       allAvailabilityData();
     }
   }, []);
+  
   useEffect(() => {
     var name = `${userData.first_name}${" "}${userData.last_name}`;
 

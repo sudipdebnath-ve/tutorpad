@@ -2,6 +2,7 @@
 import "./App.css";
 import { Routes, Route, Navigate } from "react-router-dom";
 import MyPreferences from "./components/users/MyPreferences";
+import StudentPreferences from "./components/users/students/MyPreferences";
 import EmailTemplates from "./components/users/EmailTemplates";
 import Student from "./components/users/Student";
 import StudentAdd from "./components/users/students/StudentAdd";
@@ -47,7 +48,7 @@ const AuthenticatedRoutes = () => {
         return <Navigate to="/signin" />;
     }
     return (
-        <div className="wrapperBody">
+        <div>
         <Loader/>
             <AuthProvider>
             <Routes basename={"/"}>
@@ -61,6 +62,7 @@ const AuthenticatedRoutes = () => {
                 <Route path="/tutors/details/:id" element={<TutorEditDetails />} />
                 <Route path="/tutors/addStaff" element={<StaffAdd />} />
                 <Route path="/my-preferences" element={<MyPreferences />} />
+                <Route path="/student/my-preferences" element={<StudentPreferences />} />
                 
                 <Route path="/email-templates" element={<EmailTemplates />} />
                 <Route path="/students/add" element={<StudentAdd />} />

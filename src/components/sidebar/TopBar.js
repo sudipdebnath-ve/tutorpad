@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { GoBell } from "react-icons/go";
 import { useUserDataContext } from "../../contextApi/userDataContext.js";
-import avatar from "../users/assets/avatars/avatar.jpg";
+import avatar from "../users/assets/avatars/profile.jpg";
 import CustomizedSwitch from "../CustomizedSwitch.js";
 import "./style.css";
+import { AuthContext } from '../registerLogin/AuthContext.js';
+
 
 const TopBar = () => {
   const { userData, logOut, setSidebarToggle, sidebarToggle, toggleTheme } =
     useUserDataContext();
+  const { role } = useContext(AuthContext);
+
 
   const [pageName, setPageName] = useState("");
   const [profileToggle, setProfileToggle] = useState(false);
@@ -242,24 +246,27 @@ const TopBar = () => {
               to="#"
               onClick={handleProfileToggle}
             >
-              { (user_profile) ? (
+              { ((user_profile) & (user_profile != "null")) ? (
                 <>
                   <img
                     src={user_profile}
                     alt=""
-                    className="avatar img-fluid  me-1"
+                    className="avatar img-fluid me-1"
                   />
                 </>
               ) : (
-                <img
-                  src={avatar}
-                  className="avatar img-fluid me-1"
-                  alt="Charles Hall"
-                />
-              )}{" "}
+                <>
+                  <img
+                    src={avatar}
+                    alt=""
+                    className="avatar img-fluid me-1"
+                  />
+                </>
+              )}
             </Link>
             {profileToggle && (
-              <>
+              (role == process.env.REACT_APP_BUSINESS_ROLE) ? (
+                <>
                 <div className="dropdown-menu dropdown-menu-end show">
                   <Link className="dropdown-item" to="/my-preferences">
                     <i className="fa fa-user" aria-hidden="true"></i> &nbsp; My
@@ -275,7 +282,43 @@ const TopBar = () => {
                     &nbsp;Log out
                   </Link>
                 </div>
-              </>
+                </>
+              ) : (
+                (role == process.env.REACT_APP_TUTOR_ROLE) ? (
+                  <>
+                  <div className="dropdown-menu dropdown-menu-end show">
+                    <Link className="dropdown-item" to="/my-preferences">
+                      <i className="fa fa-user" aria-hidden="true"></i> &nbsp; My
+                      Preferences
+                    </Link>
+                    <Link className="dropdown-item" to="/bussiness-settings">
+                      <i className="fa fa-cog" aria-hidden="true"></i>{" "}
+                      &nbsp;Bussiness Settings
+                    </Link>
+                    <div className="dropdown-divider"></div>
+                    <Link className="dropdown-item" onClick={logOut}>
+                      <i className="fa fa-sign-out" aria-hidden="true"></i>{" "}
+                      &nbsp;Log out
+                    </Link>
+                  </div>
+                  </>
+                ) :
+                (
+                  <>
+                  <div className="dropdown-menu dropdown-menu-end show">
+                    <Link className="dropdown-item" to="/student/my-preferences">
+                      <i className="fa fa-user" aria-hidden="true"></i> &nbsp; My
+                      Preferences
+                    </Link>
+                    <div className="dropdown-divider"></div>
+                    <Link className="dropdown-item" onClick={logOut}>
+                      <i className="fa fa-sign-out" aria-hidden="true"></i>{" "}
+                      &nbsp;Log out
+                    </Link>
+                  </div>
+                  </>
+                )
+              )
             )}
           </li>
         </ul>

@@ -14,9 +14,10 @@ import { useUserDataContext } from "../../contextApi/userDataContext.js";
 import LanguageOption from "../LanguageOption.js";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
-const BusinessDashboard = () => {
+const BusinessDashboard = ({ dashboardData }) => {
   const { userData } = useUserDataContext();
   const { t } = useTranslation()
+  console.log('dashboardData : ', dashboardData);
 
   return (
     <div className="container-fluid p-0">
@@ -74,7 +75,9 @@ const BusinessDashboard = () => {
         <div className="row">
           <div className="col-auto">
             <div className="stat text-primary icon4">
+            <Link to="/familiies-and-invoices/invoice/1" >
               <img src={createInvoice} alt="create-invoice-icon" />
+            </Link>
             </div>
           </div>
           <div className="col mt-0">
@@ -116,7 +119,7 @@ const BusinessDashboard = () => {
                       </h5>
                     </div>
                   </div>
-                  <h1 className="mt-1 mb-3">0</h1>
+                  <h1 className="mt-1 mb-3">{ dashboardData.eventLeftThisWeekCount }</h1>
                   {/* <div className="mb-0">
                     <span className="text-danger">
                       {" "}
@@ -139,7 +142,7 @@ const BusinessDashboard = () => {
                       </h5>
                     </div>
                   </div>
-                  <h1 className="mt-1 mb-3">{t("$0.00")}</h1>
+                  <h1 className="mt-1 mb-3">{t("$" + dashboardData.ProjectedRevenueThisMonth )}</h1>
                   {/* <div className="mb-0">
                     <span className="text-success">
                       {" "}
@@ -164,7 +167,7 @@ const BusinessDashboard = () => {
                       </h5>
                     </div>
                   </div>
-                  <h1 className="mt-1 mb-3">0</h1>
+                  <h1 className="mt-1 mb-3">{ dashboardData.PaymentRecievedThisMonth }</h1>
                   {/* <div className="mb-0">
                     <span className="text-success">
                       {" "}
@@ -185,7 +188,7 @@ const BusinessDashboard = () => {
                       <h5 className="card-title">{t("Active Students")}</h5>
                     </div>
                   </div>
-                  <h1 className="mt-1 mb-3">0</h1>
+                  <h1 className="mt-1 mb-3">{ dashboardData.activeStudentsCount }</h1>
                   {/* <div className="mb-0">
                     <span className="text-danger">
                       {" "}

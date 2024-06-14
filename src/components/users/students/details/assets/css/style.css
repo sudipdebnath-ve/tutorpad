@@ -260,3 +260,9 @@ emp {
 .switch-label:active .switch-button {
   width: 60px;
 }
+
+.studentstatus-wrapper{
+  display: flex;
+  justify-content: center;
+}
+
