@@ -27,6 +27,7 @@ const AppContext = ({ children }) => {
   const [allEvents, setAllEvents] = useState([]);
   const [allCategory, setAllCategory] = useState([]);
   const [allLocation, setAllLocation] = useState([]);
+  const [statusList, setStatusList] = useState([]);
   const [emailData, setEmailData] = useState({
     template_title: "",
     template_content: "",
@@ -123,6 +124,27 @@ const AppContext = ({ children }) => {
         // console.log(response.data);
         if (response.data.success === true) {
           setPrivileges(response.data.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  //getStudentStatus
+  const getStudentStatus = async () => {
+    const validateconfig = {
+      method: "GET",
+      url: `${API_URL}student-statuses`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(validateconfig)
+      .then((response) => {
+        console.log('test :',response.data);
+        if (response.data.success === true) {
+          setStatusList(response.data.data);
         }
       })
       .catch((error) => {
@@ -506,6 +528,8 @@ const AppContext = ({ children }) => {
         emailOnchange,
         emailData,
         setEmailData,
+        getStudentStatus,
+        statusList,
         token,
         setToken,
         fetchStudentData,
