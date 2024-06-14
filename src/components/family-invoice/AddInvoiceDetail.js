@@ -34,7 +34,7 @@ const AddInvoiceDetail = () => {
             <div className="row d-flex">
               <div className="col-xl-12 col-xxl-12">
                 <div className="card pb-3">
-                  <div className="card-header">
+                  <div className="card-header alignC">
                     <h5>New Invoice</h5>
                   </div>
                   <div

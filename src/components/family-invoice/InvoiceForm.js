@@ -240,9 +240,7 @@ const InvoiceForm = () => {
   return (
     <>
     <ToastContainer />
-        <Link to={"/familiies-and-invoices/"} className="sectionWrapper">
-          <Icon icon={chevronLeft} /> Back To Family Account
-        </Link>
+    <span className="sectionWrapper pb-3" > <Link to={"/familiies-and-invoices"}><Icon icon={chevronLeft}  /> Back To Family Account</Link></span>
       {!show_form2 ? (
         <>
           <div className="payment-type-box">
@@ -434,7 +432,7 @@ const InvoiceForm = () => {
               <hr />
               <div className="row">
                 <div className="col-md-12">
-                  <div className="formbold-form-btn-wrapper">
+                  <div className="formbold-form">
                     <div className="btn-end">
                       <Link className="cancel" to={"/familiies-and-invoices"}>
                         Cancel

@@ -55,12 +55,13 @@ const TransactionDetailType = () => {
                   <div className="card-header alignC">
                     <h5>{isEditMode ? "Edit Transaction" : "Add Transaction"}</h5>
                   </div>
+                  <span className="sectionWrapper ps-3">Step {param.screen == 1 ? "1/2" : "2/2"}</span>
                   <div
                     className={`card-body ${
                       param.screen == 1 ? "contaner-area" : "contaner-area-min"
                     }`}
                   >
-                    <span className="sectionWrapper">Step {param.screen == 1 ? "1/2" : "2/2"}</span>
+                    
                     {param.screen == 1 && <TransactionType />}
                     {param.screen == 2 &&
                       (param.type == 1 || param.type == 2) && (
