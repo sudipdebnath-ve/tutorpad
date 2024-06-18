@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 const StudentAdd = () => {
   const { fetchData, sidebarToggle, token, userId, getPrivileges, privileges } = useUserDataContext();
   const [checkedPrivileges, setCheckedPrivileges] = useState([]);
+  const [disabledPrivileges, setDisabledPrivileges] = useState([]);
   const [error, setError] = useState({});
   const [val, setVal] = useState(false);
   const navigate = useNavigate();
@@ -79,13 +80,21 @@ const StudentAdd = () => {
           let updatedChecked = [...prevChecked, permissionId];
           const descendants = getAllDescendants(key);
           updatedChecked = [...updatedChecked, ...descendants];
+
+          // Disable descendants
+          setDisabledPrivileges(prevDisabled => [...prevDisabled, ...descendants]);
+
           return [...new Set(updatedChecked)];
 
         } else {
           let updatedChecked = prevChecked.filter((privilegeId) => privilegeId !== permissionId);
           // Get all descendants of the unchecked item
           const descendants = getAllDescendants(key);
-          updatedChecked = updatedChecked.filter((privilegeId) => !descendants.includes(privilegeId));
+          // updatedChecked = updatedChecked.filter((privilegeId) => !descendants.includes(privilegeId));
+
+          // Enable descendants (remove from disabled list)
+          setDisabledPrivileges(prevDisabled => prevDisabled.filter(id => !descendants.includes(id)));
+
           return updatedChecked;
 
         }
@@ -649,8 +658,8 @@ const StudentAdd = () => {
                                       checked={checkedPrivileges.includes(permission.id)}
                                       data-key={permission.key}
                                       data-parent={permission.parent_key}
-                                      disabled={!permission.status}
                                       style={{ cursor: 'pointer'}}
+                                      disabled={!permission.status || disabledPrivileges.includes(permission.id)}
                                     />
                                     <label
                                       htmlFor={`permission-${permission.id}`}

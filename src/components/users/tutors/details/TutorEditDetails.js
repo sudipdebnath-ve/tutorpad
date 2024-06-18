@@ -67,6 +67,7 @@ const TutorEditDetails = () => {
   const [updateTutor, setUpdateTutor] = useState({});
   const [profilePicData, setProfilePicData] = useState({});
   const [checkedLogin, setCheckedLogin] = React.useState(false);
+  const [disabledPrivileges, setDisabledPrivileges] = useState([]);
   const [privileges, setPrivileges] = useState([]);
 
   let { id } = useParams();
@@ -277,8 +278,21 @@ const TutorEditDetails = () => {
   };
 
   const handlePrivilegesChange = (event) => {
-    const { name, checked } = event.target;
+    const { name, checked, dataset } = event.target;
   
+    const getAllDescendants = (keyVal) => {
+      let descendants = [];
+      privileges.forEach(group => {
+        group.permissions.forEach(permission => {
+          if (permission.parent_key === keyVal) {
+            descendants.push(permission.id);
+            descendants = descendants.concat(getAllDescendants(permission.key, privileges));
+          }
+        });
+      });
+      return descendants;
+    };
+
     if (name === "all") {
       if (checked) {
         // Add all permission IDs to checkedPrivileges
@@ -289,12 +303,32 @@ const TutorEditDetails = () => {
         setCheckedPrivileges([]);
       }
     } else {
-      const id = parseInt(name, 10);
+      const permissionId = parseInt(name, 10);
+      const key = dataset.key;
+      const parentKey = dataset.parent;
+
       setCheckedPrivileges((prevChecked) => {
         if (checked) {
-          return [...prevChecked, id];
+          let updatedChecked = [...prevChecked, permissionId];
+          const descendants = getAllDescendants(key);
+          updatedChecked = [...updatedChecked, ...descendants];
+
+          // Disable descendants
+          setDisabledPrivileges(prevDisabled => [...prevDisabled, ...descendants]);
+
+          return [...new Set(updatedChecked)];
+
         } else {
-          return prevChecked.filter((privilegeId) => privilegeId !== id);
+          let updatedChecked = prevChecked.filter((privilegeId) => privilegeId !== permissionId);
+          // Get all descendants of the unchecked item
+          const descendants = getAllDescendants(key);
+          // updatedChecked = updatedChecked.filter((privilegeId) => !descendants.includes(privilegeId));
+
+          // Enable descendants (remove from disabled list)
+          setDisabledPrivileges(prevDisabled => prevDisabled.filter(id => !descendants.includes(id)));
+
+          return updatedChecked;
+
         }
       });
     }
@@ -2674,9 +2708,10 @@ const TutorEditDetails = () => {
                                               id={`permission-${permission.id}`}
                                               onChange={handlePrivilegesChange}
                                               checked={checkedPrivileges.includes(permission.id)}
-                                              disabled={!permission.status}
                                               style={{ cursor: 'pointer'}}
-                                              disabled={!editPrivileges}
+                                              data-key={permission.key}
+                                              data-parent={permission.parent_key}
+                                              disabled={!permission.status || !editPrivileges || disabledPrivileges.includes(permission.id)}
                                             />
                                             <label
                                               htmlFor={`permission-${permission.id}`}
