@@ -63,56 +63,6 @@ const navigate = useNavigate();
  }
 
 
-//  const saveTransactionHandler = async ()=>{
-//     const data = {
-//         family_account_id:family_account_id?.value||"",
-//         transaction_amount:transaction_amount,
-//         transaction_date:transaction_date,
-//         student_id:student_id?.value||"",
-//         transaction_type:param.type,
-//         description:description,
-//     }
-//     if(param?.id)
-//     {
-//         const response = await updateTransaction(data,param.id);
-//         if (response?.success == true) {
-//             set_family_account_id("");
-//             set_transaction_amount("");
-//             set_transaction_date("");
-//             set_student_id("");
-//             set_description("");
-//             toast.success(response?.message, {
-//                 position: toast.POSITION.TOP_CENTER,
-//             });
-//             navigate("/familiies-and-invoices/family/"+param.family_id);
-//         }else{
-//             toast.error("something went wrong !", {
-//                 position: toast.POSITION.TOP_CENTER,
-//             });
-//         }
-//     }else{
-//         const response = await saveTransaction(data);
-//         if (response?.success == true) {
-//             set_family_account_id("");
-//             set_transaction_amount("");
-//             set_transaction_date("");
-//             set_student_id("");
-//             set_description("");
-//             toast.success(response?.message, {
-//                 position: toast.POSITION.TOP_CENTER,
-//             });
-//             navigate("/familiies-and-invoices/family/"+param.family_id);
-//         }else{
-//             toast.error("something went wrong from refund !", {
-//                 position: toast.POSITION.TOP_CENTER,
-//             });
-//         }
-//     }
-    
- 
-//  }
-
-
 const saveTransactionHandler = async () => {
     const data = {
         family_account_id: family_account_id?.value || "",
@@ -159,7 +109,6 @@ const saveTransactionHandler = async () => {
     }
     const response = await saveTransaction(data);
     if (response?.success == true) {
-
         set_family_account_id("");
         set_transaction_amount("");
         set_transaction_date("");

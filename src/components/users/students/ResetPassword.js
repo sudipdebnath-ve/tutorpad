@@ -168,7 +168,7 @@ const ResetPasswordSetup = () => {
                           onChange={handleChange}
                           required
                         />
-                        <small style={{ color: "red" }}>
+                        <small className="token-expired-wrapper" style={{ color: "red" }}>
                           {getError?.length ? getError : <></>}
                         </small>
                       </div>
@@ -187,7 +187,7 @@ const ResetPasswordSetup = () => {
                             <div className="control__indicator"></div>
                           </label>
                         </div>
-                        <small style={{ color: "red" }}>
+                        <small className="token-expired-wrapper" style={{ color: "red" }}>
                           {getError?.terms?.length ? getError.terms[0] : <></>}
                         </small>
                       </div>
@@ -206,7 +206,7 @@ const ResetPasswordSetup = () => {
             ) : (
               <div className="row align-items-center justify-content-center">
                 <div className="col-md-12">
-                  <small style={{ color: "red" }}>
+                  <small className="token-expired-wrapper" style={{ color: "red" }}>
                     {getError?.length ? getError : 'Loading ...'}
                   </small>
                 </div>
