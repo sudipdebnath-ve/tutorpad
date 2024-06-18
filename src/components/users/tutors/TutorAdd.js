@@ -45,8 +45,21 @@ const StudentAdd = () => {
   });
 
   const handlePrivilegesChange = (event) => {
-    const { name, checked } = event.target;
+    const { name, checked, dataset } = event.target;
   
+    const getAllDescendants = (keyVal) => {
+      let descendants = [];
+      privileges.forEach(group => {
+        group.permissions.forEach(permission => {
+          if (permission.parent_key === keyVal) {
+            descendants.push(permission.id);
+            descendants = descendants.concat(getAllDescendants(permission.key, privileges));
+          }
+        });
+      });
+      return descendants;
+    };
+
     if (name === "all") {
       if (checked) {
         // Add all permission IDs to checkedPrivileges
@@ -57,12 +70,24 @@ const StudentAdd = () => {
         setCheckedPrivileges([]);
       }
     } else {
-      const id = parseInt(name, 10);
+      const permissionId = parseInt(name, 10);
+      const key = dataset.key;
+      const parentKey = dataset.parent;
+
       setCheckedPrivileges((prevChecked) => {
         if (checked) {
-          return [...prevChecked, id];
+          let updatedChecked = [...prevChecked, permissionId];
+          const descendants = getAllDescendants(key);
+          updatedChecked = [...updatedChecked, ...descendants];
+          return [...new Set(updatedChecked)];
+
         } else {
-          return prevChecked.filter((privilegeId) => privilegeId !== id);
+          let updatedChecked = prevChecked.filter((privilegeId) => privilegeId !== permissionId);
+          // Get all descendants of the unchecked item
+          const descendants = getAllDescendants(key);
+          updatedChecked = updatedChecked.filter((privilegeId) => !descendants.includes(privilegeId));
+          return updatedChecked;
+
         }
       });
     }
@@ -622,6 +647,8 @@ const StudentAdd = () => {
                                       id={`permission-${permission.id}`}
                                       onChange={handlePrivilegesChange}
                                       checked={checkedPrivileges.includes(permission.id)}
+                                      data-key={permission.key}
+                                      data-parent={permission.parent_key}
                                       disabled={!permission.status}
                                       style={{ cursor: 'pointer'}}
                                     />

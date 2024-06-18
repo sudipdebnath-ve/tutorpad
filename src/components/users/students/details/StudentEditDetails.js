@@ -53,6 +53,8 @@ const StudentEditDetails = () => {
   const [selectedStatusVal, setSelectedStatusVal] = useState("");
   const [selectedStatusColor, setSelectedStatusColor] = useState("");
   const [selectedStatusBgColor, setSelectedStatusBgColor] = useState("");
+  const [isNoteEdited, setIsNoteEdited] = useState(false);
+  const [studentGeneralEditFlag, setStudentGeneralEditFlag] = useState(false);
 
   let { id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -230,6 +232,16 @@ const StudentEditDetails = () => {
     formData.last_name = studentFetchData?.last_name;
     formData.email = studentFetchData?.email;
     formData.phone = studentFetchData?.phone;
+    formData.note = studentFetchData?.note;
+    formData.studentsince = studentFetchData?.studentsince;
+    formData.gender = studentFetchData?.gender;
+    formData.dob = studentFetchData?.dob;
+    formData.customer_number = studentFetchData?.customer_number;
+    formData.special_id_number = studentFetchData?.special_id_number;
+    formData.school = studentFetchData?.school;
+    formData.referrer = studentFetchData?.referrer;
+    formData.subjects = studentFetchData?.subjects;
+    formData.skill = studentFetchData?.skill;
 
     setProfilePhoto(studentFetchData?.dp_url);
     setSelectedStatus(studentFetchData?.student_status);
@@ -313,13 +325,22 @@ const StudentEditDetails = () => {
   const handleEditChange = async (e) => {
     const name = e.target.name;
     let value = e.target.value;
-    console.log('form : ',name, value);
     if (
       name === "first_name" ||
       name === "last_name" ||
       name === "email" ||
       name === "phone" ||
-      name === "parentaddress"
+      name === "parentaddress" ||
+      name === "note" ||
+      name === "dob" ||
+      name === "gender" ||
+      name === "special_id_number" ||
+      name === "customer_number" ||
+      name === "school" ||
+      name === "studentsince" ||
+      name === "referrer" ||
+      name === "subjects" ||
+      name === "skill"
     ) {
       setFormData({ ...formData, [name]: value });
     } else {
@@ -392,7 +413,9 @@ const StudentEditDetails = () => {
         setPreferenceDisabled(true);
         setAttendFlag(false)
         setFamilyDetailDisabled(true)
-        setFamilyDetailFlag(false)
+        setFamilyDetailFlag(false);
+        setIsNoteEdited(!isNoteEdited);
+        setStudentGeneralEditFlag(false);
       })
       .catch((error) => {
         console.log(error);
@@ -459,6 +482,10 @@ const StudentEditDetails = () => {
       setSelectedStatusColor(color);
       setSelectedStatusBgColor(bgcolor);
     }
+  }
+
+  const handleStudentGeneralEdit = (e) => {
+    setStudentGeneralEditFlag(true);
   }
 
   return (
@@ -973,14 +1000,28 @@ const StudentEditDetails = () => {
                   <div className="card-body">
                     <div className="arrange-edit-sign">
                       <h3>Notes</h3>
-                      <div className="student-edit-user">
-                        <i className="fa fa-pencil" aria-hidden="true"></i>
+                      <div className="student-edit-user" onClick={(e) => setIsNoteEdited(!isNoteEdited)}>
+                        {isNoteEdited ?
+                          <i className="fa fa-close" aria-hidden="true"></i>
+                          :
+                          <i className="fa fa-pencil" aria-hidden="true"></i>
+                        }
                       </div>
                     </div>
-                    <span>
-                      Click the edit button to add a private note about this
-                      student
-                    </span>
+                    {isNoteEdited ?
+
+                      <div>
+                        <input type="text" className="form-control mb-3" value={formData?.note} name="note" onChange={handleEditChange}></input>
+                        <div className="btn-end flex justify-content-end">
+                          <button className="formbold-btn" onClick={formSubmit}>Save</button>
+                        </div>
+                      </div>
+                    :
+                      <span>
+                        {formData?.note}
+                      </span>
+                      }
+                    
                   </div>
                 </div>
                 <div className="card">
@@ -995,6 +1036,231 @@ const StudentEditDetails = () => {
                 </div>
               </div>
               <div className="col-xl-8 col-xxl-8">
+                <div className="card">
+                  <div
+                    className="accordion accordion-flush"
+                    id="accordionFlushExample"
+                  >
+                    <div className="accordion-item">
+                      <h2 className="accordion-header" id="flush-headingOne">
+                        <button
+                          className="accordion-button collapsed"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#flush-collapseOne"
+                          aria-expanded="false"
+                          aria-controls="flush-collapseOne"
+                        >
+                          <strong>General Details</strong>
+                        </button>
+                      </h2>
+                      <div
+                        id="flush-collapseOne"
+                        className="accordion-collapse collapse"
+                        aria-labelledby="flush-headingOne"
+                        data-bs-parent="#accordionFlushExample"
+                      >
+                        <div className="accordion-body">
+                          <div className="student-properties-edit">
+                            <h3>General Details</h3>
+                            <div className="student-edit-user" onClick={handleStudentGeneralEdit}>
+                              <i
+                                className="fa fa-pencil"
+                                aria-hidden="true"
+                              ></i>
+                            </div>
+                          </div>
+                          <div className="">
+                            <div className="formbold-input-flex">
+                              <div>
+                                <label htmlFor="gender" className="formbold-form-label">
+                                  Gender <span>Optional</span>
+                                </label>
+                                <select
+                                  name="gender"
+                                  className="form-control"
+                                  value={formData?.gender}
+                                  onChange={handleEditChange}
+                                  disabled={!studentGeneralEditFlag}
+                                >
+                                  <option value="">Select Gender</option>
+                                  <option value="male">Male</option>
+                                  <option value="female">Female</option>
+                                  <option value="other">Other</option>
+                                  <option value="prefer_not_to_say">Prefer not to say</option>
+                                </select>
+                              </div>
+                              <div>
+                                <label
+                                  htmlFor="dob"
+                                  className="formbold-form-label"
+                                >
+                                  Date of Birth <span>Optional</span>
+                                </label>
+                                <input
+                                  type="date"
+                                  name="dob"
+                                  value={formData?.dob}
+                                  className="form-control"
+                                  onChange={handleEditChange}
+                                  disabled={!studentGeneralEditFlag}
+                                />
+                              </div>
+                            </div>
+                            <div className="formbold-input-flex">
+                              <div>
+                                <label
+                                  htmlFor="customer_number"
+                                  className="formbold-form-label"
+                                >
+                                  Customer Number <span>Optional</span>
+                                </label>
+                                <input
+                                  type="text"
+                                  name="customer_number"
+                                  value={formData?.customer_number}
+                                  className="form-control"
+                                  onChange={handleEditChange}
+                                  disabled={!studentGeneralEditFlag}
+                                />
+                              </div>
+                              <div>
+                                <label
+                                  htmlFor="special_id_number"
+                                  className="formbold-form-label"
+                                >
+                                  Special Id Number <span>Optional</span>
+                                </label>
+                                <input
+                                  type="text"
+                                  name="special_id_number"
+                                  value={formData?.special_id_number}
+                                  className="form-control"
+                                  onChange={handleEditChange}
+                                  disabled={!studentGeneralEditFlag}
+                                />
+                              </div>
+                            </div>
+                            <div className="formbold-input-flex">
+                              <div>
+                                <label
+                                  htmlFor="school"
+                                  className="formbold-form-label"
+                                >
+                                  School <span>Optional</span>
+                                </label>
+                                <input
+                                  type="text"
+                                  name="school"
+                                  value={formData?.school}
+                                  className="form-control"
+                                  onChange={handleEditChange}
+                                  disabled={!studentGeneralEditFlag}
+                                />
+                              </div>
+                            </div>
+                            <div className="formbold-input-flex">
+                              <div>
+                                <label
+                                  htmlFor="studentsince"
+                                  className="formbold-form-label"
+                                >
+                                  Student Since <span>Optional</span>
+                                </label>
+                                <input
+                                  type="date"
+                                  name="studentsince"
+                                  value={formData?.studentsince}
+                                  className="form-control"
+                                  onChange={handleEditChange}
+                                  disabled={!studentGeneralEditFlag}
+                                />
+                              </div>
+                              <div>
+                                <label
+                                  htmlFor="referrer"
+                                  className="formbold-form-label"
+                                >
+                                  Referrer <span>Optional</span>
+                                </label>
+                                <input
+                                  type="text"
+                                  name="referrer"
+                                  value={formData?.referrer}
+                                  className="form-control"
+                                  onChange={handleEditChange}
+                                  disabled={!studentGeneralEditFlag}
+                                />
+                              </div>
+                            </div>
+                            <div className="formbold-input-flex diff">
+                              <div>
+                                <label
+                                  htmlFor="subjects"
+                                  className="formbold-form-label"
+                                >
+                                  Subjects <span>Optional</span>
+                                </label>
+                                <br></br>
+                                <small>
+                                  Use a semicolon or press the Enter key to
+                                  separate entries
+                                </small>
+                                <input
+                                  type="text"
+                                  name="subjects"
+                                  value={formData?.subjects}
+                                  className="form-control"
+                                  onChange={handleEditChange}
+                                  disabled={!studentGeneralEditFlag}
+                                />
+                              </div>
+                            </div>
+                            <div className="formbold-input-flex">
+                              <div>
+                                <label
+                                  htmlFor="skill"
+                                  className="formbold-form-label"
+                                >
+                                  Skill Level <span>Optional</span>
+                                </label>
+                                <input
+                                  type="text"
+                                  name="skill"
+                                  value={formData?.skill}
+                                  className="form-control"
+                                  onChange={handleEditChange}
+                                  disabled={!studentGeneralEditFlag}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          {studentGeneralEditFlag && (
+                            <>
+                              <div className="formbold-form-btn-wrapper justify-content-end">
+                                <div className="btn-end">
+                                  <Link
+                                    className="cancel"
+                                    onClick={handleCancelAttendFlag}
+                                  >
+                                    Cancel
+                                  </Link>
+
+                                  <button
+                                    className="formbold-btn"
+                                    onClick={formSubmit}
+                                  >
+                                    Save
+                                  </button>
+                                </div>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <div className="card">
                   <div
                     className="accordion accordion-flush"

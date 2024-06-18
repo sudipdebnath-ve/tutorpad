@@ -226,6 +226,7 @@ const StudentAdd = () => {
       setFormData({ ...formData, [name]: value });
     }
   };
+
   const formSubmit = async (e) => {
     e.preventDefault();
     console.log(userId);
@@ -427,19 +428,22 @@ const StudentAdd = () => {
                         {additionalDetails && (
                           <>
                             <div className="formbold-input-flex">
-                              <div>
-                                <label
-                                  htmlFor="gender"
-                                  className="formbold-form-label"
-                                >
+                            <div>
+                                <label htmlFor="gender" className="formbold-form-label">
                                   Gender <span>Optional</span>
                                 </label>
-                                <input
-                                  type="text"
+                                <select
                                   name="gender"
                                   className="form-control"
+                                  // value={gender}
                                   onChange={handleChange}
-                                />
+                                >
+                                  <option value="">Select Gender</option>
+                                  <option value="male">Male</option>
+                                  <option value="female">Female</option>
+                                  <option value="other">Other</option>
+                                  <option value="prefer_not_to_say">Prefer not to say</option>
+                                </select>
                               </div>
                               <div>
                                 <label
@@ -459,28 +463,28 @@ const StudentAdd = () => {
                             <div className="formbold-input-flex">
                               <div>
                                 <label
-                                  htmlFor="skype"
+                                  htmlFor="customer_number"
                                   className="formbold-form-label"
                                 >
-                                  Skype Username <span>Optional</span>
+                                  Customer Number <span>Optional</span>
                                 </label>
                                 <input
                                   type="text"
-                                  name="skype"
+                                  name="customer_number"
                                   className="form-control"
                                   onChange={handleChange}
                                 />
                               </div>
                               <div>
                                 <label
-                                  htmlFor="facetime"
+                                  htmlFor="special_id_number"
                                   className="formbold-form-label"
                                 >
-                                  FaceTime ID <span>Optional</span>
+                                  Special Id Number <span>Optional</span>
                                 </label>
                                 <input
                                   type="text"
-                                  name="facetime"
+                                  name="special_id_number"
                                   className="form-control"
                                   onChange={handleChange}
                                 />
