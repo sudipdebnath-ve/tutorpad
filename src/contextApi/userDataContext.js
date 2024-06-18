@@ -291,7 +291,7 @@ const AppContext = ({ children }) => {
 
   const fetchFamilies = async () => {
     const familyToken = JSON.parse(localStorage.getItem("tutorPad"));
-    console.log("token:.................", familyToken);
+    console.log("token.................", familyToken);
     const validateconfig = {
       method: "GET",
       url: `${API_URL}family-accounts`,

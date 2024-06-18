@@ -12,6 +12,7 @@ import {chevronLeft} from 'react-icons-kit/feather/chevronLeft';
 import { useNavigate } from "react-router-dom";
 const TransactionType = () => {
   const param = useParams();
+  console.log("param from transaction type------", param);
   const navigate = useNavigate();
   return  <> 
           <Link className="alignA" to={"/familiies-and-invoices"}><Icon icon={chevronLeft} /> Back To Family Account</Link>
