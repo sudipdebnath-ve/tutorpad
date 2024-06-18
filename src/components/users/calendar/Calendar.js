@@ -136,7 +136,7 @@ const Calendars = () => {
     "Sat",
     "Sun",
   ]);
-  const [event_frequency_val, set_event_frequency_val] = useState("");
+  const [event_frequency_val, set_event_frequency_val] = useState("1");
   const [event_repeat_indefinitely, set_event_repeat_indefinitely] =
     useState(true);
   const [event_repeat_until, set_event_repeat_until] = useState("");
