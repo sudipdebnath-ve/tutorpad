@@ -661,7 +661,7 @@ const StudentEditDetails = () => {
                       Cancel
                     </Link>
 
-                    <button className="formbold-btn" onClick={formSubmit}>Submit</button>
+                    <button className="formbold-btn" onClick={formSubmit}>Save</button>
                   </div>
                 </div>
               </div>
