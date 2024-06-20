@@ -203,7 +203,7 @@ const Calendars = () => {
     set_event_recurring(false);
     set_event_frequency("Daily");
     set_event_repeat_on(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]);
-    set_event_frequency_val("");
+    set_event_frequency_val("1");
     set_event_repeat_indefinitely(true);
     set_event_repeat_until("");
     set_require_makeup_credits(false);
