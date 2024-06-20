@@ -6,58 +6,68 @@ import attendence from "../students/assets/images/attendance.svg";
 import Loader from "../../Loader.js";
 import { Link } from "react-router-dom";
 
-const FetchAttendanceLog = () => {
+const FetchAttendanceLog = ({ userId }) => {
   const [val, setVal] = useState(false);
-  const { fetchStudentData, userId, studentData } =
-    useUserDataContext();
+  console.log('id : ',userId);
+  const { 
+    fetchStudentAttendances,
+    studentAttendance,
+  } = useUserDataContext();
 
   useEffect(() => {
-    fetchStudentData();
-  }, [userId]);
+    fetchStudentAttendances(userId);
+  }, []);
 
   const columns = [
-    { field: "date", headerName: "Date", width: 150 },
-    {
-      field: "day_of_week",
-      headerName: "Day Of Week",
+    { 
+      field: "start_date", 
+      headerName: "Date", 
       width: 150,
-      editable: true,
+      valueGetter: (params) => params.row.event_occurrence?.start_date || '',
     },
     {
-      field: "duration",
+      field: "event_duration",
       headerName: "Duration",
       width: 150,
       editable: true,
+      valueGetter: (params) => params.row.event_occurrence?.event_duration || '',
+
     },
     {
-      field: "attachment",
-      headerName: "Attachment",
+      field: "event_all_day",
+      headerName: "All Day",
       width: 150,
+      editable: true,
+      valueGetter: (params) => params.row.event_occurrence?.event_all_day ? "Yes" : "No",
+
     },
     {
-      field: "student_status",
+      field: "event_repeat_on",
+      headerName: "Week Days",
+      width: 150,
+      editable: true,
+      valueGetter: (params) => params.row.event_occurrence?.event_repeat_on || "",
+
+    },
+    {
+      field: "as_title",
       headerName: "Status",
-      width: 140,
-    },
-    {
-      field: "notes",
-      headerName: "Notes",
       width: 150,
     },
   ];
 
   useEffect(() => {
     setVal(true);
-    // console.log(studentData);
-  }, [studentData]);
+    // console.log(studentAttendance);
+  }, [studentAttendance]);
   if (val) {
-    var rows = studentData;
+    var rows = studentAttendance;
     
   } 
   return (
     <div>
       <>
-        {rows && studentData.length > 0 ? (
+        {rows && studentAttendance.length > 0 ? (
          
             <>
               <div className="py-3">

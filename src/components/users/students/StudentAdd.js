@@ -55,7 +55,7 @@ const StudentAdd = () => {
     price: "",
     note: "",
     invoicing: "",
-    family_account_id: null,
+    family_account_id: "",
   });
 
   useEffect(() => {
@@ -82,6 +82,7 @@ const StudentAdd = () => {
     const formBackBtn = document.querySelector(".formbold-back-btn");
 
     let input = document.querySelectorAll("input[type=text]");
+    let selectElements = document.querySelectorAll("select.form-control[name='family_account_id']");
     let emailfield = document.querySelectorAll("input[type=email]");
 
     let req = false;
@@ -118,6 +119,38 @@ const StudentAdd = () => {
       }
     }
     for (let [key, value] of Object.entries(emailfield)) {
+      // console.log("value", value.value);
+      if (
+        value.required === true &&
+        (value.value === "" || value.value === undefined)
+      ) {
+        // console.log("value.name", value.name);
+        // console.log("value.value", value.value);
+
+        value.className = "border-2 border-danger form-control";
+        let label = document?.getElementById(value?.name);
+        label.className = "formbold-form-label text-danger";
+        flagemail = true;
+        label.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+          inline: "start",
+        });
+        console.log("value?.name", value?.name);
+        setError((prev) => ({
+          ...prev,
+          [value?.name]: `The ${label.innerText} is required`,
+        }));
+      } else if (value.required && value.value) {
+        console.log("value", value.value);
+
+        value.className = "form-control";
+        let label = document.getElementById(value.name);
+        label.className = "formbold-form-label";
+        setError((prev) => ({ ...prev, [value?.name]: "" }));
+      }
+    }
+    for (let [key, value] of Object.entries(selectElements)) {
       // console.log("value", value.value);
       if (
         value.required === true &&
@@ -822,6 +855,7 @@ const StudentAdd = () => {
                                   className="form-control"
                                   name="family_account_id"
                                   onChange={handleChange}
+                                  required
                                 >
 
                                   <option value={""}>Select Family</option>

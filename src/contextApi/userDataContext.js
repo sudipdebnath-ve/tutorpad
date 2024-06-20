@@ -24,6 +24,8 @@ const AppContext = ({ children }) => {
   const [allInvoicesByDate, setAllInvoicesByDate] = useState([]);
   const [allTutors, setAllTutors] = useState([]);
   const [getAvailabilityData, setGetAvailabilityData] = useState([]);
+  const [studentAttendance, setStudentAttendance] = useState([]);
+  const [studentAttendanceSummery, setStudentAttendanceSummery] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
   const [allCategory, setAllCategory] = useState([]);
   const [allLocation, setAllLocation] = useState([]);
@@ -513,9 +515,47 @@ const AppContext = ({ children }) => {
       });
   };
 
+  const fetchStudentAttendances = async (studentId) => {
+    const config = {
+      method: "GET",
+      url: `${API_URL}student/`+ studentId +`/attendances`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(config)
+      .then((response) => {
+        setStudentAttendance(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  //attendance-summery
+  const fetchStudentAttendanceSummery = async (studentId) => {
+    const config = {
+      method: "GET",
+      url: `${API_URL}student/`+ studentId +`/attendance-summery`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(config)
+      .then((response) => {
+        setStudentAttendanceSummery(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <userDataContext.Provider
       value={{
+        fetchStudentAttendances,
+        studentAttendance,
+        fetchStudentAttendanceSummery,
+        studentAttendanceSummery,
         fetchData,
         userData,
         setUserData,
