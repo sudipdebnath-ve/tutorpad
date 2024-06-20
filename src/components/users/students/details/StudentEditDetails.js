@@ -27,6 +27,8 @@ const StudentEditDetails = () => {
     allCategory,
     getStudentStatus,
     statusList,
+    fetchStudentAttendanceSummery,
+    studentAttendanceSummery,
   } = useUserDataContext();
   const [initial, setInitial] = useState("");
   const [todayDate, setTodayDate] = useState(new Date());
@@ -116,6 +118,7 @@ const StudentEditDetails = () => {
     getTutor();
     fetchAssignTutors(id);
     getStudentStatus();
+    fetchStudentAttendanceSummery(id);
   }, [id]);
 
   const handleAssignTutor = (e) => {
@@ -1880,19 +1883,23 @@ const StudentEditDetails = () => {
                           </div>
                           <div className="avg-attend">
                             <div className="avg-data">
-                              <span>0</span>
+                              <span>{ studentAttendanceSummery.presentCount }</span>
                               <span>Present</span>
                             </div>
                             <div className="avg-data">
-                              <span>0</span>
+                              <span>{ studentAttendanceSummery.unrecordedCount }</span>
                               <span>Unrecorded</span>
                             </div>
                             <div className="avg-data">
-                              <span>0</span>
+                              <span>{ studentAttendanceSummery.absentCount }</span>
                               <span>Student Absences</span>
                             </div>
                             <div className="avg-data">
-                              <span>0</span>
+                              <span>{ studentAttendanceSummery.tutorCanceledCount }</span>
+                              <span>Canceled Events</span>
+                            </div>
+                            <div className="avg-data">
+                              <span>{ studentAttendanceSummery.totalEvents }</span>
                               <span>Total Events</span>
                             </div>
                           </div>
@@ -1928,7 +1935,7 @@ const StudentEditDetails = () => {
                               </i>
                             </h5>
 
-                            <FetchAttendanceLog />
+                            <FetchAttendanceLog userId={id}/>
                           </div>
                         </div>
                       </div>

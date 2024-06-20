@@ -49,7 +49,14 @@ export const deleteEvents = async (data,id) => {
 
 
 export const getStudentsByTutorId = async (id) => {
-  return calenderApi.get('assigned-students/'+id).then((response) => {
+  const myToken = JSON.parse(localStorage.getItem("tutorPad"));
+
+  return axios.create({
+    baseURL: API_URL,
+    headers: {
+      Authorization: `Bearer ${myToken}`,
+    },
+  }).get('assigned-students/'+id).then((response) => {
       return response.data;
     })
     .catch((error) => {
