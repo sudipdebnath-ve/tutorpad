@@ -3,3 +3,8 @@
   height: auto;
   min-height: 600px;
 }
+
+
+::placeholder {
+  color: #ccc; /* Lighter color */
+}

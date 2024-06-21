@@ -136,7 +136,7 @@ const Calendars = () => {
     "Sat",
     "Sun",
   ]);
-  const [event_frequency_val, set_event_frequency_val] = useState("");
+  const [event_frequency_val, set_event_frequency_val] = useState("1");
   const [event_repeat_indefinitely, set_event_repeat_indefinitely] =
     useState(true);
   const [event_repeat_until, set_event_repeat_until] = useState("");
@@ -203,7 +203,7 @@ const Calendars = () => {
     set_event_recurring(false);
     set_event_frequency("Daily");
     set_event_repeat_on(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]);
-    set_event_frequency_val("");
+    set_event_frequency_val("1");
     set_event_repeat_indefinitely(true);
     set_event_repeat_until("");
     set_require_makeup_credits(false);

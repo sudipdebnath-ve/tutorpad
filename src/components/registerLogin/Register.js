@@ -14,6 +14,7 @@ import { getDomainName } from "../../services/loginService.js";
 import i18next from "i18next";
 import LanguageOption from "../LanguageOption.js";
 import { useTranslation } from "react-i18next";
+import "./style.css"
 
 const Register = ( { subdomain, setSubdomain }) => {
   const { t } = useTranslation()
