@@ -22,6 +22,7 @@ const FetchTransactionDatatable = ({setSelectedId,set_chargecat_name,setModalIsO
     allTransactionsByDates,
     fetchTransactionsByDates,
     fetchTransactionsByFamily,
+    allTransactionsByFamily,
     userId,
   } = useUserDataContext();
   const [deleteId, setDeleteId] = useState(null);

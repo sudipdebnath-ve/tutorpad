@@ -490,7 +490,7 @@ const MyPreferences = () => {
               <div className="row d-flex">
                 <div className="col-xl-4 col-xxl-4">
                   <div className="formbold-input-flex justify-content-center">
-                    <div>
+                    <div className="student-profile-view">
                       <label htmlFor="photo" className="formbold-form-label">
                         Photo <span>Optional</span>
                       </label>
@@ -504,12 +504,12 @@ const MyPreferences = () => {
                               />
                             </>
                           ) : (
-                            <h2>{initial}</h2>
+                            <h2>{initial && initial.toLocaleUpperCase()}</h2>
                           )}
                         </div>
                       </div>
                       <div className="text-center pb-2">
-                        <small style={{ color: "red" }}>
+                        <small className="input-error-message">
                           {error?.file?.length ? error.file[0] : <></>}
                         </small>
                       </div>
@@ -743,10 +743,10 @@ const MyPreferences = () => {
                         />
                         <div className="pt-2">
                           {error?.length > 0 && (
-                            <small style={{ color: "red" }}>{error}</small>
+                            <small className="input-error-message">{error}</small>
                           )}
                           {error?.current_password?.length > 0 && (
-                            <small style={{ color: "red" }}>
+                            <small className="input-error-message">
                               {error.current_password[0]}
                             </small>
                           )}
@@ -769,7 +769,7 @@ const MyPreferences = () => {
                         />
                         <div className="pt-2">
                           {error?.new_password?.length > 0 && (
-                            <small style={{ color: "red" }}>
+                            <small className="input-error-message">
                               {error.new_password[0]}
                             </small>
                           )}
@@ -792,7 +792,7 @@ const MyPreferences = () => {
                           />
                           <div className="pt-2">
                             {error?.confirm_new_password?.length > 0 && (
-                              <small style={{ color: "red" }}>
+                              <small className="input-error-message">
                                 {error.confirm_new_password[0]}
                               </small>
                             )}
@@ -846,7 +846,7 @@ const MyPreferences = () => {
                             Days
                           </label>
                         </div>
-                        <small style={{ color: "red" }}>
+                        <small className="input-error-message">
                           {error?.days?.length ? error?.days[0] : <></>}
                         </small>
                         <div className="studentStatus">
@@ -991,7 +991,7 @@ const MyPreferences = () => {
                         />
                       </div>
                     </div>
-                    <small style={{ color: "red" }}>
+                    <small className="input-error-message">
                       {error?.end_date?.length ? error?.end_date[0] : <></>}
                     </small>
                     <div className="formbold-input-flex">
@@ -1071,12 +1071,12 @@ const MyPreferences = () => {
                   <div className="card-body">
                     <div className="initials">
                       <div className="image-user">
-                        {userData?.business_data?.dp_url ? (
+                        {profilePhoto ? (
                           <>
-                            <img src={userData?.business_data?.dp_url} alt="" />
+                            <img src={profilePhoto} alt="" />
                           </>
                         ) : (
-                          <h2>{initial}</h2>
+                          <h2>{initial && initial.toLocaleUpperCase()}</h2>
                         )}
                       </div>
                     </div>
@@ -1585,7 +1585,7 @@ const MyPreferences = () => {
                                         Days
                                       </label>
                                     </div>
-                                    <small style={{ color: "red" }}>
+                                    <small className="input-error-message">
                                       {error?.days?.length ? (
                                         error?.days[0]
                                       ) : (
@@ -1697,7 +1697,7 @@ const MyPreferences = () => {
                                     />
                                   </div>
                                 </div>
-                                <small style={{ color: "red" }}>
+                                <small className="input-error-message">
                                   {error?.end_date?.length ? (
                                     error?.end_date[0]
                                   ) : (

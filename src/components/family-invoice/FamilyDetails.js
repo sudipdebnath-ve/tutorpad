@@ -120,7 +120,7 @@ const FamilyDetails = () => {
                           {`<`} Back To family & Invoice
                         </Link>
 
-                <div className="card">
+                <div className="card enable-auto-invoice-wrapper">
                   <div className="card-body">
                     <div className="row">
                       <div className="col-md-12">
@@ -155,9 +155,11 @@ const FamilyDetails = () => {
                         <label>Students</label>
                         <ul>
                           {students.map((e) => {
+                            console.log("eeeeeeeeeeeeeeee--------->",e);
+
                             return (
                               <li>
-                                <Link to={"/"}><Icon icon={user} /> {e?.name || ""}{" "}</Link>
+                                <Link to={"/students/details/"+e?.id}><Icon icon={user} /> {e?.name || ""}{" "}</Link>
                                 <span style={{background: `${e?.status_color}`,padding: "2px 5px", color: "white"}} >
                                   {e?.status_label}
                                 </span>
@@ -172,7 +174,8 @@ const FamilyDetails = () => {
                         <label>Family Contact</label>
                         <ul>
                           <li>
-                            <Link to={"/"}>
+                            <Link to={"/students/details/"+selectedFamily?.value}>
+                            {console.log("selected family--------------------", selectedFamily)}
                               <Icon icon={user} /> {selectedFamily?.label || ""}{" "}
                             </Link>
                             <span
@@ -294,7 +297,7 @@ const FamilyDetails = () => {
                           </div>
                           <div style={{ marginTop: 5 }} className="col-md-12">
                             <button
-                              className="btn btn-md btn-danger form-control"
+                              className="btn btn-md btn-danger autoinvoicing-wrapper"
                               onClick={handleShowModal}
                             >
                               <Icon

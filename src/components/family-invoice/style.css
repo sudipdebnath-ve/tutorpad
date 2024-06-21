@@ -160,11 +160,12 @@ input{
 .card-body h6{
     margin-top: 20px!important;
 }
-.card{
+
+.card.enable-auto-invoice-wrapper {
     padding-top: 20px;
 }
+
 a.link {
-    
     position: relative;
     top: -18px;
 }
@@ -191,7 +192,11 @@ strong.txt {
 }
 .col-9.rightBt {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
+}
+.col-9.rightBt button{
+    margin-left: 8px;
+    font-size: 15px;
 }
 a.cancel svg {
     width: 15px;

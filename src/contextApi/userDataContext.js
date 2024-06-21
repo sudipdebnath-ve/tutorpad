@@ -24,9 +24,13 @@ const AppContext = ({ children }) => {
   const [allInvoicesByDate, setAllInvoicesByDate] = useState([]);
   const [allTutors, setAllTutors] = useState([]);
   const [getAvailabilityData, setGetAvailabilityData] = useState([]);
+  const [studentAttendance, setStudentAttendance] = useState([]);
+  const [studentAttendanceSummery, setStudentAttendanceSummery] = useState([]);
+  const [studentFamilyContact, setStudentFamilyContact] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
   const [allCategory, setAllCategory] = useState([]);
   const [allLocation, setAllLocation] = useState([]);
+  const [statusList, setStatusList] = useState([]);
   const [emailData, setEmailData] = useState({
     template_title: "",
     template_content: "",
@@ -123,6 +127,27 @@ const AppContext = ({ children }) => {
         // console.log(response.data);
         if (response.data.success === true) {
           setPrivileges(response.data.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  //getStudentStatus
+  const getStudentStatus = async () => {
+    const validateconfig = {
+      method: "GET",
+      url: `${API_URL}student-statuses`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(validateconfig)
+      .then((response) => {
+        console.log('test :',response.data);
+        if (response.data.success === true) {
+          setStatusList(response.data.data);
         }
       })
       .catch((error) => {
@@ -269,7 +294,7 @@ const AppContext = ({ children }) => {
 
   const fetchFamilies = async () => {
     const familyToken = JSON.parse(localStorage.getItem("tutorPad"));
-    console.log("token:.................", familyToken);
+    console.log("token.................", familyToken);
     const validateconfig = {
       method: "GET",
       url: `${API_URL}family-accounts`,
@@ -491,9 +516,68 @@ const AppContext = ({ children }) => {
       });
   };
 
+  const fetchStudentAttendances = async (studentId) => {
+    const config = {
+      method: "GET",
+      url: `${API_URL}student/`+ studentId +`/attendances`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(config)
+      .then((response) => {
+        setStudentAttendance(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  //attendance-summery
+  const fetchStudentAttendanceSummery = async (studentId) => {
+    const config = {
+      method: "GET",
+      url: `${API_URL}student/`+ studentId +`/attendance-summery`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(config)
+      .then((response) => {
+        setStudentAttendanceSummery(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  //fetchStudentFamilyContact
+  const fetchStudentFamilyContact = async (studentId) => {
+    const config = {
+      method: "GET",
+      url: `${API_URL}student/`+ studentId +`/family-contacts`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(config)
+      .then((response) => {
+        setStudentFamilyContact(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <userDataContext.Provider
       value={{
+        fetchStudentFamilyContact,
+        studentFamilyContact,
+        fetchStudentAttendances,
+        studentAttendance,
+        fetchStudentAttendanceSummery,
+        studentAttendanceSummery,
         fetchData,
         userData,
         setUserData,
@@ -506,6 +590,8 @@ const AppContext = ({ children }) => {
         emailOnchange,
         emailData,
         setEmailData,
+        getStudentStatus,
+        statusList,
         token,
         setToken,
         fetchStudentData,

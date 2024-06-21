@@ -208,10 +208,10 @@ const MyPreferences = () => {
                         />
                         <div className="pt-2">
                           {error?.length > 0 && (
-                            <small style={{ color: "red" }}>{error}</small>
+                            <small className="input-error-message">{error}</small>
                           )}
                           {error?.current_password?.length > 0 && (
-                            <small style={{ color: "red" }}>
+                            <small className="input-error-message">
                               {error.current_password[0]}
                             </small>
                           )}
@@ -234,7 +234,7 @@ const MyPreferences = () => {
                         />
                         <div className="pt-2">
                           {error?.new_password?.length > 0 && (
-                            <small style={{ color: "red" }}>
+                            <small className="input-error-message">
                               {error.new_password[0]}
                             </small>
                           )}
@@ -257,7 +257,7 @@ const MyPreferences = () => {
                           />
                           <div className="pt-2">
                             {error?.confirm_new_password?.length > 0 && (
-                              <small style={{ color: "red" }}>
+                              <small className="input-error-message">
                                 {error.confirm_new_password[0]}
                               </small>
                             )}

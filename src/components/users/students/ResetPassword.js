@@ -15,16 +15,24 @@ const ResetPasswordSetup = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [getError, setError] = useState({});
+  const [getFormError, setFormError] = useState({});
   const [portal, setPortal] = useState("");
   const [password, setPassword] = useState("");
   const [c_password, setC_password] = useState("");
   const [key, setKey] = useState("");
-  const [getAllow, setAllow] = useState(false);
+  const [getAllow, setAllow] = useState(true);
   const [passwordChanged, setPasswordChanged] = useState(false);
 
   const handleSubmit = async () => {
+    setFormError({});
+    setError({});
+
     if (password !== c_password) {
       setError("Passwords do not match.");
+      return;
+    }
+    if(!key){
+      setError("User verification is required.");
       return;
     }
     const loginApi = axios.create({
@@ -48,7 +56,7 @@ const ResetPasswordSetup = () => {
     })
     .catch((error) => {
       if (error.response && error.response.data) {
-        setError(error.response.data.data.password);
+        setFormError(error.response.data.data);
         return;
       }
     });
@@ -58,7 +66,7 @@ const ResetPasswordSetup = () => {
     const { name, value } = e.target;
     if (name === "password") {
       setPassword(value);
-    } else if (name === "rpassword") {
+    } else if (name === "c_password") {
       setC_password(value);
     }
   }
@@ -158,17 +166,23 @@ const ResetPasswordSetup = () => {
                           onChange={handleChange}
                           required
                         />
+                        <small className="input-error-message">
+                          {getFormError?.password?.length ? getFormError.password[0] : <></>}
+                        </small>
                       </div>
                       <div className="form-group last mb-3">
                         <input
                           type="password"
                           className="form-control"
                           placeholder={t("Confirm Password")}
-                          name="rpassword"
+                          name="c_password"
                           onChange={handleChange}
                           required
                         />
-                        <small style={{ color: "red" }}>
+                        <small className="input-error-message">
+                          {getFormError?.c_password?.length ? getFormError.c_password[0] : <></>}
+                        </small>
+                        <small className="input-error-message">
                           {getError?.length ? getError : <></>}
                         </small>
                       </div>
@@ -187,7 +201,7 @@ const ResetPasswordSetup = () => {
                             <div className="control__indicator"></div>
                           </label>
                         </div>
-                        <small style={{ color: "red" }}>
+                        <small className="input-error-message">
                           {getError?.terms?.length ? getError.terms[0] : <></>}
                         </small>
                       </div>
@@ -206,7 +220,7 @@ const ResetPasswordSetup = () => {
             ) : (
               <div className="row align-items-center justify-content-center">
                 <div className="col-md-12">
-                  <small style={{ color: "red" }}>
+                  <small className="token-expired-wrapper-input-error-message">
                     {getError?.length ? getError : 'Loading ...'}
                   </small>
                 </div>

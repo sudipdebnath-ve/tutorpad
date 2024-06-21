@@ -67,7 +67,9 @@ const TutorEditDetails = () => {
   const [updateTutor, setUpdateTutor] = useState({});
   const [profilePicData, setProfilePicData] = useState({});
   const [checkedLogin, setCheckedLogin] = React.useState(false);
+  const [disabledPrivileges, setDisabledPrivileges] = useState([]);
   const [privileges, setPrivileges] = useState([]);
+  const [isNoteEdited, setIsNoteEdited] = useState(false);
 
   let { id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -190,6 +192,7 @@ const TutorEditDetails = () => {
     formData.phone = tutorFetchData?.phone;
     formData.title = tutorFetchData?.title;
     formData.address = tutorFetchData?.address;
+    formData.note = tutorFetchData?.note;
     setProfilePhoto(tutorFetchData?.dp_url);
     formData.virtual_meeting_link = tutorFetchData?.virtual_meeting_link;
     formData.subjects = tutorFetchData?.subjects;
@@ -228,7 +231,8 @@ const TutorEditDetails = () => {
       name === "phone" ||
       name === "address" ||
       name === "virtual_meeting_link" ||
-      name === "subjects"
+      name === "subjects" ||
+      name === "note"
     ) {
       setFormData({ ...formData, [name]: value });
     } else {
@@ -277,8 +281,21 @@ const TutorEditDetails = () => {
   };
 
   const handlePrivilegesChange = (event) => {
-    const { name, checked } = event.target;
+    const { name, checked, dataset } = event.target;
   
+    const getAllDescendants = (keyVal) => {
+      let descendants = [];
+      privileges.forEach(group => {
+        group.permissions.forEach(permission => {
+          if (permission.parent_key === keyVal) {
+            descendants.push(permission.id);
+            descendants = descendants.concat(getAllDescendants(permission.key, privileges));
+          }
+        });
+      });
+      return descendants;
+    };
+
     if (name === "all") {
       if (checked) {
         // Add all permission IDs to checkedPrivileges
@@ -289,12 +306,32 @@ const TutorEditDetails = () => {
         setCheckedPrivileges([]);
       }
     } else {
-      const id = parseInt(name, 10);
+      const permissionId = parseInt(name, 10);
+      const key = dataset.key;
+      const parentKey = dataset.parent;
+
       setCheckedPrivileges((prevChecked) => {
         if (checked) {
-          return [...prevChecked, id];
+          let updatedChecked = [...prevChecked, permissionId];
+          const descendants = getAllDescendants(key);
+          updatedChecked = [...updatedChecked, ...descendants];
+
+          // Disable descendants
+          setDisabledPrivileges(prevDisabled => [...prevDisabled, ...descendants]);
+
+          return [...new Set(updatedChecked)];
+
         } else {
-          return prevChecked.filter((privilegeId) => privilegeId !== id);
+          let updatedChecked = prevChecked.filter((privilegeId) => privilegeId !== permissionId);
+          // Get all descendants of the unchecked item
+          const descendants = getAllDescendants(key);
+          // updatedChecked = updatedChecked.filter((privilegeId) => !descendants.includes(privilegeId));
+
+          // Enable descendants (remove from disabled list)
+          setDisabledPrivileges(prevDisabled => prevDisabled.filter(id => !descendants.includes(id)));
+
+          return updatedChecked;
+
         }
       });
     }
@@ -375,6 +412,7 @@ const TutorEditDetails = () => {
         setEmaildisabled(true);
         fetchTutorDetails(id);
         setIsOpen(false);
+        setIsNoteEdited(false);
         closeModal();
       })
       .catch((error) => {
@@ -734,7 +772,7 @@ const TutorEditDetails = () => {
               <div className="row d-flex">
                 <div className="col-xl-4 col-xxl-4">
                   <div className="formbold-input-flex justify-content-center">
-                    <div>
+                    <div className="student-profile-view">
                       <label htmlFor="file" className="formbold-form-label">
                         Photo <span>Optional</span>
                       </label>
@@ -939,7 +977,7 @@ const TutorEditDetails = () => {
                       Cancel
                     </Link>
                     <button className="formbold-btn" onClick={formSubmit}>
-                      Submit
+                      Save
                     </button>
                   </div>
                 </div>
@@ -990,7 +1028,7 @@ const TutorEditDetails = () => {
                               })}
                           </select>
                           <div className="pt-2">
-                            <small style={{ color: "red" }}>
+                            <small className="input-error-message">
                               {error?.error?.length ? error.error : <></>}
                             </small>
                           </div>
@@ -1027,7 +1065,7 @@ const TutorEditDetails = () => {
                             })}
                         </select>
                         <div className="pt-2">
-                          <small style={{ color: "red" }}>
+                          <small className="input-error-message">
                             {error?.default_lesson_cat?.length ? (
                               error.default_lesson_cat[0]
                             ) : (
@@ -1273,7 +1311,7 @@ const TutorEditDetails = () => {
                             Days
                           </label>
                         </div>
-                        <small style={{ color: "red" }}>
+                        <small className="input-error-message">
                           {error?.days?.length ? error?.days[0] : <></>}
                         </small>
                         <div className="studentStatus">
@@ -1418,7 +1456,7 @@ const TutorEditDetails = () => {
                         />
                       </div>
                     </div>
-                    <small style={{ color: "red" }}>
+                    <small className="input-error-message">
                       {error?.end_date?.length ? error?.end_date[0] : <></>}
                     </small>
                     <div className="formbold-input-flex">
@@ -1480,7 +1518,7 @@ const TutorEditDetails = () => {
                       className="formbold-btn"
                       onClick={updateAvailability}
                     >
-                      Submit
+                      Save
                     </button>
                   </div>
                 </div>
@@ -1539,14 +1577,27 @@ const TutorEditDetails = () => {
                   <div className="card-body">
                     <div className="arrange-edit-sign">
                       <h3>Notes</h3>
-                      <div className="student-edit-user">
-                        <i className="fa fa-pencil" aria-hidden="true"></i>
+                      <div className="student-edit-user" onClick={(e) => setIsNoteEdited(!isNoteEdited)}>
+                        {isNoteEdited ?
+                          <i className="fa fa-close" aria-hidden="true"></i>
+                          :
+                          <i className="fa fa-pencil" aria-hidden="true"></i>
+                        }
                       </div>
                     </div>
-                    <span className="notes-section">
-                      Click the edit button to add a private note about this
-                      tutor
-                    </span>
+                    {isNoteEdited ?
+
+                      <div>
+                        <input type="text" className="form-control mb-3" value={formData?.note} name="note" onChange={handleChange}></input>
+                        <div className="btn-end flex justify-content-end">
+                          <button className="formbold-btn" onClick={formSubmit}>Save</button>
+                        </div>
+                      </div>
+                    :
+                      <span>
+                        {formData?.note}
+                      </span>
+                      }
                   </div>
                 </div>
                 <div className="card">
@@ -1714,7 +1765,6 @@ const TutorEditDetails = () => {
                                 onClick={(e) => openModal("assignStudent")}
                               >
                                 <i
-                                  style={{ color: "#ffffff" }}
                                   className="fa fa-plus"
                                   aria-hidden="true"
                                 ></i>
@@ -1851,7 +1901,7 @@ const TutorEditDetails = () => {
                                         Days
                                       </label>
                                     </div>
-                                    <small style={{ color: "red" }}>
+                                    <small className="input-error-message">
                                       {error?.days?.length ? (
                                         error?.days[0]
                                       ) : (
@@ -1963,7 +2013,7 @@ const TutorEditDetails = () => {
                                     />
                                   </div>
                                 </div>
-                                <small style={{ color: "red" }}>
+                                <small className="input-error-message">
                                   {error?.end_date?.length ? (
                                     error?.end_date[0]
                                   ) : (
@@ -2184,7 +2234,6 @@ const TutorEditDetails = () => {
                             <div className="btn-end">
                               <button className="formbold-btn">
                                 <i
-                                  style={{ color: "#ffffff" }}
                                   className="fa fa-plus"
                                   aria-hidden="true"
                                 ></i>
@@ -2674,9 +2723,10 @@ const TutorEditDetails = () => {
                                               id={`permission-${permission.id}`}
                                               onChange={handlePrivilegesChange}
                                               checked={checkedPrivileges.includes(permission.id)}
-                                              disabled={!permission.status}
                                               style={{ cursor: 'pointer'}}
-                                              disabled={!editPrivileges}
+                                              data-key={permission.key}
+                                              data-parent={permission.parent_key}
+                                              disabled={!permission.status || !editPrivileges || disabledPrivileges.includes(permission.id)}
                                             />
                                             <label
                                               htmlFor={`permission-${permission.id}`}

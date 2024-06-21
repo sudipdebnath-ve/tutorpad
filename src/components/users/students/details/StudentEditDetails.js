@@ -13,6 +13,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import FetchStudyLog from "../FetchStudyLog.js";
 import FetchAttendanceLog from "../FetchAttendanceLog.js";
+import FetchStudentFamilyContactDatatable from "../FetchStudentFamilyContactDatatable.js";
 import lending from "../assets/images/lending.svg";
 import ReactModal from "react-modal";
 import { ToastContainer, toast } from "react-toastify";
@@ -25,6 +26,10 @@ const StudentEditDetails = () => {
     allTutors,
     fetchCategory,
     allCategory,
+    getStudentStatus,
+    statusList,
+    fetchStudentAttendanceSummery,
+    studentAttendanceSummery,
   } = useUserDataContext();
   const [initial, setInitial] = useState("");
   const [todayDate, setTodayDate] = useState(new Date());
@@ -47,7 +52,12 @@ const StudentEditDetails = () => {
   const [preferenceDisabled, setPreferenceDisabled] = useState(true);
   const [familyDetailFlag, setFamilyDetailFlag] = useState(false);
   const [familyDetailDisabled, setFamilyDetailDisabled] = useState(true);
-  
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedStatusVal, setSelectedStatusVal] = useState("");
+  const [selectedStatusColor, setSelectedStatusColor] = useState("");
+  const [selectedStatusBgColor, setSelectedStatusBgColor] = useState("");
+  const [isNoteEdited, setIsNoteEdited] = useState(false);
+  const [studentGeneralEditFlag, setStudentGeneralEditFlag] = useState(false);
 
   let { id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -108,6 +118,8 @@ const StudentEditDetails = () => {
     fetchCategory();
     getTutor();
     fetchAssignTutors(id);
+    getStudentStatus();
+    fetchStudentAttendanceSummery(id);
   }, [id]);
 
   const handleAssignTutor = (e) => {
@@ -224,8 +236,22 @@ const StudentEditDetails = () => {
     formData.last_name = studentFetchData?.last_name;
     formData.email = studentFetchData?.email;
     formData.phone = studentFetchData?.phone;
+    formData.note = studentFetchData?.note;
+    formData.studentsince = studentFetchData?.studentsince;
+    formData.gender = studentFetchData?.gender;
+    formData.dob = studentFetchData?.dob;
+    formData.customer_number = studentFetchData?.customer_number;
+    formData.special_id_number = studentFetchData?.special_id_number;
+    formData.school = studentFetchData?.school;
+    formData.referrer = studentFetchData?.referrer;
+    formData.subjects = studentFetchData?.subjects;
+    formData.skill = studentFetchData?.skill;
 
     setProfilePhoto(studentFetchData?.dp_url);
+    setSelectedStatus(studentFetchData?.student_status);
+    setSelectedStatusVal(studentFetchData?.status_label);
+    setSelectedStatusColor(studentFetchData?.status_color);
+    setSelectedStatusBgColor(studentFetchData?.bg_color);
     
     formData.parentfirstname = studentFetchData?.parentfirstname;
     formData.parentlastname = studentFetchData?.parentlastname;
@@ -303,13 +329,22 @@ const StudentEditDetails = () => {
   const handleEditChange = async (e) => {
     const name = e.target.name;
     let value = e.target.value;
-    console.log('form : ',name, value);
     if (
       name === "first_name" ||
       name === "last_name" ||
       name === "email" ||
       name === "phone" ||
-      name === "parentaddress"
+      name === "parentaddress" ||
+      name === "note" ||
+      name === "dob" ||
+      name === "gender" ||
+      name === "special_id_number" ||
+      name === "customer_number" ||
+      name === "school" ||
+      name === "studentsince" ||
+      name === "referrer" ||
+      name === "subjects" ||
+      name === "skill"
     ) {
       setFormData({ ...formData, [name]: value });
     } else {
@@ -360,6 +395,7 @@ const StudentEditDetails = () => {
 
   const formSubmit = async (e) => {
     formData["student_id"] = id;
+    formData["student_status"] = selectedStatus;
     console.log(formData);
 
     e.preventDefault();
@@ -381,7 +417,9 @@ const StudentEditDetails = () => {
         setPreferenceDisabled(true);
         setAttendFlag(false)
         setFamilyDetailDisabled(true)
-        setFamilyDetailFlag(false)
+        setFamilyDetailFlag(false);
+        setIsNoteEdited(!isNoteEdited);
+        setStudentGeneralEditFlag(false);
       })
       .catch((error) => {
         console.log(error);
@@ -436,7 +474,23 @@ const StudentEditDetails = () => {
     setIsOpens(e);
   }
 
-  console.log("students fetched data----------", studentFetchData);
+  const handleChangeStatus = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    if (name === "student_status") {
+      setSelectedStatus(value);
+      const text = e.target.getAttribute('data-status-text');
+      const color = e.target.getAttribute('data-status-color');
+      const bgcolor = e.target.getAttribute('data-status-bgcolor');
+      setSelectedStatusVal(text);
+      setSelectedStatusColor(color);
+      setSelectedStatusBgColor(bgcolor);
+    }
+  }
+
+  const handleStudentGeneralEdit = (e) => {
+    setStudentGeneralEditFlag(true);
+  }
 
   return (
     <div className="wrapper student-details">
@@ -471,7 +525,7 @@ const StudentEditDetails = () => {
               <div className="row d-flex">
                 <div className="col-xl-4 col-xxl-4">
                   <div className="formbold-input-flex justify-content-center">
-                    <div>
+                    <div className="student-profile-view">
                       <label htmlFor="file" className="formbold-form-label">
                         Photo <span>Optional</span>
                       </label>
@@ -482,7 +536,7 @@ const StudentEditDetails = () => {
                               <img src={profilePhoto} alt="" />
                             </>
                           ) : (
-                            <h2>{initial}</h2>
+                            <h2>{initial && initial.toLocaleUpperCase()}</h2>
                           )}
                         </div>
                       </div>
@@ -570,6 +624,38 @@ const StudentEditDetails = () => {
                         </div>
                       </div>
                     </div>
+                    <div className="formbold-input-flex diff">
+                      <div>
+                        <div>
+                          <label
+                            htmlFor="student_status"
+                            className="formbold-form-label"
+                          >
+                            Student Status
+                          </label>
+                        </div>
+                        <div className="studentStatus">
+                          {statusList.map((status) => {
+                            return (
+                            <div className="student-status">
+                              <input
+                                type="radio"
+                                className="status"
+                                name="student_status"
+                                onChange={handleChangeStatus}
+                                value={status.id}
+                                checked={selectedStatus == status.id}
+                                data-status-text={status.status_title}
+                                data-status-color={status.status_color}
+                                data-status-bgcolor={status.bg_color}
+                              />
+                              <span style={{color: status.status_color, backgroundColor: status.bg_color}}> {status.status_title} </span>
+                            </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <hr></hr>
@@ -579,7 +665,7 @@ const StudentEditDetails = () => {
                       Cancel
                     </Link>
 
-                    <button className="formbold-btn" onClick={formSubmit}>Submit</button>
+                    <button className="formbold-btn" onClick={formSubmit}>Save</button>
                   </div>
                 </div>
               </div>
@@ -629,7 +715,7 @@ const StudentEditDetails = () => {
                               })}
                           </select>
                           <div className="pt-2">
-                            <small style={{ color: "red" }}>
+                            <small className="input-error-message">
                               {error?.error?.length ? error.error : <></>}
                             </small>
                           </div>
@@ -666,7 +752,7 @@ const StudentEditDetails = () => {
                             })}
                         </select>
                         <div className="pt-2">
-                          <small style={{ color: "red" }}>
+                          <small className="input-error-message">
                             {error?.default_lesson_cat?.length ? (
                               error.default_lesson_cat[0]
                             ) : (
@@ -875,9 +961,9 @@ const StudentEditDetails = () => {
                   <div className="card-body">
                     <div className="initials">
                       <div className="image-user">
-                        {studentFetchData?.dp_url ? (
+                        {profilePhoto ? (
                           <>
-                            <img src={studentFetchData?.dp_url} alt="" />
+                            <img src={profilePhoto} alt="" />
                           </>
                         ) : (
                           <h2>{initial && initial.toLocaleUpperCase()}</h2>
@@ -893,22 +979,19 @@ const StudentEditDetails = () => {
 
                     <div className="title-user">
                       {studentFetchData?.first_name}{" "}
-                      {studentFetchData?.last_name}
+                      {studentFetchData?.last_name} 
+                      <br></br>
+                      { studentFetchData?.studentType &&
+                      <span className="student-type-span">[ {studentFetchData?.studentType} ]</span> }
                     </div>
-                    {studentFetchData?.student_status && studentFetchData?.studentType && (
+                    {studentFetchData?.student_status && (
                       <>
                       <div className="studentstatus-wrapper">
-                        <div className="active-user">
-                          <span className="active">
-                            {studentFetchData?.status_label}
-                          </span>
+                        <div className="student-status">
+                          <span style={{color: selectedStatusColor, backgroundColor: selectedStatusBgColor}}>
+                            {selectedStatusVal}</span>
                         </div>
-                        <div className="active-user">
-                          <span className="adult">
-                            {studentFetchData?.studentType   }
-                          </span>
-                        </div>
-                        </div>
+                      </div>
                       </>
                     )}
 
@@ -921,14 +1004,28 @@ const StudentEditDetails = () => {
                   <div className="card-body">
                     <div className="arrange-edit-sign">
                       <h3>Notes</h3>
-                      <div className="student-edit-user">
-                        <i className="fa fa-pencil" aria-hidden="true"></i>
+                      <div className="student-edit-user" onClick={(e) => setIsNoteEdited(!isNoteEdited)}>
+                        {isNoteEdited ?
+                          <i className="fa fa-close" aria-hidden="true"></i>
+                          :
+                          <i className="fa fa-pencil" aria-hidden="true"></i>
+                        }
                       </div>
                     </div>
-                    <span>
-                      Click the edit button to add a private note about this
-                      student
-                    </span>
+                    {isNoteEdited ?
+
+                      <div>
+                        <input type="text" className="form-control mb-3" value={formData?.note} name="note" onChange={handleEditChange}></input>
+                        <div className="btn-end flex justify-content-end">
+                          <button className="formbold-btn" onClick={formSubmit}>Save</button>
+                        </div>
+                      </div>
+                    :
+                      <span>
+                        {formData?.note}
+                      </span>
+                      }
+                    
                   </div>
                 </div>
                 <div className="card">
@@ -943,6 +1040,235 @@ const StudentEditDetails = () => {
                 </div>
               </div>
               <div className="col-xl-8 col-xxl-8">
+                
+                {/* General Details */}
+                <div className="card">
+                  <div
+                    className="accordion accordion-flush"
+                    id="accordionFlushExample"
+                  >
+                    <div className="accordion-item">
+                      <h2 className="accordion-header" id="flush-headingEight">
+                        <button
+                          className="accordion-button collapsed"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#flush-collapseEight"
+                          aria-expanded="false"
+                          aria-controls="flush-collapseEight"
+                        >
+                          <strong>General Details</strong>
+                        </button>
+                      </h2>
+                      <div
+                        id="flush-collapseEight"
+                        className="accordion-collapse collapse"
+                        aria-labelledby="flush-headingEight"
+                        data-bs-parent="#accordionFlushExample"
+                      >
+                        <div className="accordion-body">
+                          <div className="student-properties-edit">
+                            <h3>General Details</h3>
+                            <div className="student-edit-user" onClick={handleStudentGeneralEdit}>
+                              <i
+                                className="fa fa-pencil"
+                                aria-hidden="true"
+                              ></i>
+                            </div>
+                          </div>
+                          <div className="">
+                            <div className="formbold-input-flex">
+                              <div>
+                                <label htmlFor="gender" className="formbold-form-label">
+                                  Gender <span>Optional</span>
+                                </label>
+                                <select
+                                  name="gender"
+                                  className="form-control"
+                                  value={formData?.gender}
+                                  onChange={handleEditChange}
+                                  disabled={!studentGeneralEditFlag}
+                                >
+                                  <option value="">Select Gender</option>
+                                  <option value="male">Male</option>
+                                  <option value="female">Female</option>
+                                  <option value="other">Other</option>
+                                  <option value="prefer_not_to_say">Prefer not to say</option>
+                                </select>
+                              </div>
+                              <div>
+                                <label
+                                  htmlFor="dob"
+                                  className="formbold-form-label"
+                                >
+                                  Date of Birth <span>Optional</span>
+                                </label>
+                                <input
+                                  type="date"
+                                  name="dob"
+                                  value={formData?.dob}
+                                  className="form-control"
+                                  onChange={handleEditChange}
+                                  disabled={!studentGeneralEditFlag}
+                                />
+                              </div>
+                            </div>
+                            <div className="formbold-input-flex">
+                              <div>
+                                <label
+                                  htmlFor="customer_number"
+                                  className="formbold-form-label"
+                                >
+                                  Customer Number <span>Optional</span>
+                                </label>
+                                <input
+                                  type="text"
+                                  name="customer_number"
+                                  value={formData?.customer_number}
+                                  className="form-control"
+                                  onChange={handleEditChange}
+                                  disabled={!studentGeneralEditFlag}
+                                />
+                              </div>
+                              <div>
+                                <label
+                                  htmlFor="special_id_number"
+                                  className="formbold-form-label"
+                                >
+                                  Special Id Number <span>Optional</span>
+                                </label>
+                                <input
+                                  type="text"
+                                  name="special_id_number"
+                                  value={formData?.special_id_number}
+                                  className="form-control"
+                                  onChange={handleEditChange}
+                                  disabled={!studentGeneralEditFlag}
+                                />
+                              </div>
+                            </div>
+                            <div className="formbold-input-flex">
+                              <div>
+                                <label
+                                  htmlFor="school"
+                                  className="formbold-form-label"
+                                >
+                                  School <span>Optional</span>
+                                </label>
+                                <input
+                                  type="text"
+                                  name="school"
+                                  value={formData?.school}
+                                  className="form-control"
+                                  onChange={handleEditChange}
+                                  disabled={!studentGeneralEditFlag}
+                                />
+                              </div>
+                            </div>
+                            <div className="formbold-input-flex">
+                              <div>
+                                <label
+                                  htmlFor="studentsince"
+                                  className="formbold-form-label"
+                                >
+                                  Student Since <span>Optional</span>
+                                </label>
+                                <input
+                                  type="date"
+                                  name="studentsince"
+                                  value={formData?.studentsince}
+                                  className="form-control"
+                                  onChange={handleEditChange}
+                                  disabled={!studentGeneralEditFlag}
+                                />
+                              </div>
+                              <div>
+                                <label
+                                  htmlFor="referrer"
+                                  className="formbold-form-label"
+                                >
+                                  Referrer <span>Optional</span>
+                                </label>
+                                <input
+                                  type="text"
+                                  name="referrer"
+                                  value={formData?.referrer}
+                                  className="form-control"
+                                  onChange={handleEditChange}
+                                  disabled={!studentGeneralEditFlag}
+                                />
+                              </div>
+                            </div>
+                            <div className="formbold-input-flex diff">
+                              <div>
+                                <label
+                                  htmlFor="subjects"
+                                  className="formbold-form-label"
+                                >
+                                  Subjects <span>Optional</span>
+                                </label>
+                                <br></br>
+                                <small>
+                                  Use a semicolon or press the Enter key to
+                                  separate entries
+                                </small>
+                                <input
+                                  type="text"
+                                  name="subjects"
+                                  value={formData?.subjects}
+                                  className="form-control"
+                                  onChange={handleEditChange}
+                                  disabled={!studentGeneralEditFlag}
+                                />
+                              </div>
+                            </div>
+                            <div className="formbold-input-flex">
+                              <div>
+                                <label
+                                  htmlFor="skill"
+                                  className="formbold-form-label"
+                                >
+                                  Skill Level <span>Optional</span>
+                                </label>
+                                <input
+                                  type="text"
+                                  name="skill"
+                                  value={formData?.skill}
+                                  className="form-control"
+                                  onChange={handleEditChange}
+                                  disabled={!studentGeneralEditFlag}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          {studentGeneralEditFlag && (
+                            <>
+                              <div className="formbold-form-btn-wrapper justify-content-end">
+                                <div className="btn-end">
+                                  <Link
+                                    className="cancel"
+                                    onClick={handleCancelAttendFlag}
+                                  >
+                                    Cancel
+                                  </Link>
+
+                                  <button
+                                    className="formbold-btn"
+                                    onClick={formSubmit}
+                                  >
+                                    Save
+                                  </button>
+                                </div>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Student Overview  */}
                 <div className="card">
                   <div
                     className="accordion accordion-flush"
@@ -1069,6 +1395,8 @@ const StudentEditDetails = () => {
                     </div>
                   </div>
                 </div>
+                
+                {/* Parent Detail */}
                 <div className="card">
                   <div
                     className="accordion accordion-flush"
@@ -1084,7 +1412,7 @@ const StudentEditDetails = () => {
                           aria-expanded="false"
                           aria-controls="flush-collapseTwo"
                         >
-                          <strong>Family Contacts</strong>
+                          <strong>Parent Detail</strong>
                         </button>
                       </h2>
                       <div
@@ -1213,9 +1541,10 @@ const StudentEditDetails = () => {
                               </div>
                             </div>
                           </div>
-                          <hr></hr>
+                          
                           { familyDetailFlag && (
                             <>
+                              <hr></hr>
                               <div className="formbold-form-btn-wrapper justify-content-end">
                                 <div className="btn-end">
                                   <Link
@@ -1247,7 +1576,6 @@ const StudentEditDetails = () => {
 
                               <button className="formbold-btn">
                                 <i
-                                  style={{ color: "#ffffff" }}
                                   className="fa fa-plus"
                                   aria-hidden="true"
                                 ></i>
@@ -1260,6 +1588,41 @@ const StudentEditDetails = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* Family Contacts */}
+                <div className="card">
+                  <div
+                    className="accordion accordion-flush"
+                    id="accordionFlushExample"
+                  >
+                    <div className="accordion-item">
+                      <h2 className="accordion-header" id="flush-headingNine">
+                        <button
+                          className="accordion-button collapsed"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#flush-collapseNine"
+                          aria-expanded="false"
+                          aria-controls="flush-collapseNine"
+                        >
+                          <strong>Family Contacts</strong>
+                        </button>
+                      </h2>
+                      <div
+                        id="flush-collapseNine"
+                        className="accordion-collapse collapse"
+                        aria-labelledby="flush-headingNine"
+                        data-bs-parent="#accordionFlushExample"
+                      >
+                        <div className="accordion-body">
+                          <FetchStudentFamilyContactDatatable userId={id}/>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Assigned Tutor */}
                 <div className="card">
                   <div
                     className="accordion accordion-flush"
@@ -1410,7 +1773,6 @@ const StudentEditDetails = () => {
                                 onClick={(e) => openModal("assignTutor")}
                               >
                                 <i
-                                  style={{ color: "#ffffff" }}
                                   className="fa fa-plus"
                                   aria-hidden="true"
                                 ></i>
@@ -1423,6 +1785,8 @@ const StudentEditDetails = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* Study Logs */}
                 <div className="card">
                   <div
                     className="accordion accordion-flush"
@@ -1532,6 +1896,8 @@ const StudentEditDetails = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* Attendance and Notes */}
                 <div className="card">
                   <div
                     className="accordion accordion-flush"
@@ -1562,19 +1928,23 @@ const StudentEditDetails = () => {
                           </div>
                           <div className="avg-attend">
                             <div className="avg-data">
-                              <span>0</span>
+                              <span>{ studentAttendanceSummery.presentCount }</span>
                               <span>Present</span>
                             </div>
                             <div className="avg-data">
-                              <span>0</span>
+                              <span>{ studentAttendanceSummery.unrecordedCount }</span>
                               <span>Unrecorded</span>
                             </div>
                             <div className="avg-data">
-                              <span>0</span>
+                              <span>{ studentAttendanceSummery.absentCount }</span>
                               <span>Student Absences</span>
                             </div>
                             <div className="avg-data">
-                              <span>0</span>
+                              <span>{ studentAttendanceSummery.tutorCanceledCount }</span>
+                              <span>Canceled Events</span>
+                            </div>
+                            <div className="avg-data">
+                              <span>{ studentAttendanceSummery.totalEvents }</span>
                               <span>Total Events</span>
                             </div>
                           </div>
@@ -1582,7 +1952,6 @@ const StudentEditDetails = () => {
                             <div className="btn-end">
                               <button className="formbold-btn">
                                 <i
-                                  style={{ color: "#ffffff" }}
                                   className="fa fa-plus"
                                   aria-hidden="true"
                                 ></i>
@@ -1610,13 +1979,15 @@ const StudentEditDetails = () => {
                               </i>
                             </h5>
 
-                            <FetchAttendanceLog />
+                            <FetchAttendanceLog userId={id}/>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
+
+                {/* Message History */}
                 <div className="card">
                   <div
                     className="accordion accordion-flush"
@@ -1742,6 +2113,8 @@ const StudentEditDetails = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* Student Portal */}
                 <div className="card">
                   <div
                     className="accordion accordion-flush"

@@ -141,7 +141,7 @@ const FetchFamilyTransactionDatatable = () => {
 
   useEffect(() => {
     setVal(true);
-    console.log(allTransactionsByFamily);
+    console.log("all tarnsaction by family---------------",allTransactionsByFamily);
   }, [allTransactionsByFamily]);
   if (val) {
     var rows = allTransactionsByFamily;

@@ -205,7 +205,7 @@ const AddTransactionForm = () => {
                                 className="form-control"
                                 name=""
                               />
-                              {errors.transaction_date && <small style={{ color: "red" }}>{errors.transaction_date[0]}</small>}
+                              {errors.transaction_date && <small className="input-error-message">{errors.transaction_date[0]}</small>}
                             </div>
                             <div className="col-md-6">
                               <label>Amount</label>
@@ -218,7 +218,7 @@ const AddTransactionForm = () => {
                                 className="form-control"
                                 name=""
                               />
-                              {errors.transaction_amount && <small style={{ color: "red" }}>{errors.transaction_amount[0]}</small>}
+                              {errors.transaction_amount && <small className="input-error-message">{errors.transaction_amount[0]}</small>}
                             </div>
                           </div>
                           <div className="row">

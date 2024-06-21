@@ -102,16 +102,21 @@ const DomainRegister = () => {
                       <input
                         type="text"
                         className="form-control domain"
-                        placeholder={t("domain")}
+                        placeholder={t("domain test")}
                         value = {domain}
                         name="domain"
                         onChange={(e) =>
                             setDomain(e.target.value)
                           }
+                          // style={{
+                          //   '::placeholder': {
+                          //     color: '#ccc',
+                          //   },
+                          // }} 
                       />
                       <span style={{ fontSize: "16px" , paddingLeft:"10px" }}>{centralPortalDomain}</span>
                     </div>
-                    <small style={{ color: "red" }}>
+                    <small className="input-error-message">
                       {error?.domain?.length ? error.domain[0] : <></>}
                     </small>
                   </div>

@@ -220,3 +220,18 @@ label {
 .wrapperBody{
   height: 100vh;
 }
+
+input::placeholder,
+textarea::placeholder {
+  color: #778899 !important; /* Lighter color */
+  opacity: 1 !important;
+}
+
+
+small.input-error-message {
+  color: #ff0000 !important;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+  font-weight: 600;
+}

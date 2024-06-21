@@ -133,7 +133,7 @@ const ForgetPassword = () => {
                         />
                       </div>
                       <div className="pb-2">
-                        <small style={{ color: "red" }}>
+                        <small className="input-error-message">
                           {error?.email?.length ? error.email[0] : <></>}
                         </small>
                       </div>

@@ -136,7 +136,7 @@ const Calendars = () => {
     "Sat",
     "Sun",
   ]);
-  const [event_frequency_val, set_event_frequency_val] = useState("");
+  const [event_frequency_val, set_event_frequency_val] = useState("1");
   const [event_repeat_indefinitely, set_event_repeat_indefinitely] =
     useState(true);
   const [event_repeat_until, set_event_repeat_until] = useState("");
@@ -159,7 +159,7 @@ const Calendars = () => {
   const [end_date, set_end_date] = useState("");
   const [end_time, set_end_time] = useState("");
   const [categoriesList, setCategoriesList] = useState([]);
-  const [duration, setDuration] = useState(0);
+  const [duration, setDuration] = useState("30");
   const [event_attendees_value, set_event_attendees_value] = useState([]);
   const [update_all, set_update_all] = useState(false);
 
@@ -203,7 +203,7 @@ const Calendars = () => {
     set_event_recurring(false);
     set_event_frequency("Daily");
     set_event_repeat_on(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]);
-    set_event_frequency_val("");
+    set_event_frequency_val("1");
     set_event_repeat_indefinitely(true);
     set_event_repeat_until("");
     set_require_makeup_credits(false);
@@ -796,7 +796,7 @@ const Calendars = () => {
                       {e.attendance_taken && e.attendance_status != 2 && (
                         <i
                           class="fa fa-times-circle"
-                          style={{ color: "red" }}
+                          className="input-error-message"
                           aria-hidden="true"
                         ></i>
                       )}
@@ -896,7 +896,7 @@ const Calendars = () => {
                             value={event_name}
                             onChange={(e) => set_event_name(e.target.value)}
                           />
-                          {errors.event_name && <small style={{ color: "red" }}>{errors.event_name[0]}</small>}
+                          {errors.event_name && <small className="input-error-message">{errors.event_name[0]}</small>}
                         </div>
                       </div>
                     </div>
@@ -1012,7 +1012,7 @@ const Calendars = () => {
                           value={start_time}
                           onChange={(e) => set_start_time(e.target.value)}
                         />
-                        {errors.start_time && <small style={{ color: "red" }}>{errors.start_time[0]}</small>}
+                        {errors.start_time && <small className="input-error-message">{errors.start_time[0]}</small>}
                       </div>
                       <div>
                         <label
@@ -1030,7 +1030,7 @@ const Calendars = () => {
                           value={end_time}
                           onChange={(e) => set_end_time(e.target.value)}
                         />
-                        {errors.end_time && <small style={{ color: "red" }}>{errors.end_time[0]}</small>}
+                        {errors.end_time && <small className="input-error-message">{errors.end_time[0]}</small>}
                       </div>
                     </div>
                     <div className="formbold-input-flex">
@@ -1328,7 +1328,7 @@ const Calendars = () => {
                             value={event_name}
                             onChange={(e) => set_event_name(e.target.value)}
                           />
-                          {errors.event_name && <small style={{ color: "red" }}>{errors.event_name[0]}</small>}
+                          {errors.event_name && <small className="input-error-message">{errors.event_name[0]}</small>}
                         </div>
                       </div>
                     </div>
@@ -1605,11 +1605,11 @@ const Calendars = () => {
                           onChange={(e) => set_start_time(e.target.value)}
                           required
                         />
-                        {errors.start_time && <small style={{ color: "red" }}>{errors.start_time[0]}</small>}
+                        {errors.start_time && <small className="input-error-message">{errors.start_time[0]}</small>}
                       </div>
                     </div>
                     <div className="formbold-input-flex">
-                      <div>
+                      <div style={{ position: "relative" }}>
                         <label
                             htmlFor="address"
                             className="formbold-form-label"
@@ -1630,9 +1630,21 @@ const Calendars = () => {
                               );
                               setDuration(e.target.value);
                             }}
-                            
+                            // style={{ paddingRight: "50px" }}
                           />
-                          {errors.end_time && <small style={{ color: "red" }}>{errors.end_time[0]}</small>}
+                          <span
+                            style={{
+                              position: "absolute",
+                              right: "10px",
+                              top: "60%",
+                              // transform: "translateY(-120%)",
+                              // pointerEvents: "none",
+                              
+                            }}
+                          >
+                            Minutes
+                          </span>
+                          {errors.end_time && <small className="input-error-message">{errors.end_time[0]}</small>}
                       </div>
                       <div>
                         <div
@@ -2018,7 +2030,7 @@ const Calendars = () => {
                             value={event_name}
                             onChange={(e) => set_event_name(e.target.value)}
                           />
-                          {errors.event_name && <small style={{ color: "red" }}>{errors.event_name[0]}</small>}
+                          {errors.event_name && <small className="input-error-message">{errors.event_name[0]}</small>}
                         </div>
                       </div>
                     </div>
@@ -2130,9 +2142,9 @@ const Calendars = () => {
                           value={start_time}
                           onChange={(e) => set_start_time(e.target.value)}
                         />
-                        {errors.start_time && <small style={{ color: "red" }}>{errors.start_time[0]}</small>}
+                        {errors.start_time && <small className="input-error-message">{errors.start_time[0]}</small>}
                       </div>
-                      <div>
+                      <div style={{ position: "relative" }}>
                         <label
                           htmlFor="duration"
                           className="formbold-form-label"
@@ -2155,7 +2167,17 @@ const Calendars = () => {
                           }}
                           disabled={disableTimeDuration}
                         />
-                        {errors.end_time && <small style={{ color: "red" }}>{errors.end_time[0]}</small>}
+                        <span
+                            style={{
+                              position: "absolute",
+                              right: "10px",
+                              top: "60%",
+                              // transform: "translateY(-120%)",
+                            }}
+                          >
+                            Minutes
+                          </span>
+                        {errors.end_time && <small className="input-error-message">{errors.end_time[0]}</small>}
                       </div>
                     </div>
                     <div className="formbold-input-flex">

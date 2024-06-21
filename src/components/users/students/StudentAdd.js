@@ -11,7 +11,9 @@ import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { getParentDetailsList } from "../../../services/calenderService.js";
 const StudentAdd = () => {
-  const { fetchData, sidebarToggle, token, userId, fetchFamilies, allFamilies } = useUserDataContext();
+  const { fetchData, sidebarToggle, token, userId, fetchFamilies, allFamilies,  
+    getStudentStatus,
+    statusList, } = useUserDataContext();
   const [studentType, setStudentType] = useState("Child");
   const [studentFamily, setStudentFamily] = useState("New Family");
   const [showParentDetails, setShowParentDetails] = useState(true);
@@ -19,7 +21,7 @@ const StudentAdd = () => {
   const [additionalDetails, setAdditionalDetails] = useState(false);
   const [parentList, setParentList] = useState([]);
   const navigate = useNavigate();
-  const [selectedStatus, setSelectedStatus] = useState("active");
+  const [selectedStatus, setSelectedStatus] = useState("1");
   const [error, setError] = useState({});
   const [formData, setFormData] = useState({
     first_name: "",
@@ -53,11 +55,12 @@ const StudentAdd = () => {
     price: "",
     note: "",
     invoicing: "",
-    family_account_id: null,
+    family_account_id: "",
   });
 
   useEffect(() => {
     fetchFamilies();
+    getStudentStatus();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -79,6 +82,7 @@ const StudentAdd = () => {
     const formBackBtn = document.querySelector(".formbold-back-btn");
 
     let input = document.querySelectorAll("input[type=text]");
+    let selectElements = document.querySelectorAll("select.form-control[name='family_account_id']");
     let emailfield = document.querySelectorAll("input[type=email]");
 
     let req = false;
@@ -146,6 +150,38 @@ const StudentAdd = () => {
         setError((prev) => ({ ...prev, [value?.name]: "" }));
       }
     }
+    for (let [key, value] of Object.entries(selectElements)) {
+      // console.log("value", value.value);
+      if (
+        value.required === true &&
+        (value.value === "" || value.value === undefined)
+      ) {
+        // console.log("value.name", value.name);
+        // console.log("value.value", value.value);
+
+        value.className = "border-2 border-danger form-control";
+        let label = document?.getElementById(value?.name);
+        label.className = "formbold-form-label text-danger";
+        flagemail = true;
+        label.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+          inline: "start",
+        });
+        console.log("value?.name", value?.name);
+        setError((prev) => ({
+          ...prev,
+          [value?.name]: `The ${label.innerText} is required`,
+        }));
+      } else if (value.required && value.value) {
+        console.log("value", value.value);
+
+        value.className = "form-control";
+        let label = document.getElementById(value.name);
+        label.className = "formbold-form-label";
+        setError((prev) => ({ ...prev, [value?.name]: "" }));
+      }
+    }
     if (req === false && flagemail === false) {
       stepMenuOne.classList.remove("active");
       stepMenuTwo.classList.add("active");
@@ -171,7 +207,6 @@ const StudentAdd = () => {
   const handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
-    console.log('studentFamily : ',value);
 
     if (name === "student_status") {
       setSelectedStatus(value);
@@ -224,6 +259,7 @@ const StudentAdd = () => {
       setFormData({ ...formData, [name]: value });
     }
   };
+
   const formSubmit = async (e) => {
     e.preventDefault();
     console.log(userId);
@@ -327,7 +363,7 @@ const StudentAdd = () => {
                               onChange={handleChange}
                               required
                             />
-                            <small style={{ color: "red" }}>
+                            <small className="input-error-message">
                               {error?.first_name?.length ? (
                                 error.first_name
                               ) : (
@@ -350,7 +386,7 @@ const StudentAdd = () => {
                               onChange={handleChange}
                               required
                             />
-                            <small style={{ color: "red" }}>
+                            <small className="input-error-message">
                               {error?.last_name?.length ? (
                                 error.last_name
                               ) : (
@@ -379,7 +415,7 @@ const StudentAdd = () => {
                               required={formData?.studentType == "Adult"}
                               onChange={handleChange}
                             />
-                            <small style={{ color: "red" }}>
+                            <small className="input-error-message">
                               {error?.email?.length ? error.email : <></>}
                             </small>
                           </div>
@@ -398,7 +434,7 @@ const StudentAdd = () => {
                                 className="form-control"
                                 onChange={handleChange}
                               />
-                              <small style={{ color: "red" }}>
+                              <small className="input-error-message">
                                 {error?.phone?.length ? error.phone : <></>}
                               </small>
                             </div>
@@ -425,19 +461,22 @@ const StudentAdd = () => {
                         {additionalDetails && (
                           <>
                             <div className="formbold-input-flex">
-                              <div>
-                                <label
-                                  htmlFor="gender"
-                                  className="formbold-form-label"
-                                >
+                            <div>
+                                <label htmlFor="gender" className="formbold-form-label">
                                   Gender <span>Optional</span>
                                 </label>
-                                <input
-                                  type="text"
+                                <select
                                   name="gender"
                                   className="form-control"
+                                  // value={gender}
                                   onChange={handleChange}
-                                />
+                                >
+                                  <option value="">Select Gender</option>
+                                  <option value="male">Male</option>
+                                  <option value="female">Female</option>
+                                  <option value="other">Other</option>
+                                  <option value="prefer_not_to_say">Prefer not to say</option>
+                                </select>
                               </div>
                               <div>
                                 <label
@@ -457,28 +496,28 @@ const StudentAdd = () => {
                             <div className="formbold-input-flex">
                               <div>
                                 <label
-                                  htmlFor="skype"
+                                  htmlFor="customer_number"
                                   className="formbold-form-label"
                                 >
-                                  Skype Username <span>Optional</span>
+                                  Customer Number <span>Optional</span>
                                 </label>
                                 <input
                                   type="text"
-                                  name="skype"
+                                  name="customer_number"
                                   className="form-control"
                                   onChange={handleChange}
                                 />
                               </div>
                               <div>
                                 <label
-                                  htmlFor="facetime"
+                                  htmlFor="special_id_number"
                                   className="formbold-form-label"
                                 >
-                                  FaceTime ID <span>Optional</span>
+                                  Special Id Number <span>Optional</span>
                                 </label>
                                 <input
                                   type="text"
-                                  name="facetime"
+                                  name="special_id_number"
                                   className="form-control"
                                   onChange={handleChange}
                                 />
@@ -608,106 +647,21 @@ const StudentAdd = () => {
                               </label>
                             </div>
                             <div className="studentStatus">
-                              <div>
-                                <input
-                                  type="radio"
-                                  className="status"
-                                  name="student_status"
-                                  onChange={handleChange}
-                                  value="active"
-                                  checked={selectedStatus === "active"}
-                                />
-                                <span
-                                  className="bg-design"
-                                  style={{
-                                    color: "#18790b",
-                                    backgroundColor: "#b3f3b3bd",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  Active
-                                </span>
-                              </div>
-                              <div>
-                                <input
-                                  type="radio"
-                                  className="status"
-                                  name="student_status"
-                                  onChange={handleChange}
-                                  value="trial"
-                                  checked={selectedStatus === "trial"}
-                                />
-                                <span
-                                  className="bg-design"
-                                  style={{
-                                    color: "#005c5c",
-                                    backgroundColor: "rgb(179 210 243 / 74%)",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  Trial
-                                </span>
-                              </div>
-                              <div>
-                                <input
-                                  type="radio"
-                                  className="status"
-                                  name="student_status"
-                                  onChange={handleChange}
-                                  value="Waiting"
-                                  checked={selectedStatus === "Waiting"}
-                                />
-                                <span
-                                  className="bg-design"
-                                  style={{
-                                    color: "#e34c00",
-                                    backgroundColor: "rgb(253 232 222 / 74%)",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  Waiting
-                                </span>
-                              </div>
-                              <div>
-                                <input
-                                  type="radio"
-                                  className="status"
-                                  name="student_status"
-                                  onChange={handleChange}
-                                  value="Lead"
-                                  checked={selectedStatus === "Lead"}
-                                />
-                                <span
-                                  className="bg-design"
-                                  style={{
-                                    color: "#604274",
-                                    backgroundColor: "rgb(238 205 249 / 74%)",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  Lead
-                                </span>
-                              </div>
-                              <div>
-                                <input
-                                  type="radio"
-                                  className="status"
-                                  name="student_status"
-                                  onChange={handleChange}
-                                  value="Inactive"
-                                  checked={selectedStatus === "Inactive"}
-                                />
-                                <span
-                                  className="bg-design"
-                                  style={{
-                                    color: "#344242",
-                                    backgroundColor: "rgb(208 219 231 / 74%)",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  Inactive
-                                </span>
-                              </div>
+                              {statusList.map((status) => {
+                                return (
+                                <div className="student-status">
+                                  <input
+                                    type="radio"
+                                    className="status"
+                                    name="student_status"
+                                    onChange={handleChange}
+                                    value={status.id}
+                                    checked={selectedStatus == status.id}
+                                  />
+                                  <span style={{color: status.status_color, backgroundColor: status.bg_color}}> {status.status_title} </span>
+                                </div>
+                                );
+                              })}
                             </div>
                           </div>
                         </div>
@@ -807,7 +761,7 @@ const StudentAdd = () => {
                                   onChange={handleChange}
                                   required
                                 />
-                                <small style={{ color: "red" }}>
+                                <small className="input-error-message">
                                   {error?.parentfirstname?.length ? (
                                     error.parentfirstname
                                   ) : (
@@ -830,7 +784,7 @@ const StudentAdd = () => {
                                   onChange={handleChange}
                                   required
                                 />
-                                <small style={{ color: "red" }}>
+                                <small className="input-error-message">
                                   {error?.parentlastname?.length ? (
                                     error.parentlastname
                                   ) : (
@@ -855,7 +809,7 @@ const StudentAdd = () => {
                                   onChange={handleChange}
                                   required={formData?.studentType == "Child"}
                                 />
-                                <small style={{ color: "red" }}>
+                                <small className="input-error-message">
                                   {error?.parentemail?.length ? (
                                     error.parentemail
                                   ) : (
@@ -901,6 +855,7 @@ const StudentAdd = () => {
                                   className="form-control"
                                   name="family_account_id"
                                   onChange={handleChange}
+                                  required
                                 >
 
                                   <option value={""}>Select Family</option>
@@ -910,7 +865,7 @@ const StudentAdd = () => {
                                     );
                                   })}
                                 </select>
-                                <small style={{ color: "red" }}>
+                                <small className="input-error-message">
                                   {error?.family_account_id?.length ? (
                                     error.family_account_id
                                   ) : (
@@ -1227,7 +1182,7 @@ const StudentAdd = () => {
                           </div>
                         </div>
                         <div className="text-center">
-                          <small style={{ color: "red" }}>
+                          <small className="input-error-message">
                             {error?.email?.length ? error.email[0] : <></>}
                           </small>
                         </div>
