@@ -119,7 +119,7 @@ const BusinessDashboard = ({ dashboardData }) => {
                       </h5>
                     </div>
                   </div>
-                  <h1 className="mt-1 mb-3">{ dashboardData.eventLeftThisWeekCount }</h1>
+                  <h1 className="mt-1 mb-3">{ dashboardData?.eventLeftThisWeekCount }</h1>
                   {/* <div className="mb-0">
                     <span className="text-danger">
                       {" "}
@@ -142,7 +142,7 @@ const BusinessDashboard = ({ dashboardData }) => {
                       </h5>
                     </div>
                   </div>
-                  <h1 className="mt-1 mb-3">{t("$" + dashboardData.ProjectedRevenueThisMonth )}</h1>
+                  <h1 className="mt-1 mb-3">{t("$" + dashboardData?.ProjectedRevenueThisMonth )}</h1>
                   {/* <div className="mb-0">
                     <span className="text-success">
                       {" "}
@@ -167,7 +167,7 @@ const BusinessDashboard = ({ dashboardData }) => {
                       </h5>
                     </div>
                   </div>
-                  <h1 className="mt-1 mb-3">{ dashboardData.PaymentRecievedThisMonth }</h1>
+                  <h1 className="mt-1 mb-3">{ dashboardData?.PaymentRecievedThisMonth }</h1>
                   {/* <div className="mb-0">
                     <span className="text-success">
                       {" "}
@@ -188,7 +188,7 @@ const BusinessDashboard = ({ dashboardData }) => {
                       <h5 className="card-title">{t("Active Students")}</h5>
                     </div>
                   </div>
-                  <h1 className="mt-1 mb-3">{ dashboardData.activeStudentsCount }</h1>
+                  <h1 className="mt-1 mb-3">{ dashboardData?.activeStudentsCount }</h1>
                   {/* <div className="mb-0">
                     <span className="text-danger">
                       {" "}

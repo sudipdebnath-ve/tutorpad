@@ -26,6 +26,7 @@ const AppContext = ({ children }) => {
   const [getAvailabilityData, setGetAvailabilityData] = useState([]);
   const [studentAttendance, setStudentAttendance] = useState([]);
   const [studentAttendanceSummery, setStudentAttendanceSummery] = useState([]);
+  const [studentFamilyContact, setStudentFamilyContact] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
   const [allCategory, setAllCategory] = useState([]);
   const [allLocation, setAllLocation] = useState([]);
@@ -549,9 +550,30 @@ const AppContext = ({ children }) => {
         console.log(error);
       });
   };
+
+  //fetchStudentFamilyContact
+  const fetchStudentFamilyContact = async (studentId) => {
+    const config = {
+      method: "GET",
+      url: `${API_URL}student/`+ studentId +`/family-contacts`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(config)
+      .then((response) => {
+        setStudentFamilyContact(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <userDataContext.Provider
       value={{
+        fetchStudentFamilyContact,
+        studentFamilyContact,
         fetchStudentAttendances,
         studentAttendance,
         fetchStudentAttendanceSummery,

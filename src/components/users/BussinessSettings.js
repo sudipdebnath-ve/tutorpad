@@ -739,7 +739,6 @@ const BussinessSettings = () => {
                                     }
                                   >
                                     <i
-                                      style={{ color: "#ffffff" }}
                                       className="fa fa-plus"
                                       aria-hidden="true"
                                     ></i>
@@ -754,7 +753,6 @@ const BussinessSettings = () => {
                                     to="https://www.paypal.com/"
                                   >
                                     <i
-                                      style={{ color: "#ffffff" }}
                                       className="fa fa-plus"
                                       aria-hidden="true"
                                     ></i>
