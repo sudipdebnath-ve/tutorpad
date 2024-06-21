@@ -1765,7 +1765,6 @@ const TutorEditDetails = () => {
                                 onClick={(e) => openModal("assignStudent")}
                               >
                                 <i
-                                  style={{ color: "#ffffff" }}
                                   className="fa fa-plus"
                                   aria-hidden="true"
                                 ></i>
@@ -2235,7 +2234,6 @@ const TutorEditDetails = () => {
                             <div className="btn-end">
                               <button className="formbold-btn">
                                 <i
-                                  style={{ color: "#ffffff" }}
                                   className="fa fa-plus"
                                   aria-hidden="true"
                                 ></i>

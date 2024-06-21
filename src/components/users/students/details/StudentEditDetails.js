@@ -13,6 +13,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import FetchStudyLog from "../FetchStudyLog.js";
 import FetchAttendanceLog from "../FetchAttendanceLog.js";
+import FetchStudentFamilyContactDatatable from "../FetchStudentFamilyContactDatatable.js";
 import lending from "../assets/images/lending.svg";
 import ReactModal from "react-modal";
 import { ToastContainer, toast } from "react-toastify";
@@ -1039,28 +1040,30 @@ const StudentEditDetails = () => {
                 </div>
               </div>
               <div className="col-xl-8 col-xxl-8">
+                
+                {/* General Details */}
                 <div className="card">
                   <div
                     className="accordion accordion-flush"
                     id="accordionFlushExample"
                   >
                     <div className="accordion-item">
-                      <h2 className="accordion-header" id="flush-headingOne">
+                      <h2 className="accordion-header" id="flush-headingEight">
                         <button
                           className="accordion-button collapsed"
                           type="button"
                           data-bs-toggle="collapse"
-                          data-bs-target="#flush-collapseOne"
+                          data-bs-target="#flush-collapseEight"
                           aria-expanded="false"
-                          aria-controls="flush-collapseOne"
+                          aria-controls="flush-collapseEight"
                         >
                           <strong>General Details</strong>
                         </button>
                       </h2>
                       <div
-                        id="flush-collapseOne"
+                        id="flush-collapseEight"
                         className="accordion-collapse collapse"
-                        aria-labelledby="flush-headingOne"
+                        aria-labelledby="flush-headingEight"
                         data-bs-parent="#accordionFlushExample"
                       >
                         <div className="accordion-body">
@@ -1264,6 +1267,8 @@ const StudentEditDetails = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* Student Overview  */}
                 <div className="card">
                   <div
                     className="accordion accordion-flush"
@@ -1390,6 +1395,8 @@ const StudentEditDetails = () => {
                     </div>
                   </div>
                 </div>
+                
+                {/* Parent Detail */}
                 <div className="card">
                   <div
                     className="accordion accordion-flush"
@@ -1405,7 +1412,7 @@ const StudentEditDetails = () => {
                           aria-expanded="false"
                           aria-controls="flush-collapseTwo"
                         >
-                          <strong>Family Contacts</strong>
+                          <strong>Parent Detail</strong>
                         </button>
                       </h2>
                       <div
@@ -1534,9 +1541,10 @@ const StudentEditDetails = () => {
                               </div>
                             </div>
                           </div>
-                          <hr></hr>
+                          
                           { familyDetailFlag && (
                             <>
+                              <hr></hr>
                               <div className="formbold-form-btn-wrapper justify-content-end">
                                 <div className="btn-end">
                                   <Link
@@ -1568,7 +1576,6 @@ const StudentEditDetails = () => {
 
                               <button className="formbold-btn">
                                 <i
-                                  style={{ color: "#ffffff" }}
                                   className="fa fa-plus"
                                   aria-hidden="true"
                                 ></i>
@@ -1581,6 +1588,41 @@ const StudentEditDetails = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* Family Contacts */}
+                <div className="card">
+                  <div
+                    className="accordion accordion-flush"
+                    id="accordionFlushExample"
+                  >
+                    <div className="accordion-item">
+                      <h2 className="accordion-header" id="flush-headingNine">
+                        <button
+                          className="accordion-button collapsed"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#flush-collapseNine"
+                          aria-expanded="false"
+                          aria-controls="flush-collapseNine"
+                        >
+                          <strong>Family Contacts</strong>
+                        </button>
+                      </h2>
+                      <div
+                        id="flush-collapseNine"
+                        className="accordion-collapse collapse"
+                        aria-labelledby="flush-headingNine"
+                        data-bs-parent="#accordionFlushExample"
+                      >
+                        <div className="accordion-body">
+                          <FetchStudentFamilyContactDatatable userId={id}/>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Assigned Tutor */}
                 <div className="card">
                   <div
                     className="accordion accordion-flush"
@@ -1731,7 +1773,6 @@ const StudentEditDetails = () => {
                                 onClick={(e) => openModal("assignTutor")}
                               >
                                 <i
-                                  style={{ color: "#ffffff" }}
                                   className="fa fa-plus"
                                   aria-hidden="true"
                                 ></i>
@@ -1744,6 +1785,8 @@ const StudentEditDetails = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* Study Logs */}
                 <div className="card">
                   <div
                     className="accordion accordion-flush"
@@ -1853,6 +1896,8 @@ const StudentEditDetails = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* Attendance and Notes */}
                 <div className="card">
                   <div
                     className="accordion accordion-flush"
@@ -1907,7 +1952,6 @@ const StudentEditDetails = () => {
                             <div className="btn-end">
                               <button className="formbold-btn">
                                 <i
-                                  style={{ color: "#ffffff" }}
                                   className="fa fa-plus"
                                   aria-hidden="true"
                                 ></i>
@@ -1942,6 +1986,8 @@ const StudentEditDetails = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* Message History */}
                 <div className="card">
                   <div
                     className="accordion accordion-flush"
@@ -2067,6 +2113,8 @@ const StudentEditDetails = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* Student Portal */}
                 <div className="card">
                   <div
                     className="accordion accordion-flush"
