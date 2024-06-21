@@ -191,7 +191,7 @@ const Register = ( { subdomain, setSubdomain }) => {
                       onChange={handleChange}
                       required
                     />
-                    <small style={{ color: "red" }}>
+                    <small className="input-error-message" >
                       {error?.first_name?.length ? error.first_name[0] : <></>}
                     </small>
                   </div>
@@ -204,7 +204,7 @@ const Register = ( { subdomain, setSubdomain }) => {
                       onChange={handleChange}
                       required
                     />
-                    <small style={{ color: "red" }}>
+                    <small className="input-error-message">
                       {error?.last_name?.length ? error.last_name[0] : <></>}
                     </small>
                   </div>
@@ -217,7 +217,7 @@ const Register = ( { subdomain, setSubdomain }) => {
                       onChange={handleChange}
                       required
                     />
-                    <small style={{ color: "red" }}>
+                    <small className="input-error-message">
                       {error?.email?.length ? error.email[0] : <></>}
                     </small>
                   </div>
@@ -233,7 +233,7 @@ const Register = ( { subdomain, setSubdomain }) => {
                     <span className="eyeball" onClick={handleToggle}>
                       <Icon className="absolute mr-10" icon={icon} size={15} />
                     </span>
-                    <small style={{ color: "red" }}>
+                    <small className="input-error-message">
                       {error?.password?.length ? error.password[0] : <></>}
                     </small>
                   </div>
@@ -246,7 +246,7 @@ const Register = ( { subdomain, setSubdomain }) => {
                       onChange={handleChange}
                       required
                     />
-                    <small style={{ color: "red" }}>
+                    <small className="input-error-message">
                       {error?.c_password?.length ? error.c_password[0] : <></>}
                     </small>
                   </div>
@@ -263,7 +263,7 @@ const Register = ( { subdomain, setSubdomain }) => {
                       <span style={{ fontSize: "16px", paddingLeft:"10px" }}>{centralPortalDomain}</span>
                       {/* <span style={{ fontSize: "16px"}}>tutorpad.co</span> */}
                     </div>
-                    <small style={{ color: "red" }}>
+                    <small className="input-error-message">
                       {error?.domain?.length ? error.domain[0] : <></>}
                     </small>
                   </div>
@@ -290,7 +290,7 @@ const Register = ( { subdomain, setSubdomain }) => {
                         {t("I have a business with multiple tutors")}
                       </option>
                     </select>
-                    <small style={{ color: "red" }}>
+                    <small className="input-error-message">
                       {error?.business_size?.length ? (
                         error.business_size[0]
                       ) : (
@@ -320,7 +320,7 @@ const Register = ( { subdomain, setSubdomain }) => {
                       </Link>
                     </span> */}
                     </div>
-                    <small style={{ color: "red" }}>
+                    <small className="input-error-message">
                       {error?.terms?.length ? error.terms[0] : <></>}
                     </small>
                   </div>

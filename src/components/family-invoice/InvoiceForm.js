@@ -274,6 +274,7 @@ const InvoiceForm = () => {
                 <div className="col-md-12">
                   <label className="fw-bold text-dark">Family</label>
                   <Select
+                      className="dropdown-toggle-selection"
                      name="family_account_id"
                      defaultValue={family_account}
                     onChange={(selectedOptions) => {

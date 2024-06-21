@@ -166,7 +166,7 @@ const ResetPasswordSetup = () => {
                           onChange={handleChange}
                           required
                         />
-                        <small style={{ color: "red" }}>
+                        <small className="input-error-message">
                           {getFormError?.password?.length ? getFormError.password[0] : <></>}
                         </small>
                       </div>
@@ -179,10 +179,10 @@ const ResetPasswordSetup = () => {
                           onChange={handleChange}
                           required
                         />
-                        <small style={{ color: "red" }}>
+                        <small className="input-error-message">
                           {getFormError?.c_password?.length ? getFormError.c_password[0] : <></>}
                         </small>
-                        <small style={{ color: "red" }}>
+                        <small className="input-error-message">
                           {getError?.length ? getError : <></>}
                         </small>
                       </div>
@@ -201,7 +201,7 @@ const ResetPasswordSetup = () => {
                             <div className="control__indicator"></div>
                           </label>
                         </div>
-                        <small style={{ color: "red" }}>
+                        <small className="input-error-message">
                           {getError?.terms?.length ? getError.terms[0] : <></>}
                         </small>
                       </div>
@@ -220,7 +220,7 @@ const ResetPasswordSetup = () => {
             ) : (
               <div className="row align-items-center justify-content-center">
                 <div className="col-md-12">
-                  <small className="token-expired-wrapper" style={{ color: "red" }}>
+                  <small className="token-expired-wrapper-input-error-message">
                     {getError?.length ? getError : 'Loading ...'}
                   </small>
                 </div>

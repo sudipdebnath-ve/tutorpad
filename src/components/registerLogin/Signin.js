@@ -128,7 +128,7 @@ const Signin = () => {
                         required
                       />
                     </div>
-                    <small style={{ color: "red" }}>
+                    <small className="input-error-message">
                       {error?.message?.length ? error.message : <></>}
                     </small>
 

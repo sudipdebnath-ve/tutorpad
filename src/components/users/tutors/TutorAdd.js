@@ -607,7 +607,7 @@ const StudentAdd = () => {
                       </div>
                       <div className="formbold-form-step-2">
                         <div className="text-center">
-                          <small style={{ color: "red" }}>
+                          <small className="input-error-message">
                             {error?.email?.length ? error.email[0] : <></>}
                           </small>
                         </div>

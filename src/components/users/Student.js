@@ -298,7 +298,7 @@ const Student = () => {
                           />
                         </div>
                         <div className="pb-2">
-                          <small style={{ color: "red" }}>
+                          <small className="input-error-message">
                             {error?.group_name?.length ? error.group_name[0] : <></>}
                           </small>
                         </div>
@@ -346,7 +346,7 @@ const Student = () => {
                           </select>
 
                           <div className="pb-2">
-                            <small style={{ color: "red" }}>
+                            <small className="input-error-message">
                               {error?.student_ids?.length ? error.student_ids[0] : <></>}
                             </small>
                           </div>

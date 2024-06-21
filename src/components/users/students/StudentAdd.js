@@ -363,7 +363,7 @@ const StudentAdd = () => {
                               onChange={handleChange}
                               required
                             />
-                            <small style={{ color: "red" }}>
+                            <small className="input-error-message">
                               {error?.first_name?.length ? (
                                 error.first_name
                               ) : (
@@ -386,7 +386,7 @@ const StudentAdd = () => {
                               onChange={handleChange}
                               required
                             />
-                            <small style={{ color: "red" }}>
+                            <small className="input-error-message">
                               {error?.last_name?.length ? (
                                 error.last_name
                               ) : (
@@ -415,7 +415,7 @@ const StudentAdd = () => {
                               required={formData?.studentType == "Adult"}
                               onChange={handleChange}
                             />
-                            <small style={{ color: "red" }}>
+                            <small className="input-error-message">
                               {error?.email?.length ? error.email : <></>}
                             </small>
                           </div>
@@ -434,7 +434,7 @@ const StudentAdd = () => {
                                 className="form-control"
                                 onChange={handleChange}
                               />
-                              <small style={{ color: "red" }}>
+                              <small className="input-error-message">
                                 {error?.phone?.length ? error.phone : <></>}
                               </small>
                             </div>
@@ -761,7 +761,7 @@ const StudentAdd = () => {
                                   onChange={handleChange}
                                   required
                                 />
-                                <small style={{ color: "red" }}>
+                                <small className="input-error-message">
                                   {error?.parentfirstname?.length ? (
                                     error.parentfirstname
                                   ) : (
@@ -784,7 +784,7 @@ const StudentAdd = () => {
                                   onChange={handleChange}
                                   required
                                 />
-                                <small style={{ color: "red" }}>
+                                <small className="input-error-message">
                                   {error?.parentlastname?.length ? (
                                     error.parentlastname
                                   ) : (
@@ -809,7 +809,7 @@ const StudentAdd = () => {
                                   onChange={handleChange}
                                   required={formData?.studentType == "Child"}
                                 />
-                                <small style={{ color: "red" }}>
+                                <small className="input-error-message">
                                   {error?.parentemail?.length ? (
                                     error.parentemail
                                   ) : (
@@ -865,7 +865,7 @@ const StudentAdd = () => {
                                     );
                                   })}
                                 </select>
-                                <small style={{ color: "red" }}>
+                                <small className="input-error-message">
                                   {error?.family_account_id?.length ? (
                                     error.family_account_id
                                   ) : (
@@ -1182,7 +1182,7 @@ const StudentAdd = () => {
                           </div>
                         </div>
                         <div className="text-center">
-                          <small style={{ color: "red" }}>
+                          <small className="input-error-message">
                             {error?.email?.length ? error.email[0] : <></>}
                           </small>
                         </div>

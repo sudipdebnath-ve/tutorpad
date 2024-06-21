@@ -117,7 +117,7 @@ const DomainRegister = () => {
                       />
                       <span style={{ fontSize: "16px" , paddingLeft:"10px" }}>{centralPortalDomain}</span>
                     </div>
-                    <small style={{ color: "red" }}>
+                    <small className="input-error-message">
                       {error?.domain?.length ? error.domain[0] : <></>}
                     </small>
                   </div>

@@ -297,7 +297,7 @@ const FamilyDetails = () => {
                           </div>
                           <div style={{ marginTop: 5 }} className="col-md-12">
                             <button
-                              className="btn btn-md btn-danger form-control"
+                              className="btn btn-md btn-danger autoinvoicing-wrapper"
                               onClick={handleShowModal}
                             >
                               <Icon

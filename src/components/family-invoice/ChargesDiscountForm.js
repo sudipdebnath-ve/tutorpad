@@ -222,12 +222,12 @@ const getFrequency = (freq)=>{
                       <div className="col-md-6">
                           <label>Date</label>
                           <input type="date" value={transaction_date}  onChange={(e)=>set_transaction_date(e.target.value)} className="form-control" name="" />
-                          {errors.transaction_date && <small style={{ color: "red" }}>{errors.transaction_date[0]}</small>} 
+                          {errors.transaction_date && <small className="input-error-message">{errors.transaction_date[0]}</small>} 
                       </div>
                       <div className="col-md-6">
                           <label>Amount</label>
                           <input type="number" value={transaction_amount} onChange={(e)=>set_transaction_amount(e.target.value)} className="form-control" name="" />
-                          {errors.transaction_amount && <small style={{ color: "red" }}>{errors.transaction_amount[0]}</small>}
+                          {errors.transaction_amount && <small className="input-error-message">{errors.transaction_amount[0]}</small>}
                       </div>
                   </div>
                   <div className="row">

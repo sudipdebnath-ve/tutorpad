@@ -714,7 +714,7 @@ const StudentEditDetails = () => {
                               })}
                           </select>
                           <div className="pt-2">
-                            <small style={{ color: "red" }}>
+                            <small className="input-error-message">
                               {error?.error?.length ? error.error : <></>}
                             </small>
                           </div>
@@ -751,7 +751,7 @@ const StudentEditDetails = () => {
                             })}
                         </select>
                         <div className="pt-2">
-                          <small style={{ color: "red" }}>
+                          <small className="input-error-message">
                             {error?.default_lesson_cat?.length ? (
                               error.default_lesson_cat[0]
                             ) : (
