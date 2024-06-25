@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import MiniSidebar from "../../sidebar/MiniSidebar.js";
 import Sidebar from "../../sidebar/Sidebar.js";
 import TopBar from "../../sidebar/TopBar.js";
@@ -9,10 +9,14 @@ import { API_URL } from "../../../utils/config.js";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import * as XLSX from "xlsx";
+import Papa from "papaparse";
 
 const StudentImport = () => {
   const { sidebarToggle, token, userId } = useUserDataContext();
   const [files, setFiles] = useState({});
+  const [fileContent, setFileContent] = useState(null);
+  const [previewData, setPreviewData] = useState([]);
   const navigate = useNavigate();
 
   const handleUploadFile = () => {
@@ -57,10 +61,41 @@ const StudentImport = () => {
   };
 
   const handleUpload = (e) => {
-    const value = e.target.files[0];
-    // console.log(value);
+    const file = e.target.files[0];
+    if (file) {
+      const fileType = file.type;
+      if (fileType === "application/vnd.ms-excel" || fileType === "text/csv" || fileType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+        setFiles(file);
+        readFile(file);
+      } else {
+        toast.error("Please upload a CSV or Excel file.", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      }
+    }
+  };
 
-    setFiles(value);
+  const readFile = (file) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const data = event.target.result;
+      if (file.type === "text/csv") {
+        const parsedData = Papa.parse(data, { header: true });
+        console.log('preview : ',parsedData);
+        setPreviewData(parsedData.data);
+      } else {
+        const workbook = XLSX.read(data, { type: "binary" });
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        const excelData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+        console.log('preview : ',excelData);
+        setPreviewData(excelData);
+      }
+    };
+    if (file.type === "text/csv") {
+      reader.readAsText(file);
+    } else {
+      reader.readAsBinaryString(file);
+    }
   };
 
   return (
@@ -155,8 +190,32 @@ const StudentImport = () => {
                             type="file"
                             name="file"
                             onChange={handleUpload}
+                            accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                           ></input>
                         </div>
+                        {previewData.length > 0 && (
+                          <div className="file-preview mt-4">
+                            <h5>File Preview:</h5>
+                            <table className="card table">
+                              <thead>
+                                <tr>
+                                  {Object.keys(previewData[0]).map((key, index) => (
+                                    <th key={index}>{key}</th>
+                                  ))}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {previewData.slice(0, 6).map((row, rowIndex) => (
+                                  <tr key={rowIndex}>
+                                    {Object.values(row).map((cell, cellIndex) => (
+                                      <td key={cellIndex} contentEditable={true}>{cell}</td>
+                                    ))}
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
                         <div className="formbold-input-flex mt-3">
                           <div className="invoicing">
                             <div>
