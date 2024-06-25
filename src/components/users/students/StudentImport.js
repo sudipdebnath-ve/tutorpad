@@ -17,6 +17,8 @@ const StudentImport = () => {
   const [files, setFiles] = useState({});
   const [fileContent, setFileContent] = useState(null);
   const [previewData, setPreviewData] = useState([]);
+  const [studentSettings, setStudentSettings] = useState([]);
+  const [isEditable, setIsEditable] = useState(false);
   const navigate = useNavigate();
 
   const handleUploadFile = () => {
@@ -32,9 +34,27 @@ const StudentImport = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Collect edited data
+    const tableRows = document.querySelectorAll(".editable-table tbody tr");
+    const editedRows = Array.from(tableRows).map((row) => {
+      const cells = row.querySelectorAll("td");
+      console.log('preview cells : ',cells);
+      const rowData = Array.from(cells).reduce((acc, cell, index) => {
+        const key = Object.keys(previewData[0])[index];
+        console.log('preview cells innerText: ',cell.innerText);
+        acc[key] = cell.innerText;
+        return acc;
+      }, {});
+      console.log("preview rowData : ",rowData);
+      return rowData;
+    });
+
+    console.log("preview editedRows : ",editedRows);
+
     let formData = new FormData();
-    formData.append("user_id", userId);
-    formData.append("file", files);
+    formData.append("user_id", localStorage.getItem("user_id"));
+    formData.append("data", JSON.stringify(editedRows));
+    formData.append("studentSettings", JSON.stringify(studentSettings));
     const config = {
       method: "POST",
       url: `${API_URL}import-students`,
@@ -96,6 +116,12 @@ const StudentImport = () => {
     } else {
       reader.readAsBinaryString(file);
     }
+  };
+
+  const handleChange = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    setStudentSettings({ ...studentSettings, [name]: value });
   };
 
   return (
@@ -196,7 +222,7 @@ const StudentImport = () => {
                         {previewData.length > 0 && (
                           <div className="file-preview mt-4">
                             <h5>File Preview:</h5>
-                            <table className="card table">
+                            <table className="card table editable-table">
                               <thead>
                                 <tr>
                                   {Object.keys(previewData[0]).map((key, index) => (
@@ -230,16 +256,124 @@ const StudentImport = () => {
                           </div>
                         </div>
                         <div className="default-setting">
-                          <div className="default">
-                            <strong>Sudip Debnath</strong>
-                            <div className="edit-setting-import">
+                          <div className="default justify-content-between">
+                            <strong>Student Default Settings</strong>
+                            <div className="edit-setting-import" onClick={() => setIsEditable(true)}>
                               <i
                                 className="fa fa-pencil"
                                 aria-hidden="true"
                               ></i>{" "}
-                              <span>Edit Default Settings</span>
+                              <span>Edit</span>
                             </div>
                           </div>
+                          { isEditable && (
+                            <div className="formbold p-4">
+                              <div className="formbold-input-flex">
+                                <div>
+                                  <label
+                                    htmlFor="parentpreferences"
+                                    className="formbold-form-label"
+                                  >
+                                    Preferences
+                                  </label>
+                                  <br></br>
+                                  <div className="preference">
+                                    <input
+                                      type="checkbox"
+                                      name="parentemailpreference"
+                                      onChange={handleChange}
+                                    />
+                                    Send email lesson reminders
+                                  </div>
+                                  <div className="preference">
+                                    <input
+                                      type="checkbox"
+                                      name="parentsmspreference"
+                                      onChange={handleChange}
+                                    />
+                                    Send SMS lesson reminders
+                                  </div>
+                                  <span>
+                                    Will only be sent if SMS messaging is allowed
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="formbold-input-flex diff">
+                                <div>
+                                  <input
+                                    type="checkbox"
+                                    className="sms"
+                                    name="enable_login_access"
+                                    onChange={handleChange}
+                                    id="enable_login_access"
+                                  />
+                                  <label htmlFor="enable_login_access">
+                                    {" "}
+                                    Enable login access
+                                  </label>
+                                  <br />
+                                  <span>
+                                    An email will be sent with a link to set up their
+                                    password
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="formbold-input-flex diff">
+                                <div>
+                                  <label
+                                    htmlFor="billing"
+                                    className="formbold-form-label"
+                                  >
+                                    Default Billing
+                                  </label>
+                                  <br></br>
+                                  <div className="preference">
+                                    <input
+                                      type="radio"
+                                      name="billing"
+                                      onChange={handleChange}
+                                      value="Don't automatically create any calendar-generated
+                                      charges"
+                                    />
+                                    Don't automatically create any calendar-generated
+                                    charges
+                                  </div>
+                                  <div className="preference">
+                                    <input
+                                      type="radio"
+                                      name="billing"
+                                      onChange={handleChange}
+                                      value="Student pays based on the number of lessons taken"
+                                    />
+                                    Student pays based on the number of lessons taken
+                                  </div>
+                                  <div className="preference">
+                                    <input
+                                      type="radio"
+                                      name="billing"
+                                      onChange={handleChange}
+                                      value="Student pays the same amount each month regardless
+                                      of number of lessons"
+                                    />
+                                    Student pays the same amount each month regardless
+                                    of number of lessons
+                                  </div>
+                                  <div className="preference">
+                                    <input
+                                      type="radio"
+                                      name="billing"
+                                      onChange={handleChange}
+                                      value="Student pays an hourly rate"
+                                    />
+                                    Student pays an hourly rate
+                                  </div>
+                                  <span>
+                                    Charges will automatically adjust to lesson length
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </div>
 
                         <div className="formbold-input-flex diff">
