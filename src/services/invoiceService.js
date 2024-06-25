@@ -27,8 +27,13 @@ export const createInvoice= async (data) => {
     });
 };
 
-export const getFamilyAccountsDetails= async (id) => {
-  return invoicesApi.get('family-account/'+id).then((response) => {
+export const getFamilyAccountsDetails= async (id,token) => {
+  return axios.create({
+    baseURL: API_URL,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).get('family-account/'+id).then((response) => {
       return response.data;
     })
     .catch((error) => {
@@ -119,8 +124,13 @@ export const getInvoicePdf = async (id) => {
     })
 }
 
-export const getIncomingInvoice = async (id) => {
-  return invoicesApi.get('upcoming-latest-invoice/'+id).then((response) => {
+export const getIncomingInvoice = async (id, token) => {
+  return axios.create({
+    baseURL: API_URL,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).get('upcoming-latest-invoice/'+id).then((response) => {
     return response.data;
   })
   .catch((err)=>{
