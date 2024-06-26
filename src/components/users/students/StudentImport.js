@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import MiniSidebar from "../../sidebar/MiniSidebar.js";
 import Sidebar from "../../sidebar/Sidebar.js";
 import TopBar from "../../sidebar/TopBar.js";
@@ -9,11 +9,23 @@ import { API_URL } from "../../../utils/config.js";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import * as XLSX from "xlsx";
+import Papa from "papaparse";
 
 const StudentImport = () => {
-  const { sidebarToggle, token, userId } = useUserDataContext();
+  const { sidebarToggle, token, userId, getStudentStatus,
+    statusList } = useUserDataContext();
   const [files, setFiles] = useState({});
+  const [fileContent, setFileContent] = useState(null);
+  const [previewData, setPreviewData] = useState([]);
+  const [studentSettings, setStudentSettings] = useState([]);
+  const [isEditable, setIsEditable] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState("1");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    getStudentStatus();
+  }, []);
 
   const handleUploadFile = () => {
     const stepMenuOne = document.querySelector(".formbold-step-menu1");
@@ -28,9 +40,30 @@ const StudentImport = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Collect edited data
+    const tableRows = document.querySelectorAll(".editable-table tbody tr");
+    const editedRows = Array.from(tableRows).map((row) => {
+      const cells = row.querySelectorAll("td");
+      console.log('preview cells : ',cells);
+      const rowData = Array.from(cells).reduce((acc, cell, index) => {
+        const key = Object.keys(previewData[0])[index];
+        console.log('preview cells innerText: ',cell.innerText);
+        acc[key] = cell.innerText;
+        return acc;
+      }, {});
+      console.log("preview rowData : ",rowData);
+      return rowData;
+    });
+
+    console.log("preview editedRows : ",editedRows);
+
     let formData = new FormData();
-    formData.append("user_id", userId);
-    formData.append("file", files);
+    formData.append("user_id", localStorage.getItem("user_id"));
+    formData.append("data", JSON.stringify(editedRows));
+    formData.append("studentSettings", JSON.stringify(studentSettings));
+    formData.append("status", JSON.stringify(selectedStatus));
+
+    console.log('formdata : ',formData);
     const config = {
       method: "POST",
       url: `${API_URL}import-students`,
@@ -57,10 +90,50 @@ const StudentImport = () => {
   };
 
   const handleUpload = (e) => {
-    const value = e.target.files[0];
-    // console.log(value);
+    const file = e.target.files[0];
+    if (file) {
+      const fileType = file.type;
+      if (fileType === "application/vnd.ms-excel" || fileType === "text/csv" || fileType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+        setFiles(file);
+        readFile(file);
+      } else {
+        toast.error("Please upload a CSV or Excel file.", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      }
+    }
+  };
 
-    setFiles(value);
+  const readFile = (file) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const data = event.target.result;
+      if (file.type === "text/csv") {
+        const parsedData = Papa.parse(data, { header: true });
+        console.log('preview : ',parsedData);
+        setPreviewData(parsedData.data);
+      } else {
+        const workbook = XLSX.read(data, { type: "binary" });
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        const excelData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+        console.log('preview : ',excelData);
+        setPreviewData(excelData);
+      }
+    };
+    if (file.type === "text/csv") {
+      reader.readAsText(file);
+    } else {
+      reader.readAsBinaryString(file);
+    }
+  };
+
+  const handleChange = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    if (name === "student_status") {
+      setSelectedStatus(value);
+    }
+    setStudentSettings({ ...studentSettings, [name]: value });
   };
 
   return (
@@ -155,8 +228,32 @@ const StudentImport = () => {
                             type="file"
                             name="file"
                             onChange={handleUpload}
+                            accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                           ></input>
                         </div>
+                        {previewData.length > 0 && (
+                          <div className="file-preview mt-4">
+                            <h5>File Preview:</h5>
+                            <table className="card table editable-table import-preview">
+                              <thead>
+                                <tr>
+                                  {Object.keys(previewData[0]).map((key, index) => (
+                                    <th key={index}>{key}</th>
+                                  ))}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {previewData.slice(0, 6).map((row, rowIndex) => (
+                                  <tr key={rowIndex}>
+                                    {Object.values(row).map((cell, cellIndex) => (
+                                      <td key={cellIndex} contentEditable={true}>{cell}</td>
+                                    ))}
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
                         <div className="formbold-input-flex mt-3">
                           <div className="invoicing">
                             <div>
@@ -171,23 +268,131 @@ const StudentImport = () => {
                           </div>
                         </div>
                         <div className="default-setting">
-                          <div className="default">
-                            <strong>Sudip Debnath</strong>
-                            <div className="edit-setting-import">
+                          <div className="default justify-content-between">
+                            <strong>Student Default Settings</strong>
+                            <div className="edit-setting-import" onClick={() => setIsEditable(true)}>
                               <i
                                 className="fa fa-pencil"
                                 aria-hidden="true"
                               ></i>{" "}
-                              <span>Edit Default Settings</span>
+                              <span>Edit</span>
                             </div>
                           </div>
+                          { isEditable && (
+                            <div className="formbold p-4">
+                              <div className="formbold-input-flex">
+                                <div>
+                                  <label
+                                    htmlFor="parentpreferences"
+                                    className="formbold-form-label"
+                                  >
+                                    Preferences
+                                  </label>
+                                  <br></br>
+                                  <div className="preference">
+                                    <input
+                                      type="checkbox"
+                                      name="parentemailpreference"
+                                      onChange={handleChange}
+                                    />
+                                    Send email lesson reminders
+                                  </div>
+                                  <div className="preference">
+                                    <input
+                                      type="checkbox"
+                                      name="parentsmspreference"
+                                      onChange={handleChange}
+                                    />
+                                    Send SMS lesson reminders
+                                  </div>
+                                  <span>
+                                    Will only be sent if SMS messaging is allowed
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="formbold-input-flex diff">
+                                <div>
+                                  <input
+                                    type="checkbox"
+                                    className="sms"
+                                    name="enable_login_access"
+                                    onChange={handleChange}
+                                    id="enable_login_access"
+                                  />
+                                  <label htmlFor="enable_login_access">
+                                    {" "}
+                                    Enable login access
+                                  </label>
+                                  <br />
+                                  <span>
+                                    An email will be sent with a link to set up their
+                                    password
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="formbold-input-flex diff">
+                                <div>
+                                  <label
+                                    htmlFor="billing"
+                                    className="formbold-form-label"
+                                  >
+                                    Default Billing
+                                  </label>
+                                  <br></br>
+                                  <div className="preference">
+                                    <input
+                                      type="radio"
+                                      name="billing"
+                                      onChange={handleChange}
+                                      value="Don't automatically create any calendar-generated
+                                      charges"
+                                    />
+                                    Don't automatically create any calendar-generated
+                                    charges
+                                  </div>
+                                  <div className="preference">
+                                    <input
+                                      type="radio"
+                                      name="billing"
+                                      onChange={handleChange}
+                                      value="Student pays based on the number of lessons taken"
+                                    />
+                                    Student pays based on the number of lessons taken
+                                  </div>
+                                  <div className="preference">
+                                    <input
+                                      type="radio"
+                                      name="billing"
+                                      onChange={handleChange}
+                                      value="Student pays the same amount each month regardless
+                                      of number of lessons"
+                                    />
+                                    Student pays the same amount each month regardless
+                                    of number of lessons
+                                  </div>
+                                  <div className="preference">
+                                    <input
+                                      type="radio"
+                                      name="billing"
+                                      onChange={handleChange}
+                                      value="Student pays an hourly rate"
+                                    />
+                                    Student pays an hourly rate
+                                  </div>
+                                  <span>
+                                    Charges will automatically adjust to lesson length
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </div>
 
-                        <div className="formbold-input-flex diff">
+                        <div className="formbold-input-flex diff mt-3">
                           <div>
                             <div>
                               <label
-                                htmlFor="status"
+                                htmlFor="student_status"
                                 className="formbold-form-label"
                               >
                                 What status do you want to assign to these
@@ -195,91 +400,21 @@ const StudentImport = () => {
                               </label>
                             </div>
                             <div className="studentStatus">
-                              <div>
-                                <input
-                                  type="radio"
-                                  className="status"
-                                  name="student_status"
-                                />
-                                <span
-                                  className="bg-design"
-                                  style={{
-                                    color: "#18790b",
-                                    backgroundColor: "#b3f3b3bd",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  Active
-                                </span>
-                              </div>
-                              <div>
-                                <input
-                                  type="radio"
-                                  className="status"
-                                  name="student_status"
-                                />
-                                <span
-                                  className="bg-design"
-                                  style={{
-                                    color: "#005c5c",
-                                    backgroundColor: "rgb(179 210 243 / 74%)",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  Trial
-                                </span>
-                              </div>
-                              <div>
-                                <input
-                                  type="radio"
-                                  className="status"
-                                  name="student_status"
-                                />
-                                <span
-                                  className="bg-design"
-                                  style={{
-                                    color: "#e34c00",
-                                    backgroundColor: "rgb(253 232 222 / 74%)",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  Waiting
-                                </span>
-                              </div>
-                              <div>
-                                <input
-                                  type="radio"
-                                  className="status"
-                                  name="student_status"
-                                />
-                                <span
-                                  className="bg-design"
-                                  style={{
-                                    color: "#604274",
-                                    backgroundColor: "rgb(238 205 249 / 74%)",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  Lead
-                                </span>
-                              </div>
-                              <div>
-                                <input
-                                  type="radio"
-                                  className="status"
-                                  name="student_status"
-                                />
-                                <span
-                                  className="bg-design"
-                                  style={{
-                                    color: "#344242",
-                                    backgroundColor: "rgb(208 219 231 / 74%)",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  Inactive
-                                </span>
-                              </div>
+                              {statusList.map((status) => {
+                                return (
+                                <div className="student-status">
+                                  <input
+                                    type="radio"
+                                    className="status"
+                                    name="student_status"
+                                    onChange={handleChange}
+                                    value={status.id}
+                                    checked={selectedStatus == status.id}
+                                  />
+                                  <span style={{color: status.status_color, backgroundColor: status.bg_color}}> {status.status_title} </span>
+                                </div>
+                                );
+                              })}
                             </div>
                           </div>
                         </div>

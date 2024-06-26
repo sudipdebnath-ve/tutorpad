@@ -33,7 +33,8 @@ import { Icon as ReactIcon } from "react-icons";
 import './style.css';
 
 const FamilyDetails = () => {
-  const { sidebarToggle, allFamilies } = useUserDataContext();
+  const token = useUserDataContext();
+  const { sidebarToggle, allFamilies, fetchFamilies } = useUserDataContext();
   const param = useParams();
   const navigate = useNavigate();
   const [selectedFamily, setSelectedFamily] = useState();
@@ -50,12 +51,15 @@ const FamilyDetails = () => {
   const handleShowModal = () => setShowModal(true);
 
   const onChangeSelectFamiliyHandler = (e) => {
+    console.log("Selected Family Changed:-------------------", e);
     setSelectedFamily(e);
     navigate("/familiies-and-invoices/family/" + e.value);
   };
 
+
   const getFamilyAccountsDetailsHandler = async () => {
-    const response = await getFamilyAccountsDetails(param.id);
+    var getToken = token.token;
+    const response = await getFamilyAccountsDetails(param.id, getToken);
     // console.log("response of a student------------->", response.data.students);
     // console.log("response of a family-------------->", response.data);
     set_family(response?.data);
@@ -64,7 +68,9 @@ const FamilyDetails = () => {
   };
 
   const getIncomingInvoiceHandler = async () => {
-    const response = await getIncomingInvoice(param.id);
+    var getToken = token.token;
+    console.log("token is from family details------------", getToken);
+    const response = await getIncomingInvoice(param.id, getToken);
     if (response?.success === true) {
       set_incoming_invoice(response.data);
     }
@@ -86,7 +92,18 @@ const FamilyDetails = () => {
   };
 
   useEffect(() => {
+    fetchFamilies();
+  }, []);
+  
+  /* useEffect(() => {
+    fetchFamilies();
+    if (allFamilies && allFamilies.length > 0){
+      
+    }
+    console.log("allFamilies----------------", allFamilies);
+    console.log("param.id-------------------", param.id);
     const familiyData = allFamilies.filter((f) => f.id == param.id);
+    console.log("familiyData-------------------", familiyData);
     const familySelectedData = familiyData.map((e) => {
       return { label: e.name, value: e.id };
     });
@@ -95,8 +112,25 @@ const FamilyDetails = () => {
     getFamilyAccountsDetailsHandler();
     getIncomingInvoiceHandler();
     console.log("TEST....")
-  }, [param.id, isDisabled]);
+  }, [param.id, isDisabled]); */
 
+  // fix the drop down issue from family account //
+  useEffect(() => {
+    if (allFamilies && allFamilies.length > 0) {
+      console.log("allFamilies----------------", allFamilies);
+      console.log("param.id-------------------", param.id);
+      const familiyData = allFamilies.filter((f) => f.id == param.id);
+      console.log("familiyData-------------------", familiyData);
+      const familySelectedData = familiyData.map((e) => {
+        return { label: e.name, value: e.id };
+      });
+      setIsAutoInvoicing(familiyData[0]?.auto_invoicing);
+      setSelectedFamily(...familySelectedData);
+      getFamilyAccountsDetailsHandler();
+      getIncomingInvoiceHandler();
+      console.log("TEST....");
+    }
+  }, [allFamilies, param.id, isDisabled]);
 
   return (
     <div className="wrapper">
@@ -118,7 +152,7 @@ const FamilyDetails = () => {
               <div className="col-xl-4 col-xxl-4">
               <Link to={"/familiies-and-invoices"} className="link">
                           {`<`} Back To family & Invoice
-                        </Link>
+              </Link>
 
                 <div className="card enable-auto-invoice-wrapper">
                   <div className="card-body">

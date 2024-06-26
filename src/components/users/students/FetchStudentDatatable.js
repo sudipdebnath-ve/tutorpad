@@ -15,49 +15,12 @@ const FetchStudentDatatable = () => {
     fetchStudentData();
   }, [userId]);
 
-  // const columns: GridColDef[] = [
-  //   { field: "id", headerName: "ID", width: 90 },
-  //   {
-  //     field: "firstName",
-  //     headerName: "First name",
-  //     width: 150,
-  //     editable: true,
-  //   },
-  //   {
-  //     field: "lastName",
-  //     headerName: "Last name",
-  //     width: 150,
-  //     editable: true,
-  //   },
-  //   {
-  //     field: "age",
-  //     headerName: "Age",
-  //     type: "number",
-  //     width: 110,
-  //     editable: true,
-  //   },
-  //   {
-  //     field: "fullName",
-  //     headerName: "Full name",
-  //     description: "This column has a value getter and is not sortable.",
-  //     sortable: false,
-  //     width: 160,
-  //     valueGetter: (params: GridValueGetterParams) =>
-  //       `${params.row.firstName || ""} ${params.row.lastName || ""}`,
-  //   },
-  // ];
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
     {
       field: "first_name",
       headerName: "First name",
-      // headerClassName: "super-app-theme--header",
-      // valueGetter: (params) =>
-      //   `<a href="${params.row.first_name}">${params.row.first_name}</a>`,
       width: 150,
-      // valueGetter: (params: GridValueGetterParams) =>
-      //   `<a href="${params.row.first_name}">${params.row.first_name}</a>`,
-      // },
       renderCell: (params) => (
         <Link to={`/students/details/${params.row.id}`}>
           {params.row.first_name}
@@ -97,13 +60,13 @@ const FetchStudentDatatable = () => {
       width: 150,
     },
     {
-      field: "skype",
-      headerName: "Skype Name",
+      field: "customer_number",
+      headerName: "Customer Number",
       width: 150,
     },
     {
-      field: "facetime",
-      headerName: "FaceTime Id",
+      field: "special_id_number",
+      headerName: "Special Id Number",
       width: 150,
     },
     {
@@ -168,9 +131,6 @@ const FetchStudentDatatable = () => {
                     sx={{
                       height: 400,
                       width: "100%",
-                      // "& .super-app-theme--header": {
-                      //   backgroundColor: "rgba(255, 7, 0, 0.55)",
-                      // },
                     }}
                   >
                     <DataGrid
@@ -184,10 +144,10 @@ const FetchStudentDatatable = () => {
                             skill: false,
                             gender: false,
                             dob: false,
-                            skype: false,
+                            customer_number: false,
                             parentfirstname: false,
                             studentsince: false,
-                            facetime: false,
+                            special_id_number: false,
                             price: false,
                             subjects: false,
                             school: false,
