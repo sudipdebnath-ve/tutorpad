@@ -431,3 +431,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .student-profile-view{
   width: 100% !important;
 }
+
+.import-preview    {
+  width: 612px;
+  height: 300px;
+  overflow: scroll;
+}

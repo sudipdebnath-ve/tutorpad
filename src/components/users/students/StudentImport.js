@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MiniSidebar from "../../sidebar/MiniSidebar.js";
 import Sidebar from "../../sidebar/Sidebar.js";
 import TopBar from "../../sidebar/TopBar.js";
@@ -13,13 +13,19 @@ import * as XLSX from "xlsx";
 import Papa from "papaparse";
 
 const StudentImport = () => {
-  const { sidebarToggle, token, userId } = useUserDataContext();
+  const { sidebarToggle, token, userId, getStudentStatus,
+    statusList } = useUserDataContext();
   const [files, setFiles] = useState({});
   const [fileContent, setFileContent] = useState(null);
   const [previewData, setPreviewData] = useState([]);
   const [studentSettings, setStudentSettings] = useState([]);
   const [isEditable, setIsEditable] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState("1");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    getStudentStatus();
+  }, []);
 
   const handleUploadFile = () => {
     const stepMenuOne = document.querySelector(".formbold-step-menu1");
@@ -55,6 +61,9 @@ const StudentImport = () => {
     formData.append("user_id", localStorage.getItem("user_id"));
     formData.append("data", JSON.stringify(editedRows));
     formData.append("studentSettings", JSON.stringify(studentSettings));
+    formData.append("status", JSON.stringify(selectedStatus));
+
+    console.log('formdata : ',formData);
     const config = {
       method: "POST",
       url: `${API_URL}import-students`,
@@ -121,6 +130,9 @@ const StudentImport = () => {
   const handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
+    if (name === "student_status") {
+      setSelectedStatus(value);
+    }
     setStudentSettings({ ...studentSettings, [name]: value });
   };
 
@@ -222,7 +234,7 @@ const StudentImport = () => {
                         {previewData.length > 0 && (
                           <div className="file-preview mt-4">
                             <h5>File Preview:</h5>
-                            <table className="card table editable-table">
+                            <table className="card table editable-table import-preview">
                               <thead>
                                 <tr>
                                   {Object.keys(previewData[0]).map((key, index) => (
@@ -376,11 +388,11 @@ const StudentImport = () => {
                           )}
                         </div>
 
-                        <div className="formbold-input-flex diff">
+                        <div className="formbold-input-flex diff mt-3">
                           <div>
                             <div>
                               <label
-                                htmlFor="status"
+                                htmlFor="student_status"
                                 className="formbold-form-label"
                               >
                                 What status do you want to assign to these
@@ -388,91 +400,21 @@ const StudentImport = () => {
                               </label>
                             </div>
                             <div className="studentStatus">
-                              <div>
-                                <input
-                                  type="radio"
-                                  className="status"
-                                  name="student_status"
-                                />
-                                <span
-                                  className="bg-design"
-                                  style={{
-                                    color: "#18790b",
-                                    backgroundColor: "#b3f3b3bd",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  Active
-                                </span>
-                              </div>
-                              <div>
-                                <input
-                                  type="radio"
-                                  className="status"
-                                  name="student_status"
-                                />
-                                <span
-                                  className="bg-design"
-                                  style={{
-                                    color: "#005c5c",
-                                    backgroundColor: "rgb(179 210 243 / 74%)",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  Trial
-                                </span>
-                              </div>
-                              <div>
-                                <input
-                                  type="radio"
-                                  className="status"
-                                  name="student_status"
-                                />
-                                <span
-                                  className="bg-design"
-                                  style={{
-                                    color: "#e34c00",
-                                    backgroundColor: "rgb(253 232 222 / 74%)",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  Waiting
-                                </span>
-                              </div>
-                              <div>
-                                <input
-                                  type="radio"
-                                  className="status"
-                                  name="student_status"
-                                />
-                                <span
-                                  className="bg-design"
-                                  style={{
-                                    color: "#604274",
-                                    backgroundColor: "rgb(238 205 249 / 74%)",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  Lead
-                                </span>
-                              </div>
-                              <div>
-                                <input
-                                  type="radio"
-                                  className="status"
-                                  name="student_status"
-                                />
-                                <span
-                                  className="bg-design"
-                                  style={{
-                                    color: "#344242",
-                                    backgroundColor: "rgb(208 219 231 / 74%)",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  Inactive
-                                </span>
-                              </div>
+                              {statusList.map((status) => {
+                                return (
+                                <div className="student-status">
+                                  <input
+                                    type="radio"
+                                    className="status"
+                                    name="student_status"
+                                    onChange={handleChange}
+                                    value={status.id}
+                                    checked={selectedStatus == status.id}
+                                  />
+                                  <span style={{color: status.status_color, backgroundColor: status.bg_color}}> {status.status_title} </span>
+                                </div>
+                                );
+                              })}
                             </div>
                           </div>
                         </div>

@@ -1,6 +1,40 @@
-# Getting Started with Create React App
+# Tutor
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a ReactJS application named "Tutor".
+
+## Table of Contents
+
+1. [Introduction](#introduction)
+2. [Pre-requisites](#pre-requisites)
+3. [Installation](#installation)
+4. [Available Scripts](#available-scripts)
+5. [Dependencies](#dependencies)
+6. [Development](#development)
+7. [Testing](#testing)
+8. [Build](#build)
+9. [Configuration](#configuration)
+10. [Contributing](#contributing)
+11. [License](#license)
+
+## Introduction
+
+Tutor is a ReactJS application designed for [brief description of what the app does].
+
+## Pre-requisites
+
+Before you begin, ensure you have met the following requirements:
+- You have installed [Node.js](https://nodejs.org/) (v14.x.x or later)
+- You have a basic understanding of JavaScript and React
+
+## Installation
+
+To get started with the development environment, clone the repository and install the necessary dependencies.
+
+```bash
+git clone <repository-url>
+cd tutor
+npm install
+```
 
 ## Available Scripts
 
@@ -11,60 +45,78 @@ In the project directory, you can run:
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
 ### `npm run build`
 
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Dependencies
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+    {
+        "@emotion/react": "^11.11.1",
+        "@emotion/styled": "^11.11.0",
+        "@fortawesome/fontawesome-free": "^6.5.2",
+        "@mui/icons-material": "^5.15.19",
+        "@mui/styled-engine": "^5.14.20",
+        "@mui/x-data-grid": "^6.18.3",
+        "@mui/x-data-grid-premium": "^6.18.3",
+        "@testing-library/jest-dom": "^5.17.0",
+        "@testing-library/react": "^13.4.0",
+        "@testing-library/user-event": "^13.5.0",
+        "@tinymce/tinymce-react": "^4.3.2",
+        "axios": "^1.6.0",
+        "dotenv": "^16.4.5",
+        "i18next": "^23.7.6",
+        "i18next-browser-languagedetector": "^7.2.0",
+        "i18next-http-backend": "^2.4.1",
+        "papaparse": "^5.4.1",
+        "pm2": "^5.3.1",
+        "primereact": "^10.2.1",
+        "react": "^18.2.0",
+        "react-big-calendar": "^1.8.5",
+        "react-bootstrap": "^2.10.1",
+        "react-cookie": "^6.1.1",
+        "react-datepicker": "^4.25.0",
+        "react-dom": "^18.2.0",
+        "react-i18next": "^13.5.0",
+        "react-icons": "^5.0.1",
+        "react-icons-kit": "^2.0.0",
+        "react-modal": "^3.16.1",
+        "react-router-dom": "^6.17.0",
+        "react-scripts": "5.0.1",
+        "react-select": "^5.8.0",
+        "react-select-country-list": "^2.2.3",
+        "react-toastify": "^9.1.3",
+        "web-vitals": "^2.1.4",
+        "xlsx": "^0.18.5"
+    }
+```
 
-### `npm run eject`
+## Development
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+To start the development server:
+```bash
+npm start
+```
+This will start the application at http://localhost:3000.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Testing
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+To run tests:
+```bash
+npm test
+```
+This will launch the test runner in the interactive watch mode.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Build
 
-## Learn More
+To create a production build:
+```bash
+npm run build
+```
+This will build the app for production to the build folder.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Configuration
+The project uses environment variables for configuration. Create a .env file in the root directory and add your variables there.
