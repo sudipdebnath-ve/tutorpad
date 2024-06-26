@@ -432,8 +432,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   width: 100% !important;
 }
 
-.import-preview    {
-  width: 612px;
+.import-preview{
   height: 300px;
   overflow: scroll;
 }

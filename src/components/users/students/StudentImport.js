@@ -21,6 +21,8 @@ const StudentImport = () => {
   const [studentSettings, setStudentSettings] = useState([]);
   const [isEditable, setIsEditable] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("1");
+  const [use_first_row_as_column_header, set_use_first_row_as_column_header] = useState("off");
+  const [error, setError] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -54,7 +56,7 @@ const StudentImport = () => {
       console.log("preview rowData : ",rowData);
       return rowData;
     });
-
+    setError("");
     console.log("preview editedRows : ",editedRows);
 
     let formData = new FormData();
@@ -62,8 +64,8 @@ const StudentImport = () => {
     formData.append("data", JSON.stringify(editedRows));
     formData.append("studentSettings", JSON.stringify(studentSettings));
     formData.append("status", JSON.stringify(selectedStatus));
+    formData.append("use_first_row_as_column_header", JSON.stringify(use_first_row_as_column_header));
 
-    console.log('formdata : ',formData);
     const config = {
       method: "POST",
       url: `${API_URL}import-students`,
@@ -85,7 +87,10 @@ const StudentImport = () => {
         }, 2000);
       })
       .catch((error) => {
-        console.log(error);
+        console.log("error data",error);
+        if (error.response.data.success === false) {
+          setError(error.response.data.message);
+        }
       });
   };
 
@@ -133,7 +138,12 @@ const StudentImport = () => {
     if (name === "student_status") {
       setSelectedStatus(value);
     }
-    setStudentSettings({ ...studentSettings, [name]: value });
+    if (name === "use_first_row_as_column_header") {
+      console.log('90 : ',value);
+      set_use_first_row_as_column_header(value);
+    }else{
+      setStudentSettings({ ...studentSettings, [name]: value });
+    }
   };
 
   return (
@@ -234,24 +244,27 @@ const StudentImport = () => {
                         {previewData.length > 0 && (
                           <div className="file-preview mt-4">
                             <h5>File Preview:</h5>
-                            <table className="card table editable-table import-preview">
-                              <thead>
-                                <tr>
-                                  {Object.keys(previewData[0]).map((key, index) => (
-                                    <th key={index}>{key}</th>
-                                  ))}
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {previewData.slice(0, 6).map((row, rowIndex) => (
-                                  <tr key={rowIndex}>
-                                    {Object.values(row).map((cell, cellIndex) => (
-                                      <td key={cellIndex} contentEditable={true}>{cell}</td>
+                            <div className="import-preview">
+                              
+                              <table className="table editable-table ">
+                                <thead>
+                                  <tr>
+                                    {Object.keys(previewData[0]).map((key, index) => (
+                                      <th key={index}>{key}</th>
                                     ))}
                                   </tr>
-                                ))}
-                              </tbody>
-                            </table>
+                                </thead>
+                                <tbody>
+                                  {previewData.slice(0, 6).map((row, rowIndex) => (
+                                    <tr key={rowIndex}>
+                                      {Object.values(row).map((cell, cellIndex) => (
+                                        <td key={cellIndex} contentEditable={true}>{cell}</td>
+                                      ))}
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
                           </div>
                         )}
                         <div className="formbold-input-flex mt-3">
@@ -260,7 +273,8 @@ const StudentImport = () => {
                               <input
                                 type="checkbox"
                                 className="status"
-                                name="column_header"
+                                name="use_first_row_as_column_header"
+                                onChange={handleChange}
                               />
                               Use the first row as the column header
                               <br />
@@ -418,6 +432,13 @@ const StudentImport = () => {
                             </div>
                           </div>
                         </div>
+                        <small className="input-error-message">
+                          {error?.length ? (
+                            error
+                          ) : (
+                            <></>
+                          )}
+                        </small>
 
                         <div className="formbold-form-btn-wrapper">
                           <button className="formbold-back-btn">Back</button>
