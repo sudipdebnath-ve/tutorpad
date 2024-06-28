@@ -352,7 +352,7 @@ legend + * {
 }
 
 .search-box {
-  margin-left: 20px;
+  margin-left: 20px !important;
   width: 50% !important;
   background: var(--card-bg-color) !important;
 }
