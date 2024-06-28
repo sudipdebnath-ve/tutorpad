@@ -10,7 +10,14 @@ const invoicesApi = axios.create({
   });
 
 export const getFamilyAccounts= async () => {
-    return invoicesApi.get('family-accounts').then((response) => {
+  var localToken1 = JSON.parse(localStorage.getItem("tutorPad"));
+  var _token = token ? token : localToken1
+    return axios.create({
+      baseURL: API_URL,
+      headers: {
+        Authorization: `Bearer ${_token}`,
+      },
+    }).get('family-accounts').then((response) => {
         return response.data;
       })
       .catch((error) => {
@@ -19,6 +26,7 @@ export const getFamilyAccounts= async () => {
 };
 
 export const createInvoice= async (data) => {
+
   return invoicesApi.post('create-invoice',data).then((response) => {
       return response.data;
     })
@@ -28,6 +36,8 @@ export const createInvoice= async (data) => {
 };
 
 export const getFamilyAccountsDetails= async (id,token) => {
+  var localToken = JSON.parse(localStorage.getItem("tutorPad"));
+  token = token ? token : localToken;
   return axios.create({
     baseURL: API_URL,
     headers: {
