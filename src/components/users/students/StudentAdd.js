@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import MiniSidebar from "../../sidebar/MiniSidebar.js";
 import Sidebar from "../../sidebar/Sidebar.js";
 import TopBar from "../../sidebar/TopBar.js";
@@ -57,11 +57,18 @@ const StudentAdd = () => {
     invoicing: "",
     family_account_id: "",
   });
+  const errorRef = useRef(null);
 
   useEffect(() => {
     fetchFamilies();
     getStudentStatus();
   }, []);
+
+  const scrollToError = () => {
+    if (errorRef.current) {
+      errorRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -110,12 +117,14 @@ const StudentAdd = () => {
           ...prev,
           [value?.name]: `The ${label.innerText} is required`,
         }));
+        scrollToError();
       } else if (value.required && value.value) {
         console.log("value", value.value);
         value.className = "form-control";
         let label = document.getElementById(value.name);
         label.className = "formbold-form-label";
         setError((prev) => ({ ...prev, [value?.name]: "" }));
+        scrollToError();
       }
     }
     for (let [key, value] of Object.entries(emailfield)) {
@@ -141,6 +150,7 @@ const StudentAdd = () => {
           ...prev,
           [value?.name]: `The ${label.innerText} is required`,
         }));
+        scrollToError();
       } else if (value.required && value.value) {
         console.log("value", value.value);
 
@@ -148,6 +158,7 @@ const StudentAdd = () => {
         let label = document.getElementById(value.name);
         label.className = "formbold-form-label";
         setError((prev) => ({ ...prev, [value?.name]: "" }));
+        scrollToError();
       }
     }
     for (let [key, value] of Object.entries(selectElements)) {
@@ -173,6 +184,7 @@ const StudentAdd = () => {
           ...prev,
           [value?.name]: `The ${label.innerText} is required`,
         }));
+        scrollToError();
       } else if (value.required && value.value) {
         console.log("value", value.value);
 
@@ -180,6 +192,7 @@ const StudentAdd = () => {
         let label = document.getElementById(value.name);
         label.className = "formbold-form-label";
         setError((prev) => ({ ...prev, [value?.name]: "" }));
+        scrollToError();
       }
     }
     if (req === false && flagemail === false) {
@@ -293,6 +306,7 @@ const StudentAdd = () => {
         console.log(error);
         if (error.response.data.success === false) {
           setError(error.response.data.data);
+          scrollToError();
         }
       });
   };

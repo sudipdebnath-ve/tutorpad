@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import MiniSidebar from "../../sidebar/MiniSidebar.js";
 import Sidebar from "../../sidebar/Sidebar.js";
 import TopBar from "../../sidebar/TopBar.js";
@@ -30,12 +30,19 @@ const StudentImport = () => {
   const [showDataImportType, setShowDataImportType] = useState(false);
   const [getData, setData] = useState("");
   const [parsedData, setParsedData] = useState("");
+  const errorRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     getStudentStatus();
     getTutor();
   }, []);
+
+  const scrollToError = () => {
+    if (errorRef.current) {
+      errorRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   const handleUploadFile = (type) => {
     if(type == "upload-file"){
@@ -162,18 +169,21 @@ const StudentImport = () => {
     setErrorData(''); // Reset error
 
     const rows = data.split('\n');
-    const header = rows[0].split(',');
+    const delimiter = rows[0].includes('\t') ? '\t' : ','; // Determine the delimiter based on the first row
+    const header = rows[0].split(delimiter);
 
-    if (header[0] !== 'First name' || header[1] !== 'Last name') {
+    if (header[0].trim() !== 'First name' || header[1].trim() !== 'Last name') {
       setErrorData('Invalid header format. Please make sure the first column is "First name" and the second column is "Last name".');
+      scrollToError();
       return false;
     }
 
     const result = [];
     for (let i = 1; i < rows.length; i++) {
-      const columns = rows[i].split(',');
+      const columns = rows[i].split(delimiter);
       if (!columns[0]?.trim() || !columns[1]?.trim()) {
         setErrorData(`Missing first name or last name in row ${i + 1}`);
+        scrollToError();
         return false;
       }
 
