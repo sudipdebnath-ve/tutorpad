@@ -6,6 +6,7 @@ import "./assets/css/style.css";
 import { Link } from "react-router-dom";
 import { useUserDataContext } from "../../../contextApi/userDataContext.js";
 import { API_URL } from "../../../utils/config.js";
+import SAMPLE_FILE from "../../../assets/files/Sample-Import.xlsx";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -304,7 +305,7 @@ const StudentImport = () => {
                           </div>
                         </div>
                         <br></br>
-                        <Link to="/">Sample File (Excel)</Link>
+                        <a href={SAMPLE_FILE} download="Sample-Import.xlsx">Sample File (Excel)</a>
                       </div>
 
                       <div className="formbold-form-step-2">
