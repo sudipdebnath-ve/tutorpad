@@ -1,26 +1,26 @@
 import axios from "axios";
 import { API_URL } from "../utils/config";
-// import getToken from "../utils/tokenUtils.Js";
-// import createAxiosInstance from "../utils/axiosInstance";
+import { createAxiosInstance } from "../utils/axiosInstance";
 
 
 
-const token = JSON.parse(localStorage.getItem("tutorPad"));
-console.log("token from calender service--------------------", token);
+
+// const token = JSON.parse(localStorage.getItem("tutorPad"));
+// console.log("token from calender service--------------------", token);
 
 
-const calenderApi = axios.create({
-    baseURL: API_URL,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+// const calenderApi = axios.create({
+//     baseURL: API_URL,
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//     },
+//   });
 
-// const calenderApi = createAxiosInstance()
+const calenderApi = createAxiosInstance()
 
 export const createEvents = async (data) => {
-    var storeToken = JSON.parse(localStorage.getItem("tutorPad"));
-    var _storeToken = token ? token : storeToken
+    // var storeToken = JSON.parse(localStorage.getItem("tutorPad"));
+    // var _storeToken = token ? token : storeToken
     return calenderApi.post('create-event',data).then((response) => {
         return response.data;
       })
@@ -59,14 +59,9 @@ export const deleteEvents = async (data,id) => {
 
 
 export const getStudentsByTutorId = async (id) => {
-  const myToken = JSON.parse(localStorage.getItem("tutorPad"));
+  // const myToken = JSON.parse(localStorage.getItem("tutorPad"));
 
-  return axios.create({
-    baseURL: API_URL,
-    headers: {
-      Authorization: `Bearer ${myToken}`,
-    },
-  }).get('assigned-students/'+id).then((response) => {
+  return calenderApi.get('assigned-students/'+id).then((response) => {
       return response.data;
     })
     .catch((error) => {

@@ -1,12 +1,10 @@
-
-const getToken = () => {
+export const getToken = () =>{
     try {
-      const token = JSON.parse(localStorage.getItem("tutorPad"));
-      return token;
+        const token = JSON.parse(localStorage.getItem("tutorPad"))
+        console.log("token is from token utils---------", token);
+        return token
     } catch (error) {
-      console.error("Failed to retrieve token:", error);
-      return null;
+        console.log("failed to retrive token", error);
+        return null;
     }
-  };
-
-export default getToken;
+}
