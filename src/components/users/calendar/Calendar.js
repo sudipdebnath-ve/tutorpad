@@ -24,6 +24,7 @@ import {
   updateEvents,
   deleteEvents,
   cloneEvents,
+  getAllStudents,
 } from "../../../services/calenderService.js";
 import { getCategories } from "../../../services/categoriesService.js";
 
@@ -115,6 +116,7 @@ const Calendars = () => {
   });
 
   const [studentsList, setStudentsList] = useState([]);
+  const [allStudentsList, setAllStudentsList] = useState([]);
   const [startDate, setStartDate] = useState(formatDate(new Date()));
 
   /**
@@ -258,6 +260,19 @@ const Calendars = () => {
       return "Yearly";
     }
   };
+
+  useEffect(()=>{
+        const fetchAllStudentData = async () => {
+        const result = await getAllStudents();
+        const allStudents = result?.data?.map((e) => {
+          return { value: e.id, label: e.name };
+        }) || [];
+      setAllStudentsList(allStudents);
+      setStudentsList(allStudents);
+        }
+
+        fetchAllStudentData()
+  }, [])
 
   const calculateEndDateTimeByDuration = (duration) => {
     let durationMs = parseInt(duration) * 60000;
@@ -437,13 +452,20 @@ const Calendars = () => {
   };
 
   const getStudentsByTutorIdHandler = async (id) => {
+    console.log("tutor id---------", id);
     set_event_tutor(id);
-    const result = await getStudentsByTutorId(id);
-    const studentss =
-      result?.data?.map((e) => {
-        return { value: e.student.id, label: e.student.name };
-      }) || [];
-    setStudentsList(studentss);
+    if (id === "Select Tutor" || id === "") {
+      // Fetch all students if no tutor is selected
+      setStudentsList(allStudentsList);
+    } else {
+      // Fetch students by tutor ID
+      const result = await getStudentsByTutorId(id);
+      const studentsByTutorId =
+        result?.data?.map((e) => {
+          return { value: e.student.id, label: e.student.name };
+        }) || [];
+      setStudentsList(studentsByTutorId);
+    }
   };
 
   // Fetch events for the given date range

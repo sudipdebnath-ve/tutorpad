@@ -2,9 +2,6 @@ import axios from "axios";
 import { API_URL } from "../utils/config";
 import { createAxiosInstance } from "../utils/axiosInstance";
 
-
-
-
 // const token = JSON.parse(localStorage.getItem("tutorPad"));
 // console.log("token from calender service--------------------", token);
 
@@ -57,6 +54,15 @@ export const deleteEvents = async (data,id) => {
     });
 };
 
+export const getAllStudents = async () =>{
+  return calenderApi.get('get-students').then((response) =>{
+    console.log("response for all students-----------", response);
+    return response.data;
+  }).catch((error) => {
+    console.log("Error fetching all students:", error);
+    return error;
+  });
+}
 
 export const getStudentsByTutorId = async (id) => {
   // const myToken = JSON.parse(localStorage.getItem("tutorPad"));
