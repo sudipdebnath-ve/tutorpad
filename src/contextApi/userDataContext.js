@@ -22,6 +22,7 @@ const AppContext = ({ children }) => {
   const [allFamilies, setAllFamilies] = useState([]);
   const [accountInvoices, setAccountInvoices] = useState([]);
   const [allInvoicesByDate, setAllInvoicesByDate] = useState([]);
+  const [allTimeZones, setAllTimeZones] = useState([]);
   const [allTutors, setAllTutors] = useState([]);
   const [getAvailabilityData, setGetAvailabilityData] = useState([]);
   const [studentAttendance, setStudentAttendance] = useState([]);
@@ -569,6 +570,24 @@ const AppContext = ({ children }) => {
       });
   };
 
+  //fetchTimeZones
+  const fetchTimeZones = async () => {
+    const config = {
+      method: "GET",
+      url: `${API_URL}timezones`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios(config)
+      .then((response) => {
+        setAllTimeZones(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <userDataContext.Provider
       value={{
@@ -581,6 +600,8 @@ const AppContext = ({ children }) => {
         fetchData,
         userData,
         setUserData,
+        fetchTimeZones,
+        allTimeZones,
         logOut,
         sidebarToggle,
         setSidebarToggle,

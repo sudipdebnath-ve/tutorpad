@@ -10,17 +10,18 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import payroll from "../users/assets/images/payroll.svg";
 import { init } from "i18next";
-
+import { fetchData } from '../../utils/helper.js';
 
 const MyPreferences = () => {
   const {
     userData,
-    fetchData,
     sidebarToggle,
     token,
     userId,
     getAvailabilityData,
     allAvailabilityData,
+    setUserData, 
+    setUserId
   } = useUserDataContext();
   const navigate = useNavigate();
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -88,31 +89,13 @@ const MyPreferences = () => {
     },
   };
 
-  // ReactModal.setAppElement("#yourAppElement");
-
-  function openModal(e) {
-    setIsOpen(e);
-  }
-
-  function afterOpenModal() {
-    // references are now sync'd and can be accessed.
-    // subtitle.style.color = "#f00";
-  }
-
-  function closeModal(e) {
-    setIsOpen(e);
-  }
-  console.log(selectedDays);
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem("tutorPad"));
-    if (!token) {
-      navigate("/signin");
-    } else {
-      fetchData(token);
-      allAvailabilityData();
-    }
+    const userRole = localStorage.getItem("userRole");
+    fetchData(token, userRole, setUserData, setUserId);
+    allAvailabilityData();
   }, []);
-  
+
   useEffect(() => {
     var name = `${userData.first_name}${" "}${userData.last_name}`;
 
@@ -150,6 +133,19 @@ const MyPreferences = () => {
       userData?.business_data?.allow_student_email_studylog;
     tenantData.daily_agenda = userData?.business_data?.daily_agenda;
   }, [userData]);
+
+  function openModal(e) {
+    setIsOpen(e);
+  }
+
+  function afterOpenModal() {
+    // references are now sync'd and can be accessed.
+    // subtitle.style.color = "#f00";
+  }
+
+  function closeModal(e) {
+    setIsOpen(e);
+  }
 
   const handleAttendEdit = (e) => {
     setAttendFlag(!e.target.value);

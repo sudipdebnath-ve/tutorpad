@@ -8,7 +8,7 @@ import ReactModal from "react-modal";
 import { API_URL } from "../../../utils/config.js";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import { useTokenStorage } from '../../../utils/helper.js';
+import { fetchData } from '../../../utils/helper.js';
 import { AuthContext } from '../../registerLogin/AuthContext.js';
 
 
@@ -18,7 +18,9 @@ const MyPreferences = () => {
     sidebarToggle,
     token,
     userId,
-    logOut
+    logOut,
+    setUserData, 
+    setUserId
   } = useUserDataContext();
   const { role, setRole } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -28,7 +30,6 @@ const MyPreferences = () => {
   const [updatePass, setUpdatePass] = useState({});
   const [error, setError] = useState({});
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const storeToken = useTokenStorage();
 
   const customStyles = {
     content: {
@@ -64,6 +65,13 @@ const MyPreferences = () => {
     },
   };
 
+  useEffect(() => {
+    const token = JSON.parse(localStorage.getItem("tutorPad"));
+    const userRole = localStorage.getItem("userRole");
+    console.log('rushita');
+    fetchData(token, userRole, setUserData, setUserId);
+  }, []);
+
   function openModal(e) {
     setIsOpen(e);
   }
@@ -79,7 +87,6 @@ const MyPreferences = () => {
   
   useEffect(() => {
     var name = `${userData.first_name}${" "}${userData.last_name}`;
-
     var parts = name.split(" ");
     var initials = "";
     for (var i = 0; i < parts.length; i++) {

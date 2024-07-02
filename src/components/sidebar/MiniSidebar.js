@@ -122,7 +122,7 @@ const MiniSidebar = () => {
           </li>
           <li
             className={`sidebar-item ${
-              splitLocation[1] === "bussiness-reports" ? "active" : ""
+              splitLocation[1] === "business-reports" ? "active" : ""
             }`}
           >
             <Link className="sidebar-link" to="#">

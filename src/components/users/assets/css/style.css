@@ -12242,19 +12242,19 @@ button.closeModal {
 }
 /******************* Online Resources End ********************/
 
-/******************* Bussiness Settings Start ********************/
+/******************* Business Settings Start ********************/
 
-.bussinesssetting .location-user,
-.bussinesssetting .email-user {
+.businesssetting .location-user,
+.businesssetting .email-user {
   font-size: 15px;
 }
-.bussinesssetting .location-user {
+.businesssetting .location-user {
   display: flex;
   align-items: start;
   gap: 10px;
   padding-top: 10px;
 }
-.bussinesssetting .location-user i {
+.businesssetting .location-user i {
   padding-top: 4px;
 }
 .payment-method {
@@ -12271,10 +12271,10 @@ button.closeModal {
   margin: 0;
   font-size: 16px;
 }
-/* .bussinesssetting .acc-content {
+/* .businesssetting .acc-content {
   padding: 10px 0px 20px 0px;
 } */
-/******************* Bussiness Settings End ********************/
+/******************* Business Settings End ********************/
 
 /******************* Calendar Start ********************/
 
