@@ -272,9 +272,9 @@ const TopBar = () => {
                     <i className="fa fa-user" aria-hidden="true"></i> &nbsp; My
                     Preferences
                   </Link>
-                  <Link className="dropdown-item" to="/bussiness-settings">
+                  <Link className="dropdown-item" to="/business-settings">
                     <i className="fa fa-cog" aria-hidden="true"></i>{" "}
-                    &nbsp;Bussiness Settings
+                    &nbsp;Business Settings
                   </Link>
                   <div className="dropdown-divider"></div>
                   <Link className="dropdown-item" onClick={logOut}>
@@ -291,9 +291,9 @@ const TopBar = () => {
                       <i className="fa fa-user" aria-hidden="true"></i> &nbsp; My
                       Preferences
                     </Link>
-                    <Link className="dropdown-item" to="/bussiness-settings">
+                    <Link className="dropdown-item" to="/business-settings">
                       <i className="fa fa-cog" aria-hidden="true"></i>{" "}
-                      &nbsp;Bussiness Settings
+                      &nbsp;Business Settings
                     </Link>
                     <div className="dropdown-divider"></div>
                     <Link className="dropdown-item" onClick={logOut}>

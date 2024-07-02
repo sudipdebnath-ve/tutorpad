@@ -14,7 +14,7 @@ import StudentEditDetails from "./components/users/students/details/StudentEditD
 import Calendar from "./components/users/calendar/Calendar";
 import StudentMessageHistory from "./components/users/students/StudentMessageHistory";
 import OnlineResources from "./components/users/OnlineResources";
-import BussinessSettings from "./components/users/BussinessSettings";
+import BusinessSettings from "./components/users/BusinessSettings";
 import Tutor from "./components/users/Tutor";
 import TutorAdd from "./components/users/tutors/TutorAdd";
 import StaffAdd from "./components/users/tutors/StaffAdd";
@@ -84,7 +84,7 @@ const AuthenticatedRoutes = () => {
                 <Route path="/calendar/locations/edit/:id" element={<EditLocations />} />
                 
                 <Route path="/online-resources" element={<OnlineResources />} />
-                <Route path="/bussiness-settings" element={<BussinessSettings />} />
+                <Route path="/business-settings" element={<BusinessSettings />} />
                 <Route path="/familiies-and-invoices" element={<FamilyInvoice />} />
                 <Route path="/familiies-and-invoices/transaction-type/:screen" element={<TransactionDetailType />} />
                 <Route path="/familiies-and-invoices/transaction-type/:screen/:family_id" element={<TransactionDetailType />} />

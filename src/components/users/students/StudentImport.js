@@ -168,26 +168,29 @@ const StudentImport = () => {
 
   const validateData = (data) => {
     setErrorData(''); // Reset error
-
+  
     const rows = data.split('\n');
     const delimiter = rows[0].includes('\t') ? '\t' : ','; // Determine the delimiter based on the first row
     const header = rows[0].split(delimiter);
-
+  
     if (header[0].trim() !== 'First name' || header[1].trim() !== 'Last name') {
       setErrorData('Invalid header format. Please make sure the first column is "First name" and the second column is "Last name".');
       scrollToError();
       return false;
     }
-
+  
     const result = [];
     for (let i = 1; i < rows.length; i++) {
-      const columns = rows[i].split(delimiter);
+      const row = rows[i].trim();
+      if (!row) continue; // Skip blank rows
+  
+      const columns = row.split(delimiter);
       if (!columns[0]?.trim() || !columns[1]?.trim()) {
         setErrorData(`Missing first name or last name in row ${i + 1}`);
         scrollToError();
         return false;
       }
-
+  
       const student = {
         "First name": columns[0].trim(),
         "Last name": columns[1].trim(),
@@ -196,13 +199,14 @@ const StudentImport = () => {
         "Phone": columns[4]?.trim() || '',
         "Default Lesson Length": columns[5]?.trim() || ''
       };
-
+  
       result.push(student);
     }
-
+  
     setParsedData(result);
     return true;
   };
+  
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -570,6 +574,7 @@ const StudentImport = () => {
                                     onChange={handleChange}
                                     id="tutor_id"
                                   >
+                                    <option value="0" disabled>Select tutor</option>
                                     {allTutors &&
                                       allTutors.map((tutor) => {
                                         return (

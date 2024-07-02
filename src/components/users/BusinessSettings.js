@@ -10,14 +10,12 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import payroll from "../users/assets/images/payroll.svg";
 import Select from "react-select";
-import countryList from "react-select-country-list";
-import LanguageOption from "../LanguageOption.js";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
+import { fetchData } from '../../utils/helper.js';
 
-
-const BussinessSettings = () => {
-  const { userData, fetchData, sidebarToggle, token, userId } =
+const BusinessSettings = () => {
+  const { userData, sidebarToggle, token, userId, setUserData, setUserId, fetchTimeZones, allTimeZones } =
     useUserDataContext();
   const navigate = useNavigate();
   const { t } = useTranslation()
@@ -26,19 +24,17 @@ const BussinessSettings = () => {
   const [availFlag, setAvailFlag] = useState(false);
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState({});
+  const [businessLogo, setBusinessLogo] = useState(null);
+  const [error, setError] = useState({});
+  const [initial, setInitial] = useState('');
   const [formData, setFormData] = useState({
-    title: "",
-    first_name: "",
-    last_name: "",
-    email: "",
-    phone: "",
-    address: "",
-    virtual_meeting: "",
-    subjects: "",
-    location: "",
+    business_name: '',
+    logo: '',
+    phone_number: '',
+    business_address: '',
+    region: '',
+    timeZone: ''
   });
-
-  // console.log(userData);
   const customStyles = {
     content: {
       width: "60%",
@@ -54,24 +50,43 @@ const BussinessSettings = () => {
       background: "#6c5a5669",
     },
   };
-  const passwordStyles = {
-    content: {
-      width: "60%",
-      height: "60%",
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
-      border: "none",
-    },
-    overlay: {
-      background: "#6c5a5669",
-    },
-  };
 
-  // ReactModal.setAppElement("#yourAppElement");
+  useEffect(() => {
+    const token = JSON.parse(localStorage.getItem("tutorPad"));
+    const userRole = localStorage.getItem("userRole");
+    fetchData(token, userRole, setUserData, setUserId);
+    fetchTimeZones();
+  }, []);
+
+  useEffect(() => {
+    fetch(
+      "https://valid.layercode.workers.dev/list/countries?format=select&flags=true&value=code"
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setCountries(data.countries);
+        setSelectedCountry(data.userSelectValue);
+      });
+  }, []);
+
+  useEffect(() => {
+    var name = `${userData.business_data?.business_name}`;
+
+    var parts = name.split(" ");
+    var initials = "";
+    for (var i = 0; i < parts.length; i++) {
+      if (parts[i].length > 0 && parts[i] !== "") {
+        initials += parts[i][0];
+      }
+    }
+    setInitial(initials);
+    formData.business_name = userData?.business_data?.business_name;
+    formData.phone_number = userData?.business_data?.phone_number;
+    formData.business_address = userData?.business_data?.business_address;
+    formData.region = userData?.business_data?.region;
+    formData.timeZone = userData?.business_data?.timeZone;
+    setBusinessLogo(userData?.business_data?.logo);
+  }, [userData]);
 
   function openModal(e) {
     setIsOpen(e);
@@ -86,54 +101,32 @@ const BussinessSettings = () => {
     setIsOpen(false);
   }
 
-  useEffect(() => {
-    const token = JSON.parse(localStorage.getItem("tutorPad"));
-    if (!token) {
-      navigate("/signin");
-    } else {
-      fetchData(token);
-    }
-  }, []);
-  useEffect(() => {
-    fetch(
-      "https://valid.layercode.workers.dev/list/countries?format=select&flags=true&value=code"
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setCountries(data.countries);
-        setSelectedCountry(data.userSelectValue);
-      });
-  }, []);
-
   const handleChange = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    // if (name === "phone") {
-    //   formData["phone"] = value;
-    // } else if (name === "student_status") {
-    //   formData["student_status"] = value;
-    // } else if (name === "studentType") {
-    //   formData["studentType"] = value;
-    // } else if (name === "billing") {
-    //   formData["billing"] = value;
-    // } else if (name === "dob") {
-    //   formData["dob"] = value;
-    //   console.log(value);
-    // }
-    setFormData({ ...formData, [name]: value });
-    // console.log(formData);
+    const { name, value, files } = e.target;
+    if (name === 'logo') {
+      const file = files[0];
+      // setBusinessLogo(URL.createObjectURL(file));
+      setBusinessLogo(file);
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   };
+
   const formSubmit = async (e) => {
-    console.log(formData);
+    // formData["logo"] = businessLogo;
     formData["user_id"] = userId;
     e.preventDefault();
     const config = {
       method: "PATCH",
       url: `${API_URL}savedata`,
       headers: {
+        // "content-type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
       },
-      data: formData,
+      data: {'tenant_data' : formData },
     };
     await axios(config)
       .then((response) => {
@@ -141,11 +134,7 @@ const BussinessSettings = () => {
         toast.success(response.data.message, {
           position: toast.POSITION.TOP_CENTER,
         });
-
-        setTimeout(() => {
-          setIsOpen(false);
-          window.location.reload(false);
-        }, 2000);
+        setIsOpen(false);
       })
       .catch((error) => {
         console.log(error);
@@ -156,7 +145,7 @@ const BussinessSettings = () => {
     setAttendFlag(true);
   };
   return (
-    <div className="wrapper bussinesssetting">
+    <div className="wrapper businesssetting">
       {sidebarToggle ? (
         <>
           <MiniSidebar />
@@ -171,310 +160,163 @@ const BussinessSettings = () => {
         <TopBar />
 
         <ReactModal
-          isOpen={modalIsOpen === "profile"}
-          onAfterOpen={afterOpenModal}
-          onRequestClose={closeModal}
-          style={customStyles}
-          contentLabel="Example Modal"
-        >
-          <div className="mypreference-modal">
-            <div className="close-h">
-              <h4>{t("Edit Profile")}</h4>
-              <button className="closeModal" onClick={closeModal}>
-                X
-              </button>
-            </div>
-            <form name="studentProfile">
-              <div className="row d-flex">
-                <div className="col-xl-4 col-xxl-4">
-                  <div className="formbold-input-flex justify-content-center">
-                    <div>
-                      <label
-                        htmlFor="photo"
-                        className="formbold-form-label"
-                        id="photo"
-                      >
-                        {t("Photo")} <span>{t("Optional")}</span>
-                      </label>
-                      <div className="initials py-3">
-                        <div className="image-user">
-                          <h2>{t("SD")}</h2>
+            isOpen={modalIsOpen === "profile"}
+            onAfterOpen={afterOpenModal}
+            onRequestClose={closeModal}
+            style={customStyles}
+            contentLabel="Business Profile Modal"
+          >
+            <div className="mypreference-modal">
+              <div className="close-h">
+                <h4>Edit Business Profile</h4>
+                <button className="closeModal" onClick={closeModal}>
+                  X
+                </button>
+              </div>
+              <form name="studentProfile">
+                <div className="row d-flex">
+                  <div className="col-xl-4 col-xxl-4">
+                    <div className="formbold-input-flex justify-content-center">
+                      <div className="student-profile-view">
+                        <label htmlFor="photo" className="formbold-form-label">
+                          Business Logo <span>Optional</span>
+                        </label>
+                        <div className="initials py-3">
+                          <div className="image-user">
+                            {businessLogo ? (
+                              <>
+                                <img
+                                  src={businessLogo}
+                                  alt=""
+                                />
+                              </>
+                            ) : (
+                              <h2>{initial && initial.toUpperCase()}</h2>
+                            )}
+                          </div>
                         </div>
+                        <div className="text-center pb-2">
+                          <small className="input-error-message">
+                            {error?.logo?.length ? error.logo[0] : <></>}
+                          </small>
+                        </div>
+                        <input
+                          type="file"
+                          name="logo"
+                          className="form-control b-none"
+                          onChange={handleChange}
+                        />
                       </div>
-                      <input
-                        type="file"
-                        name="photo"
-                        className="form-control b-none"
-                        onChange={handleChange}
-                      />
                     </div>
                   </div>
-                </div>
-                <div className="col-xl-8 col-xxl-8">
-                  <div className="formbold-form-step-1 active">
-                    <div className="formbold-input-flex diff">
-                      <div>
-                        <label htmlFor="title" className="formbold-form-label">
-                          {("Title")}
-                        </label>
-
-                        <input
-                          type="text"
-                          name="title"
-                          className="form-control"
-                          onChange={handleChange}
-                        />
-                      </div>
-                    </div>
-                    <div className="formbold-input-flex">
-                      <div>
-                        <label
-                          htmlFor="first_name"
-                          className="formbold-form-label"
-                          id="first_name"
-                        >
-                          {t("First name")}
-                        </label>
-                        <input
-                          type="text"
-                          name="first_name"
-                          className="form-control"
-                          onChange={handleChange}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="last_name"
-                          className="formbold-form-label"
-                          id="last_name"
-                        >
-                          {t("Last name")}
-                        </label>
-                        <input
-                          type="text"
-                          name="last_name"
-                          className="form-control"
-                          onChange={handleChange}
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="formbold-input-flex">
-                      <div>
-                        <label
-                          htmlFor="email"
-                          className="formbold-form-label"
-                          id="email"
-                        >
-                          {t("Email Address")}
-                        </label>
-                        <input
-                          type="email"
-                          name="email"
-                          className="form-control"
-                          onChange={handleChange}
-                        />
-                      </div>
-                      <div>
+                  <div className="col-xl-8 col-xxl-8">
+                    <div className="formbold-form-step-1 active">
+                      <div className="formbold-input-flex diff">
                         <div>
-                          <label
-                            htmlFor="phone"
-                            className="formbold-form-label"
-                            id="phone"
-                          >
-                            {t("Phone Number")} <span>{t("Optional")}</span>
+                          <label htmlFor="business_name" className="formbold-form-label">
+                            Business Name
                           </label>
                           <input
                             type="text"
-                            name="phone"
+                            name="business_name"
                             className="form-control"
+                            value={formData.business_name}
                             onChange={handleChange}
+                            required
                           />
                         </div>
                       </div>
-                    </div>
-                    <div className="formbold-input-flex diff">
-                      <div>
-                        <label
-                          htmlFor="parentaddress"
-                          className="formbold-form-label"
-                        >
-                          {t("Address")} <span>{t("Optional")}</span>
-                        </label>
-                        <br></br>
-
-                        <textarea
-                          name="parentaddress"
-                          className="form-control"
-                          onChange={handleChange}
-                        />
-                      </div>
-                    </div>
-                    <div className="formbold-input-flex diff">
-                      <div>
-                        <label
-                          htmlFor="parentaddress"
-                          className="formbold-form-label"
-                        >
-                          {t("Virtual Meeting")} <span>{t("Optional")}</span>
-                          <br></br>
-                          <span>
-                            {t("Share a link to Zoom, Google Meet, or any other video conferencing application.")}
-                          </span>
-                        </label>
-                        <br></br>
-
-                        <input
-                          type="text"
-                          name="virtual_meeting"
-                          className="form-control"
-                          onChange={handleChange}
-                        />
-                      </div>
-                    </div>
-                    <div className="formbold-input-flex diff">
-                      <div>
-                        <label
-                          htmlFor="subject"
-                          className="formbold-form-label"
-                        >
-                          {t("Subjects")} <span>{t("Optional")}</span>
-                          <br></br>
-                          <span>
-                            {t("Use a semicolon or press the Enter key to separate entries")}
-                          </span>
-                        </label>
-                        <br></br>
-
-                        <input
-                          type="text"
-                          name="subject"
-                          className="form-control"
-                          onChange={handleChange}
-                        />
-                      </div>
-                    </div>
-                    <div className="formbold-input-flex diff">
-                      <div>
-                        <label
-                          htmlFor="location"
-                          className="formbold-form-label"
-                        >
-                          {t("Preferred Location")}
-                        </label>
-                        <select
-                          name="location"
-                          className="form-control"
-                          onChange={handleChange}
-                        >
-                          <option>{t("First Available Location")}</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <hr></hr>
-                <div className="formbold-form-btn-wrapper">
-                  <div className="btn-end">
-                    <Link className="cancel" onClick={closeModal}>
-                      {t("Cancel")}
-                    </Link>
-
-                    <button className="formbold-btn" onClick={formSubmit}>
-                      {t("Submit")}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-        </ReactModal>
-        <ReactModal
-          isOpen={modalIsOpen === "password"}
-          onAfterOpen={afterOpenModal}
-          onRequestClose={closeModal}
-          style={passwordStyles}
-          contentLabel="Change Password"
-        >
-          <div className="mypreference-modal">
-            <div className="close-h">
-              <h4>{t("Change Password")}</h4>
-              <button className="closeModal" onClick={closeModal}>
-                X
-              </button>
-            </div>
-            <form name="studentProfile">
-              <div className="row d-flex">
-                <div className="col-xl-12 col-xxl-12">
-                  <div className="formbold-form-step-1 active">
-                    <div className="formbold-input-flex">
-                      <div>
-                        <label
-                          htmlFor="current_password"
-                          className="formbold-form-label"
-                          id="current_password"
-                        >
-                          {t("First name")}
-                        </label>
-                        <input
-                          type="password"
-                          name="current_password"
-                          className="form-control"
-                        />
-                      </div>
-                    </div>
-                    <div className="formbold-input-flex">
-                      <div>
-                        <label
-                          htmlFor="new_password"
-                          className="formbold-form-label"
-                          id="new_password"
-                        >
-                          {t("New Password")}
-                        </label>
-                        <input
-                          type="password"
-                          name="new_password"
-                          className="form-control"
-                        />
-                      </div>
-                      <div>
+                      <div className="formbold-input-flex diff">
                         <div>
-                          <label
-                            htmlFor="change_new_password"
-                            className="formbold-form-label"
-                            id="change_new_password"
-                          >
-                            {t("Change New Password")}
+                          <label htmlFor="phone_number" className="formbold-form-label">
+                            Phone Number
                           </label>
                           <input
                             type="text"
-                            name="change_new_password"
+                            name="phone_number"
                             className="form-control"
+                            value={formData.phone_number}
+                            onChange={handleChange}
+                            required
                           />
+                        </div>
+                      </div>
+                      <div className="formbold-input-flex diff">
+                        <div>
+                          <label htmlFor="business_address" className="formbold-form-label">
+                            Business Address
+                          </label>
+                          <textarea
+                            name="business_address"
+                            className="form-control"
+                            value={formData.business_address}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="formbold-input-flex diff">
+                        <div>
+                          <label htmlFor="region" className="formbold-form-label">
+                            Region
+                          </label>
+                          <select
+                            name="region"
+                            className="form-control"
+                            value={formData.region}
+                            onChange={handleChange}
+                            required
+                          >
+                            <option value="" disabled>Select Region</option>
+                            <option value="North America">North America</option>
+                            <option value="Europe">Europe</option>
+                            <option value="Asia">Asia</option>
+                            {/* Add more options as needed */}
+                          </select>
+                        </div>
+                      </div>
+                      <div className="formbold-input-flex diff">
+                        <div>
+                          <label htmlFor="timeZone" className="formbold-form-label">
+                            Time Zone
+                          </label>
+                          <select
+                            name="timeZone"
+                            className="form-control"
+                            value={formData.timeZone}
+                            onChange={handleChange}
+                            required
+                          >
+                            <option value="" disabled>Select Time Zone</option>
+
+                            {allTimeZones &&
+                              allTimeZones.map((timezone) => {
+                                return (
+                                  <option key={timezone.id} value={timezone.id} selected={timezone.id == formData.timeZone}>
+                                    {timezone.offset ? timezone.offset : ""}
+                                  </option>
+                                );
+                              })}
+                          </select>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <hr></hr>
-                <div className="formbold-form-btn-wrapper">
-                  <div className="btn-end">
-                    <Link className="cancel" onClick={closeModal}>
-                      {t("Cancel")}
-                    </Link>
-
-                    <button className="formbold-btn" onClick={formSubmit}>
-                      {t("Submit")}
-                    </button>
+                  <hr />
+                  <div className="formbold-form-btn-wrapper">
+                    <div className="btn-end">
+                      <Link className="cancel" onClick={closeModal}>
+                        Cancel
+                      </Link>
+                      <button className="formbold-btn" onClick={formSubmit}>
+                        Submit
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </form>
-          </div>
+              </form>
+            </div>
         </ReactModal>
-
         <main className="content">
           <ToastContainer />
           <div className="container-fluid p-0">
@@ -498,10 +340,10 @@ const BussinessSettings = () => {
                       {userData.first_name} {userData.last_name}
                     </div>
                     <div className="email-user">
-                      <i class="fa fa-globe" aria-hidden="true"></i> {t("India-English")}
+                      <i class="fa fa-globe" aria-hidden="true"></i> {formData.region}
                     </div>
                     <div className="location-user">
-                      <i class="fa fa-clock" aria-hidden="true"></i> {t("(UTC+05:30) Chennai, Kolkata, Mumbai, New Delhi")}
+                      <i class="fa fa-clock" aria-hidden="true"></i> {formData.timeZone}
                     </div>
                   </div>
                 </div>
@@ -567,27 +409,6 @@ const BussinessSettings = () => {
                             </div>
                           </div>
 
-                          <div className="formbold-input-flex diff mb-0">
-                            <div>
-                              <label
-                                htmlFor="preferences"
-                                className="formbold-form-label"
-                              >
-                                {t("('Not Specified') Location in Events")}
-                              </label>
-                              <br></br>
-                              <div
-                                className="preference"
-                                style={{ fontSize: "15px" }}
-                              >
-                                <input
-                                  type="checkbox"
-                                  name="automatically_copy_lesson"
-                                />
-                                {t("Allow 'Not Specified' as a location option in calendar events")}
-                              </div>
-                            </div>
-                          </div>
                         </div>
                         <div className="accordion-body pt-0">
                           <div className="student-properties-edit sec-acc">
@@ -1104,4 +925,4 @@ const BussinessSettings = () => {
   );
 };
 
-export default BussinessSettings;
+export default BusinessSettings;

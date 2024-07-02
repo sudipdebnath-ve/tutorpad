@@ -15,35 +15,7 @@ export function useTokenStorage() {
         const token = JSON.parse(localStorage.getItem("tutorPad"));
         const userRole = localStorage.getItem("userRole");
 
-        const fetchData = () => {
-            var url = `${API_URL}tenant/details`;
-            if(userRole == process.env.REACT_APP_STUDENT_ROLE){
-                url = `${API_URL}student/profile`;
-            }
-            const validateconfig = {
-                method: "GET",
-                url: url,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            };
-            axios(validateconfig)
-                .then((response) => {
-                    if (response.status === 200) {
-                        if (response.data.success === true) {
-                            setUserData(response.data.data);
-                            setUserId(response.data.data.id);
-                            localStorage.setItem("user_id",response.data.data.id);
-                            localStorage.setItem("user_name",response.data.data.first_name);
-                            const dpUrl = response.data.data.business_data?.dp_url || response.data.data.dp_url;
-                            localStorage.setItem("user_profile", dpUrl);
-                        }
-                    }
-                })
-                .catch((error) => {
-                    console.log('Error occurred:', error);
-                });
-        };
+        fetchData(token, userRole, setUserData, setUserId);
         fetchData();
     }, [token]);
 
@@ -57,6 +29,39 @@ export function useTokenStorage() {
         return true;
     };
 }
+
+//fetch user details
+export const fetchData = (token, userRole, setUserData, setUserId) => {
+    console.log('rushita 123');
+    var url = `${API_URL}tenant/details`;
+    if(userRole == process.env.REACT_APP_STUDENT_ROLE){
+        url = `${API_URL}student/profile`;
+    }
+    const validateconfig = {
+        method: "GET",
+        url: url,
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
+    axios(validateconfig)
+        .then((response) => {
+            if (response.status === 200) {
+                if (response.data.success === true) {
+                    setUserData(response.data.data);
+                    setUserId(response.data.data.id);
+                    localStorage.setItem("user_id",response.data.data.id);
+                    localStorage.setItem("user_name",response.data.data.first_name);
+                    const dpUrl = response.data.data.business_data?.dp_url || response.data.data.dp_url;
+                    localStorage.setItem("user_profile", dpUrl);
+                }
+            }
+        })
+        .catch((error) => {
+            console.log('Error occurred:', error);
+        });
+};
+
 
 //checkAuth and redirect
 export const checkAuthAndRedirect = async (navigate,from) => {
